@@ -578,27 +578,24 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_2')">1. Monolithic vs .NET Core Microservices</div>
 <div class="question-item" onclick="showAnswer('q_37')">2. Framework vs Core</div>
 <div class="question-item" onclick="showAnswer('q_107')">3. Middleware &amp; Filters</div>
-<div class="question-item" onclick="showAnswer('q_110')">4. Dependency Injection (DI)</div>
-<div class="question-item" onclick="showAnswer('q_40')">5. Service Lifetimes</div>
-<div class="question-item" onclick="showAnswer('q_59')">6. What is IServiceProvider?</div>
-<div class="question-item" onclick="showAnswer('q_60')">7. Different ways of Dependency Injection</div>
-<div class="question-item" onclick="showAnswer('q_61')">8. Have you used Method Injection?</div>
-<div class="question-item" onclick="showAnswer('q_96')">9. Why DbContext Scoped?</div>
-<div class="question-item" onclick="showAnswer('q_41')">10. What is JWT?</div>
-<div class="question-item" onclick="showAnswer('q_42')">11. What is Dapper?</div>
-<div class="question-item" onclick="showAnswer('q_53')">12. Routing</div>
-<div class="question-item" onclick="showAnswer('q_54')">13. CORS Policy</div>
-<div class="question-item" onclick="showAnswer('q_55')">14. REST API</div>
-<div class="question-item" onclick="showAnswer('q_67')">15. Caching</div>
-<div class="question-item" onclick="showAnswer('q_68')">16. Options Pattern</div>
-<div class="question-item" onclick="showAnswer('q_69')">17. Hosted Services</div>
-<div class="question-item" onclick="showAnswer('q_70')">18. Background Job Processing</div>
-<div class="question-item" onclick="showAnswer('q_62')">19. Custom Middleware</div>
-<div class="question-item" onclick="showAnswer('q_63')">20. How to call next middleware?</div>
-<div class="question-item" onclick="showAnswer('q_64')">21. What is app.Map()?</div>
-<div class="question-item" onclick="showAnswer('q_65')">22. Can we use app.Map() for specific requests?</div>
-<div class="question-item" onclick="showAnswer('q_120')">23. Web API Performance Optimization</div>
-<div class="question-item" onclick="showAnswer('q_74')">24. How to consume external APIs?</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_run_use_map')">4. Run(), Use(), and Map()</div>
+<div class="question-item" onclick="showAnswer('q_110')">5. Dependency Injection (DI)</div>
+<div class="question-item" onclick="showAnswer('q_40')">6. Service Lifetimes</div>
+<div class="question-item" onclick="showAnswer('q_59')">7. What is IServiceProvider?</div>
+<div class="question-item" onclick="showAnswer('q_60')">8. Different ways of Dependency Injection</div>
+<div class="question-item" onclick="showAnswer('q_61')">9. Have you used Method Injection?</div>
+<div class="question-item" onclick="showAnswer('q_96')">10. Why DbContext Scoped?</div>
+<div class="question-item" onclick="showAnswer('q_41')">11. What is JWT?</div>
+<div class="question-item" onclick="showAnswer('q_42')">12. What is Dapper?</div>
+<div class="question-item" onclick="showAnswer('q_53')">13. Routing</div>
+<div class="question-item" onclick="showAnswer('q_54')">14. CORS Policy</div>
+<div class="question-item" onclick="showAnswer('q_55')">15. REST API</div>
+<div class="question-item" onclick="showAnswer('q_67')">16. Caching</div>
+<div class="question-item" onclick="showAnswer('q_68')">17. Options Pattern</div>
+<div class="question-item" onclick="showAnswer('q_69')">18. Hosted Services</div>
+<div class="question-item" onclick="showAnswer('q_70')">19. Background Job Processing</div>
+<div class="question-item" onclick="showAnswer('q_120')">20. Web API Performance Optimization</div>
+<div class="question-item" onclick="showAnswer('q_74')">21. How to consume external APIs?</div>
 </div>
 <h3 class="topic-header">SQL &amp; Database</h3>
 <div class="question-group">
@@ -2515,6 +2512,121 @@ app.MapControllers(); // filters apply inside MVC</code></pre><h3>Key Points</h3
 <li>Order matters for middleware registration.</li>
 <li>Use filters for action-level cross-cutting logic.</li>
 </ul><h3>Interview Answer</h3><p>Middleware handles global HTTP pipeline concerns in order, like authentication and routing. Filters plug into the MVC action lifecycle for things like validation or authorization at controller/action level. I use middleware for request-wide behavior and filters when I need action-specific context.</p></div>
+<div class="answer-pane" id="q_aspnet_run_use_map"><h2>Run(), Use(), and Map() in ASP.NET Core</h2><p>In ASP.NET Core, <code>Run()</code>, <code>Use()</code>, and <code>Map()</code> are middleware extension methods used to build the <strong>HTTP request pipeline</strong>.</p><h3>ASP.NET Core Request Pipeline</h3><pre><code>Client → Middleware 1 → Middleware 2 → Middleware 3 → Response</code></pre><p>Each middleware can handle the request, pass it to the next middleware, or stop the pipeline.</p><h3>1. app.Run()</h3><p><code>Run()</code> is a <strong>terminal middleware</strong>. It handles the request, does <strong>not</strong> call the next middleware, and the pipeline stops there.</p><pre><code>app.Run(async context =&gt;
+{
+    await context.Response.WriteAsync("Hello World");
+});</code></pre><p><strong>Important:</strong> Anything written <strong>after</strong> <code>Run()</code> will never execute for that branch.</p><pre><code>app.Run(async context =&gt;
+{
+    await context.Response.WriteAsync("First Run");
+});
+
+app.Use(async (context, next) =&gt;
+{
+    await next(); // NEVER executes for requests handled above
+});</code></pre><p><strong>Analogy:</strong> Road closed here — no request moves further.</p><h3>2. app.Use()</h3><p><code>Use()</code> adds custom middleware and can pass the request to the next middleware. Code runs <strong>before</strong> and <strong>after</strong> <code>await next()</code>.</p><pre><code>app.Use(async (context, next) =&gt;
+{
+    await context.Response.WriteAsync("Middleware 1 Start\n");
+    await next();
+    await context.Response.WriteAsync("Middleware 1 End\n");
+});
+
+app.Run(async context =&gt;
+{
+    await context.Response.WriteAsync("Run Middleware\n");
+});</code></pre><p><strong>Output:</strong></p><pre><code>Middleware 1 Start
+Run Middleware
+Middleware 1 End</code></pre><p><strong>Flow:</strong> Middleware 1 Start → Run Middleware → Middleware 1 End</p><p>Common uses: authentication, authorization, logging, exception handling, CORS, routing.</p><pre><code>app.UseAuthentication();
+app.UseAuthorization();</code></pre><p>If <code>next()</code> is not called, the pipeline stops:</p><pre><code>app.Use(async (context, next) =&gt;
+{
+    await context.Response.WriteAsync("Stopped");
+    // next() not called — further middleware won't run
+});</code></pre><h3>3. app.Map()</h3><p><code>Map()</code> creates a <strong>branch</strong> in the pipeline based on URL path.</p><pre><code>app.Map("/home", homeApp =&gt;
+{
+    homeApp.Run(async context =&gt;
+    {
+        await context.Response.WriteAsync("Home Page");
+    });
+});
+
+app.Map("/about", aboutApp =&gt;
+{
+    aboutApp.Run(async context =&gt;
+    {
+        await context.Response.WriteAsync("About Page");
+    });
+});</code></pre><table>
+<tr><th>URL</th><th>Output</th></tr>
+<tr><td>/home</td><td>Home Page</td></tr>
+<tr><td>/about</td><td>About Page</td></tr>
+</table><p><strong>Analogy:</strong> Main road branches to /home, /admin, /about.</p><h3>Difference: Run() vs Use() vs Map()</h3><table>
+<tr><th>Feature</th><th>Run()</th><th>Use()</th><th>Map()</th></tr>
+<tr><td>Middleware type</td><td>Terminal</td><td>Non-terminal</td><td>Branching</td></tr>
+<tr><td>Calls next middleware</td><td>No</td><td>Yes</td><td>Depends on branch</td></tr>
+<tr><td>Stops pipeline</td><td>Yes</td><td>Only if next() skipped</td><td>Branch-specific</td></tr>
+<tr><td>Used for</td><td>Final response</td><td>Custom middleware chain</td><td>URL path branching</td></tr>
+<tr><td>Common use</td><td>Return response</td><td>Logging, auth</td><td>Route branches</td></tr>
+</table><h3>Execution Flow Example</h3><pre><code>app.Use(async (context, next) =&gt;
+{
+    await context.Response.WriteAsync("1\n");
+    await next();
+    await context.Response.WriteAsync("4\n");
+});
+
+app.Use(async (context, next) =&gt;
+{
+    await context.Response.WriteAsync("2\n");
+    await next();
+    await context.Response.WriteAsync("3\n");
+});
+
+app.Run(async context =&gt;
+{
+    await context.Response.WriteAsync("RUN\n");
+});</code></pre><p><strong>Output:</strong></p><pre><code>1
+2
+RUN
+3
+4</code></pre><p>Middleware unwinds like a stack: 1 → 2 → RUN → 3 → 4</p><h3>Important Interview Questions</h3><h3>Q1. Can we have multiple Run() methods?</h3><p><strong>Yes</strong> technically, but the first matching <code>Run()</code> that handles the request terminates the pipeline for that path.</p><h3>Q2. What if next() is not called in Use()?</h3><p>The pipeline stops there; further middleware does not execute.</p><h3>Q3. Difference between Map() and Use()?</h3><table>
+<tr><th>Use()</th><th>Map()</th></tr>
+<tr><td>Continues same pipeline</td><td>Creates a branch</td></tr>
+<tr><td>Runs for all requests (unless short-circuited)</td><td>Runs for specific path prefix</td></tr>
+</table><h3>Advanced: MapWhen() and UseWhen()</h3><pre><code>app.MapWhen(
+    context =&gt; context.Request.Query.ContainsKey("admin"),
+    appBuilder =&gt;
+    {
+        appBuilder.Run(async context =&gt;
+        {
+            await context.Response.WriteAsync("Admin Request");
+        });
+    });</code></pre><p><code>UseWhen()</code> runs middleware conditionally without creating a full path branch.</p><h3>Complete Real-World Example</h3><pre><code>var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.Use(async (context, next) =&gt;
+{
+    Console.WriteLine("Request Started");
+    await next();
+    Console.WriteLine("Request Ended");
+});
+
+app.Map("/admin", adminApp =&gt;
+{
+    adminApp.Run(async context =&gt;
+    {
+        await context.Response.WriteAsync("Welcome Admin");
+    });
+});
+
+app.Run(async context =&gt;
+{
+    await context.Response.WriteAsync("Main Website");
+});
+
+app.Run();</code></pre><div class="interview-tip"><h3>Easy Way to Remember</h3><table>
+<tr><th>Method</th><th>Meaning</th></tr>
+<tr><td><code>Use()</code></td><td>Continue ahead</td></tr>
+<tr><td><code>Run()</code></td><td>Stop here</td></tr>
+<tr><td><code>Map()</code></td><td>Take another route</td></tr>
+</table><h3>Interview Answer</h3><p><code>Use()</code> chains middleware and calls <code>next()</code> for before/after logic. <code>Run()</code> is terminal—it handles the response and stops the pipeline. <code>Map()</code> branches the pipeline by path so only matching URLs run that sub-pipeline. Order matters, and skipping <code>next()</code> short-circuits like <code>Run()</code>.</p></div></div>
 <div class="answer-pane" id="q_108"><h2>Singleton Pattern</h2><p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection pools—though DI containers often manage lifetime instead.</p><p>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#) is essential; avoid Singleton abuse for every shared object.</p><pre><code>public sealed class Logger {
   private static readonly Lazy&lt;Logger&gt; _instance =
     new(() =&gt; new Logger());
