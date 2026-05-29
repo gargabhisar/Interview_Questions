@@ -1,4 +1,4 @@
-
+﻿
 <!DOCTYPE html>
 
 <html lang="en">
@@ -592,12 +592,13 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_54')">15. CORS Policy</div>
 <div class="question-item" onclick="showAnswer('q_55')">16. REST API</div>
 <div class="question-item" onclick="showAnswer('q_http_status_codes')">17. HTTP Status Codes</div>
-<div class="question-item" onclick="showAnswer('q_67')">18. Caching</div>
-<div class="question-item" onclick="showAnswer('q_68')">19. Options Pattern</div>
-<div class="question-item" onclick="showAnswer('q_69')">20. Hosted Services</div>
-<div class="question-item" onclick="showAnswer('q_70')">21. Background Job Processing</div>
-<div class="question-item" onclick="showAnswer('q_120')">22. Web API Performance Optimization</div>
-<div class="question-item" onclick="showAnswer('q_74')">23. How to consume external APIs?</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_content_negotiation')">18. Content Negotiation</div>
+<div class="question-item" onclick="showAnswer('q_67')">19. Caching</div>
+<div class="question-item" onclick="showAnswer('q_68')">20. Options Pattern</div>
+<div class="question-item" onclick="showAnswer('q_69')">21. Hosted Services</div>
+<div class="question-item" onclick="showAnswer('q_70')">22. Background Job Processing</div>
+<div class="question-item" onclick="showAnswer('q_120')">23. Web API Performance Optimization</div>
+<div class="question-item" onclick="showAnswer('q_74')">24. How to consume external APIs?</div>
 </div>
 <h3 class="topic-header">ASP.NET Core - Top 24 Interview Q&amp;A</h3>
 <div class="question-group">
@@ -626,6 +627,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_aspnet_q23')">23. JWT &amp; IdentityServer</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q24')">24. BackgroundService</div>
 <div class="question-item" onclick="showAnswer('q_http_status_codes')">25. HTTP Status Codes</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_content_negotiation')">26. Content Negotiation</div>
 </div>
 <h3 class="topic-header">SQL &amp; Database</h3>
 <div class="question-group">
@@ -2904,9 +2906,47 @@ Validation passed
 User created
      ↓
 201 Created</code></pre><div class="interview-tip"><h3>Interview One-Liner</h3><p>HTTP status codes indicate the outcome of an HTTP request. They help clients understand whether the request succeeded, failed due to client issues (4xx), or failed because of server-side problems (5xx). In ASP.NET Core, use <code>Ok()</code>, <code>Created()</code>, <code>BadRequest()</code>, <code>NotFound()</code>, and related helpers instead of always returning 200.</p></div></div>
+<div class="answer-pane" id="q_aspnet_content_negotiation"><h2>Content Negotiation in ASP.NET Core</h2><p><strong>Content negotiation</strong> lets the client and server agree on the <strong>format</strong> of the response (or request body) using HTTP headers—usually the <code>Accept</code> header.</p><pre><code>GET /api/products/1
+Accept: application/json</code></pre><p>The server picks the best matching formatter (JSON, XML, etc.) and sets <code>Content-Type</code> on the response.</p><h3>How It Works</h3><pre><code>Client sends Accept header
+        ↓
+ASP.NET Core selects output formatter
+        ↓
+Response returned in agreed format (JSON/XML)</code></pre><h3>Key Headers</h3><table>
+<tr><th>Header</th><th>Purpose</th></tr>
+<tr><td><code>Accept</code></td><td>Response format client prefers</td></tr>
+<tr><td><code>Content-Type</code></td><td>Format of request/response body</td></tr>
+<tr><td><code>Accept-Language</code></td><td>Preferred language (localization)</td></tr>
+</table><h3>Setup in Program.cs</h3><p>JSON is default. Add XML formatters:</p><pre><code>builder.Services.AddControllers()
+    .AddXmlSerializerFormatters();
 
+var app = builder.Build();
+app.MapControllers();
+app.Run();</code></pre><h3>Controller Example - JSON or XML</h3><pre><code>[ApiController]
+[Route("api/[controller]")]
+[Produces("application/json", "application/xml")]
+public class ProductsController : ControllerBase
+{
+    [HttpGet("{id}")]
+    public ActionResult&lt;Product&gt; Get(int id)
+    {
+        var product = new Product { Id = id, Name = "Laptop" };
+        return Ok(product);
+    }
+}</code></pre><h3>Force a Specific Format</h3><pre><code>[HttpGet("{id}")]
+[Produces("application/json")]
+public ActionResult&lt;Product&gt; GetJson(int id) =&gt; Ok(product);
 
-<div class="answer-pane" id="q_108"><h2>Singleton Pattern</h2><p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection poolsâ€”though DI containers often manage lifetime instead.</p><p>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#) is essential; avoid Singleton abuse for every shared object.</p><pre><code>public sealed class Logger {
+[HttpGet("{id}/xml")]
+[Produces("application/xml")]
+public ActionResult&lt;Product&gt; GetXml(int id) =&gt; Ok(product);</code></pre><h3>406 Not Acceptable</h3><p>If the client requests a format the API does not support (e.g. <code>Accept: application/pdf</code>), ASP.NET Core returns <strong>406</strong>.</p><h3>Minimal API Example</h3><pre><code>app.MapGet("/api/hello", () =&gt; new { Message = "Hello" })
+   .Produces&lt;object&gt;(StatusCodes.Status200OK, "application/json");</code></pre><h3>Client Examples (curl)</h3><pre><code>curl -H "Accept: application/json" https://localhost:5001/api/products/1
+curl -H "Accept: application/xml" https://localhost:5001/api/products/1</code></pre><h3>Interview Points</h3><table>
+<tr><th>Question</th><th>Answer</th></tr>
+<tr><td>Who decides format?</td><td>Server, using <code>Accept</code> + registered formatters</td></tr>
+<tr><td>Default?</td><td><code>application/json</code></td></tr>
+<tr><td><code>[Produces]</code>?</td><td>Declares supported response types</td></tr>
+</table><div class="interview-tip"><h3>Interview Answer</h3><p>Content negotiation uses the <code>Accept</code> header so clients can request JSON or XML. Register formatters in <code>Program.cs</code>, return <code>Ok(data)</code>, and ASP.NET Core picks the formatter. Use <code>[Produces]</code> to document supported types; return 406 when no formatter matches.</p></div></div>
+<div class="answer-pane" id="q_108"><h2>Singleton Pattern</h2><p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection pools—though DI containers often manage lifetime instead.</p><p>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#) is essential; avoid Singleton abuse for every shared object.</p><pre><code>public sealed class Logger {
   private static readonly Lazy&lt;Logger&gt; _instance =
     new(() =&gt; new Logger());
   public static Logger Instance =&gt; _instance.Value;
