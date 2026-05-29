@@ -573,6 +573,19 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_81')">24. IEnumerable vs IQueryable</div>
 <div class="question-item" onclick="showAnswer('q_122')">25. First vs Single</div>
 </div>
+<h3 class="topic-header">ASP.NET Core - Essential 10 Questions</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_37')">1. What is .NET Core? Advantages over Framework</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q12')">2. Program.cs vs Startup.cs</div>
+<div class="question-item" onclick="showAnswer('q_110')">3. Dependency Injection in ASP.NET Core</div>
+<div class="question-item" onclick="showAnswer('q_40')">4. Service lifetimes (Transient, Scoped, Singleton)</div>
+<div class="question-item" onclick="showAnswer('q_107')">5. Middleware and custom middleware</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_run_use_map')">6. Run(), Use(), and Map()</div>
+<div class="question-item" onclick="showAnswer('q_kestrel')">7. Kestrel vs IIS</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q05')">8. Saving configuration settings</div>
+<div class="question-item" onclick="showAnswer('q_54')">9. CORS - what, why, how to fix</div>
+<div class="question-item" onclick="showAnswer('q_53')">10. Routing and attribute routing</div>
+</div>
 <h3 class="topic-header">.NET Core &amp; ASP.NET Core</h3>
 <div class="question-group">
 <div class="question-item" onclick="showAnswer('q_2')">1. Monolithic vs .NET Core Microservices</div>
@@ -587,6 +600,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_61')">10. Have you used Method Injection?</div>
 <div class="question-item" onclick="showAnswer('q_96')">11. Why DbContext Scoped?</div>
 <div class="question-item" onclick="showAnswer('q_41')">12. What is JWT?</div>
+<div class="question-item" onclick="showAnswer('q_jwt_claims')">12a. How do JWT claims work?</div>
 <div class="question-item" onclick="showAnswer('q_42')">13. What is Dapper?</div>
 <div class="question-item" onclick="showAnswer('q_53')">14. Routing</div>
 <div class="question-item" onclick="showAnswer('q_54')">15. CORS Policy</div>
@@ -601,6 +615,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_70')">24. Background Job Processing</div>
 <div class="question-item" onclick="showAnswer('q_120')">25. Web API Performance Optimization</div>
 <div class="question-item" onclick="showAnswer('q_74')">26. Service-to-service calls (HttpClient)</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q16')">27. Resiliency and Polly</div>
 </div>
 <h3 class="topic-header">ASP.NET Core - Top 24 Interview Q&amp;A</h3>
 <div class="question-group">
@@ -636,6 +651,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <h3 class="topic-header">SQL &amp; Database</h3>
 <div class="question-group">
 <div class="question-item" onclick="showAnswer('q_1')">1. Why MongoDB and not SQL for MDOP?</div>
+<div class="question-item" onclick="showAnswer('q_mongodb_csharp')">1a. MongoDB queries with C# Driver</div>
 <div class="question-item" onclick="showAnswer('q_5')">2. Normalization and its forms</div>
 <div class="question-item" onclick="showAnswer('q_6')">3. Boyce-Codd Normal Form (BCNF)</div>
 <div class="question-item" onclick="showAnswer('q_7')">4. Indexes in SQL</div>
@@ -737,6 +753,114 @@ db.orders.aggregate([
 <li>Choose MongoDB for flexible schemas, high write throughput, and document-centric apps.</li>
 <li>Many teams use both: SQL for transactional core, MongoDB for logs or content.</li>
 </ul><h3>Interview Answer</h3><p>SQL is relational and ACID-focused with strict schemas; MongoDB is document-based and schema-flexible, better for scale-out and evolving data shapes. I pick based on consistency needs, query patterns, and team expertiseâ€”not hype.</p></div>
+<div class="answer-pane" id="q_mongodb_csharp"><h2>MongoDB Queries with C# (.NET Driver)</h2><p>Official package: <code>MongoDB.Driver</code>. Install via NuGet or <code>dotnet add package MongoDB.Driver</code>.</p><h3>1. Model class</h3><pre><code>using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+public class Employee
+{
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? Id { get; set; }
+
+    public string Name { get; set; } = "";
+    public int Age { get; set; }
+    public string Department { get; set; } = "";
+    public decimal Salary { get; set; }
+}</code></pre><p><code>[BsonId]</code> maps to MongoDB <code>_id</code>. Omit <code>Id</code> on insert and the driver generates an ObjectId.</p><h3>2. Connection</h3><pre><code>using MongoDB.Driver;
+
+var client = new MongoClient("mongodb://localhost:27017");
+var database = client.GetDatabase("CompanyDB");
+var collection = database.GetCollection&lt;Employee&gt;("Employees");</code></pre><h3>3. Insert</h3><pre><code>// One document
+var employee = new Employee
+{
+    Name = "Abhisar",
+    Age = 26,
+    Department = "IT",
+    Salary = 60000
+};
+await collection.InsertOneAsync(employee);
+
+// Many documents
+var employees = new List&lt;Employee&gt;
+{
+    new() { Name = "Rahul", Age = 28, Department = "HR", Salary = 50000 },
+    new() { Name = "Priya", Age = 24, Department = "Finance", Salary = 55000 }
+};
+await collection.InsertManyAsync(employees);</code></pre><h3>4. Find (read)</h3><pre><code>// All documents
+var allEmployees = await collection.Find(_ =&gt; true).ToListAsync();
+
+// One by filter (first match)
+var one = await collection
+    .Find(x =&gt; x.Name == "Abhisar")
+    .FirstOrDefaultAsync();
+
+// Salary &gt; 50000
+var highEarners = await collection
+    .Find(x =&gt; x.Salary &gt; 50000)
+    .ToListAsync();
+
+// Age &lt; 30
+var young = await collection.Find(x =&gt; x.Age &lt; 30).ToListAsync();
+
+// AND (lambda)
+var itHigh = await collection.Find(x =&gt;
+    x.Department == "IT" &amp;&amp; x.Salary &gt; 50000).ToListAsync();
+
+// OR (Builders)
+var orFilter = Builders&lt;Employee&gt;.Filter.Or(
+    Builders&lt;Employee&gt;.Filter.Eq(x =&gt; x.Department, "HR"),
+    Builders&lt;Employee&gt;.Filter.Lt(x =&gt; x.Age, 25));
+var orResult = await collection.Find(orFilter).ToListAsync();
+
+// Builders for complex filters
+var gtFilter = Builders&lt;Employee&gt;.Filter.Gt(x =&gt; x.Salary, 50000);
+var built = await collection.Find(gtFilter).ToListAsync();</code></pre><h3>5. Update</h3><pre><code>var filter = Builders&lt;Employee&gt;.Filter.Eq(x =&gt; x.Name, "Abhisar");
+var update = Builders&lt;Employee&gt;.Update.Set(x =&gt; x.Salary, 70000);
+await collection.UpdateOneAsync(filter, update);
+
+// Update many (increment salary for IT)
+var deptFilter = Builders&lt;Employee&gt;.Filter.Eq(x =&gt; x.Department, "IT");
+var incUpdate = Builders&lt;Employee&gt;.Update.Inc(x =&gt; x.Salary, 2000);
+await collection.UpdateManyAsync(deptFilter, incUpdate);</code></pre><h3>6. Delete</h3><pre><code>await collection.DeleteOneAsync(x =&gt; x.Name == "Priya");
+await collection.DeleteManyAsync(x =&gt; x.Department == "HR");</code></pre><h3>7. Sort, limit, count, projection</h3><pre><code>var asc = await collection.Find(_ =&gt; true).SortBy(x =&gt; x.Salary).ToListAsync();
+var desc = await collection.Find(_ =&gt; true).SortByDescending(x =&gt; x.Salary).ToListAsync();
+var top2 = await collection.Find(_ =&gt; true).Limit(2).ToListAsync();
+
+var total = await collection.CountDocumentsAsync(_ =&gt; true);
+var itCount = await collection.CountDocumentsAsync(x =&gt; x.Department == "IT");
+
+var namesOnly = await collection.Find(_ =&gt; true)
+    .Project(x =&gt; new { x.Name, x.Salary })
+    .ToListAsync();</code></pre><h3>8. Aggregation (group by department)</h3><pre><code>var agg = await collection.Aggregate()
+    .Group(
+        x =&gt; x.Department,
+        g =&gt; new
+        {
+            Department = g.Key,
+            TotalEmployees = g.Count(),
+            AverageSalary = g.Average(x =&gt; x.Salary)
+        })
+    .ToListAsync();</code></pre><h3>9. Pagination</h3><pre><code>int page = 1;
+int pageSize = 10;
+
+var pageResult = await collection.Find(_ =&gt; true)
+    .Skip((page - 1) * pageSize)
+    .Limit(pageSize)
+    .ToListAsync();</code></pre><h3>Common driver methods</h3><table>
+<tr><th>Method</th><th>Purpose</th></tr>
+<tr><td><code>InsertOneAsync()</code></td><td>Insert single document</td></tr>
+<tr><td><code>InsertManyAsync()</code></td><td>Insert multiple documents</td></tr>
+<tr><td><code>Find()</code></td><td>Query collection (fluent API)</td></tr>
+<tr><td><code>UpdateOneAsync()</code> / <code>UpdateManyAsync()</code></td><td>Update documents</td></tr>
+<tr><td><code>DeleteOneAsync()</code> / <code>DeleteManyAsync()</code></td><td>Delete documents</td></tr>
+<tr><td><code>Aggregate()</code></td><td>Aggregation pipeline</td></tr>
+<tr><td><code>CountDocumentsAsync()</code></td><td>Count matching documents</td></tr>
+</table><h3>Interview Q&amp;A</h3><table>
+<tr><th>Question</th><th>Answer</th></tr>
+<tr><td><code>FirstOrDefaultAsync()</code> vs <code>SingleOrDefaultAsync()</code></td><td><code>First</code> returns first match (or default). <code>Single</code> expects exactly one document; throws if multiple match.</td></tr>
+<tr><td>Why <code>Builders&lt;T&gt;.Filter</code>?</td><td>Dynamic queries, OR/AND composition, operators (<code>Gt</code>, <code>In</code>, <code>Regex</code>) without awkward lambdas.</td></tr>
+<tr><td>Lambda <code>Find(x =&gt; ...)</code> vs Builders?</td><td>Lambdas are fine for simple filters; Builders for dynamic/complex filters built at runtime.</td></tr>
+</table><div class="interview-tip"><h3>Interview One-Liner</h3><p>I use <code>MongoClient</code> and <code>GetCollection&lt;T&gt;</code>, map <code>_id</code> with <code>[BsonId]</code>, use <code>Find</code>/<code>Builders.Filter</code> for queries, <code>Update.Set</code>/<code>Inc</code> for updates, and <code>Aggregate</code> for reporting. For production I inject <code>IMongoDatabase</code> via DI, use async methods, and index fields used in filters and sorts.</p></div><h3>Interview Answer</h3><p>The MongoDB .NET driver exposes collections as generic <code>IMongoCollection&lt;T&gt;</code> with async CRUD and a fluent LINQ-like API. I use expression filters for simple queries, <code>Builders&lt;T&gt;.Filter</code> for dynamic OR/AND, <code>Update</code> builders for partial updates, and aggregation for group-by analytics. I always map <code>_id</code> correctly and design indexes for query patterns.</p></div>
 <div class="answer-pane active" id="q_2"><h2>Monolithic vs Microservices Architecture</h2><p>A <strong>monolith</strong> is a single deployable application containing all modulesâ€”UI, business logic, and data accessâ€”sharing one process and often one database. <strong>Microservices</strong> split the system into independently deployable services, each owning a bounded context and communicating over HTTP or messaging.</p><p>Monoliths are simpler to develop and debug early on. Microservices improve scalability and team autonomy at the cost of distributed complexityâ€”network failures, observability, and deployment pipelines multiply.</p><table>
 <tr><th>Aspect</th><th>Monolith</th><th>Microservices</th></tr>
 <tr><td>Deployment</td><td>Single unit</td><td>Independent services</td></tr>
@@ -1187,7 +1311,15 @@ SELECT Name, Score, RANK() OVER (ORDER BY Score DESC) rk FROM Results;</code></p
 <li>Window functions cleanly expose ties for ranking questions.</li>
 <li>Index on Score helps GROUP BY and join performance.</li>
 </ul><h3>Interview Answer</h3><p>For same scores, I GROUP BY Score HAVING COUNT(*) &gt; 1 to find tied values, or self-join for pairs. For ranking with ties, RANK or DENSE_RANK over the score column is clearest.</p></div>
-<div class="answer-pane" id="q_37"><h2>What is .NET Core, and How Does It Differ from .NET Framework?</h2><p><strong>.NET Core</strong> (now unified as .NET 5+) is a cross-platform, open-source framework for building modern applications.</p><table>
+<div class="answer-pane" id="q_37"><h2>What is .NET Core, and How Does It Differ from .NET Framework?</h2><p><strong>.NET Core</strong> (now unified as <strong>.NET 5+</strong> / .NET 8) is a cross-platform, open-source framework for building modern cloud, web, and microservice applications. <strong>.NET Framework</strong> is the older Windows-centric stack, now in maintenance mode.</p><h3>Advantages of .NET Core over .NET Framework</h3><ul>
+<li><strong>Cross-platform</strong> &mdash; runs on Windows, Linux, macOS (Framework is Windows-only).</li>
+<li><strong>High performance</strong> &mdash; optimized runtime and ASP.NET Core pipeline.</li>
+<li><strong>Side-by-side versioning</strong> &mdash; multiple .NET versions on one machine without conflicts.</li>
+<li><strong>Modular and lightweight</strong> &mdash; deploy only what you need; smaller containers.</li>
+<li><strong>Cloud and microservices</strong> &mdash; built for Docker, Kubernetes, and horizontal scale.</li>
+<li><strong>Open source</strong> &mdash; community and faster innovation.</li>
+<li><strong>Modern web stack</strong> &mdash; ASP.NET Core with Kestrel, built-in DI, middleware pipeline.</li>
+</ul><table>
 <tr><th>.NET Core / .NET</th><th>.NET Framework</th></tr>
 <tr><td>Cross-platform</td><td>Windows only</td></tr>
 <tr><td>Open source</td><td>Mostly closed source</td></tr>
@@ -1262,6 +1394,60 @@ services.AddTransient&lt;IEmailSender, SmtpEmailSender&gt;();</code></pre><h3>Ke
 <li>Validate issuer, audience, signature, and expiry.</li>
 <li>Plan refresh tokens and secure secret storage.</li>
 </ul><h3>Interview Answer</h3><p>JWT is a signed token with claims used for stateless API authentication. ASP.NET Core validates it via JwtBearer middleware and exposes claims to authorization policies. I always validate signing key, issuer, audience, and lifetime, and I plan refresh or revocation for production security.</p></div>
+<div class="answer-pane" id="q_jwt_claims"><h2>How Claims Work in JWT</h2><p>A <strong>claim</strong> is a statement about the subject (user or client), stored as a <strong>name&ndash;value pair</strong> in the JWT <strong>payload</strong> (middle part). After Base64URL decode, the payload is JSON. The server (or identity provider) puts claims in when issuing the token; the API reads them after signature and lifetime validation.</p><h3>JWT structure (three parts)</h3><ol>
+<li><strong>Header</strong> &mdash; algorithm and type (<code>alg</code>, <code>typ</code>).</li>
+<li><strong>Payload</strong> &mdash; claims (who, what roles, when it expires).</li>
+<li><strong>Signature</strong> &mdash; proves the payload was not tampered with.</li>
+</ol><p>Example payload (claims):</p><pre><code>{
+  "sub": "user-42",
+  "email": "user@example.com",
+  "role": "Admin",
+  "iss": "https://my-api.com",
+  "aud": "https://my-api.com",
+  "exp": 1717000000,
+  "iat": 1716996400
+}</code></pre><h3>Registered (standard) claims</h3><table>
+<tr><th>Claim</th><th>Meaning</th></tr>
+<tr><td><code>iss</code></td><td>Issuer &mdash; who created the token</td></tr>
+<tr><td><code>sub</code></td><td>Subject &mdash; user or client id</td></tr>
+<tr><td><code>aud</code></td><td>Audience &mdash; intended recipient API</td></tr>
+<tr><td><code>exp</code></td><td>Expiration (Unix time) &mdash; token invalid after</td></tr>
+<tr><td><code>nbf</code></td><td>Not before &mdash; token not valid yet</td></tr>
+<tr><td><code>iat</code></td><td>Issued at</td></tr>
+<tr><td><code>jti</code></td><td>JWT ID &mdash; unique token id (revocation lists)</td></tr>
+</table><h3>Custom claims</h3><p>Anything else you need: <code>role</code>, <code>email</code>, <code>tenantId</code>, <code>permissions</code>. In ASP.NET Core, <code>role</code> often maps to <code>ClaimTypes.Role</code> or the short name <code>role</code> depending on token handler settings. Multiple roles can be separate claims or one claim with comma-separated values (prefer multiple claims or an array in JSON).</p><h3>Creating claims when issuing a token</h3><pre><code>var claims = new List&lt;Claim&gt;
+{
+    new(JwtRegisteredClaimNames.Sub, user.Id),
+    new(JwtRegisteredClaimNames.Email, user.Email),
+    new(ClaimTypes.Role, "Admin"),
+    new("tenantId", user.TenantId)
+};
+
+var token = new JwtSecurityToken(
+    issuer: config["Jwt:Issuer"],
+    audience: config["Jwt:Audience"],
+    claims: claims,
+    expires: DateTime.UtcNow.AddHours(1),
+    signingCredentials: credentials);
+
+var jwt = new JwtSecurityTokenHandler().WriteToken(token);</code></pre><h3>How ASP.NET Core uses claims after validation</h3><p><code>AddJwtBearer</code> validates signature, issuer, audience, and <code>exp</code>/<code>nbf</code>, then builds a <code>ClaimsPrincipal</code> on <code>HttpContext.User</code>. Each JSON property becomes one or more <code>Claim</code> objects.</p><pre><code>// In a controller or minimal API
+var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+    ?? User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+var email = User.FindFirst(ClaimTypes.Email)?.Value;
+
+[Authorize(Roles = "Admin")]
+public IActionResult AdminOnly() =&gt; Ok();
+
+// Policy based on custom claim
+builder.Services.AddAuthorization(options =&gt;
+    options.AddPolicy("TenantAdmin", policy =&gt;
+        policy.RequireClaim("tenantId")));</code></pre><h3>Important behaviors</h3><ul>
+<li>Claims are <strong>readable by anyone</strong> who has the token (payload is only encoded, not encrypted). Do not put passwords or secrets in claims.</li>
+<li>Trust comes from the <strong>signature</strong> and validation parameters, not from hiding the payload.</li>
+<li><code>MapInboundClaims</code> (default in newer templates) maps short JWT names like <code>sub</code> to long URIs like <code>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier</code> &mdash; know which name you read in code.</li>
+<li>Authorization checks <code>User.Claims</code>; authentication only proves the token is valid.</li>
+</ul><div class="interview-tip"><h3>Interview One-Liner</h3><p>Claims are name&ndash;value facts in the JWT payload (subject, roles, expiry). The issuer adds them at login; the API validates the signature and maps them to <code>User.Claims</code> for <code>[Authorize]</code> and policies. I use standard claims for expiry and audience, custom claims for roles and tenant, and never store sensitive data in the payload.</p></div></div>
 <div class="answer-pane" id="q_42"><h2>Dapper ORM</h2><p>Dapper is a lightweight micro-ORM that maps SQL query results to .NET objects with minimal overhead. Unlike full ORMs, you write SQL explicitly and Dapper handles materializationâ€”ideal for performance-critical reads and complex queries.</p><p>Use Dapper alongside EF Core when you need raw SQL control, bulk operations, or reporting queries without change-tracking overhead.</p><pre><code>await using var conn = new SqlConnection(_connectionString);
 var orders = await conn.QueryAsync&lt;Order&gt;(
     "SELECT Id, Total FROM Orders WHERE CustomerId = @Id",
@@ -1421,27 +1607,68 @@ catch (Exception ex)
 <li>Wrap with inner exception when translating domain errors.</li>
 <li>ExceptionDispatchInfo.Capture(ex).Throw() preserves stack outside catch.</li>
 </ul><h3>Interview Answer</h3><p>Use <code>throw;</code> to rethrow without losing stack trace. Use <code>throw ex;</code> only if you intentionally want a new stack (rare). When wrapping, pass the original as InnerException for full context.</p></div>
-<div class="answer-pane" id="q_53"><h2>Routing in ASP.NET Core</h2><p>Routing maps incoming HTTP requests to endpoints. Convention-based routing uses templates like <code>{controller=Home}/{action=Index}/{id?}</code>. Attribute routing decorates controllers and actions with <code>[Route]</code> templates for explicit, version-friendly APIs.</p><p>Endpoint routing builds a route table at startup. Middleware like <code>UseRouting</code> and <code>UseEndpoints</code> (or <code>MapControllers</code> in minimal hosting) dispatches to the matched handler.</p><pre><code>[ApiController]
-[Route("api/[controller]")]
+<div class="answer-pane" id="q_53"><h2>Routing and Attribute Routing in ASP.NET Core</h2><p><strong>Routing</strong> maps the request URL and HTTP verb to the correct endpoint (controller action or minimal API delegate). ASP.NET Core builds a route table at startup and matches the most specific route.</p><h3>Convention-based routing</h3><pre><code>app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");</code></pre><p>URL <code>/Products/Details/5</code> maps to <code>ProductsController.Details(5)</code>.</p><h3>Attribute routing (preferred for Web APIs)</h3><p>Routes are declared on controllers/actions with <code>[Route]</code> and HTTP verb attributes. Explicit, version-friendly, and easy to document in Swagger.</p><pre><code>[ApiController]
+[Route("api/v1/[controller]")]
 public class ProductsController : ControllerBase
 {
-    [HttpGet("{id:int}")]
-    public ActionResult&lt;Product&gt; Get(int id) =&gt; Ok(/* ... */);
-}</code></pre><h3>Key Points</h3><ul>
-<li>Attribute routing is standard for REST APIs.</li>
-<li>Route constraints (e.g., :int) validate parameters.</li>
-<li>Order and specificity determine match winner.</li>
-</ul><h3>Interview Answer</h3><p>ASP.NET Core routing matches URLs to endpoints via conventions or attributes. For APIs I use attribute routing with clear templates and constraints so clients get predictable URLs and the framework selects the correct action efficiently.</p></div>
-<div class="answer-pane" id="q_54"><h2>CORS in ASP.NET Core</h2><p>Cross-Origin Resource Sharing (CORS) is a browser security mechanism. When a web app at <code>https://app.example</code> calls your API at <code>https://api.example</code>, the browser sends a preflight OPTIONS request unless origins are allowed.</p><p>Configure CORS policies in <code>Program.cs</code> with allowed origins, methods, and headers. Apply globally or per-endpoint with <code>RequireCors</code>.</p><pre><code>builder.Services.AddCors(o =&gt; o.AddPolicy("WebApp", p =&gt;
-    p.WithOrigins("https://app.example.com")
-     .AllowAnyHeader()
-     .AllowAnyMethod()));
+    [HttpGet]                    // GET api/v1/products
+    public ActionResult&lt;IEnumerable&lt;Product&gt;&gt; GetAll() =&gt; Ok();
 
-app.UseCors("WebApp");</code></pre><h3>Key Points</h3><ul>
-<li>CORS is enforced by browsers, not server-to-server calls.</li>
-<li>Do not use AllowAnyOrigin with credentials.</li>
-<li>Place UseCors before auth/endpoints as needed.</li>
-</ul><h3>Interview Answer</h3><p>CORS lets browsers call APIs on different origins by returning appropriate Access-Control headers. In ASP.NET Core I define a named policy with specific origins and apply it via UseCors. I avoid wildcard origins when cookies or credentials are involved.</p></div>
+    [HttpGet("{id:int}")]        // GET api/v1/products/42
+    public ActionResult&lt;Product&gt; Get(int id) =&gt; Ok();
+
+    [HttpPost]
+    public ActionResult Create([FromBody] Product product) =&gt; CreatedAtAction(nameof(Get), new { id = product.Id }, product);
+
+    [HttpGet("search")]          // GET api/v1/products/search?q=
+    public ActionResult Search([FromQuery] string q) =&gt; Ok();
+}
+
+// Route on action only
+[HttpGet("/health")]
+public IActionResult Health() =&gt; Ok("UP");</code></pre><h3>Route tokens and constraints</h3><ul>
+<li><code>[controller]</code>, <code>[action]</code> replaced from class/method names.</li>
+<li>Constraints: <code>{id:int}</code>, <code>{date:datetime}</code>, <code>{name:alpha}</code>.</li>
+<li><code>[Route("api/[controller]")]</code> at controller level + relative routes on actions.</li>
+</ul><pre><code>app.UseRouting();
+app.MapControllers();</code></pre><h3>Key Points</h3><ul>
+<li>Attribute routing is standard for REST APIs.</li>
+<li>More specific routes win over generic ones.</li>
+<li>Minimal APIs: <code>app.MapGet("/api/users", () =&gt; ...)</code>.</li>
+</ul><h3>Interview Answer</h3><p>Routing matches HTTP requests to handlers. Convention routing uses URL templates; attribute routing uses <code>[Route]</code> and <code>[HttpGet]</code> on controllers for clear API URLs. I use attribute routing on Web APIs for explicit paths, versioning, and Swagger clarity.</p></div>
+<div class="answer-pane" id="q_54"><h2>CORS in ASP.NET Core</h2><p><strong>CORS (Cross-Origin Resource Sharing)</strong> is a <strong>browser security</strong> feature. It blocks JavaScript on one origin (scheme + host + port) from calling an API on another origin unless the API returns allowed CORS headers.</p><h3>Why is CORS required?</h3><p>Example: React app at <code>http://localhost:3000</code> calls API at <code>https://localhost:5001</code> &mdash; different origins. Without CORS headers the browser blocks the response even if the API returned 200.</p><p><strong>Note:</strong> Postman, server-to-server, and mobile native apps are <em>not</em> restricted by CORS &mdash; only browsers.</p><h3>How to configure in ASP.NET Core</h3><pre><code>// 1. Register policy
+builder.Services.AddCors(options =&gt;
+{
+    options.AddPolicy("WebApp", policy =&gt;
+        policy.WithOrigins("http://localhost:3000", "https://app.example.com")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials()); // only with specific origins, not AllowAnyOrigin
+});
+
+var app = builder.Build();
+
+// 2. Apply in pipeline (before MapControllers / auth as needed)
+app.UseCors("WebApp");
+
+app.MapControllers();</code></pre><h3>How to fix common CORS errors</h3><table>
+<tr><th>Error / symptom</th><th>Fix</th></tr>
+<tr><td>No <code>Access-Control-Allow-Origin</code></td><td>Add <code>AddCors</code> + <code>UseCors</code> with correct policy name</td></tr>
+<tr><td>Origin not allowed</td><td>Add exact frontend URL to <code>WithOrigins</code> (include port)</td></tr>
+<tr><td>Preflight OPTIONS fails</td><td>Ensure <code>AllowAnyMethod</code> / needed methods; middleware order correct</td></tr>
+<tr><td>Credentials/cookies fail</td><td>Use <code>AllowCredentials()</code> + specific origins (not <code>AllowAnyOrigin</code>)</td></tr>
+<tr><td>Custom header blocked</td><td><code>WithHeaders</code> or <code>AllowAnyHeader()</code></td></tr>
+<tr><td>Works in Postman, fails in browser</td><td>CORS is browser-only &mdash; fix server CORS policy</td></tr>
+</table><pre><code>// Per-endpoint
+[EnableCors("WebApp")]
+[HttpGet]
+public IActionResult Get() =&gt; Ok();</code></pre><h3>Key Points</h3><ul>
+<li>Define policy in services; enable with <code>UseCors</code>.</li>
+<li>Middleware order: typically after routing, before endpoints.</li>
+<li>Development-only shortcut: <code>AllowAnyOrigin()</code> without credentials.</li>
+</ul><h3>Interview Answer</h3><p>CORS lets browsers call APIs on different origins via Access-Control headers. I register a named CORS policy with allowed origins and apply <code>UseCors</code> in the pipeline. To fix errors I match the exact frontend origin, handle OPTIONS preflight, and use <code>AllowCredentials</code> only with explicit origins.</p></div>
 <div class="answer-pane" id="q_55"><h2>REST API Design</h2><p>REST organizes APIs around resources identified by URLs, using HTTP verbs for semantics: GET (read), POST (create), PUT/PATCH (update), DELETE (remove). Status codes communicate outcomesâ€”200 OK, 201 Created, 404 Not Found, 400 Bad Request.</p><p>Good REST APIs are stateless, use nouns in paths (<code>/api/orders/5</code>), support filtering and pagination, and version explicitly when breaking changes occur.</p><table>
 <tr><th>Verb</th><th>Purpose</th><th>Idempotent?</th></tr>
 <tr><td>GET</td><td>Retrieve</td><td>Yes</td></tr>
@@ -2635,18 +2862,34 @@ class Child : Parent
 <tr><td>Accessible everywhere</td><td><code>public</code></td></tr>
 <tr><td>Project-specific access</td><td><code>internal</code></td></tr>
 </table><div class="interview-tip"><h3>Interview Answer</h3><p>Access modifiers control visibility: <code>public</code> (everywhere), <code>private</code> (same class only), <code>protected</code> (class + derived), <code>internal</code> (same assembly), plus combined forms. Default for members is private; for classes is internal. I use private for fields, public for APIs, and protected when child classes need shared state.</p></div></div>
-<div class="answer-pane" id="q_107"><h2>Middleware and Filters in ASP.NET Core</h2><p><strong>Middleware</strong> forms the HTTP request pipelineâ€”cross-cutting concerns like authentication, logging, and exception handling that run for most requests. <strong>Filters</strong> run within MVC/minimal-API controller execution for authorization, action logic, and result transformation.</p><p>Middleware is pipeline-order sensitive and ideal for global HTTP concerns. Filters integrate with MVC action lifecycle and can access action context like route data and model state.</p><table>
+<div class="answer-pane" id="q_107"><h2>Middleware and Custom Middleware in ASP.NET Core</h2><p><strong>Middleware</strong> components form the HTTP <strong>request pipeline</strong>. Each middleware can process the request before and after the next component. Built-in examples: exception handling, HTTPS redirection, static files, routing, authentication, authorization, CORS.</p><p><strong>Filters</strong> (MVC) run inside controller/action execution &mdash; different layer than middleware.</p><table>
 <tr><th></th><th>Middleware</th><th>Filters</th></tr>
-<tr><td>Scope</td><td>Entire pipeline</td><td>MVC/action specific</td></tr>
-<tr><td>Registration</td><td><code>app.Use...</code></td><td>Attributes or DI</td></tr>
-<tr><td>Examples</td><td>Auth, CORS, routing</td><td>Authorize, Validate, Exception</td></tr>
-</table><pre><code>app.UseAuthentication();
+<tr><td>Scope</td><td>Entire HTTP pipeline</td><td>Controller/action only</td></tr>
+<tr><td>Registration</td><td><code>app.Use...</code> in Program.cs</td><td>Attributes or DI</td></tr>
+<tr><td>Examples</td><td>Auth, CORS, logging, exceptions</td><td>Authorize, Validate, Result</td></tr>
+</table><pre><code>app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers(); // filters apply inside MVC</code></pre><h3>Key Points</h3><ul>
-<li>Middleware = HTTP pipeline; filters = MVC pipeline.</li>
-<li>Order matters for middleware registration.</li>
-<li>Use filters for action-level cross-cutting logic.</li>
-</ul><h3>Interview Answer</h3><p>Middleware handles global HTTP pipeline concerns in order, like authentication and routing. Filters plug into the MVC action lifecycle for things like validation or authorization at controller/action level. I use middleware for request-wide behavior and filters when I need action-specific context.</p></div>
+app.MapControllers();</code></pre><h3>What is custom middleware?</h3><p>A class (or inline delegate) you write to add cross-cutting logic: correlation IDs, request timing, API keys, global exception JSON responses.</p><pre><code>public class RequestTimingMiddleware
+{
+    private readonly RequestDelegate _next;
+    public RequestTimingMiddleware(RequestDelegate next) =&gt; _next = next;
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        var sw = Stopwatch.StartNew();
+        await _next(context); // pass to next middleware
+        context.Response.Headers["X-Elapsed-Ms"] = sw.ElapsedMilliseconds.ToString();
+    }
+}
+
+// Register (order matters)
+app.UseMiddleware&lt;RequestTimingMiddleware&gt;();</code></pre><p>Call <code>await _next(context)</code> to continue the pipeline; skip <code>next</code> to short-circuit (e.g. reject unauthorized requests).</p><h3>Key Points</h3><ul>
+<li>Middleware = global HTTP pipeline; order matters.</li>
+<li>Custom middleware implements <code>InvokeAsync(HttpContext, RequestDelegate next)</code>.</li>
+<li>Use filters when you need MVC action context (model state, route data).</li>
+</ul><div class="interview-tip"><h3>Interview One-Liner</h3><p>Middleware is a chain of components that handle every HTTP request. Custom middleware implements <code>InvokeAsync</code>, calls <code>next</code> to continue, and is registered with <code>UseMiddleware&lt;T&gt;()</code> for logging, security headers, or global exception handling.</p></div><h3>Interview Answer</h3><p>Middleware handles global HTTP pipeline concerns in order. Custom middleware is my code in that pipeline with access to <code>HttpContext</code>. I use it for cross-cutting HTTP behavior; MVC filters when I need action-specific context.</p></div>
 <div class="answer-pane" id="q_aspnet_run_use_map"><h2>Run(), Use(), and Map() in ASP.NET Core</h2><p>In ASP.NET Core, <code>Run()</code>, <code>Use()</code>, and <code>Map()</code> are middleware extension methods used to build the <strong>HTTP request pipeline</strong>.</p><h3>ASP.NET Core Request Pipeline</h3><pre><code>Client â†’ Middleware 1 â†’ Middleware 2 â†’ Middleware 3 â†’ Response</code></pre><p>Each middleware can handle the request, pass it to the next middleware, or stop the pipeline.</p><h3>1. app.Run()</h3><p><code>Run()</code> is a <strong>terminal middleware</strong>. It handles the request, does <strong>not</strong> call the next middleware, and the pipeline stops there.</p><pre><code>app.Run(async context =&gt;
 {
     await context.Response.WriteAsync("Hello World");
@@ -2833,17 +3076,37 @@ app.Run();</code></pre><h3>appsettings.json</h3><pre><code>{
 <div class="answer-pane" id="q_aspnet_q02"><h2>Create a New Web API Project in .NET Core</h2><p><strong>CLI:</strong></p><pre><code>dotnet new webapi -n MyApi
 cd MyApi
 dotnet run</code></pre><p><strong>Visual Studio:</strong> Create New Project â†’ ASP.NET Core Web API â†’ choose .NET version â†’ enable OpenAPI/Swagger if needed.</p><h3>Interview Answer</h3><p>I use <code>dotnet new webapi</code> for quick setup or Visual Studio for solution structure. Then configure services and middleware in <code>Program.cs</code> and run with <code>dotnet run</code>.</p></div>
-<div class="answer-pane" id="q_aspnet_q05"><h2>Configure appsettings.json in .NET Core</h2><p><code>appsettings.json</code> stores configuration (connection strings, API keys, feature flags).</p><pre><code>{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=.;Database=TestDb;"
-  },
-  "MySettings": {
-    "MaxRetries": 3
-  }
-}</code></pre><pre><code>var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+<div class="answer-pane" id="q_aspnet_q05"><h2>Saving Configuration Settings in ASP.NET Core</h2><p>ASP.NET Core uses a unified <strong>configuration system</strong> (<code>IConfiguration</code>) that merges multiple sources. Later sources override earlier ones.</p><h3>Common configuration sources (techniques)</h3><table>
+<tr><th>Technique</th><th>Use</th></tr>
+<tr><td><code>appsettings.json</code></td><td>Default settings for all environments</td></tr>
+<tr><td><code>appsettings.{Environment}.json</code></td><td>Development, Staging, Production overrides</td></tr>
+<tr><td>Environment variables</td><td>Docker/Kubernetes/cloud (e.g. <code>ConnectionStrings__Default</code>)</td></tr>
+<tr><td>Command-line arguments</td><td>Deploy-time overrides</td></tr>
+<tr><td>User Secrets</td><td>Local dev secrets (not committed to Git)</td></tr>
+<tr><td>Azure Key Vault / AWS Secrets Manager</td><td>Production secrets</td></tr>
+<tr><td>Custom providers</td><td>Database, Redis, etc. via <code>IConfigurationProvider</code></td></tr>
+</table><pre><code>// appsettings.json
+{
+  "ConnectionStrings": { "DefaultConnection": "Server=.;Database=AppDb;" },
+  "EmailSettings": { "SmtpHost": "smtp.example.com", "Port": 587 }
+}
 
-builder.Services.Configure&lt;MySettings&gt;(
-    builder.Configuration.GetSection("MySettings"));</code></pre><h3>Interview Answer</h3><p>I store environment-specific settings in appsettings.json and read them via <code>IConfiguration</code> or the options pattern with <code>Configure&lt;T&gt;()</code> for strongly typed, testable settings.</p></div>
+// appsettings.Development.json overrides Production values locally</code></pre><h3>Reading configuration</h3><pre><code>// Direct access
+var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+var host = builder.Configuration["EmailSettings:SmtpHost"];
+
+// Strongly typed Options pattern (recommended)
+public class EmailSettings { public string SmtpHost { get; set; } = ""; public int Port { get; set; } }
+
+builder.Services.Configure&lt;EmailSettings&gt;(
+    builder.Configuration.GetSection("EmailSettings"));
+
+// Inject IOptions&lt;EmailSettings&gt; in services</code></pre><h3>User Secrets (development)</h3><pre><code>dotnet user-secrets init
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=...;Password=..."</code></pre><h3>Environment variables</h3><p>Use double underscore for nesting: <code>EmailSettings__Port=587</code>. Standard in containers and Azure App Service.</p><h3>Key Points</h3><ul>
+<li>Never commit passwords/API keys; use User Secrets or Key Vault.</li>
+<li><code>ASPNETCORE_ENVIRONMENT</code> selects <code>appsettings.{Env}.json</code>.</li>
+<li>Prefer <code>IOptions&lt;T&gt;</code> over magic strings in business code.</li>
+</ul><h3>Interview Answer</h3><p>I layer configuration: appsettings.json, environment-specific files, environment variables, and secrets (User Secrets locally, Key Vault in production). I read via <code>IConfiguration</code> or the Options pattern with <code>Configure&lt;T&gt;()</code> for strongly typed, testable settings.</p></div>
 <div class="answer-pane" id="q_aspnet_q06"><h2>IActionResult vs ActionResult&lt;T&gt;</h2><table>
 <tr><th></th><th>IActionResult</th><th>ActionResult&lt;T&gt;</th></tr>
 <tr><td>Returns</td><td>Any HTTP result (Ok, NotFound, etc.)</td><td>Typed body + HTTP helpers</td></tr>
@@ -2984,12 +3247,45 @@ throw new NotFoundException("User not found");</code></pre><h3>Real-World Error 
 <tr><td>Consistent API responses</td><td>Inconsistent handling</td></tr>
 <tr><td>Global handling</td><td>Local only</td></tr>
 </table><div class="interview-tip"><h3>Interview One-Liner</h3><p>In ASP.NET Core APIs, exception handling is commonly implemented using global middleware that catches unhandled exceptions, logs them, and returns standardized HTTP error responses with correct status codes—without exposing sensitive details in production.</p></div></div>
-<div class="answer-pane" id="q_aspnet_q12"><h2>Program.cs in .NET 6+</h2><p>Replaces Startup.cs â€” configures services and middleware.</p><pre><code>var builder = WebApplication.CreateBuilder(args);
+<div class="answer-pane" id="q_aspnet_q12"><h2>Program.cs vs Startup.cs in ASP.NET Core</h2><h3>Startup.cs (.NET Core 3.1 and earlier)</h3><p>Two-class pattern:</p><ul>
+<li><code>Program.cs</code> &mdash; builds and runs the host.</li>
+<li><code>Startup.cs</code> &mdash; <code>ConfigureServices(IServiceCollection)</code> registers DI; <code>Configure(IApplicationBuilder)</code> sets up middleware pipeline.</li>
+</ul><pre><code>public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddControllers();
+        services.AddDbContext&lt;AppDbContext&gt;(...);
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseEndpoints(endpoints =&gt; endpoints.MapControllers());
+    }
+}</code></pre><h3>Program.cs (.NET 6+ minimal hosting)</h3><p><code>Startup.cs</code> was merged into a single <code>Program.cs</code> using top-level statements and <code>WebApplication</code>:</p><pre><code>var builder = WebApplication.CreateBuilder(args);
+
+// Was ConfigureServices
 builder.Services.AddControllers();
+builder.Services.AddDbContext&lt;AppDbContext&gt;(...);
 
 var app = builder.Build();
+
+// Was Configure
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
-app.Run();</code></pre><h3>Interview Answer</h3><p><code>Program.cs</code> is the entry point: register DI services on <code>builder.Services</code>, build the app, configure middleware order, map endpoints, and run.</p></div>
+
+app.Run();</code></pre><h3>Comparison</h3><table>
+<tr><th></th><th>Startup.cs era</th><th>Program.cs (.NET 6+)</th></tr>
+<tr><td>Files</td><td>Program + Startup</td><td>Usually Program only</td></tr>
+<tr><td>Service registration</td><td><code>ConfigureServices</code></td><td><code>builder.Services</code></td></tr>
+<tr><td>Middleware pipeline</td><td><code>Configure</code></td><td><code>app.Use...</code> after <code>Build()</code></td></tr>
+<tr><td>Boilerplate</td><td>More ceremony</td><td>Less, clearer flow</td></tr>
+</table><p>You can still use a <code>Startup</code> class in .NET 6+ if needed, but the default template uses unified <code>Program.cs</code>.</p><h3>Interview Answer</h3><p>Older ASP.NET Core split host bootstrapping (Program) from app setup (Startup with ConfigureServices and Configure). From .NET 6 onward, minimal hosting combines both in Program.cs: register services on the builder, build the app, configure middleware, map endpoints, and run. Same responsibilities, simpler structure.</p></div>
 <div class="answer-pane" id="q_aspnet_q13_auth"><h2>Authentication and Authorization in .NET Core APIs</h2><p><strong>Authentication</strong> verifies identity. <strong>Authorization</strong> checks permissions.</p><pre><code>builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =&gt; { options.TokenValidationParameters = ...; });
 
@@ -3002,10 +3298,46 @@ builder.Services.AddAuthorization();
     .AddRedis(redisConnection);
 
 app.MapHealthChecks("/health");</code></pre><p>Used in Docker, Kubernetes, and load balancers to verify app and dependency health.</p><h3>Interview Answer</h3><p>I register health checks for the database, cache, and external APIs, then expose <code>/health</code> for orchestrators to probe liveness and readiness.</p></div>
-<div class="answer-pane" id="q_aspnet_q16"><h2>Retry and Circuit Breaker (Polly)</h2><p><strong>Retry:</strong> temporarily retry failed calls. <strong>Circuit breaker:</strong> stop calling a failing service for a period.</p><pre><code>services.AddHttpClient("api")
-    .AddTransientHttpErrorPolicy(p =&gt; p.RetryAsync(3))
-    .AddTransientHttpErrorPolicy(p =&gt;
-        p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));</code></pre><h3>Interview Answer</h3><p>For resilient HTTP clients I use Polly policiesâ€”retry with backoff for transient faults and circuit breaker to avoid cascading failures.</p></div>
+<div class="answer-pane" id="q_aspnet_q16"><h2>Resiliency and Polly in ASP.NET Core</h2><p><strong>Resiliency</strong> means your app keeps working (or fails gracefully) when dependencies are slow, down, or flaky. For HTTP calls between services, you handle <strong>transient faults</strong> (timeouts, 503, network blips) without taking down the whole system.</p><p><strong>Polly</strong> is a .NET resilience library: it defines <strong>policies</strong> (retry, circuit breaker, timeout, etc.) and runs your code through them. With <code>IHttpClientFactory</code>, policies attach to named or typed <code>HttpClient</code> registrations.</p><h3>Transient vs permanent failures</h3><table>
+<tr><th>Retry?</th><th>Examples</th></tr>
+<tr><td>Yes (with limits)</td><td>408, 429, 502, 503, 504, socket timeout, connection reset</td></tr>
+<tr><td>No</td><td>400 validation, 401/403 auth, 404 not found, business rule errors</td></tr>
+</table><p>Only retry <strong>idempotent</strong> operations unless you have deduplication (safe: GET; risky: POST that creates orders).</p><h3>Common Polly policies</h3><table>
+<tr><th>Policy</th><th>Purpose</th></tr>
+<tr><td><strong>Retry</strong></td><td>Re-attempt failed calls (often with exponential backoff)</td></tr>
+<tr><td><strong>Circuit breaker</strong></td><td>Stop calling a failing service; fail fast; probe recovery later</td></tr>
+<tr><td><strong>Timeout</strong></td><td>Cancel calls that run too long</td></tr>
+<tr><td><strong>Bulkhead</strong></td><td>Limit concurrent calls so one dependency cannot exhaust threads</td></tr>
+<tr><td><strong>Fallback</strong></td><td>Return cached/default response when dependency fails</td></tr>
+</table><h3>Circuit breaker states</h3><ul>
+<li><strong>Closed</strong> &mdash; normal; calls pass through; failures are counted.</li>
+<li><strong>Open</strong> &mdash; too many failures; calls fail immediately (no load on sick service).</li>
+<li><strong>Half-open</strong> &mdash; after break duration, one trial call; success closes circuit, failure reopens.</li>
+</ul><h3>HttpClient + Polly (classic integration)</h3><p>NuGet: <code>Microsoft.Extensions.Http.Polly</code> (wraps Polly for HTTP).</p><pre><code>builder.Services.AddHttpClient&lt;IPaymentClient, PaymentClient&gt;(client =&gt;
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:PaymentApi"]!);
+    client.Timeout = TimeSpan.FromSeconds(30);
+})
+.AddTransientHttpErrorPolicy(policy =&gt;
+    policy.WaitAndRetryAsync(
+        3,
+        retryAttempt =&gt; TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+        onRetry: (outcome, delay, attempt, ctx) =&gt;
+        {
+            // log attempt, status, exception
+        }))
+.AddTransientHttpErrorPolicy(policy =&gt;
+    policy.CircuitBreakerAsync(
+        handledEventsAllowedBeforeBreaking: 5,
+        durationOfBreak: TimeSpan.FromSeconds(30)));</code></pre><p><code>AddTransientHttpErrorPolicy</code> retries HTTP 5xx, 408, and <code>HttpRequestException</code> (not 4xx client errors).</p><h3>Combining policies (order matters)</h3><p>Typical outer-to-inner order for HTTP: <strong>Timeout</strong> &rarr; <strong>Circuit breaker</strong> &rarr; <strong>Retry</strong> &rarr; actual request. Timeouts should bound total wait including retries.</p><pre><code>// Manual policy wrap (conceptual)
+var pipeline = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy, timeoutPolicy);
+await pipeline.ExecuteAsync(() =&gt; httpClient.GetAsync("/orders"));</code></pre><h3>.NET 8+ built-in resilience (alternative)</h3><p>Microsoft also ships <code>Microsoft.Extensions.Http.Resilience</code> with a standard handler (retry, circuit breaker, timeout, rate limiting) without wiring Polly yourself:</p><pre><code>builder.Services.AddHttpClient("inventory")
+    .AddStandardResilienceHandler();</code></pre><p>Interviews still expect Polly concepts; know both names if asked about &ldquo;modern .NET.&rdquo;</p><h3>Design tips</h3><ul>
+<li>Set <code>HttpClient.Timeout</code> and Polly timeout so they align; avoid unbounded retries.</li>
+<li>Log each retry with correlation id; monitor circuit-open events.</li>
+<li>Use <code>IHttpClientFactory</code> &mdash; do not create <code>new HttpClient()</code> per request.</li>
+<li>Pair resilience with health checks and alerts on dependency failure rates.</li>
+</ul><div class="interview-tip"><h3>Interview One-Liner</h3><p>Resiliency handles transient downstream failures. I attach Polly to <code>IHttpClientFactory</code>: retry with exponential backoff for 5xx/timeouts, circuit breaker to fail fast and prevent cascades, and timeouts so threads are not stuck. I only retry safe/idempotent calls and validate issuer-style config for production limits.</p></div><h3>Interview Answer</h3><p>Polly implements resilience patterns as reusable policies. For service-to-service HTTP I register a typed client, add retry for transient errors with backoff, and a circuit breaker after repeated failures so we do not hammer a sick API. I combine that with logging, timeouts, and idempotency awareness; in .NET 8 I may use <code>AddStandardResilienceHandler()</code> for the same ideas with less boilerplate.</p></div>
 <div class="answer-pane" id="q_aspnet_q18"><h2>Minimal APIs vs Controllers</h2><table>
 <tr><th>Minimal APIs</th><th>Controllers</th></tr>
 <tr><td>Lightweight, less boilerplate</td><td>Structured MVC pattern</td></tr>
@@ -3244,17 +3576,35 @@ class ReportPrinter
 </ul>
 </div>
 </div>
-<div class="answer-pane" id="q_110"><h2>Dependency Injection in ASP.NET Core</h2><p>Dependency Injection (DI) is a built-in IoC container that resolves interfaces to concrete implementations at runtime. You register services in <code>Program.cs</code> and consume them via constructor injection in controllers, services, and middleware.</p><p>DI promotes loose coupling, testability, and clear lifetimes (singleton, scoped, transient). ASP.NET Core's default container can be extended with Autofac or other providers if advanced registration is needed.</p><pre><code>builder.Services.AddScoped&lt;IOrderService, OrderService&gt;();
+<div class="answer-pane" id="q_110"><h2>Dependency Injection in ASP.NET Core</h2><p><strong>Dependency Injection (DI)</strong> supplies dependencies from outside instead of classes creating them with <code>new</code>. ASP.NET Core includes a built-in <strong>IoC container</strong> so you register interfaces and implementations once and the framework injects them where needed.</p><h3>How to implement DI</h3><ol>
+<li><strong>Define abstraction:</strong> <code>public interface IOrderService { ... }</code></li>
+<li><strong>Implement:</strong> <code>public class OrderService : IOrderService { ... }</code></li>
+<li><strong>Register in Program.cs:</strong> <code>builder.Services.AddScoped&lt;IOrderService, OrderService&gt;();</code></li>
+<li><strong>Consume via constructor injection:</strong> framework resolves automatically.</li>
+</ol><pre><code>// Registration
+builder.Services.AddScoped&lt;IOrderRepository, OrderRepository&gt;();
+builder.Services.AddScoped&lt;IOrderService, OrderService&gt;();
 
+// Constructor injection in controller
 public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orders;
     public OrdersController(IOrderService orders) =&gt; _orders = orders;
-}</code></pre><h3>Key Points</h3><ul>
-<li>Register abstractions, inject via constructors.</li>
-<li>Choose correct service lifetimes to avoid bugs.</li>
-<li>Built-in container covers most application needs.</li>
-</ul><h3>Interview Answer</h3><p>ASP.NET Core has first-class DI where I register services in Program.cs and receive them through constructor injection. This decouples layers, makes unit testing straightforward with mocks, and lets the framework manage object lifetimes per request or application scope.</p></div>
+
+    [HttpGet]
+    public async Task&lt;IActionResult&gt; Get() =&gt; Ok(await _orders.GetAllAsync());
+}
+
+// Constructor injection in service
+public class OrderService : IOrderService
+{
+    private readonly IOrderRepository _repo;
+    public OrderService(IOrderRepository repo) =&gt; _repo = repo;
+}</code></pre><p>Other patterns: <code>[FromServices]</code> on action parameters (method injection), factory delegates <code>AddScoped(sp =&gt; ...)</code>.</p><h3>Benefits</h3><ul>
+<li>Loose coupling and testability (mock interfaces in unit tests).</li>
+<li>Centralized composition in Program.cs.</li>
+<li>Correct lifetimes managed by the container.</li>
+</ul><h3>Interview Answer</h3><p>DI in ASP.NET Core means register services in Program.cs with AddTransient/Scoped/Singleton, depend on interfaces, and use constructor injection in controllers and services. The built-in container resolves dependencies per request or app lifetime, which keeps code testable and decoupled.</p></div>
 <div class="answer-pane" id="q_111"><h2>async/await vs Task.Run</h2><p><strong>async/await</strong> is for non-blocking asynchronous I/O (HTTP, database, file streams). It frees the calling thread while work completes and resumes on a synchronization context when the await finishes. <strong>Task.Run</strong> offloads CPU-bound work to a thread-pool thread; it does not make I/O asyncâ€”it wraps synchronous CPU work so the UI or request thread stays responsive.</p><pre><code>// I/O-bound: async/await (no extra thread while waiting)
 public async Task&lt;string&gt; GetUserAsync(int id)
 {
