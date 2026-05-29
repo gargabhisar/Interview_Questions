@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_69')">23. Hosted Services</div>
 <div class="question-item" onclick="showAnswer('q_70')">24. Background Job Processing</div>
 <div class="question-item" onclick="showAnswer('q_120')">25. Web API Performance Optimization</div>
-<div class="question-item" onclick="showAnswer('q_74')">26. How to consume external APIs?</div>
+<div class="question-item" onclick="showAnswer('q_74')">26. Service-to-service calls (HttpClient)</div>
 </div>
 <h3 class="topic-header">ASP.NET Core - Top 24 Interview Q&amp;A</h3>
 <div class="question-group">
@@ -631,6 +631,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_http_status_codes')">25. HTTP Status Codes</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_content_negotiation')">26. Content Negotiation</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_api_versioning')">27. API Versioning</div>
+<div class="question-item" onclick="showAnswer('q_74')">28. Service-to-service (HttpClient)</div>
 </div>
 <h3 class="topic-header">SQL &amp; Database</h3>
 <div class="question-group">
@@ -1679,18 +1680,115 @@ await _httpClient.GetAsync(url).ConfigureAwait(false);</code></pre><h3>Key Point
 <li>async all the way down is the scalable pattern.</li>
 <li>ConfigureAwait(false) in libraries reduces deadlock on sync-over-async.</li>
 </ul><h3>Interview Answer</h3><p><code>Task.Wait</code> blocks the current thread until completion. Avoid it in async-friendly appsâ€”use await instead. Blocking on incomplete Tasks tied to the same synchronization context is a common deadlock source.</p></div>
-<div class="answer-pane" id="q_74"><h2>Consuming External APIs in .NET</h2><p>Use <code>IHttpClientFactory</code> to create configured <code>HttpClient</code> instances with proper DNS handling and Polly resilience policies. Register typed clients for strong typing and centralized base address, headers, and timeouts.</p><p>Deserialize JSON with <code>System.Text.Json</code>, handle transient faults with retries, and propagate correlation IDs for distributed tracing.</p><pre><code>builder.Services.AddHttpClient&lt;IWeatherClient, WeatherClient&gt;(client =&gt;
+<div class="answer-pane" id="q_74"><h2>Service-to-Service Calls Using HttpClient</h2><p>In microservices, one API often calls another API (Order Service → Payment Service → Notification Service). In ASP.NET Core, use <strong><code>IHttpClientFactory</code></strong>—not <code>new HttpClient()</code> in every request.</p><h3>Why Not new HttpClient() Every Time?</h3><ul>
+<li>Socket exhaustion under load</li>
+<li>DNS changes not picked up</li>
+<li>No central configuration (base URL, timeout, headers)</li>
+</ul><pre><code>// Avoid
+using var client = new HttpClient();
+var data = await client.GetStringAsync(url);</code></pre><h3>Recommended Flow</h3><pre><code>Order API
+   ↓ HttpClient (typed client)
+Payment API
+   ↓
+Response JSON → mapped to DTO</code></pre><h3>Register Typed HttpClient (Program.cs)</h3><pre><code>builder.Services.AddHttpClient&lt;IPaymentServiceClient, PaymentServiceClient&gt;(client =&gt;
 {
-    client.BaseAddress = new Uri("https://api.weather.example/");
-    client.Timeout = TimeSpan.FromSeconds(10);
+    client.BaseAddress = new Uri("https://payment-api.internal/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});</code></pre><h3>Interface + Implementation</h3><pre><code>public interface IPaymentServiceClient
+{
+    Task&lt;PaymentResponse?&gt; ProcessPaymentAsync(PaymentRequest request);
+}
+
+public class PaymentServiceClient : IPaymentServiceClient
+{
+    private readonly HttpClient _http;
+
+    public PaymentServiceClient(HttpClient http)
+    {
+        _http = http;
+    }
+
+    public async Task&lt;PaymentResponse?&gt; ProcessPaymentAsync(PaymentRequest request)
+    {
+        var response = await _http.PostAsJsonAsync("api/payments", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(
+                $"Payment API failed: {(int)response.StatusCode} {body}");
+        }
+
+        return await response.Content.ReadFromJsonAsync&lt;PaymentResponse&gt;();
+    }
+}</code></pre><h3>GET Example</h3><pre><code>public async Task&lt;UserDto?&gt; GetUserAsync(int id)
+{
+    return await _http.GetFromJsonAsync&lt;UserDto&gt;($"api/users/{id}");
+}</code></pre><h3>Use from Controller / Service</h3><pre><code>public class OrdersController : ControllerBase
+{
+    private readonly IPaymentServiceClient _paymentClient;
+
+    public OrdersController(IPaymentServiceClient paymentClient)
+    {
+        _paymentClient = paymentClient;
+    }
+
+    [HttpPost]
+    public async Task&lt;IActionResult&gt; Create(OrderDto order)
+    {
+        var payment = await _paymentClient.ProcessPaymentAsync(
+            new PaymentRequest { Amount = order.Total });
+
+        if (payment is null || !payment.Success)
+            return BadRequest("Payment failed");
+
+        return Ok(order);
+    }
+}</code></pre><h3>Named HttpClient (Alternative)</h3><pre><code>builder.Services.AddHttpClient("PaymentApi", client =&gt;
+{
+    client.BaseAddress = new Uri("https://payment-api.internal/");
 });
 
-public async Task&lt;Forecast?&gt; GetAsync(string city) =&gt;
-    await _http.GetFromJsonAsync&lt;Forecast&gt;($"forecast?city={city}");</code></pre><h3>Key Points</h3><ul>
-<li>IHttpClientFactory avoids socket exhaustion.</li>
-<li>Use Polly for retry, circuit breaker, timeout.</li>
-<li>Typed clients improve testability and configuration.</li>
-</ul><h3>Interview Answer</h3><p>I consume external APIs with IHttpClientFactory and typed clients registered in DI, which manages HttpClient lifetime correctly. I configure base URLs, timeouts, and Polly policies for retries, deserialize with System.Text.Json, and log failures with correlation IDs for observability.</p></div>
+// Inject IHttpClientFactory
+var client = _httpClientFactory.CreateClient("PaymentApi");</code></pre><h3>Pass Auth Token Between Services</h3><pre><code>public class ForwardAuthHandler : DelegatingHandler
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    protected override Task&lt;HttpResponseMessage&gt; SendAsync(
+        HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        var token = _httpContextAccessor.HttpContext?
+            .Request.Headers.Authorization.ToString();
+
+        if (!string.IsNullOrEmpty(token))
+            request.Headers.Add("Authorization", token);
+
+        return base.SendAsync(request, cancellationToken);
+    }
+}
+
+builder.Services.AddHttpClient&lt;IPaymentServiceClient, PaymentServiceClient&gt;()
+    .AddHttpMessageHandler&lt;ForwardAuthHandler&gt;();</code></pre><h3>Resilience with Polly</h3><pre><code>builder.Services.AddHttpClient&lt;IPaymentServiceClient, PaymentServiceClient&gt;()
+    .AddTransientHttpErrorPolicy(p =&gt; p.RetryAsync(3))
+    .AddTransientHttpErrorPolicy(p =&gt;
+        p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));</code></pre><h3>Configuration (appsettings.json)</h3><pre><code>{
+  "Services": {
+    "PaymentApi": "https://payment-api.internal/"
+  }
+}</code></pre><pre><code>client.BaseAddress = new Uri(
+    builder.Configuration["Services:PaymentApi"]!);</code></pre><h3>Best Practices</h3><table>
+<tr><th>Do</th><th>Avoid</th></tr>
+<tr><td>Use <code>IHttpClientFactory</code> / typed clients</td><td><code>new HttpClient()</code> per call</td></tr>
+<tr><td>Set timeout and base URL in DI</td><td>Hardcoding URLs everywhere</td></tr>
+<tr><td>Check <code>IsSuccessStatusCode</code></td><td>Ignoring HTTP errors</td></tr>
+<tr><td>Use Polly for retries</td><td>Blocking with <code>.Result</code></td></tr>
+<tr><td>Log correlation IDs</td><td>Swallowing exceptions</td></tr>
+</table><h3>Common Interview Points</h3><table>
+<tr><th>Question</th><th>Answer</th></tr>
+<tr><td>Why IHttpClientFactory?</td><td>Manages HttpClient lifetime, avoids socket issues</td></tr>
+<tr><td>Typed vs named client?</td><td>Typed = strongly typed DI; named = factory by string</td></tr>
+<tr><td>Sync or async?</td><td>Always async (<code>GetAsync</code>, <code>PostAsJsonAsync</code>)</td></tr>
+</table><div class="interview-tip"><h3>Interview One-Liner</h3><p>For service-to-service calls in ASP.NET Core, I register typed <code>HttpClient</code> via <code>IHttpClientFactory</code> in DI, configure base address and timeout in Program.cs, call APIs with async methods like <code>GetFromJsonAsync</code>/<code>PostAsJsonAsync</code>, handle status codes, and add Polly retries for resilience.</p></div></div>
 <div class="answer-pane" id="q_75"><h2>Delegates in C#</h2><p>A <strong>delegate</strong> is a type-safe function pointer: it references a method with a matching signature. Delegates enable callbacks, event handling, LINQ, and functional patterns. Multicast delegates invoke multiple methods in order.</p><pre><code>public delegate int MathOp(int a, int b);
 
 MathOp add = (a, b) =&gt; a + b;
