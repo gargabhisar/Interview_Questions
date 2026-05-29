@@ -547,27 +547,30 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <h3 class="topic-header">OOPS &amp; C#</h3>
 <div class="question-group">
-<div class="question-item" onclick="showAnswer('q_90')">1. Encapsulation</div>
-<div class="question-item" onclick="showAnswer('q_91')">2. Abstract Class vs Interface</div>
-<div class="question-item" onclick="showAnswer('q_92')">3. Why Interfaces?</div>
-<div class="question-item" onclick="showAnswer('q_93')">4. Generics in C#</div>
-<div class="question-item" onclick="showAnswer('q_106')">5. OOP Concepts</div>
-<div class="question-item" onclick="showAnswer('q_116')">6. Encapsulation vs Abstraction</div>
-<div class="question-item" onclick="showAnswer('q_99')">7. Overloading vs Overriding</div>
-<div class="question-item" onclick="showAnswer('q_100')">8. Virtual vs Abstract</div>
-<div class="question-item" onclick="showAnswer('q_101')">9. Sealed Class</div>
-<div class="question-item" onclick="showAnswer('q_102')">10. Constructor Chaining</div>
-<div class="question-item" onclick="showAnswer('q_103')">11. Association vs Aggregation vs Composition</div>
-<div class="question-item" onclick="showAnswer('q_104')">12. Const vs Readonly</div>
-<div class="question-item" onclick="showAnswer('q_115')">13. Private Constructor</div>
-<div class="question-item" onclick="showAnswer('q_117')">14. Static vs Dynamic Binding</div>
-<div class="question-item" onclick="showAnswer('q_121')">15. LINQ</div>
-<div class="question-item" onclick="showAnswer('q_47')">16. Collections</div>
-<div class="question-item" onclick="showAnswer('q_48')">17. Value Type vs Reference Type</div>
-<div class="question-item" onclick="showAnswer('q_49')">18. ref vs out</div>
-<div class="question-item" onclick="showAnswer('q_118')">19. IDisposable vs using</div>
-<div class="question-item" onclick="showAnswer('q_81')">20. IEnumerable vs IQueryable</div>
-<div class="question-item" onclick="showAnswer('q_122')">21. First vs Single</div>
+<div class="question-item" onclick="showAnswer('q_106')">1. 4 Pillars of OOPS — explain each</div>
+<div class="question-item" onclick="showAnswer('q_99')">2. Overloading vs Overriding (same class?)</div>
+<div class="question-item" onclick="showAnswer('q_91')">3. Abstract Class vs Interface (3+ diffs, when to use)</div>
+<div class="question-item" onclick="showAnswer('q_oops_instance')">4. Instance of Abstract class or Interface?</div>
+<div class="question-item" onclick="showAnswer('q_116')">5. Abstraction vs Encapsulation</div>
+<div class="question-item" onclick="showAnswer('q_oops_inheritance_types')">6. Types of Inheritance</div>
+<div class="question-item" onclick="showAnswer('q_oops_overload_ways')">7. Ways a method can be overloaded</div>
+<div class="question-item" onclick="showAnswer('q_90')">8. Encapsulation</div>
+<div class="question-item" onclick="showAnswer('q_92')">9. Why Interfaces?</div>
+<div class="question-item" onclick="showAnswer('q_93')">10. Generics in C#</div>
+<div class="question-item" onclick="showAnswer('q_100')">11. Virtual vs Abstract</div>
+<div class="question-item" onclick="showAnswer('q_101')">12. Sealed Class</div>
+<div class="question-item" onclick="showAnswer('q_102')">13. Constructor Chaining</div>
+<div class="question-item" onclick="showAnswer('q_103')">14. Association vs Aggregation vs Composition</div>
+<div class="question-item" onclick="showAnswer('q_104')">15. Const vs Readonly</div>
+<div class="question-item" onclick="showAnswer('q_115')">16. Private Constructor</div>
+<div class="question-item" onclick="showAnswer('q_117')">17. Static vs Dynamic Binding</div>
+<div class="question-item" onclick="showAnswer('q_121')">18. LINQ</div>
+<div class="question-item" onclick="showAnswer('q_47')">19. Collections</div>
+<div class="question-item" onclick="showAnswer('q_48')">20. Value Type vs Reference Type</div>
+<div class="question-item" onclick="showAnswer('q_49')">21. ref vs out</div>
+<div class="question-item" onclick="showAnswer('q_118')">22. IDisposable vs using</div>
+<div class="question-item" onclick="showAnswer('q_81')">23. IEnumerable vs IQueryable</div>
+<div class="question-item" onclick="showAnswer('q_122')">24. First vs Single</div>
 </div>
 <h3 class="topic-header">.NET Core &amp; ASP.NET Core</h3>
 <div class="question-group">
@@ -1966,9 +1969,12 @@ public class OrderSummaryQuery {
 <li>Properties provide read/write control without breaking encapsulation.</li>
 <li>Encapsulation improves maintainability and reduces coupling.</li>
 </ul><h3>Interview Answer</h3><p>Encapsulation means keeping an object's data private and exposing only what is necessary through a public API. In C#, I use private fields with public properties or methods so validation and business rules stay inside the class. This protects data integrity and makes future changes safer.</p></div>
-<div class="answer-pane" id="q_91"><h2>Abstract Class vs Interface</h2><p>Both support abstraction and polymorphism, but they solve different design problems. An abstract class can contain state, constructors, and both abstract and concrete members. An interface defines a contract—method signatures and, since C# 8, default implementations—without enforcing a single inheritance hierarchy.</p><p>Choose an abstract class when related types share common behavior and fields. Choose an interface when you need multiple contracts or want to decouple consumers from concrete implementations.</p><table>
+<div class="answer-pane" id="q_91"><h2>Abstract Class vs Interface</h2><p>Both support abstraction and polymorphism, but they solve different design problems. An abstract class can contain state, constructors, and both abstract and concrete members. An interface defines a contract—method signatures and, since C# 8, default implementations—without enforcing a single inheritance hierarchy.</p><p><strong>At least 3 differences:</strong> (1) Abstract class supports fields/constructors and single inheritance; interface is primarily a contract with multiple implementation. (2) Abstract class can have full and partial implementation; interface traditionally had no state (C# 8+ allows defaults/static members). (3) A class inherits one abstract base but can implement many interfaces.</p><p><strong>When to use abstract class:</strong> Related types share common state/behavior ("is-a" with shared code). <strong>When to use interface:</strong> Unrelated types need the same capability ("can-do"), multiple contracts, DI/testability, or API versioning.</p><table>
 <tr><th>Feature</th><th>Abstract Class</th><th>Interface</th></tr>
 <tr><td>Inheritance</td><td>Single base class</td><td>Multiple interfaces</td></tr>
+<tr><td>Instance</td><td>Only via concrete child</td><td>Only via implementing class</td></tr>
+<tr><td>State / constructors</td><td>Yes</td><td>No instance fields (before C# 8 defaults)</td></tr>
+<tr><td>When to use</td><td>Shared base for family of types</td><td>Capability contract, DI, multiple roles</td></tr>
 <tr><td>State</td><td>Can have fields</td><td>No instance fields (until C# 8 defaults)</td></tr>
 <tr><td>Constructors</td><td>Supported</td><td>Not allowed</td></tr>
 <tr><td>Best for</td><td>Shared base behavior</td><td>Capabilities/contracts</td></tr>
@@ -2088,21 +2094,26 @@ public class TransactionService
 </table>
 </div>
 </div>
-<div class="answer-pane" id="q_99"><h2>Overloading vs Overriding</h2><p><strong>Method overloading</strong> defines multiple methods with the same name but different parameter lists in the same class. Resolution happens at compile time (static polymorphism). <strong>Method overriding</strong> replaces a base class virtual/abstract method in a derived class; resolution happens at runtime (dynamic polymorphism).</p><p>Overloading improves API ergonomics (<code>Send(string)</code>, <code>Send(string, bool)</code>). Overriding enables specialized behavior in inheritance hierarchies while keeping a common contract.</p><table>
+<div class="answer-pane" id="q_99"><h2>Overloading vs Overriding</h2><p><strong>Method overloading</strong> defines multiple methods with the same name but different parameter lists in the <strong>same class</strong>. Resolution happens at compile time (static polymorphism). <strong>Method overriding</strong> replaces a base class <code>virtual</code>/<code>abstract</code> method in a <strong>derived class</strong>; resolution happens at runtime (dynamic polymorphism).</p><p><strong>Can overriding happen in the same class?</strong> <strong>No.</strong> Overriding requires inheritance—a child class changes behavior inherited from a parent. In the same class you can only <strong>overload</strong> (different signatures) or use <code>new</code> to hide a method (not true overriding).</p><table>
 <tr><th></th><th>Overloading</th><th>Overriding</th></tr>
 <tr><td>Scope</td><td>Same class</td><td>Base + derived class</td></tr>
-<tr><td>Signature</td><td>Must differ</td><td>Same signature</td></tr>
+<tr><td>Signature</td><td>Must differ</td><td>Must be same</td></tr>
 <tr><td>Keywords</td><td>None</td><td><code>virtual</code>, <code>override</code></td></tr>
 <tr><td>Binding</td><td>Compile-time</td><td>Runtime</td></tr>
+<tr><td>Same class?</td><td>Yes</td><td>No</td></tr>
 </table><pre><code>public void Log(string msg) { }
-public void Log(string msg, int level) { } // overload
+public void Log(string msg, int level) { } // overload — same class
 
 public class Base { public virtual void Run() { } }
-public class Derived : Base { public override void Run() { } }</code></pre><h3>Key Points</h3><ul>
+public class Derived : Base { public override void Run() { } } // override — derived class
+
+// Invalid: override in same class — compile error
+// public class A { public virtual void M() { } public override void M() { } }</code></pre><h3>Key Points</h3><ul>
 <li>Overload = same name, different parameters, same class.</li>
-<li>Override = redefine inherited virtual/abstract method.</li>
-<li>Do not confuse override with <code>new</code> hiding.</li>
-</ul><h3>Interview Answer</h3><p>Overloading is compile-time polymorphism where I define multiple methods with the same name but different signatures. Overriding is runtime polymorphism where a derived class replaces a base virtual method. Overloading improves usability; overriding enables extensible inheritance.</p></div>
+<li>Override = redefine inherited virtual/abstract method in a child class.</li>
+<li>Overriding in the same class is not possible.</li>
+<li>Do not confuse <code>override</code> with <code>new</code> (method hiding).</li>
+</ul><h3>Interview Answer</h3><p>Overloading is compile-time polymorphism in one class—same method name, different parameters. Overriding is runtime polymorphism in inheritance—a derived class replaces a base virtual method with the same signature. You cannot override in the same class; that would be overloading or hiding with <code>new</code>.</p></div>
 <div class="answer-pane" id="q_100"><h2>Virtual vs Abstract Methods</h2><p>Both support polymorphism, but they serve different roles. A <code>virtual</code> method has a default implementation in the base class and may be overridden. An <code>abstract</code> method has no implementation and must be overridden in a non-abstract derived class.</p><p>Virtual methods suit optional customization points. Abstract methods force derived types to provide behavior and are only allowed in abstract classes.</p><table>
 <tr><th></th><th>virtual</th><th>abstract</th></tr>
 <tr><td>Implementation</td><td>Provided in base</td><td>Not provided</td></tr>
@@ -2215,21 +2226,109 @@ async Task&lt;Order&gt; GetOrderAsync(int id)
 <li>Compiler generates IAsyncStateMachine—no magic threads, just continuations.</li>
 <li>Methods marked async always return Task/Task&lt;T&gt; (or ValueTask) to callers.</li>
 </ul><h3>Interview Answer</h3><p>We still use <code>Task</code>—async/await does not replace it. Tasks model async operations; async/await lets us write and maintain that logic like synchronous code while preserving non-blocking behavior and proper exception flow.</p></div>
-<div class="answer-pane" id="q_106"><h2>OOP Concepts in C#</h2><p>Object-Oriented Programming organizes software around objects that combine data and behavior. C# supports the four pillars: encapsulation, abstraction, inheritance, and polymorphism—plus related ideas like composition and interfaces.</p><p>In practice, you model domain entities as classes, hide details behind abstractions, reuse behavior through inheritance or composition, and invoke the right implementation at runtime via virtual methods or interfaces.</p><table>
-<tr><th>Pillar</th><th>C# Example</th></tr>
-<tr><td>Encapsulation</td><td>Private fields + public properties</td></tr>
-<tr><td>Abstraction</td><td>Abstract classes, interfaces</td></tr>
-<tr><td>Inheritance</td><td><code>class Dog : Animal</code></td></tr>
-<tr><td>Polymorphism</td><td><code>override</code>, interface dispatch</td></tr>
-</table><pre><code>public interface INotifier { void Notify(string msg); }
-public class EmailNotifier : INotifier
+<div class="answer-pane" id="q_106"><h2>4 Pillars of OOPS</h2><p>Object-Oriented Programming models software as <strong>objects</strong> that combine <strong>data</strong> and <strong>behavior</strong>. The four pillars are the foundation of OOP design in C# and most enterprise interviews.</p><h3>1. Encapsulation</h3><p>Bundles data and methods inside a class and <strong>hides internal state</strong> from outside code. Access is controlled through modifiers (<code>private</code>, <code>protected</code>, <code>internal</code>) and properties.</p><p><strong>Why:</strong> Protects invariants, reduces coupling, and localizes change.</p><pre><code>public class BankAccount
 {
-    public void Notify(string msg) =&gt; Console.WriteLine(msg);
+    private decimal _balance;
+    public decimal Balance =&gt; _balance;
+    public void Deposit(decimal amount)
+    {
+        if (amount &gt; 0) _balance += amount;
+    }
+}</code></pre><h3>2. Abstraction</h3><p>Shows <strong>only essential behavior</strong> and hides implementation complexity. Achieved using abstract classes, interfaces, and high-level APIs.</p><p><strong>Why:</strong> Consumers depend on what an object does, not how it does it.</p><pre><code>public interface IPaymentGateway
+{
+    Task&lt;bool&gt; PayAsync(decimal amount);
+}</code></pre><h3>3. Inheritance</h3><p>Lets a class <strong>reuse and extend</strong> members of a parent class (<code>class SavingsAccount : BankAccount</code>). Supports code reuse and an "is-a" relationship.</p><p><strong>Why:</strong> Shared behavior in a hierarchy; use carefully—favor composition when inheritance is unclear.</p><pre><code>public class Animal { public virtual void Speak() =&gt; Console.WriteLine("..."); }
+public class Dog : Animal
+{
+    public override void Speak() =&gt; Console.WriteLine("Bark");
+}</code></pre><h3>4. Polymorphism</h3><p>One interface, <strong>many implementations</strong>. Compile-time: method overloading. Runtime: overriding and interface dispatch.</p><p><strong>Why:</strong> Extensible, testable code—callers work with base types/contracts.</p><pre><code>Animal pet = new Dog();
+pet.Speak(); // runtime dispatch → Bark
+
+INotifier notifier = new EmailNotifier();
+notifier.Notify("Hello");</code></pre><table>
+<tr><th>Pillar</th><th>Meaning</th><th>C# mechanism</th></tr>
+<tr><td>Encapsulation</td><td>Hide data, controlled access</td><td>Properties, access modifiers</td></tr>
+<tr><td>Abstraction</td><td>Hide complexity</td><td>Interface, abstract class</td></tr>
+<tr><td>Inheritance</td><td>Reuse parent behavior</td><td><code>: BaseClass</code></td></tr>
+<tr><td>Polymorphism</td><td>Many forms, one API</td><td><code>override</code>, interfaces</td></tr>
+</table><h3>Interview Answer</h3><p>The four pillars are encapsulation (protect data), abstraction (expose essentials), inheritance (reuse and extend), and polymorphism (one contract, many behaviors). In C# I apply them with properties, interfaces, base classes, and virtual/override or interface-based design.</p></div>
+<div class="answer-pane" id="q_oops_instance"><h2>Can You Create an Instance of Abstract Class or Interface?</h2><p><strong>Abstract class:</strong> You <strong>cannot</strong> create an instance of an abstract class directly (<code>new AbstractClass()</code> is a compile error). You <strong>can</strong> instantiate a <strong>concrete derived class</strong> that implements all abstract members.</p><p><strong>Interface:</strong> You <strong>cannot</strong> instantiate an interface directly. You <strong>can</strong> create an instance of a <strong>class that implements</strong> the interface, or use an <strong>anonymous type / lambda-based implementation</strong> where supported.</p><pre><code>public abstract class Shape
+{
+    public abstract double Area();
+}
+
+public class Circle : Shape
+{
+    public double Radius { get; set; }
+    public override double Area() =&gt; Math.PI * Radius * Radius;
+}
+
+// Shape s = new Shape();     // ERROR
+Shape s = new Circle();       // OK — concrete child
+
+public interface ILogger { void Log(string msg); }
+
+// ILogger log = new ILogger(); // ERROR
+ILogger log = new ConsoleLogger(); // OK
+
+// C# — target-typed or explicit anonymous implementation
+ILogger inline = new class : ILogger
+{
+    public void Log(string msg) =&gt; Console.WriteLine(msg);
+};</code></pre><table>
+<tr><th>Type</th><th>Direct <code>new</code>?</th><th>How to use</th></tr>
+<tr><td>Abstract class</td><td>No</td><td><code>new</code> on concrete subclass</td></tr>
+<tr><td>Interface</td><td>No</td><td><code>new</code> on implementing class</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>Abstract and interface types are incomplete contracts—you need a concrete type.</li>
+<li>Variables can be typed as abstract/interface; object on heap is concrete.</li>
+<li>C# allows multiple interfaces but single class inheritance.</li>
+</ul><h3>Interview Answer</h3><p>No—you cannot instantiate an abstract class or interface directly. You instantiate a concrete class that extends the abstract class or implements the interface, then assign it to a base-type variable for polymorphism.</p></div>
+<div class="answer-pane" id="q_oops_inheritance_types"><h2>Types of Inheritance</h2><p>Inheritance lets a class acquire members from a parent. C# supports class inheritance (single) and interface inheritance (multiple).</p><table>
+<tr><th>Type</th><th>Description</th><th>C# example</th></tr>
+<tr><td>Single</td><td>One child, one parent</td><td><code>class B : A</code></td></tr>
+<tr><td>Multilevel</td><td>Chain of inheritance</td><td><code>A → B → C</code></td></tr>
+<tr><td>Hierarchical</td><td>Multiple children, one parent</td><td><code>Dog : Animal</code>, <code>Cat : Animal</code></td></tr>
+<tr><td>Multiple (interfaces)</td><td>Many contracts on one class</td><td><code>class X : IA, IB</code></td></tr>
+<tr><td>Hybrid</td><td>Mix of class + interfaces</td><td><code>class X : Base, IA, IB</code></td></tr>
+</table><p><strong>Not supported in C#:</strong> Multiple inheritance of <strong>classes</strong> (two base classes)—only one base class is allowed to avoid diamond problems.</p><pre><code>// Multilevel
+public class Vehicle { }
+public class Car : Vehicle { }
+public class ElectricCar : Car { }
+
+// Hierarchical
+public class Animal { }
+public class Dog : Animal { }
+public class Cat : Animal { }
+
+// Multiple interfaces
+public interface IReadable { string Read(); }
+public interface IWritable { void Write(string text); }
+public class FileStore : IReadable, IWritable { ... }</code></pre><h3>Key Points</h3><ul>
+<li>C#: one base class, many interfaces.</li>
+<li>Prefer composition when "has-a" fits better than "is-a".</li>
+<li>Deep hierarchies increase coupling—keep shallow when possible.</li>
+</ul><h3>Interview Answer</h3><p>Common types are single, multilevel, hierarchical, and multiple (via interfaces). C# allows one parent class plus multiple interfaces. I explain that C# avoids multiple class inheritance to keep the object model simple and avoid ambiguity.</p></div>
+<div class="answer-pane" id="q_oops_overload_ways"><h2>In How Many Ways Can a Method Be Overloaded?</h2><p>Overloading means <strong>same method name, different signature</strong> in the same class. The compiler picks the best match at compile time.</p><p>Ways to create different signatures:</p><ol>
+<li><strong>Different number of parameters</strong> — <code>Save()</code> vs <code>Save(int id)</code></li>
+<li><strong>Different parameter types</strong> — <code>Print(int x)</code> vs <code>Print(string x)</code></li>
+<li><strong>Different parameter order</strong> — <code>Update(string name, int id)</code> vs <code>Update(int id, string name)</code></li>
+<li><strong>Different <code>ref</code> / <code>out</code> / <code>in</code> modifiers</strong> — distinct signatures (use carefully)</li>
+<li><strong><code>params</code> array</strong> — <code>Sum(int a, int b)</code> vs <code>Sum(params int[] values)</code></li>
+<li><strong>Generic arity/type parameters</strong> — <code>void Map&lt;T&gt;(T x)</code> vs <code>void Map&lt;T,U&gt;(T x, U y)</code></li>
+</ol><p><strong>Not overloading:</strong> Return type alone; <code>static</code> vs instance with same signature; optional parameters (default arguments are one method with optional args, not separate overloads unless combined with different signatures).</p><pre><code>public class ReportService
+{
+    public void Export() { }
+    public void Export(string path) { }
+    public void Export(string path, bool includeHeader) { }
+    public void Export(int reportId) { }
+    public void Export(string path, int reportId) { } // different order
+    public void Export(params string[] columns) { }
 }</code></pre><h3>Key Points</h3><ul>
-<li>Four pillars guide maintainable domain modeling.</li>
-<li>Favor composition and interfaces over deep inheritance trees.</li>
-<li>Polymorphism enables extensible, testable designs.</li>
-</ul><h3>Interview Answer</h3><p>C# OOP is built on encapsulation, abstraction, inheritance, and polymorphism. I encapsulate state in classes, abstract behavior with interfaces, reuse code through inheritance or composition, and rely on polymorphism so consumers depend on contracts rather than concrete types.</p></div>
+<li>Signature = name + parameter types + modifiers (+ generics).</li>
+<li>Ambiguous overloads cause compile errors—design clear APIs.</li>
+<li>Overloading is compile-time polymorphism.</li>
+</ul><h3>Interview Answer</h3><p>A method can be overloaded by changing the number of parameters, their types, their order, ref/out/in modifiers, params arrays, or generic parameters. Return type alone is not enough. The compiler resolves the correct overload at compile time.</p></div>
 <div class="answer-pane" id="q_107"><h2>Middleware and Filters in ASP.NET Core</h2><p><strong>Middleware</strong> forms the HTTP request pipeline—cross-cutting concerns like authentication, logging, and exception handling that run for most requests. <strong>Filters</strong> run within MVC/minimal-API controller execution for authorization, action logic, and result transformation.</p><p>Middleware is pipeline-order sensitive and ideal for global HTTP concerns. Filters integrate with MVC action lifecycle and can access action context like route data and model state.</p><table>
 <tr><th></th><th>Middleware</th><th>Filters</th></tr>
 <tr><td>Scope</td><td>Entire pipeline</td><td>MVC/action specific</td></tr>
