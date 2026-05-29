@@ -554,23 +554,24 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_116')">5. Abstraction vs Encapsulation</div>
 <div class="question-item" onclick="showAnswer('q_oops_inheritance_types')">6. Types of Inheritance</div>
 <div class="question-item" onclick="showAnswer('q_oops_overload_ways')">7. Ways a method can be overloaded</div>
-<div class="question-item" onclick="showAnswer('q_90')">8. Encapsulation</div>
-<div class="question-item" onclick="showAnswer('q_92')">9. Why Interfaces?</div>
-<div class="question-item" onclick="showAnswer('q_93')">10. Generics in C#</div>
-<div class="question-item" onclick="showAnswer('q_100')">11. Virtual vs Abstract</div>
-<div class="question-item" onclick="showAnswer('q_101')">12. Sealed Class</div>
-<div class="question-item" onclick="showAnswer('q_102')">13. Constructor Chaining</div>
-<div class="question-item" onclick="showAnswer('q_103')">14. Association vs Aggregation vs Composition</div>
-<div class="question-item" onclick="showAnswer('q_104')">15. Const vs Readonly</div>
-<div class="question-item" onclick="showAnswer('q_115')">16. Private Constructor</div>
-<div class="question-item" onclick="showAnswer('q_117')">17. Static vs Dynamic Binding</div>
-<div class="question-item" onclick="showAnswer('q_121')">18. LINQ</div>
-<div class="question-item" onclick="showAnswer('q_47')">19. Collections</div>
-<div class="question-item" onclick="showAnswer('q_48')">20. Value Type vs Reference Type</div>
-<div class="question-item" onclick="showAnswer('q_49')">21. ref vs out</div>
-<div class="question-item" onclick="showAnswer('q_118')">22. IDisposable vs using</div>
-<div class="question-item" onclick="showAnswer('q_81')">23. IEnumerable vs IQueryable</div>
-<div class="question-item" onclick="showAnswer('q_122')">24. First vs Single</div>
+<div class="question-item" onclick="showAnswer('q_oops_access_modifiers')">8. Access Modifiers in C#</div>
+<div class="question-item" onclick="showAnswer('q_90')">9. Encapsulation</div>
+<div class="question-item" onclick="showAnswer('q_92')">10. Why Interfaces?</div>
+<div class="question-item" onclick="showAnswer('q_93')">11. Generics in C#</div>
+<div class="question-item" onclick="showAnswer('q_100')">12. Virtual vs Abstract</div>
+<div class="question-item" onclick="showAnswer('q_101')">13. Sealed Class</div>
+<div class="question-item" onclick="showAnswer('q_102')">14. Constructor Chaining</div>
+<div class="question-item" onclick="showAnswer('q_103')">15. Association vs Aggregation vs Composition</div>
+<div class="question-item" onclick="showAnswer('q_104')">16. Const vs Readonly</div>
+<div class="question-item" onclick="showAnswer('q_115')">17. Private Constructor</div>
+<div class="question-item" onclick="showAnswer('q_117')">18. Static vs Dynamic Binding</div>
+<div class="question-item" onclick="showAnswer('q_121')">19. LINQ</div>
+<div class="question-item" onclick="showAnswer('q_47')">20. Collections</div>
+<div class="question-item" onclick="showAnswer('q_48')">21. Value Type vs Reference Type</div>
+<div class="question-item" onclick="showAnswer('q_49')">22. ref vs out</div>
+<div class="question-item" onclick="showAnswer('q_118')">23. IDisposable vs using</div>
+<div class="question-item" onclick="showAnswer('q_81')">24. IEnumerable vs IQueryable</div>
+<div class="question-item" onclick="showAnswer('q_122')">25. First vs Single</div>
 </div>
 <h3 class="topic-header">.NET Core &amp; ASP.NET Core</h3>
 <div class="question-group">
@@ -2411,6 +2412,97 @@ double Add(int a, int b)   // ERROR — same signature</code></pre><div class="i
 <tr><td>Different order of parameters</td><td>Yes</td></tr>
 <tr><td>Return type only changed</td><td>No</td></tr>
 </table></div></div>
+<div class="answer-pane" id="q_oops_access_modifiers"><h2>Access Modifiers in C#</h2><p>Access modifiers are keywords that define the <strong>visibility</strong> or <strong>accessibility</strong> of classes, methods, variables, properties, constructors, and other members. They control who can access data, from where it can be accessed, and support security and encapsulation.</p><h3>Types of Access Modifiers in C#</h3><ol>
+<li><code>public</code></li>
+<li><code>private</code></li>
+<li><code>protected</code></li>
+<li><code>internal</code></li>
+<li><code>protected internal</code></li>
+<li><code>private protected</code></li>
+</ol><h3>1. Public</h3><p><code>public</code> members can be accessed from <strong>anywhere</strong>.</p><pre><code>class Employee
+{
+    public string name = "Abhisar";
+}
+
+Employee e = new Employee();
+Console.WriteLine(e.name); // OK</code></pre><p>Accessible: same class, same project, different project.</p><h3>2. Private</h3><p><code>private</code> members can be accessed <strong>only within the same class</strong>.</p><pre><code>class Employee
+{
+    private int salary = 50000;
+
+    public void ShowSalary()
+    {
+        Console.WriteLine(salary);
+    }
+}
+
+Employee e = new Employee();
+// e.salary;  // Error
+e.ShowSalary(); // OK</code></pre><p><strong>Important:</strong> If no access modifier is specified for class members, they are <code>private</code> by default.</p><h3>3. Protected</h3><p><code>protected</code> members can be accessed inside the same class and inside derived (child) classes.</p><pre><code>class Parent
+{
+    protected int age = 50;
+}
+
+class Child : Parent
+{
+    public void Show()
+    {
+        Console.WriteLine(age);
+    }
+}
+
+Child c = new Child();
+c.Show(); // OK
+// c.age;  // Error — not accessible via object</code></pre><h3>4. Internal</h3><p><code>internal</code> members are accessible only within the <strong>same assembly/project</strong>.</p><pre><code>internal class Test
+{
+    public void Show()
+    {
+        Console.WriteLine("Internal Class");
+    }
+}</code></pre><p>Accessible in same project. Not accessible from a different project/assembly.</p><h3>5. Protected Internal</h3><p>Combination of <code>protected</code> and <code>internal</code>. Accessible in the same assembly/project <strong>or</strong> in a derived class from another assembly.</p><pre><code>protected internal int data;</code></pre><h3>6. Private Protected</h3><p>Accessible only within the containing class <strong>and</strong> derived classes in the <strong>same assembly</strong>.</p><pre><code>private protected int marks;</code></pre><h3>Real-Life Analogy (House)</h3><table>
+<tr><th>Modifier</th><th>Meaning</th></tr>
+<tr><td>public</td><td>Anyone can enter</td></tr>
+<tr><td>private</td><td>Only you can enter</td></tr>
+<tr><td>protected</td><td>Family members can enter</td></tr>
+<tr><td>internal</td><td>People inside society/apartment only</td></tr>
+<tr><td>protected internal</td><td>Family OR society members</td></tr>
+<tr><td>private protected</td><td>Family members inside same house only</td></tr>
+</table><h3>Accessibility Table</h3><table>
+<tr><th>Modifier</th><th>Same Class</th><th>Child Class</th><th>Same Assembly</th><th>Different Assembly</th></tr>
+<tr><td>public</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>private</td><td>Yes</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>protected</td><td>Yes</td><td>Yes</td><td>No</td><td>Yes (via inheritance)</td></tr>
+<tr><td>internal</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+<tr><td>protected internal</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes (via inheritance)</td></tr>
+<tr><td>private protected</td><td>Yes</td><td>Yes (same assembly)</td><td>Yes</td><td>No</td></tr>
+</table><h3>Default Access Modifiers in C#</h3><table>
+<tr><th>Type</th><th>Default Modifier</th></tr>
+<tr><td>Class member</td><td><code>private</code></td></tr>
+<tr><td>Class</td><td><code>internal</code></td></tr>
+</table><h3>Real Interview Questions</h3><h3>Q1. Difference between private and protected?</h3><table>
+<tr><th>private</th><th>protected</th></tr>
+<tr><td>Accessible only inside same class</td><td>Accessible in child class also</td></tr>
+</table><h3>Q2. Can a private member be inherited?</h3><p><strong>Yes</strong>, it is inherited internally. <strong>No</strong>, it cannot be accessed directly in the child class.</p><h3>Q3. Which modifier is most accessible?</h3><p><strong><code>public</code></strong></p><h3>Q4. Which modifier is most restrictive?</h3><p><strong><code>private</code></strong></p><h3>Complete Example</h3><pre><code>class Parent
+{
+    public int a = 1;
+    private int b = 2;
+    protected int c = 3;
+}
+
+class Child : Parent
+{
+    public void Show()
+    {
+        Console.WriteLine(a); // OK
+        // Console.WriteLine(b); // Error
+        Console.WriteLine(c); // OK
+    }
+}</code></pre><h3>Best Practice</h3><table>
+<tr><th>Situation</th><th>Recommended Modifier</th></tr>
+<tr><td>Data hiding</td><td><code>private</code></td></tr>
+<tr><td>Shared within inheritance</td><td><code>protected</code></td></tr>
+<tr><td>Accessible everywhere</td><td><code>public</code></td></tr>
+<tr><td>Project-specific access</td><td><code>internal</code></td></tr>
+</table><div class="interview-tip"><h3>Interview Answer</h3><p>Access modifiers control visibility: <code>public</code> (everywhere), <code>private</code> (same class only), <code>protected</code> (class + derived), <code>internal</code> (same assembly), plus combined forms. Default for members is private; for classes is internal. I use private for fields, public for APIs, and protected when child classes need shared state.</p></div></div>
 <div class="answer-pane" id="q_107"><h2>Middleware and Filters in ASP.NET Core</h2><p><strong>Middleware</strong> forms the HTTP request pipeline—cross-cutting concerns like authentication, logging, and exception handling that run for most requests. <strong>Filters</strong> run within MVC/minimal-API controller execution for authorization, action logic, and result transformation.</p><p>Middleware is pipeline-order sensitive and ideal for global HTTP concerns. Filters integrate with MVC action lifecycle and can access action context like route data and model state.</p><table>
 <tr><th></th><th>Middleware</th><th>Filters</th></tr>
 <tr><td>Scope</td><td>Entire pipeline</td><td>MVC/action specific</td></tr>
