@@ -594,12 +594,13 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_http_status_codes')">17. HTTP Status Codes</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_content_negotiation')">18. Content Negotiation</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q11')">19. Exception Handling (Middleware)</div>
-<div class="question-item" onclick="showAnswer('q_67')">20. Caching</div>
-<div class="question-item" onclick="showAnswer('q_68')">21. Options Pattern</div>
-<div class="question-item" onclick="showAnswer('q_69')">22. Hosted Services</div>
-<div class="question-item" onclick="showAnswer('q_70')">23. Background Job Processing</div>
-<div class="question-item" onclick="showAnswer('q_120')">24. Web API Performance Optimization</div>
-<div class="question-item" onclick="showAnswer('q_74')">25. How to consume external APIs?</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_api_versioning')">20. API Versioning</div>
+<div class="question-item" onclick="showAnswer('q_67')">21. Caching</div>
+<div class="question-item" onclick="showAnswer('q_68')">22. Options Pattern</div>
+<div class="question-item" onclick="showAnswer('q_69')">23. Hosted Services</div>
+<div class="question-item" onclick="showAnswer('q_70')">24. Background Job Processing</div>
+<div class="question-item" onclick="showAnswer('q_120')">25. Web API Performance Optimization</div>
+<div class="question-item" onclick="showAnswer('q_74')">26. How to consume external APIs?</div>
 </div>
 <h3 class="topic-header">ASP.NET Core - Top 24 Interview Q&amp;A</h3>
 <div class="question-group">
@@ -629,6 +630,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_aspnet_q24')">24. BackgroundService</div>
 <div class="question-item" onclick="showAnswer('q_http_status_codes')">25. HTTP Status Codes</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_content_negotiation')">26. Content Negotiation</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_api_versioning')">27. API Versioning</div>
 </div>
 <h3 class="topic-header">SQL &amp; Database</h3>
 <div class="question-group">
@@ -3048,6 +3050,56 @@ curl -H "Accept: application/xml" https://localhost:5001/api/products/1</code></
 <tr><td>Default?</td><td><code>application/json</code></td></tr>
 <tr><td><code>[Produces]</code>?</td><td>Declares supported response types</td></tr>
 </table><div class="interview-tip"><h3>Interview Answer</h3><p>Content negotiation uses the <code>Accept</code> header so clients can request JSON or XML. Register formatters in <code>Program.cs</code>, return <code>Ok(data)</code>, and ASP.NET Core picks the formatter. Use <code>[Produces]</code> to document supported types; return 406 when no formatter matches.</p></div></div>
+<div class="answer-pane" id="q_aspnet_api_versioning"><h2>API Versioning in ASP.NET Core</h2><p>API versioning maintains <strong>multiple versions</strong> of APIs without breaking existing clients.</p><pre><code>/api/v1/employees
+/api/v2/employees</code></pre><h3>Why API Versioning?</h3><p>Old mobile apps may expect:</p><pre><code>{ "name": "Abhisar" }</code></pre><p>New version may need:</p><pre><code>{ "firstName": "Abhisar", "lastName": "Garg" }</code></pre><p>Without versioning, old clients break and backward compatibility is lost.</p><h3>Common Approaches</h3><table>
+<tr><th>Type</th><th>Example</th></tr>
+<tr><td>URL versioning (most common)</td><td><code>/api/v1/users</code></td></tr>
+<tr><td>Query string</td><td><code>/api/users?version=1</code></td></tr>
+<tr><td>Header</td><td><code>api-version: 1</code></td></tr>
+<tr><td>Media type</td><td><code>Accept: application/json;v=1</code></td></tr>
+</table><h3>Install Package</h3><pre><code>dotnet add package Asp.Versioning.Mvc
+# Legacy: Microsoft.AspNetCore.Mvc.Versioning</code></pre><h3>Configure in Program.cs</h3><pre><code>builder.Services.AddApiVersioning(options =&gt;
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+});</code></pre><h3>URL Versioning - Controller v1</h3><pre><code>[ApiController]
+[Route("api/v{version:apiVersion}/employees")]
+[ApiVersion("1.0")]
+public class EmployeesV1Controller : ControllerBase
+{
+    [HttpGet]
+    public IActionResult Get() =&gt; Ok("Employee API Version 1");
+}</code></pre><h3>URL Versioning - Controller v2</h3><pre><code>[ApiController]
+[Route("api/v{version:apiVersion}/employees")]
+[ApiVersion("2.0")]
+public class EmployeesV2Controller : ControllerBase
+{
+    [HttpGet]
+    public IActionResult Get() =&gt; Ok("Employee API Version 2");
+}</code></pre><h3>API Calls</h3><pre><code>GET /api/v1/employees
+GET /api/v2/employees</code></pre><h3>Query String Versioning</h3><pre><code>builder.Services.AddApiVersioning(options =&gt;
+{
+    options.ApiVersionReader = new QueryStringApiVersionReader("api-version");
+});
+
+GET /api/employees?api-version=1.0</code></pre><h3>Header Versioning</h3><pre><code>options.ApiVersionReader = new HeaderApiVersionReader("api-version");
+
+GET /api/employees
+api-version: 1.0</code></pre><h3>Media Type Versioning</h3><pre><code>Accept: application/json;v=1.0</code></pre><h3>Deprecated APIs</h3><pre><code>[ApiVersion("1.0", Deprecated = true)]</code></pre><p>Clients receive a warning that the version is deprecated.</p><h3>Report Available Versions</h3><pre><code>options.ReportApiVersions = true;</code></pre><p>Response header:</p><pre><code>api-supported-versions: 1.0, 2.0</code></pre><h3>Real-World Example</h3><pre><code>v1 → Basic user info
+v2 → Added profile image
+v3 → Added roles &amp; permissions</code></pre><h3>URI vs Header Versioning</h3><table>
+<tr><th>URL Versioning</th><th>Header Versioning</th></tr>
+<tr><td>Easy to understand</td><td>Cleaner URLs</td></tr>
+<tr><td>Easy testing in browser</td><td>More REST-pure</td></tr>
+<tr><td>Visible in docs</td><td>Harder to debug</td></tr>
+</table><p>Most enterprises use <code>/api/v1/</code> for easy documentation, debugging, and client integration.</p><h3>Swagger</h3><p>Swagger/OpenAPI can generate <strong>separate documentation per API version</strong> when configured with API versioning packages.</p><h3>Best Practices</h3><table>
+<tr><th>Do</th><th>Avoid</th></tr>
+<tr><td>URL versioning for public APIs</td><td>Breaking existing contracts</td></tr>
+<tr><td>Keep old versions stable</td><td>Frequent unnecessary versions</td></tr>
+<tr><td>Deprecate gradually</td><td>Removing versions without notice</td></tr>
+<tr><td>Maintain backward compatibility</td><td></td></tr>
+</table><div class="interview-tip"><h3>Interview One-Liner</h3><p>API versioning allows multiple API versions to coexist without breaking existing clients. In ASP.NET Core it is implemented via URL path (<code>/api/v1/</code>), query string, header, or media type—URL versioning is the most common in enterprise APIs.</p></div></div>
 <div class="answer-pane" id="q_108"><h2>Singleton Pattern</h2><p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection pools—though DI containers often manage lifetime instead.</p><p>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#) is essential; avoid Singleton abuse for every shared object.</p><pre><code>public sealed class Logger {
   private static readonly Lazy&lt;Logger&gt; _instance =
     new(() =&gt; new Logger());
