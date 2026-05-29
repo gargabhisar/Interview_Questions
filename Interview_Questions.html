@@ -1,4 +1,4 @@
-﻿
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -591,12 +591,13 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_53')">14. Routing</div>
 <div class="question-item" onclick="showAnswer('q_54')">15. CORS Policy</div>
 <div class="question-item" onclick="showAnswer('q_55')">16. REST API</div>
-<div class="question-item" onclick="showAnswer('q_67')">17. Caching</div>
-<div class="question-item" onclick="showAnswer('q_68')">18. Options Pattern</div>
-<div class="question-item" onclick="showAnswer('q_69')">19. Hosted Services</div>
-<div class="question-item" onclick="showAnswer('q_70')">20. Background Job Processing</div>
-<div class="question-item" onclick="showAnswer('q_120')">21. Web API Performance Optimization</div>
-<div class="question-item" onclick="showAnswer('q_74')">22. How to consume external APIs?</div>
+<div class="question-item" onclick="showAnswer('q_http_status_codes')">17. HTTP Status Codes</div>
+<div class="question-item" onclick="showAnswer('q_67')">18. Caching</div>
+<div class="question-item" onclick="showAnswer('q_68')">19. Options Pattern</div>
+<div class="question-item" onclick="showAnswer('q_69')">20. Hosted Services</div>
+<div class="question-item" onclick="showAnswer('q_70')">21. Background Job Processing</div>
+<div class="question-item" onclick="showAnswer('q_120')">22. Web API Performance Optimization</div>
+<div class="question-item" onclick="showAnswer('q_74')">23. How to consume external APIs?</div>
 </div>
 <h3 class="topic-header">ASP.NET Core - Top 24 Interview Q&amp;A</h3>
 <div class="question-group">
@@ -624,6 +625,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_aspnet_q22')">22. Docker containerization</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q23')">23. JWT &amp; IdentityServer</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q24')">24. BackgroundService</div>
+<div class="question-item" onclick="showAnswer('q_http_status_codes')">25. HTTP Status Codes</div>
 </div>
 <h3 class="topic-header">SQL &amp; Database</h3>
 <div class="question-group">
@@ -2835,6 +2837,74 @@ docker run -p 8080:8080 myapi</code></pre><h3>Interview Answer</h3><p>I publish 
 }
 
 builder.Services.AddHostedService&lt;EmailWorker&gt;();</code></pre><p>Use cases: queues, scheduled sync, notifications.</p><h3>Interview Answer</h3><p>I register a <code>BackgroundService</code> for work that outlives a requestâ€”email, polling, or message consumptionâ€”respecting <code>CancellationToken</code> on shutdown.</p></div>
+
+<div class="answer-pane" id="q_http_status_codes"><h2>HTTP Status Codes in ASP.NET Core</h2><p>HTTP status codes are standard response codes returned by servers like Kestrel or APIs built with ASP.NET Core. They tell the client whether the request succeeded, failed, was unauthorized, hit a server error, resource not found, and so on.</p><h3>Status Code Categories</h3><table>
+<tr><th>Range</th><th>Meaning</th></tr>
+<tr><td>1xx</td><td>Informational</td></tr>
+<tr><td>2xx</td><td>Success</td></tr>
+<tr><td>3xx</td><td>Redirection</td></tr>
+<tr><td>4xx</td><td>Client Error</td></tr>
+<tr><td>5xx</td><td>Server Error</td></tr>
+</table><h3>1xx - Informational</h3><p>Rarely used in APIs.</p><table>
+<tr><th>Code</th><th>Meaning</th></tr>
+<tr><td>100</td><td>Continue</td></tr>
+<tr><td>101</td><td>Switching Protocols</td></tr>
+</table><h3>2xx - Success</h3><h3>200 OK</h3><p>Request successful.</p><pre><code>return Ok(data);</code></pre><h3>201 Created</h3><p>Resource created successfully.</p><pre><code>return Created("api/users/1", user);
+return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);</code></pre><h3>202 Accepted</h3><p>Request accepted for background processing (queues, email).</p><h3>204 No Content</h3><p>Success with no response body. Common on DELETE.</p><pre><code>return NoContent();</code></pre><h3>3xx - Redirection</h3><table>
+<tr><th>Code</th><th>Meaning</th></tr>
+<tr><td>301</td><td>Moved Permanently</td></tr>
+<tr><td>302</td><td>Found (temporary redirect)</td></tr>
+<tr><td>304</td><td>Not Modified (caching)</td></tr>
+</table><h3>4xx - Client Errors</h3><table>
+<tr><th>Code</th><th>Meaning</th><th>ASP.NET Core</th></tr>
+<tr><td>400</td><td>Bad Request - invalid data</td><td><code>BadRequest()</code></td></tr>
+<tr><td>401</td><td>Unauthorized - auth required</td><td><code>Unauthorized()</code></td></tr>
+<tr><td>403</td><td>Forbidden - no permission</td><td><code>Forbid()</code></td></tr>
+<tr><td>404</td><td>Not Found</td><td><code>NotFound()</code></td></tr>
+<tr><td>405</td><td>Method Not Allowed</td><td>Wrong HTTP verb</td></tr>
+<tr><td>409</td><td>Conflict (duplicate email, etc.)</td><td><code>Conflict()</code></td></tr>
+<tr><td>415</td><td>Unsupported Media Type</td><td>Wrong Content-Type</td></tr>
+<tr><td>429</td><td>Too Many Requests</td><td>Rate limiting</td></tr>
+</table><pre><code>return BadRequest("Invalid request");
+return BadRequest(ModelState);
+return NotFound("User not found");</code></pre><h3>5xx - Server Errors</h3><table>
+<tr><th>Code</th><th>Meaning</th></tr>
+<tr><td>500</td><td>Internal Server Error - unhandled exception</td></tr>
+<tr><td>501</td><td>Not Implemented</td></tr>
+<tr><td>502</td><td>Bad Gateway (proxy invalid response)</td></tr>
+<tr><td>503</td><td>Service Unavailable (maintenance, overload)</td></tr>
+<tr><td>504</td><td>Gateway Timeout (Nginx waiting for API)</td></tr>
+</table><pre><code>return StatusCode(500);</code></pre><h3>Most Common API Status Codes</h3><table>
+<tr><th>Code</th><th>Usage</th></tr>
+<tr><td>200</td><td>Success</td></tr>
+<tr><td>201</td><td>Created</td></tr>
+<tr><td>204</td><td>Deleted successfully</td></tr>
+<tr><td>400</td><td>Validation issue</td></tr>
+<tr><td>401</td><td>Authentication failed</td></tr>
+<tr><td>403</td><td>Permission denied</td></tr>
+<tr><td>404</td><td>Resource not found</td></tr>
+<tr><td>409</td><td>Duplicate / conflict</td></tr>
+<tr><td>500</td><td>Server exception</td></tr>
+</table><h3>401 vs 403</h3><table>
+<tr><th>401 Unauthorized</th><th>403 Forbidden</th></tr>
+<tr><td>Not authenticated</td><td>Authenticated but not allowed</td></tr>
+<tr><td>Invalid / missing token</td><td>No permission</td></tr>
+<tr><td>Login first</td><td>Cannot access admin page</td></tr>
+</table><h3>200 vs 204</h3><table>
+<tr><th>200 OK</th><th>204 No Content</th></tr>
+<tr><td>Has response body</td><td>No response body</td></tr>
+</table><h3>Best Practices</h3><p>Avoid returning 200 for failures:</p><pre><code>// Bad
+return Ok("Something failed");
+
+// Good
+return BadRequest("Validation failed");</code></pre><h3>Real API Flow</h3><pre><code>POST /users
+     ↓
+Validation passed
+     ↓
+User created
+     ↓
+201 Created</code></pre><div class="interview-tip"><h3>Interview One-Liner</h3><p>HTTP status codes indicate the outcome of an HTTP request. They help clients understand whether the request succeeded, failed due to client issues (4xx), or failed because of server-side problems (5xx). In ASP.NET Core, use <code>Ok()</code>, <code>Created()</code>, <code>BadRequest()</code>, <code>NotFound()</code>, and related helpers instead of always returning 200.</p></div></div>
+
 
 <div class="answer-pane" id="q_108"><h2>Singleton Pattern</h2><p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection poolsâ€”though DI containers often manage lifetime instead.</p><p>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#) is essential; avoid Singleton abuse for every shared object.</p><pre><code>public sealed class Logger {
   private static readonly Lazy&lt;Logger&gt; _instance =
