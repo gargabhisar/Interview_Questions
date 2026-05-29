@@ -593,12 +593,13 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_55')">16. REST API</div>
 <div class="question-item" onclick="showAnswer('q_http_status_codes')">17. HTTP Status Codes</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_content_negotiation')">18. Content Negotiation</div>
-<div class="question-item" onclick="showAnswer('q_67')">19. Caching</div>
-<div class="question-item" onclick="showAnswer('q_68')">20. Options Pattern</div>
-<div class="question-item" onclick="showAnswer('q_69')">21. Hosted Services</div>
-<div class="question-item" onclick="showAnswer('q_70')">22. Background Job Processing</div>
-<div class="question-item" onclick="showAnswer('q_120')">23. Web API Performance Optimization</div>
-<div class="question-item" onclick="showAnswer('q_74')">24. How to consume external APIs?</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q11')">19. Exception Handling (Middleware)</div>
+<div class="question-item" onclick="showAnswer('q_67')">20. Caching</div>
+<div class="question-item" onclick="showAnswer('q_68')">21. Options Pattern</div>
+<div class="question-item" onclick="showAnswer('q_69')">22. Hosted Services</div>
+<div class="question-item" onclick="showAnswer('q_70')">23. Background Job Processing</div>
+<div class="question-item" onclick="showAnswer('q_120')">24. Web API Performance Optimization</div>
+<div class="question-item" onclick="showAnswer('q_74')">25. How to consume external APIs?</div>
 </div>
 <h3 class="topic-header">ASP.NET Core - Top 24 Interview Q&amp;A</h3>
 <div class="question-group">
@@ -612,7 +613,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_40')">8. Transient, Scoped, Singleton</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q09')">9. Logging in .NET Core</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q10_filters')">10. MVC Filters</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_q11')">11. Global exception handling</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q11')">11. Exception handling (middleware)</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q12')">12. Program.cs purpose</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q13_auth')">13. Authentication &amp; authorization</div>
 <div class="question-item" onclick="showAnswer('q_kestrel')">14. Kestrel vs IIS</div>
@@ -2772,16 +2773,117 @@ _logger.LogError(ex, "Error occurred");</code></pre><p>Providers: Console, Debug
 {
     public override void OnActionExecuting(ActionExecutingContext context) { }
 }</code></pre><p>Used for logging, validation, authorization, and transforming results.</p><h3>Interview Answer</h3><p>Filters attach to controllers or actions for MVC-specific cross-cutting logic. I use middleware for global HTTP concerns and filters when I need action context like route data or model state.</p></div>
-<div class="answer-pane" id="q_aspnet_q11"><h2>Global Exception Handling in .NET Core</h2><pre><code>app.UseExceptionHandler("/error");</code></pre><p>Custom middleware:</p><pre><code>public async Task Invoke(HttpContext context)
+<div class="answer-pane" id="q_aspnet_q11"><h2>Exception Handling in ASP.NET Core APIs</h2><p>Exception handling in ASP.NET Core APIs is usually done using <strong>global exception handling middleware</strong>.</p><p><strong>Purpose:</strong></p><ul>
+<li>Prevent application crash</li>
+<li>Return proper HTTP status codes</li>
+<li>Log errors centrally</li>
+<li>Avoid exposing sensitive details</li>
+</ul><h3>Recommended Approach</h3><p>Use global middleware instead of <code>try/catch</code> in every controller.</p><h3>Flow</h3><pre><code>Request
+   ↓
+Middleware
+   ↓
+Controller throws exception
+   ↓
+Middleware catches exception
+   ↓
+Returns proper API response</code></pre><h3>Custom Exception Middleware</h3><pre><code>public class ExceptionMiddleware
 {
-    try { await _next(context); }
-    catch (Exception ex)
+    private readonly RequestDelegate _next;
+    private readonly ILogger&lt;ExceptionMiddleware&gt; _logger;
+
+    public ExceptionMiddleware(RequestDelegate next, ILogger&lt;ExceptionMiddleware&gt; logger)
     {
-        _logger.LogError(ex, "Unhandled");
-        context.Response.StatusCode = 500;
-        await context.Response.WriteAsJsonAsync(new { error = "Internal error" });
+        _next = next;
+        _logger = logger;
     }
-}</code></pre><h3>Interview Answer</h3><p>I centralize errors with exception middleware or <code>UseExceptionHandler</code> so controllers stay clean and clients get consistent error responses.</p></div>
+
+    public async Task Invoke(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unhandled exception occurred");
+            await HandleException(context, ex);
+        }
+    }
+
+    private static async Task HandleException(HttpContext context, Exception ex)
+    {
+        context.Response.ContentType = "application/json";
+
+        var (statusCode, message) = ex switch
+        {
+            KeyNotFoundException =&gt; (StatusCodes.Status404NotFound, ex.Message),
+            UnauthorizedAccessException =&gt; (StatusCodes.Status401Unauthorized, ex.Message),
+            ArgumentException =&gt; (StatusCodes.Status400BadRequest, ex.Message),
+            NotImplementedException =&gt; (StatusCodes.Status501NotImplemented, ex.Message),
+            _ =&gt; (StatusCodes.Status500InternalServerError, "Internal server error")
+        };
+
+        context.Response.StatusCode = statusCode;
+
+        await context.Response.WriteAsJsonAsync(new
+        {
+            success = false,
+            message,
+            statusCode
+        });
+    }
+}</code></pre><h3>Register in Program.cs</h3><pre><code>var app = builder.Build();
+
+app.UseMiddleware&lt;ExceptionMiddleware&gt;();
+
+app.MapControllers();
+app.Run();</code></pre><h3>Example API</h3><pre><code>[HttpGet]
+public IActionResult Get()
+{
+    throw new Exception("Something failed");
+}</code></pre><p><strong>Response (dev):</strong></p><pre><code>{
+  "success": false,
+  "message": "Internal server error",
+  "statusCode": 500
+}</code></pre><p><strong>Production:</strong> never expose raw exception messages or stack traces to clients.</p><h3>Exception Mapping</h3><table>
+<tr><th>Exception</th><th>Status Code</th></tr>
+<tr><td>ValidationException / ArgumentException</td><td>400</td></tr>
+<tr><td>UnauthorizedAccessException</td><td>401</td></tr>
+<tr><td>KeyNotFoundException</td><td>404</td></tr>
+<tr><td>NotImplementedException</td><td>501</td></tr>
+<tr><td>Generic Exception</td><td>500</td></tr>
+</table><h3>Built-in Exception Handler</h3><pre><code>app.UseExceptionHandler(errorApp =&gt;
+{
+    errorApp.Run(async context =&gt;
+    {
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsJsonAsync(new
+        {
+            Message = "Internal Server Error"
+        });
+    });
+});</code></pre><h3>Custom Exception</h3><pre><code>public class NotFoundException : Exception
+{
+    public NotFoundException(string message) : base(message) { }
+}
+
+// Usage
+throw new NotFoundException("User not found");</code></pre><h3>Real-World Error Response</h3><pre><code>{
+  "success": false,
+  "message": "User not found",
+  "errorCode": "USER_NOT_FOUND"
+}</code></pre><h3>Best Practices</h3><table>
+<tr><th>Do</th><th>Avoid</th></tr>
+<tr><td>Use global middleware</td><td>try-catch everywhere</td></tr>
+<tr><td>Return meaningful status codes</td><td>Return stack trace to client</td></tr>
+<tr><td>Log exceptions (Serilog, App Insights)</td><td>Swallow exceptions</td></tr>
+<tr><td>Hide internal details in production</td><td>Return 200 for failures</td></tr>
+</table><h3>Why Middleware vs try-catch?</h3><table>
+<tr><th>Middleware</th><th>try-catch in controllers</th></tr>
+<tr><td>Centralized</td><td>Repeated boilerplate</td></tr>
+<tr><td>Consistent API responses</td><td>Inconsistent handling</td></tr>
+<tr><td>Global handling</td><td>Local only</td></tr>
+</table><div class="interview-tip"><h3>Interview One-Liner</h3><p>In ASP.NET Core APIs, exception handling is commonly implemented using global middleware that catches unhandled exceptions, logs them, and returns standardized HTTP error responses with correct status codes—without exposing sensitive details in production.</p></div></div>
 <div class="answer-pane" id="q_aspnet_q12"><h2>Program.cs in .NET 6+</h2><p>Replaces Startup.cs â€” configures services and middleware.</p><pre><code>var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
