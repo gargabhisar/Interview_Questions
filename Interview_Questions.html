@@ -674,6 +674,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_74')">26. Service-to-service calls (HttpClient)</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q16')">27. Resiliency and Polly</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_model_validation')">28. Model validation &amp; error codes</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_action_result_types')">29. Action method return types</div>
 </div>
 <h3 class="topic-header">ASP.NET Core - Top 24 Interview Q&amp;A</h3>
 <div class="question-group">
@@ -3371,6 +3372,59 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=...;Passwo
 </table><pre><code>public IActionResult Get() =&gt; Ok(data);
 
 public ActionResult&lt;User&gt; GetUser() =&gt; Ok(user);</code></pre><h3>Interview Answer</h3><p><code>IActionResult</code> is flexible for different status codes and payloads. <code>ActionResult&lt;T&gt;</code> is preferred for Web APIs because it documents the response type and improves Swagger generation.</p></div>
+<div class="answer-pane" id="q_aspnet_action_result_types"><h2>Return Types of Action Methods in a Controller</h2><p>In ASP.NET MVC / ASP.NET Core, controller action methods return an <strong>action result</strong> that tells the framework <strong>what to send back</strong> to the client (HTML view, JSON, file, redirect, status code, etc.).</p><p>Modern apps usually declare the return type as <code>IActionResult</code> or <code>ActionResult&lt;T&gt;</code> and use helper methods (<code>Ok()</code>, <code>View()</code>, <code>Redirect()</code>).</p><h3>Common action result types</h3><table>
+<tr><th>Result type</th><th>Helper method</th><th>Purpose</th></tr>
+<tr><td><code>ViewResult</code></td><td><code>View()</code></td><td>Return Razor/HTML view (MVC)</td></tr>
+<tr><td><code>PartialViewResult</code></td><td><code>PartialView()</code></td><td>Return partial view for AJAX/layout</td></tr>
+<tr><td><code>JsonResult</code></td><td><code>Json()</code> / <code>Ok(data)</code></td><td>JSON response (Web API)</td></tr>
+<tr><td><code>ContentResult</code></td><td><code>Content()</code></td><td>Plain text or custom string content</td></tr>
+<tr><td><code>FileResult</code></td><td><code>File()</code></td><td>Download file (PDF, Excel, bytes)</td></tr>
+<tr><td><code>RedirectToRouteResult</code></td><td><code>RedirectToRoute()</code></td><td>Redirect using route name/values</td></tr>
+<tr><td><code>RedirectResult</code></td><td><code>Redirect()</code> / <code>RedirectToAction()</code></td><td>Redirect to URL or action</td></tr>
+<tr><td><code>NotFoundResult</code></td><td><code>NotFound()</code></td><td>HTTP 404</td></tr>
+<tr><td><code>StatusCodeResult</code></td><td><code>StatusCode()</code> / <code>BadRequest()</code></td><td>Custom or common HTTP status</td></tr>
+<tr><td><code>EmptyResult</code></td><td><code>Empty()</code></td><td>No response body</td></tr>
+</table><p>Other common helpers: <code>Ok()</code> (200), <code>Created()</code> (201), <code>NoContent()</code> (204), <code>Unauthorized()</code> (401), <code>Forbid()</code> (403).</p><h3>Example: ViewResult (MVC)</h3><pre><code>public class HomeController : Controller
+{
+    public IActionResult Index()
+    {
+        // Do some processing to get data
+        var data = _someService.GetData();
+
+        return View(data);  // returns ViewResult
+    }
+}</code></pre><p>You can also write <code>public ViewResult Index()</code> with explicit type, but <code>IActionResult</code> is more flexible.</p><h3>Example: JSON API</h3><pre><code>[ApiController]
+[Route("api/[controller]")]
+public class ProductsController : ControllerBase
+{
+    [HttpGet("{id}")]
+    public IActionResult Get(int id)
+    {
+        var product = _repo.GetById(id);
+        if (product == null)
+            return NotFound();
+
+        return Ok(product);  // JsonResult / ObjectResult, 200
+    }
+}</code></pre><h3>Example: File, Redirect, Content</h3><pre><code>public IActionResult Download()
+{
+    var bytes = File.ReadAllBytes("report.pdf");
+    return File(bytes, "application/pdf", "report.pdf");
+}
+
+public IActionResult GoHome()
+{
+    return RedirectToAction("Index", "Home");
+}
+
+public IActionResult Plain()
+{
+    return Content("Hello", "text/plain");
+}</code></pre><h3>MVC vs Web API (interview focus)</h3><table>
+<tr><th>App type</th><th>Most used results</th></tr>
+<tr><td>MVC (server-rendered)</td><td><code>View</code>, <code>PartialView</code>, <code>Redirect</code></td></tr>
+<tr><td>Web API (REST)</td><td><code>Ok</code>, <code>Created</code>, <code>BadRequest</code>, <code>NotFound</code></td></tr>
+</table><div class="interview-tip"><h3>Interview one-liner</h3><p>Action methods return <code>IActionResult</code> implementations such as <code>View</code> for HTML, <code>Ok/Json</code> for APIs, <code>File</code> for downloads, and <code>Redirect</code> for navigation. The helper method creates the correct result type internally.</p></div><h3>Interview Answer</h3><p>Controller actions return action results that define the HTTP response. Common types are View, PartialView, Json, Content, File, Redirect, NotFound, and status-code results. In ASP.NET Core I use <code>IActionResult</code> with helpers like <code>View(data)</code> in MVC and <code>Ok(data)</code> / <code>NotFound()</code> in Web APIs.</p></div>
 <div class="answer-pane" id="q_aspnet_q07"><h2>Enable Swagger in .NET Core Web API</h2><pre><code>dotnet add package Swashbuckle.AspNetCore
 
 builder.Services.AddEndpointsApiExplorer();
