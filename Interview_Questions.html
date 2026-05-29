@@ -1,0 +1,2557 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Interview Questions Master Guide</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: #ffffff;
+    color: #000000;
+}
+
+.sidebar {
+    width: 32%;
+    background: #f5f5f5;
+    color: #000;
+    overflow-y: auto;
+    padding: 20px;
+    border-right: 1px solid #cccccc;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.topic-header {
+    margin-top: 18px;
+    margin-bottom: 10px;
+    padding: 10px;
+    
+    background: #eaeaea;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+}
+
+.question-group {
+    margin-bottom: 10px;
+}
+
+.question-item {
+    background: #ffffff;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    
+    transition: 0.3s;
+    color: #000000;
+    font-size: 14px;
+    border: 1px solid #d9d9d9;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.question-item:hover {
+    background: #efefef;
+}
+
+.content {
+    width: 68%;
+    overflow-y: auto;
+    padding: 30px;
+    background: #ffffff;
+}
+
+.answer-pane {
+    display: none;
+    background: #ffffff;
+    color: #000000;
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #d0d0d0;
+}
+
+.answer-pane.active {
+    display: block;
+}
+
+h1, h2, h3 {
+    color: #000000;
+    margin-bottom: 15px;
+}
+
+p, li, td, th {
+    line-height: 1.7;
+    color: #111111;
+}
+
+ul, ol {
+    padding-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #bfbfbf;
+}
+
+th {
+    background: #efefef;
+}
+
+th, td {
+    padding: 10px;
+}
+
+pre {
+    background: #f4f4f4;
+    color: #000000;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    border: 1px solid #d9d9d9;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+code {
+    font-family: Consolas, monospace;
+    color: #000;
+}
+
+.search-container{
+    position:relative;
+    margin-bottom:20px;
+}
+
+#searchBox{
+    width:100%;
+    padding:12px 40px 12px 12px;
+    margin-bottom:0;
+    border:1px solid #cccccc;
+    border-radius:8px;
+    outline:none;
+    font-size:14px;
+    background:#ffffff;
+    color:#000000;
+}
+
+#clearSearch{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    color:#666;
+    font-size:14px;
+    display:none;
+}
+
+#clearSearch:hover{
+    color:#000;
+}
+
+
+.interview-tip {
+    background: #f0f7ff;
+    border-left: 4px solid #0066cc;
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+}
+
+.answer-pane h3 {
+    margin-top: 20px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.answer-pane pre {
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.back-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .sidebar {
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+        height: 100%;
+        padding: 16px;
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px) + 88px);
+        border-right: none;
+        border-bottom: none;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        scroll-padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 88px);
+    }
+
+    .sidebar::after {
+        content: "";
+        display: block;
+        height: calc(env(safe-area-inset-bottom, 0px) + 24px);
+        flex-shrink: 0;
+    }
+
+    .question-group:last-child {
+        margin-bottom: 8px;
+    }
+
+    .sidebar h2 {
+        font-size: 1.25rem;
+    }
+
+    .content {
+        width: 100%;
+        padding: 16px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    body:not(.show-answer) .content {
+        display: none;
+    }
+
+    body.show-answer .sidebar {
+        display: none;
+    }
+
+    body.show-answer .content {
+        display: block;
+        flex: 1;
+        min-height: 0;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0 16px calc(24px + env(safe-area-inset-bottom, 0px) + 88px);
+        overscroll-behavior: contain;
+        scroll-padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 88px);
+    }
+
+    body.show-answer .content::after {
+        content: "";
+        display: block;
+        height: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    }
+
+    .question-item {
+        padding: 14px 12px;
+        font-size: 15px;
+        min-height: 44px;
+    }
+
+    .topic-header {
+        font-size: 15px;
+    }
+
+    .back-btn {
+        display: block;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        width: 100%;
+        margin: 0 0 16px;
+        padding: 14px 16px;
+        font-size: 15px;
+        font-family: inherit;
+        text-align: left;
+        color: #000;
+        background: #f5f5f5;
+        border: 1px solid #cccccc;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .back-btn:active {
+        background: #eaeaea;
+    }
+
+    .answer-pane {
+        padding: 16px;
+    }
+
+    .answer-pane h2 {
+        font-size: 1.2rem;
+        word-wrap: break-word;
+    }
+
+    h1 {
+        font-size: 1.35rem;
+    }
+
+    pre {
+        font-size: 12px;
+        padding: 12px;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        font-size: 13px;
+    }
+
+    th, td {
+        padding: 8px;
+        min-width: 80px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .sidebar {
+        width: 38%;
+    }
+
+    .content {
+        width: 62%;
+        padding: 20px;
+    }
+}
+
+</style>
+<script>
+function isMobileLayout() {
+    return window.matchMedia('(max-width: 768px)').matches;
+}
+
+function showAnswer(id) {
+    let answers = document.querySelectorAll('.answer-pane');
+    answers.forEach(a => a.classList.remove('active'));
+
+    document.getElementById(id).classList.add('active');
+
+    if (isMobileLayout()) {
+        document.body.classList.add('show-answer');
+        suppressTapsUntil = Date.now() + 300;
+        touchTracking.active = false;
+        touchTracking.moved = true;
+        var content = document.querySelector('.content');
+        if (content) {
+            content.scrollTop = 0;
+        }
+    }
+}
+
+var TAP_MOVE_THRESHOLD = 12;
+var suppressTapsUntil = 0;
+var touchTracking = {
+    active: false,
+    moved: false,
+    startX: 0,
+    startY: 0,
+    startScrollTop: 0,
+    targetItem: null
+};
+
+function backToQuestions(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    document.body.classList.remove('show-answer');
+    suppressTapsUntil = Date.now() + 450;
+    touchTracking.active = false;
+    touchTracking.moved = true;
+    touchTracking.targetItem = null;
+
+}
+
+function initQuestionNavigation() {
+    document.querySelectorAll('.question-item').forEach(function(item) {
+        var onclick = item.getAttribute('onclick');
+        if (onclick) {
+            var match = onclick.match(/showAnswer\('([^']+)'\)/);
+            if (match) {
+                item.dataset.answerId = match[1];
+            }
+            item.removeAttribute('onclick');
+        }
+    });
+
+    var sidebar = document.querySelector('.sidebar');
+    if (!sidebar) {
+        return;
+    }
+
+    sidebar.addEventListener('touchstart', function(e) {
+        if (!isMobileLayout() || Date.now() < suppressTapsUntil) {
+            return;
+        }
+        var item = e.target.closest('.question-item');
+        touchTracking.active = true;
+        touchTracking.moved = false;
+        touchTracking.startX = e.touches[0].clientX;
+        touchTracking.startY = e.touches[0].clientY;
+        touchTracking.startScrollTop = sidebar.scrollTop;
+        touchTracking.targetItem = item;
+    }, {passive: true, capture: true});
+
+    sidebar.addEventListener('touchmove', function(e) {
+        if (!touchTracking.active) {
+            return;
+        }
+        if (
+            Math.abs(e.touches[0].clientX - touchTracking.startX) > TAP_MOVE_THRESHOLD ||
+            Math.abs(e.touches[0].clientY - touchTracking.startY) > TAP_MOVE_THRESHOLD ||
+            Math.abs(sidebar.scrollTop - touchTracking.startScrollTop) > 2
+        ) {
+            touchTracking.moved = true;
+        }
+    }, {passive: true, capture: true});
+
+    sidebar.addEventListener('touchend', function() {
+        if (!touchTracking.active || !isMobileLayout() || Date.now() < suppressTapsUntil) {
+            touchTracking.active = false;
+            return;
+        }
+        var item = touchTracking.targetItem;
+        var moved = touchTracking.moved;
+        touchTracking.active = false;
+        touchTracking.targetItem = null;
+
+        if (!moved && item && item.dataset.answerId) {
+            showAnswer(item.dataset.answerId);
+        }
+    }, {passive: true, capture: true});
+
+    sidebar.addEventListener('touchcancel', function() {
+        touchTracking.active = false;
+        touchTracking.moved = true;
+        touchTracking.targetItem = null;
+    }, {passive: true, capture: true});
+
+    sidebar.addEventListener('click', function(e) {
+        var item = e.target.closest('.question-item');
+        if (isMobileLayout()) {
+            if (item) {
+                e.preventDefault();
+            }
+            return;
+        }
+        if (item && item.dataset.answerId) {
+            showAnswer(item.dataset.answerId);
+        }
+    });
+}
+
+function filterQuestions() {
+    const input = document.getElementById('searchBox').value.toLowerCase();
+    const items = document.querySelectorAll('.question-item');
+    const headers = document.querySelectorAll('.topic-header');
+
+    items.forEach(function(item) {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(input) ? 'block' : 'none';
+    });
+
+    headers.forEach(function(header) {
+        let group = header.nextElementSibling;
+        while (group && !group.classList.contains('question-group')) {
+            group = group.nextElementSibling;
+        }
+        if (!group) {
+            return;
+        }
+        const hasVisible = Array.from(group.querySelectorAll('.question-item')).some(function(item) {
+            return item.style.display !== 'none';
+        });
+        header.style.display = hasVisible ? 'block' : 'none';
+    });
+}
+
+function clearSearch() {
+    const searchBox = document.getElementById('searchBox');
+    searchBox.value = '';
+    filterQuestions();
+    document.getElementById('clearSearch').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initQuestionNavigation();
+
+    const searchBox = document.getElementById('searchBox');
+    const clearBtn = document.getElementById('clearSearch');
+
+    searchBox.addEventListener('input', function() {
+        clearBtn.style.display = this.value ? 'block' : 'none';
+        filterQuestions();
+    });
+
+    if (isMobileLayout()) {
+        document.querySelectorAll('.answer-pane').forEach(function(a) {
+            a.classList.remove('active');
+        });
+        document.body.classList.remove('show-answer');
+    }
+
+    window.addEventListener('resize', function() {
+        if (!isMobileLayout()) {
+            document.body.classList.remove('show-answer');
+            if (!document.querySelector('.answer-pane.active')) {
+                var defaultPane = document.getElementById('q_2');
+                if (defaultPane) {
+                    defaultPane.classList.add('active');
+                }
+            }
+        } else if (document.querySelector('.answer-pane.active')) {
+            document.body.classList.add('show-answer');
+        }
+    });
+});
+</script>
+</head>
+<body>
+<div class="sidebar"><h2>Interview Questions</h2>
+<div class="search-container">
+<input id="searchBox" onkeyup="filterQuestions()" placeholder="Search questions..." type="text"/>
+<span id="clearSearch" onclick="clearSearch()">✖</span>
+</div>
+<h3 class="topic-header">OOPS &amp; C#</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_90')">1. Encapsulation</div>
+<div class="question-item" onclick="showAnswer('q_91')">2. Abstract Class vs Interface</div>
+<div class="question-item" onclick="showAnswer('q_92')">3. Why Interfaces?</div>
+<div class="question-item" onclick="showAnswer('q_93')">4. Generics in C#</div>
+<div class="question-item" onclick="showAnswer('q_106')">5. OOP Concepts</div>
+<div class="question-item" onclick="showAnswer('q_116')">6. Encapsulation vs Abstraction</div>
+<div class="question-item" onclick="showAnswer('q_99')">7. Overloading vs Overriding</div>
+<div class="question-item" onclick="showAnswer('q_100')">8. Virtual vs Abstract</div>
+<div class="question-item" onclick="showAnswer('q_101')">9. Sealed Class</div>
+<div class="question-item" onclick="showAnswer('q_102')">10. Constructor Chaining</div>
+<div class="question-item" onclick="showAnswer('q_103')">11. Association vs Aggregation vs Composition</div>
+<div class="question-item" onclick="showAnswer('q_104')">12. Const vs Readonly</div>
+<div class="question-item" onclick="showAnswer('q_115')">13. Private Constructor</div>
+<div class="question-item" onclick="showAnswer('q_117')">14. Static vs Dynamic Binding</div>
+<div class="question-item" onclick="showAnswer('q_121')">15. LINQ</div>
+<div class="question-item" onclick="showAnswer('q_47')">16. Collections</div>
+<div class="question-item" onclick="showAnswer('q_48')">17. Value Type vs Reference Type</div>
+<div class="question-item" onclick="showAnswer('q_49')">18. ref vs out</div>
+<div class="question-item" onclick="showAnswer('q_118')">19. IDisposable vs using</div>
+<div class="question-item" onclick="showAnswer('q_81')">20. IEnumerable vs IQueryable</div>
+<div class="question-item" onclick="showAnswer('q_122')">21. First vs Single</div>
+</div>
+<h3 class="topic-header">.NET Core &amp; ASP.NET Core</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_2')">1. Monolithic vs .NET Core Microservices</div>
+<div class="question-item" onclick="showAnswer('q_37')">2. Framework vs Core</div>
+<div class="question-item" onclick="showAnswer('q_107')">3. Middleware &amp; Filters</div>
+<div class="question-item" onclick="showAnswer('q_110')">4. Dependency Injection (DI)</div>
+<div class="question-item" onclick="showAnswer('q_40')">5. Service Lifetimes</div>
+<div class="question-item" onclick="showAnswer('q_59')">6. What is IServiceProvider?</div>
+<div class="question-item" onclick="showAnswer('q_60')">7. Different ways of Dependency Injection</div>
+<div class="question-item" onclick="showAnswer('q_61')">8. Have you used Method Injection?</div>
+<div class="question-item" onclick="showAnswer('q_96')">9. Why DbContext Scoped?</div>
+<div class="question-item" onclick="showAnswer('q_41')">10. What is JWT?</div>
+<div class="question-item" onclick="showAnswer('q_42')">11. What is Dapper?</div>
+<div class="question-item" onclick="showAnswer('q_53')">12. Routing</div>
+<div class="question-item" onclick="showAnswer('q_54')">13. CORS Policy</div>
+<div class="question-item" onclick="showAnswer('q_55')">14. REST API</div>
+<div class="question-item" onclick="showAnswer('q_67')">15. Caching</div>
+<div class="question-item" onclick="showAnswer('q_68')">16. Options Pattern</div>
+<div class="question-item" onclick="showAnswer('q_69')">17. Hosted Services</div>
+<div class="question-item" onclick="showAnswer('q_70')">18. Background Job Processing</div>
+<div class="question-item" onclick="showAnswer('q_62')">19. Custom Middleware</div>
+<div class="question-item" onclick="showAnswer('q_63')">20. How to call next middleware?</div>
+<div class="question-item" onclick="showAnswer('q_64')">21. What is app.Map()?</div>
+<div class="question-item" onclick="showAnswer('q_65')">22. Can we use app.Map() for specific requests?</div>
+<div class="question-item" onclick="showAnswer('q_120')">23. Web API Performance Optimization</div>
+<div class="question-item" onclick="showAnswer('q_74')">24. How to consume external APIs?</div>
+</div>
+<h3 class="topic-header">SQL &amp; Database</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_1')">1. Why MongoDB and not SQL for MDOP?</div>
+<div class="question-item" onclick="showAnswer('q_5')">2. Normalization and its forms</div>
+<div class="question-item" onclick="showAnswer('q_6')">3. Boyce-Codd Normal Form (BCNF)</div>
+<div class="question-item" onclick="showAnswer('q_7')">4. Indexes in SQL</div>
+<div class="question-item" onclick="showAnswer('q_8')">5. Cluster vs Non-Cluster Index</div>
+<div class="question-item" onclick="showAnswer('q_9')">6. What is Execution Plan?</div>
+<div class="question-item" onclick="showAnswer('q_10')">7. Primary vs Unique Key</div>
+<div class="question-item" onclick="showAnswer('q_11')">8. Union vs Union ALL</div>
+<div class="question-item" onclick="showAnswer('q_12')">9. ISNULL vs COALESCE</div>
+<div class="question-item" onclick="showAnswer('q_125')">10. TRUNCATE vs DELETE</div>
+<div class="question-item" onclick="showAnswer('q_14')">11. Table vs Views</div>
+<div class="question-item" onclick="showAnswer('q_15')">12. Stored Procedure vs Function</div>
+<div class="question-item" onclick="showAnswer('q_123')">13. Benefits of Stored Procedures</div>
+<div class="question-item" onclick="showAnswer('q_16')">14. What is CTE?</div>
+<div class="question-item" onclick="showAnswer('q_124')">15. CTE vs Temp Table</div>
+<div class="question-item" onclick="showAnswer('q_18')">16. Temporary table vs Table Variable</div>
+<div class="question-item" onclick="showAnswer('q_19')">17. Sub Queries vs CTE</div>
+<div class="question-item" onclick="showAnswer('q_20')">18. SQL Injection and prevention</div>
+<div class="question-item" onclick="showAnswer('q_21')">19. Triggers in SQL</div>
+<div class="question-item" onclick="showAnswer('q_22')">20. What is ROW_NUMBER()?</div>
+<div class="question-item" onclick="showAnswer('q_23')">21. Rank vs DenseRank</div>
+<div class="question-item" onclick="showAnswer('q_24')">22. What are Magic tables?</div>
+<div class="question-item" onclick="showAnswer('q_25')">23. What is Deadlock?</div>
+<div class="question-item" onclick="showAnswer('q_26')">24. What is WITH(NOLOCK)?</div>
+<div class="question-item" onclick="showAnswer('q_27')">25. What is Isolation Level?</div>
+<div class="question-item" onclick="showAnswer('q_28')">26. Transactions</div>
+<div class="question-item" onclick="showAnswer('q_29')">27. MERGE Statement</div>
+<div class="question-item" onclick="showAnswer('q_30')">28. Send unlimited parameters through SP</div>
+<div class="question-item" onclick="showAnswer('q_31')">29. SQL vs NoSQL</div>
+<div class="question-item" onclick="showAnswer('q_32')">30. What is partitioning in NoSQL?</div>
+<div class="question-item" onclick="showAnswer('q_33')">31. Primary key and secondary index</div>
+<div class="question-item" onclick="showAnswer('q_34')">32. SQL communication internally</div>
+<div class="question-item" onclick="showAnswer('q_35')">33. Find the Nth Salary</div>
+<div class="question-item" onclick="showAnswer('q_36')">34. Find students having same scores</div>
+<div class="question-item" onclick="showAnswer('q_112')">35. Performance Bottlenecks in SQL</div>
+<div class="question-item" onclick="showAnswer('q_113')">36. JOIN, CTE &amp; Subquery</div>
+</div>
+<h3 class="topic-header">Design Patterns</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_solid_detailed')">1. SOLID Principles Explained with Examples</div>
+<div class="question-item" onclick="showAnswer('q_design_pattern_types')">2. Types of Design Patterns</div>
+<div class="question-item" onclick="showAnswer('q_108')">3. Singleton Class Design</div>
+<div class="question-item" onclick="showAnswer('q_58')">4. Have you used Singleton?</div>
+<div class="question-item" onclick="showAnswer('q_114')">5. Singleton vs Static</div>
+<div class="question-item" onclick="showAnswer('q_factory_pattern')">6. Factory Pattern</div>
+<div class="question-item" onclick="showAnswer('q_strategy_pattern')">7. Strategy Pattern</div>
+<div class="question-item" onclick="showAnswer('q_88')">8. Repository Pattern</div>
+<div class="question-item" onclick="showAnswer('q_89')">9. CQRS Pattern</div>
+</div>
+<h3 class="topic-header">Multithreading &amp; Async</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_111')">1. async/await and Task.Run</div>
+<div class="question-item" onclick="showAnswer('q_105')">2. Why async/await when we have Task?</div>
+<div class="question-item" onclick="showAnswer('q_71')">3. What is Task.Run()?</div>
+<div class="question-item" onclick="showAnswer('q_72')">4. Thread vs Task</div>
+<div class="question-item" onclick="showAnswer('q_73')">5. Can we use Task.Wait()?</div>
+<div class="question-item" onclick="showAnswer('q_75')">6. What are Delegates?</div>
+<div class="question-item" onclick="showAnswer('q_77')">7. Action, Func and Predicate</div>
+<div class="question-item" onclick="showAnswer('q_79')">8. Prevent Memory Leaks</div>
+<div class="question-item" onclick="showAnswer('q_82')">9. Yield Keyword</div>
+<div class="question-item" onclick="showAnswer('q_83')">10. Alternative to Task.WhenAll()</div>
+<div class="question-item" onclick="showAnswer('q_84')">11. Parallel Programming</div>
+<div class="question-item" onclick="showAnswer('q_85')">12. Multithreading</div>
+</div>
+<h3 class="topic-header">Architecture &amp; System Design</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_66')">1. API Performance Optimization</div>
+<div class="question-item" onclick="showAnswer('q_86')">2. Production RCA Steps</div>
+</div>
+<h3 class="topic-header">Capital Market</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_3')">1. Capital Market Questions</div>
+</div>
+<h3 class="topic-header">Others</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_4')">1. Can try-catch have multiple catch blocks?</div>
+<div class="question-item" onclick="showAnswer('q_51')">2. Garbage Collector</div>
+<div class="question-item" onclick="showAnswer('q_52')">3. throw vs throw ex</div>
+<div class="question-item" onclick="showAnswer('q_78')">4. Extension Methods</div>
+</div></div>
+<div class="content">
+<button type="button" class="back-btn" onclick="backToQuestions(event)" aria-label="Back to question list">← Back to questions</button>
+<div class="answer-pane" id="q_1"><h2>MongoDB vs SQL Databases</h2><p>SQL databases are relational, schema-first systems that store data in tables with enforced relationships and ACID transactions. MongoDB is a document-oriented NoSQL database that stores flexible JSON-like BSON documents in collections, optimized for horizontal scaling and rapid schema evolution.</p><p>On SQL Server you also tune parallelism with <code>MAXDOP</code> (maximum degree of parallelism), which limits how many CPUs a single query may use—separate from the SQL vs document-store choice but important for relational performance.</p><table>
+<tr><th>Aspect</th><th>SQL</th><th>MongoDB</th></tr>
+<tr><td>Data model</td><td>Tables, rows, columns</td><td>Collections, documents</td></tr>
+<tr><td>Schema</td><td>Fixed, enforced</td><td>Flexible, optional</td></tr>
+<tr><td>Scaling</td><td>Mostly vertical</td><td>Horizontal sharding</td></tr>
+<tr><td>Joins</td><td>Native JOINs</td><td>Embedding or $lookup</td></tr>
+</table><pre><code>-- SQL: normalized order query
+SELECT o.OrderId, c.Name
+FROM Orders o
+JOIN Customers c ON o.CustomerId = c.Id;
+
+-- MongoDB: embedded or lookup
+db.orders.aggregate([
+  { $lookup: { from: "customers", localField: "customerId",
+      foreignField: "_id", as: "customer" } }
+]);</code></pre><h3>Key Points</h3><ul>
+<li>Choose SQL when you need strong consistency, complex joins, and reporting.</li>
+<li>Choose MongoDB for flexible schemas, high write throughput, and document-centric apps.</li>
+<li>Many teams use both: SQL for transactional core, MongoDB for logs or content.</li>
+</ul><h3>Interview Answer</h3><p>SQL is relational and ACID-focused with strict schemas; MongoDB is document-based and schema-flexible, better for scale-out and evolving data shapes. I pick based on consistency needs, query patterns, and team expertise—not hype.</p></div>
+<div class="answer-pane active" id="q_2"><h2>Monolithic vs Microservices Architecture</h2><p>A <strong>monolith</strong> is a single deployable application containing all modules—UI, business logic, and data access—sharing one process and often one database. <strong>Microservices</strong> split the system into independently deployable services, each owning a bounded context and communicating over HTTP or messaging.</p><p>Monoliths are simpler to develop and debug early on. Microservices improve scalability and team autonomy at the cost of distributed complexity—network failures, observability, and deployment pipelines multiply.</p><table>
+<tr><th>Aspect</th><th>Monolith</th><th>Microservices</th></tr>
+<tr><td>Deployment</td><td>Single unit</td><td>Independent services</td></tr>
+<tr><td>Complexity</td><td>Lower initially</td><td>Higher operational overhead</td></tr>
+<tr><td>Scaling</td><td>Scale entire app</td><td>Scale hot services</td></tr>
+<tr><td>Best when</td><td>Small teams, MVPs</td><td>Large domains, many teams</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>Start monolith unless clear boundaries justify splitting.</li>
+<li>Microservices need strong DevOps and observability.</li>
+<li>Domain boundaries matter more than technology choice.</li>
+</ul><h3>Interview Answer</h3><p>A monolith is one deployable app that is easy to build initially but harder to scale independently. Microservices decompose by business capability for independent deployment and scaling, but add network, consistency, and operations complexity. I choose based on team size, domain clarity, and scaling needs—not hype.</p></div>
+<div class="answer-pane" id="q_3"><h2>Capital Markets: KYC, AML, Trade Lifecycle, MDOP</h2><p>Capital markets systems must satisfy regulatory controls while executing trades accurately. Interviewers expect fluency in onboarding compliance and operational data flows from order capture through settlement.</p><pre><code>// Illustrative trade lifecycle states
+public enum TradeStatus
+{
+    Captured, Validated, Enriched, SentToExchange,
+    Acknowledged, Filled, Allocated, Confirmed, Settled
+}
+
+// KYC/AML checks often gate account activation
+if (!await _kycService.IsVerifiedAsync(clientId))
+    throw new ComplianceException("KYC incomplete");
+await _amlService.ScreenTransactionAsync(trade);</code></pre><h3>Key Points</h3><ul>
+<li><strong>KYC</strong>: verify identity, beneficial ownership, risk profile before trading.</li>
+<li><strong>AML</strong>: monitor transactions, sanctions screening, SAR escalation.</li>
+<li><strong>Trade lifecycle</strong>: order → execution → allocation → confirmation → settlement (T+n).</li>
+<li><strong>MDOP</strong>: Market Data Operations Platform—feeds, entitlements, symbology, golden copy.</li>
+</ul><h3>Interview Answer</h3><p>KYC onboards compliant clients; AML detects suspicious activity ongoing. Trades move through capture, validation, execution, allocation, and settlement with audit trails. MDOP ensures authoritative market data distribution with entitlements and consistent instrument identifiers across front-to-back systems.</p></div>
+<div class="answer-pane" id="q_4"><h2>Multiple catch Blocks in try-catch</h2><p>C# evaluates <code>catch</code> clauses top to bottom; the first matching exception type handles it. Specific exceptions must come before general ones. Only one catch runs per thrown exception.</p><pre><code>try
+{
+    var json = File.ReadAllText(path);
+    var data = JsonSerializer.Deserialize&lt;Order&gt;(json);
+}
+catch (JsonException ex)
+{
+    _logger.LogWarning(ex, "Invalid JSON");
+}
+catch (FileNotFoundException ex)
+{
+    _logger.LogError(ex, "File missing");
+}
+catch (IOException ex) when (ex.HResult == -2147024784)
+{
+    // filter clause — disk full
+}
+catch (Exception ex)
+{
+    _logger.LogCritical(ex, "Unexpected failure");
+    throw; // preserve stack trace
+}</code></pre><h3>Key Points</h3><ul>
+<li>Order: most specific → least specific; Exception last.</li>
+<li>catch when filters on type plus condition without catching base first incorrectly.</li>
+<li>Use throw; not throw ex; to rethrow preserving stack.</li>
+<li>finally runs regardless—use for cleanup (Dispose patterns).</li>
+</ul><h3>Interview Answer</h3><p>Multiple catch blocks let you handle different failure types differently. Place specific handlers first, optionally use exception filters with when, and use a general catch only for logging before rethrow or graceful degradation.</p></div>
+<div class="answer-pane" id="q_5"><h2>Database Normalization</h2><p>Normalization organizes data to reduce redundancy and update anomalies by decomposing tables according to normal forms (1NF through BCNF). Each step removes a specific kind of dependency problem.</p><p>Well-normalized OLTP schemas prevent insert/update/delete anomalies; selective denormalization is acceptable only when profiling proves read bottlenecks.</p><table>
+<tr><th>Form</th><th>Rule</th></tr>
+<tr><td>1NF</td><td>Atomic values, no repeating groups</td></tr>
+<tr><td>2NF</td><td>1NF + no partial dependency on composite key</td></tr>
+<tr><td>3NF</td><td>2NF + no transitive dependency on non-key columns</td></tr>
+</table><pre><code>-- Before (redundant):
+Orders(OrderId, CustomerName, CustomerCity, Product, Qty)
+
+-- After 3NF:
+Customers(CustomerId, Name, City)
+Products(ProductId, Name)
+Orders(OrderId, CustomerId, ProductId, Qty)</code></pre><h3>Key Points</h3><ul>
+<li>Normalization improves data integrity and reduces duplicate storage.</li>
+<li>Over-normalization can hurt read performance—denormalize selectively for hot paths.</li>
+<li>Interviewers often want you to spot redundancy and propose split tables.</li>
+</ul><h3>Interview Answer</h3><p>Normalization splits tables to eliminate redundancy and anomalies. I apply 1NF–3NF in OLTP design, then denormalize only where measured read performance requires it.</p></div>
+<div class="answer-pane" id="q_6"><h2>Boyce-Codd Normal Form (BCNF)</h2><p>BCNF is a stricter form of 3NF: every determinant must be a candidate key. A table is in BCNF when for every functional dependency X → Y, X is a superkey. It eliminates anomalies 3NF might still allow when multiple overlapping candidate keys exist.</p><p>When a non-key attribute determines another non-key attribute, decompose into separate tables while keeping joins lossless and preserving dependencies where possible.</p><pre><code>-- Violates BCNF (Teacher → Room, but Teacher is not a key):
+Enrollment(Student, Course, Teacher, Room)
+
+-- Fix: separate Teacher → Room dependency
+TeacherRoom(Teacher, Room)
+Enrollment(Student, Course, Teacher)</code></pre><h3>Key Points</h3><ul>
+<li>BCNF ⊂ 3NF; all BCNF tables are 3NF, not vice versa.</li>
+<li>Violations occur when non-key attributes determine other non-key attributes.</li>
+<li>Decomposition must be lossless and preserve dependencies where possible.</li>
+</ul><h3>Interview Answer</h3><p>BCNF requires every determinant to be a candidate key. If Teacher determines Room but Teacher isn't a key, I decompose into separate tables to remove the anomaly while keeping joins lossless.</p></div>
+<div class="answer-pane" id="q_7"><h2>Database Indexes</h2><p>Indexes are auxiliary data structures (typically B-trees) that speed up data retrieval by avoiding full table scans. They trade faster reads for extra storage and slower writes due to index maintenance.</p><p>Design indexes around real query patterns—filters, joins, ORDER BY, and GROUP BY—and validate with execution plans rather than indexing every column.</p><pre><code>-- Clustered index on primary key (default in SQL Server)
+CREATE CLUSTERED INDEX IX_Emp_Id ON Employees(EmployeeId);
+
+-- Nonclustered index for frequent filter
+CREATE NONCLUSTERED INDEX IX_Emp_Dept
+ON Employees(DepartmentId) INCLUDE (LastName, Salary);</code></pre><table>
+<tr><th>Pros</th><th>Cons</th></tr>
+<tr><td>Faster SELECT/WHERE/JOIN</td><td>Slower INSERT/UPDATE/DELETE</td></tr>
+<tr><td>Enforces uniqueness (unique index)</td><td>Extra disk and memory</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>Index columns used in WHERE, JOIN, ORDER BY, and GROUP BY.</li>
+<li>Too many indexes hurt write-heavy workloads.</li>
+<li>Use covering indexes (INCLUDE) to avoid key lookups.</li>
+</ul><h3>Interview Answer</h3><p>Indexes accelerate lookups like a book index but slow writes. I index selective, frequently queried columns, verify with execution plans, and avoid over-indexing OLTP tables.</p></div>
+<div class="answer-pane" id="q_8"><h2>Clustered vs Non-Clustered Indexes</h2><p>A clustered index defines the physical sort order of table rows—there can be only one per table. A non-clustered index is a separate structure with pointers (or row locators) back to the data.</p><p>Range scans on the clustered key are very efficient; non-clustered indexes may require key lookups when columns aren't covered.</p><table>
+<tr><th>Clustered</th><th>Non-Clustered</th></tr>
+<tr><td>One per table</td><td>Many allowed</td></tr>
+<tr><td>Data stored in index order</td><td>Separate structure + lookup</td></tr>
+<tr><td>Default on PRIMARY KEY</td><td>Leaf points to clustered key or RID</td></tr>
+</table><pre><code>CREATE TABLE Employees (
+  EmployeeId INT PRIMARY KEY,  -- clustered by default
+  DeptId INT,
+  Name NVARCHAR(100)
+);
+CREATE NONCLUSTERED INDEX IX_Dept ON Employees(DeptId);</code></pre><h3>Key Points</h3><ul>
+<li>Range scans on clustered key are very efficient.</li>
+<li>Non-clustered indexes may require key lookups (bookmark/RID).</li>
+<li>Choose clustered key on narrow, ever-increasing column (e.g., identity).</li>
+</ul><h3>Interview Answer</h3><p>Clustered index sorts the table physically—one per table. Non-clustered indexes are separate lookup structures. I put the clustered index on the most common range-scan column, usually the PK.</p></div>
+<div class="answer-pane" id="q_9"><h2>SQL Execution Plans</h2><p>An execution plan shows how the optimizer retrieves data: scan vs seek, join algorithms, sort/hash operations, and estimated vs actual row counts. Reading plans is essential for performance tuning.</p><p>Compare estimated vs actual rows; large gaps often mean stale statistics or parameter sniffing issues.</p><pre><code>SET STATISTICS IO ON;
+SET STATISTICS TIME ON;
+
+SELECT e.Name, d.DeptName
+FROM Employees e
+INNER JOIN Departments d ON e.DeptId = d.DeptId
+WHERE e.Salary &gt; 80000;
+
+-- View plan in SSMS: Ctrl+M or SET SHOWPLAN_ALL ON;</code></pre><h3>Key Points</h3><ul>
+<li>Look for table/index scans on large tables—often fixable with indexes.</li>
+<li>Compare estimated vs actual rows; big gaps suggest stale statistics.</li>
+<li>Watch for implicit conversions, key lookups, and expensive sorts.</li>
+</ul><h3>Interview Answer</h3><p>I use execution plans to see whether SQL Server scans or seeks, which joins it picks, and where cost concentrates. Red flags are scans on big tables, bad cardinality estimates, and missing indexes.</p></div>
+<div class="answer-pane" id="q_10"><h2>Primary Key vs Unique Constraint</h2><p>Both enforce uniqueness, but a primary key identifies each row and cannot be NULL. A table has one primary key but can have multiple unique constraints. Unique allows one NULL in SQL Server.</p><p>Use a surrogate PK for identity and UNIQUE constraints for alternate business keys like email or product codes.</p><table>
+<tr><th>Primary Key</th><th>Unique</th></tr>
+<tr><td>One per table</td><td>Multiple allowed</td></tr>
+<tr><td>NOT NULL required</td><td>NULL usually allowed once</td></tr>
+<tr><td>Creates clustered index (SQL Server default)</td><td>Non-clustered by default</td></tr>
+</table><pre><code>CREATE TABLE Users (
+  UserId INT PRIMARY KEY,
+  Email NVARCHAR(255) UNIQUE,
+  Phone NVARCHAR(20) UNIQUE NULL
+);</code></pre><h3>Key Points</h3><ul>
+<li>PK is the row identifier; unique constraints protect alternate business keys.</li>
+<li>Don't make every unique column a PK—use surrogate keys when needed.</li>
+<li>Both create indexes automatically in most engines.</li>
+</ul><h3>Interview Answer</h3><p>Primary key is the main row identifier—one per table, no NULLs. Unique constraints also block duplicates but allow NULLs and you can have several. I use PK for identity and UNIQUE for emails, codes, etc.</p></div>
+<div class="answer-pane" id="q_11"><h2>UNION vs UNION ALL</h2><p>UNION combines result sets from two or more SELECT statements and removes duplicate rows (distinct sort/hash). UNION ALL concatenates all rows including duplicates—faster when duplicates are acceptable or impossible.</p><p>Column order, count, and compatible types must match across all SELECT branches.</p><pre><code>SELECT City FROM Customers
+UNION
+SELECT City FROM Suppliers;
+
+SELECT City FROM Customers
+UNION ALL
+SELECT City FROM Suppliers;</code></pre><table>
+<tr><th>UNION</th><th>UNION ALL</th></tr>
+<tr><td>Removes duplicates</td><td>Keeps all rows</td></tr>
+<tr><td>Slower (sort/distinct)</td><td>Faster</td></tr>
+<tr><td>Same column count/types</td><td>Same column count/types</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>Prefer UNION ALL when you know sets are disjoint or duplicates are fine.</li>
+<li>Column order, count, and compatible types must match.</li>
+<li>ORDER BY applies to the final combined result.</li>
+</ul><h3>Interview Answer</h3><p>UNION merges queries and removes duplicates; UNION ALL just stacks them. I use UNION ALL for performance unless I explicitly need distinct combined results.</p></div>
+<div class="answer-pane" id="q_12"><h2>ISNULL vs COALESCE</h2><p>Both replace NULL with a value. ISNULL is SQL Server–specific, takes exactly two arguments, and uses the first argument's data type. COALESCE is ANSI-standard, accepts multiple arguments, and returns the first non-NULL value.</p><p>ISNULL can silently truncate if types differ; COALESCE follows data-type precedence rules—prefer COALESCE for portability.</p><pre><code>SELECT
+  ISNULL(MiddleName, 'N/A') AS Middle,
+  COALESCE(MiddleName, NickName, 'N/A') AS Display
+FROM Employees;
+
+SELECT COALESCE(NullableInt, 0) FROM T;</code></pre><h3>Key Points</h3><ul>
+<li>COALESCE evaluates arguments until first non-NULL; ISNULL evaluates once.</li>
+<li>ISNULL can truncate if types differ; COALESCE follows precedence rules.</li>
+<li>Prefer COALESCE for portability and multiple fallbacks.</li>
+</ul><h3>Interview Answer</h3><p>ISNULL replaces NULL with one fallback and is SQL Server–specific. COALESCE is standard, supports multiple fallbacks, and is my default unless I need ISNULL's two-arg simplicity in T-SQL.</p></div>
+<div class="answer-pane" id="q_13">
+<div class="qa-section" id="q9">
+<h2>9. Truncate vs Delete</h2>
+<table>
+<tr>
+<th>TRUNCATE</th>
+<th>DELETE</th>
+</tr>
+<tr>
+<td>Faster</td>
+<td>Slower</td>
+</tr>
+<tr>
+<td>Cannot use WHERE</td>
+<td>WHERE allowed</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="answer-pane" id="q_14"><h2>Tables vs Views</h2><p>Tables store physical data on disk. Views are saved SELECT queries—virtual tables that present data without storing it (except indexed views in SQL Server, which materialize).</p><p>Views simplify complex joins and enforce row/column security but don't automatically improve performance unless indexed.</p><table>
+<tr><th>Table</th><th>View</th></tr>
+<tr><td>Physical storage</td><td>Logical definition</td></tr>
+<tr><td>Full CRUD (with rules)</td><td>Read-mostly; updatable views limited</td></tr>
+<tr><td>Indexes on table</td><td>Indexed view = persisted data</td></tr>
+</table><pre><code>CREATE VIEW vw_ActiveEmployees AS
+SELECT EmployeeId, Name, DeptId
+FROM Employees
+WHERE IsActive = 1;
+
+SELECT * FROM vw_ActiveEmployees WHERE DeptId = 5;</code></pre><h3>Key Points</h3><ul>
+<li>Views simplify complex joins and enforce row/column security.</li>
+<li>They don't automatically improve performance unless indexed.</li>
+<li>Use views for abstraction; don't hide performance problems behind them.</li>
+</ul><h3>Interview Answer</h3><p>Tables hold data; views are stored queries that expose a simplified or secured interface. I use views to encapsulate joins and permissions, but the underlying tables do the real storage.</p></div>
+<div class="answer-pane" id="q_15"><h2>Stored Procedures vs Functions</h2><p>Stored procedures are precompiled batches for business logic, DML, and orchestration. Functions return a single scalar or table value and are designed for reuse inside queries—with restrictions on side effects.</p><p>Scalar UDFs can hurt performance on large sets; inline table-valued functions are preferred for set-based operations.</p><table>
+<tr><th>Stored Procedure</th><th>Function</th></tr>
+<tr><td>Can INSERT/UPDATE/DELETE</td><td>Deterministic reads (generally)</td></tr>
+<tr><td>OUTPUT parameters, multiple result sets</td><td>Must RETURN value or table</td></tr>
+<tr><td>EXEC in app/batch</td><td>Used in SELECT/WHERE</td></tr>
+</table><pre><code>CREATE PROC usp_AddOrder @CustomerId INT AS
+BEGIN INSERT INTO Orders(CustomerId) VALUES(@CustomerId); END;
+
+CREATE FUNCTION fn_Tax(@Amount DECIMAL) RETURNS DECIMAL AS
+BEGIN RETURN @Amount * 0.08; END;</code></pre><h3>Key Points</h3><ul>
+<li>SPs for transactions and workflows; functions for reusable calculations.</li>
+<li>Scalar UDFs can hurt performance on large sets—inline TVFs preferred.</li>
+<li>Functions cannot modify persistent data in SQL Server.</li>
+</ul><h3>Interview Answer</h3><p>Stored procedures execute business logic and can modify data; functions return computed values for use in queries. I use SPs for operations and functions for pure calculations embedded in SELECTs.</p></div>
+<div class="answer-pane" id="q_16"><h2>Common Table Expressions (CTE)</h2><p>A CTE is a temporary named result set defined with WITH, scoped to a single statement. It improves readability for recursive queries and multi-step transformations without creating permanent objects.</p><p>Recursive CTEs traverse hierarchies (org charts, BOMs). The optimizer may inline CTEs rather than materialize them.</p><pre><code>WITH DeptTotals AS (
+  SELECT DeptId, SUM(Salary) AS TotalSalary
+  FROM Employees
+  GROUP BY DeptId
+)
+SELECT d.DeptName, t.TotalSalary
+FROM DeptTotals t
+JOIN Departments d ON t.DeptId = d.DeptId;</code></pre><h3>Key Points</h3><ul>
+<li>Recursive CTEs traverse hierarchies (org charts, BOMs).</li>
+<li>CTEs are not guaranteed to be materialized—optimizer may inline.</li>
+<li>Can reference multiple CTEs in one WITH clause.</li>
+</ul><h3>Interview Answer</h3><p>A CTE is a named subquery using WITH that makes complex SQL readable and supports recursion. It's scoped to one statement and doesn't persist like a temp table unless the optimizer materializes it.</p></div>
+<div class="answer-pane" id="q_17">
+<div class="qa-section" id="q13">
+<h2>13. Temporary table vs CTE</h2>
+<table>
+<tr>
+<th>Temp Table</th>
+<th>CTE</th>
+</tr>
+<tr>
+<td>Stored in tempdb</td>
+<td>Exists during query execution</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="answer-pane" id="q_18"><h2>Temp Table vs Table Variable</h2><p>Temp tables (#name) store data in tempdb with full statistics (after enough rows). Table variables (@name) historically had poor cardinality estimates; SQL Server 2019+ improved this with table variable deferred compilation.</p><p>Use table variables for small staging; temp tables for joins on large intermediate sets.</p><table>
+<tr><th>#Temp Table</th><th>@Table Variable</th></tr>
+<tr><td>tempdb, can index</td><td>Memory/tempdb, scoped to batch/proc</td></tr>
+<tr><td>Good statistics</td><td>Historically poor estimates</td></tr>
+<tr><td>Visible in nested proc</td><td>Not visible outside declaring scope</td></tr>
+</table><pre><code>DECLARE @Small TABLE (Id INT PRIMARY KEY, Name NVARCHAR(50));
+CREATE TABLE #Large (Id INT, Data NVARCHAR(MAX));
+CREATE INDEX IX_Id ON #Large(Id);</code></pre><h3>Key Points</h3><ul>
+<li>Use table variables for small staging (&lt; few thousand rows).</li>
+<li>Temp tables for joins on large intermediate sets.</li>
+<li>SQL Server 2019+ improved table variable estimates.</li>
+</ul><h3>Interview Answer</h3><p>Temp tables support indexes and accurate stats for larger data; table variables are lightweight for small in-memory staging. Wrong choice causes bad plans—I've moved hot paths from @vars to #temp when row counts grew.</p></div>
+<div class="answer-pane" id="q_19"><h2>Subquery vs CTE</h2><p>Both nest queries, but CTEs name intermediate results at the top for clarity and recursion. Correlated subqueries run per outer row and can be slower; CTEs read cleaner for multi-step logic.</p><p>Performance is often identical—the optimizer may produce the same plan. Prefer EXISTS over IN for correlated checks on large tables.</p><pre><code>-- Subquery
+SELECT Name FROM Employees
+WHERE DeptId IN (SELECT DeptId FROM Departments WHERE Region = 'West');
+
+-- CTE (clearer for multiple references)
+WITH WestDepts AS (
+  SELECT DeptId FROM Departments WHERE Region = 'West'
+)
+SELECT e.Name FROM Employees e
+JOIN WestDepts w ON e.DeptId = w.DeptId;</code></pre><h3>Key Points</h3><ul>
+<li>Prefer EXISTS over IN for correlated checks on large tables.</li>
+<li>CTEs avoid repeating the same subquery multiple times.</li>
+<li>Performance is often identical—optimizer may produce same plan.</li>
+</ul><h3>Interview Answer</h3><p>Subqueries embed logic inline; CTEs name it for readability and recursion. I pick CTEs for multi-step queries and EXISTS subqueries for existence checks—then verify with the execution plan.</p></div>
+<div class="answer-pane" id="q_20"><h2>SQL Injection</h2><p>SQL injection occurs when untrusted input is concatenated into SQL, letting attackers alter queries—reading data, bypassing auth, or executing destructive commands.</p><p>Stored procedures help only when parameters are used—not dynamic SQL built with string concatenation inside the SP.</p><pre><code>-- VULNERABLE:
+"SELECT * FROM Users WHERE UserName = '" + input + "'"
+-- input: ' OR '1'='1
+
+-- SAFE: parameterized query
+SqlCommand cmd = new("SELECT * FROM Users WHERE UserName = @u", conn);
+cmd.Parameters.AddWithValue("@u", input);</code></pre><h3>Key Points</h3><ul>
+<li>Always use parameterized queries or ORM parameter binding.</li>
+<li>Never concatenate user input; validate and least-privilege DB accounts.</li>
+<li>SPs help only if parameters are used—not dynamic SQL inside.</li>
+</ul><h3>Interview Answer</h3><p>SQL injection happens when user input becomes executable SQL. I prevent it with parameterized queries, avoid dynamic concatenation, apply least privilege, and use input validation as defense in depth.</p></div>
+<div class="answer-pane" id="q_21"><h2>SQL Triggers</h2><p>Triggers are special stored procedures that fire automatically on INSERT, UPDATE, or DELETE (and sometimes DDL). They enforce rules, audit changes, or maintain derived data—but add hidden complexity.</p><p>inserted and deleted pseudo-tables hold new and old row versions for DML triggers.</p><pre><code>CREATE TRIGGER trg_AuditEmployeeUpdate
+ON Employees AFTER UPDATE
+AS
+BEGIN
+  INSERT INTO EmployeeAudit(EmployeeId, OldSalary, NewSalary, ChangedAt)
+  SELECT d.EmployeeId, d.Salary, i.Salary, GETDATE()
+  FROM deleted d JOIN inserted i ON d.EmployeeId = i.EmployeeId;
+END;</code></pre><h3>Key Points</h3><ul>
+<li>AFTER vs INSTEAD OF triggers serve different use cases.</li>
+<li>Triggers can cascade and hurt debugging—prefer constraints when possible.</li>
+<li>inserted/deleted pseudo-tables hold old and new row versions.</li>
+</ul><h3>Interview Answer</h3><p>Triggers auto-run on data changes for auditing or enforcement. I use them sparingly because they're implicit side effects—prefer constraints and application logic unless cross-cutting audit is required.</p></div>
+<div class="answer-pane" id="q_22"><h2>ROW_NUMBER()</h2><p>ROW_NUMBER() assigns a unique sequential integer to each row within a partition, ordered by specified columns. It's the go-to function for top-N per group and pagination.</p><p>Filter via subquery/CTE because window functions can't go in WHERE directly. Ties get different row numbers arbitrarily—use RANK for ties with gaps.</p><pre><code>SELECT EmployeeId, Name, Salary,
+  ROW_NUMBER() OVER (PARTITION BY DeptId ORDER BY Salary DESC) AS rn
+FROM Employees;
+
+-- 2nd highest salary per dept:
+SELECT * FROM (
+  SELECT *, ROW_NUMBER() OVER (PARTITION BY DeptId ORDER BY Salary DESC) rn
+  FROM Employees
+) x WHERE rn = 2;</code></pre><h3>Key Points</h3><ul>
+<li>Ties get different row numbers—use RANK for ties with gaps.</li>
+<li>PARTITION BY defines groups; ORDER BY defines sequence within group.</li>
+<li>Filter via subquery/CTE—window functions can't go in WHERE directly.</li>
+</ul><h3>Interview Answer</h3><p>ROW_NUMBER() numbers rows within partitions—perfect for top-N per group and pagination. Unlike RANK, it never repeats numbers even when values tie.</p></div>
+<div class="answer-pane" id="q_23"><h2>RANK vs DENSE_RANK</h2><p>Both assign ranks with ties receiving the same rank. RANK leaves gaps after ties (1,1,3); DENSE_RANK does not (1,1,2). ROW_NUMBER never ties.</p><p>Use DENSE_RANK for leaderboard positions without gaps; RANK when Olympic-style ranking (skip after tie) is intended.</p><table>
+<tr><th>Score</th><th>ROW_NUMBER</th><th>RANK</th><th>DENSE_RANK</th></tr>
+<tr><td>100</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>100</td><td>2</td><td>1</td><td>1</td></tr>
+<tr><td>90</td><td>3</td><td>3</td><td>2</td></tr>
+</table><pre><code>SELECT Name, Score,
+  RANK() OVER (ORDER BY Score DESC) AS rnk,
+  DENSE_RANK() OVER (ORDER BY Score DESC) AS drnk
+FROM Results;</code></pre><h3>Key Points</h3><ul>
+<li>Use DENSE_RANK for leaderboard positions without gaps.</li>
+<li>Use RANK when Olympic-style ranking (skip after tie) is intended.</li>
+<li>NTILE splits rows into buckets.</li>
+</ul><h3>Interview Answer</h3><p>RANK gives ties the same number then skips; DENSE_RANK gives ties the same number with no gaps. I pick DENSE_RANK for consecutive ranking and RANK when skipped positions after ties are acceptable.</p></div>
+<div class="answer-pane" id="q_24"><h2>Magic Tables in Triggers</h2><p>In SQL Server DML triggers, <strong>inserted</strong> and <strong>deleted</strong> are virtual tables holding the new and old row versions. Together they enable audit trails and complex validation.</p><p>INSERT: only inserted populated. DELETE: only deleted. UPDATE: both tables populated.</p><pre><code>CREATE TRIGGER trg_OrderInsert ON Orders AFTER INSERT AS
+BEGIN
+  INSERT INTO OrderLog(OrderId, Action, LogTime)
+  SELECT OrderId, 'INSERT', GETDATE() FROM inserted;
+END;
+
+-- UPDATE uses both: deleted = before, inserted = after</code></pre><h3>Key Points</h3><ul>
+<li>INSERT: only inserted populated. DELETE: only deleted. UPDATE: both.</li>
+<li>They exist only inside the trigger scope.</li>
+<li>MERGE triggers expose inserted/deleted for matched operations.</li>
+</ul><h3>Interview Answer</h3><p>Magic tables inserted and deleted are virtual tables in SQL Server triggers showing new and old rows. I use them for auditing—comparing deleted vs inserted on updates to log what changed.</p></div>
+<div class="answer-pane" id="q_25"><h2>Deadlocks</h2><p>A deadlock occurs when two or more sessions hold locks each other needs, forming a cycle. SQL Server detects deadlocks, picks a victim, rolls back its transaction, and returns error 1205.</p><p>Access resources in consistent order across transactions and keep transactions short.</p><pre><code>-- Session A                    -- Session B
+BEGIN TRAN                      BEGIN TRAN
+UPDATE Accounts SET ... Id=1    UPDATE Accounts SET ... Id=2
+UPDATE Accounts SET ... Id=2    UPDATE Accounts SET ... Id=1
+-- deadlock: one victim rolled back</code></pre><h3>Key Points</h3><ul>
+<li>Access resources in consistent order across transactions.</li>
+<li>Keep transactions short; avoid user interaction inside transactions.</li>
+<li>Use appropriate isolation; retry victim transactions in app code.</li>
+</ul><h3>Interview Answer</h3><p>Deadlocks are circular lock waits—SQL Server kills one session. I prevent them by consistent lock ordering, short transactions, proper indexes to reduce lock time, and retry logic for 1205 errors.</p></div>
+<div class="answer-pane" id="q_26"><h2>NOLOCK Hint (READ UNCOMMITTED)</h2><p>WITH (NOLOCK) or READ UNCOMMITTED allows reading uncommitted data—dirty reads, non-repeatable reads, and phantom rows are possible. It reduces blocking but sacrifices consistency.</p><p>Prefer READ COMMITTED SNAPSHOT for read concurrency without dirty reads on critical data.</p><pre><code>SELECT * FROM Orders WITH (NOLOCK)
+WHERE OrderDate &gt;= '2024-01-01';
+
+-- Equivalent session setting:
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;</code></pre><h3>Key Points</h3><ul>
+<li>Never use NOLOCK on financial or authoritative reporting data.</li>
+<li>Can read rows that roll back or see inconsistent page states.</li>
+<li>Prefer READ COMMITTED SNAPSHOT for read concurrency without dirty reads.</li>
+</ul><h3>Interview Answer</h3><p>NOLOCK reads without shared locks, allowing dirty reads and inconsistencies. I avoid it for critical data; if I need read concurrency, I use RCSI or snapshot isolation instead.</p></div>
+<div class="answer-pane" id="q_27"><h2>Transaction Isolation Levels</h2><p>Isolation levels control how transactions interact regarding dirty reads, non-repeatable reads, and phantoms—from least to most strict: READ UNCOMMITTED, READ COMMITTED (default), REPEATABLE READ, SERIALIZABLE, plus SNAPSHOT.</p><p>Higher isolation means more locking or version-store overhead—match level to business consistency requirements.</p><table>
+<tr><th>Level</th><th>Dirty</th><th>Non-Repeat</th><th>Phantom</th></tr>
+<tr><td>READ UNCOMMITTED</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>READ COMMITTED</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>REPEATABLE READ</td><td>No</td><td>No</td><td>Yes</td></tr>
+<tr><td>SERIALIZABLE</td><td>No</td><td>No</td><td>No</td></tr>
+</table><pre><code>SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+BEGIN TRANSACTION;
+  SELECT * FROM Accounts WHERE Id = 1;
+COMMIT;</code></pre><h3>Key Points</h3><ul>
+<li>Higher isolation = more locking/version store overhead.</li>
+<li>SNAPSHOT uses row versioning without shared read locks.</li>
+<li>Match level to business consistency requirements.</li>
+</ul><h3>Interview Answer</h3><p>Isolation levels trade consistency for concurrency. Default READ COMMITTED prevents dirty reads; REPEATABLE READ and SERIALIZABLE tighten further. I choose based on whether the app can tolerate phantoms or needs strict serializability.</p></div>
+<div class="answer-pane" id="q_28"><h2>SQL Transactions</h2><p>A transaction groups one or more operations into an atomic unit following ACID: Atomicity, Consistency, Isolation, Durability. Either all changes commit or all roll back.</p><p>Use TRY/CATCH with XACT_ABORT ON in modern T-SQL; keep transactions short to reduce lock duration and deadlocks.</p><pre><code>BEGIN TRANSACTION;
+  UPDATE Accounts SET Balance = Balance - 100 WHERE Id = 1;
+  UPDATE Accounts SET Balance = Balance + 100 WHERE Id = 2;
+  IF @@ERROR &lt;&gt; 0 ROLLBACK TRANSACTION;
+  ELSE COMMIT TRANSACTION;</code></pre><h3>Key Points</h3><ul>
+<li>Keep transactions short to reduce lock duration and deadlocks.</li>
+<li>Use TRY/CATCH with XACT_ABORT ON in modern T-SQL.</li>
+<li>Nested transactions use @@TRANCOUNT; savepoints allow partial rollback.</li>
+</ul><h3>Interview Answer</h3><p>Transactions ensure ACID—either all SQL in the batch succeeds or none does. I wrap related DML in explicit transactions, handle errors with rollback, and keep them as short as possible.</p></div>
+<div class="answer-pane" id="q_29"><h2>MERGE Statement</h2><p>MERGE performs INSERT, UPDATE, or DELETE in one statement based on a join between target and source. Useful for upserts and synchronizing staging to production tables.</p><p>Requires proper indexes on join keys; known concurrency issues exist under heavy contention—consider separate INSERT/UPDATE paths.</p><pre><code>MERGE Products AS t
+USING StagingProducts AS s ON t.ProductId = s.ProductId
+WHEN MATCHED THEN UPDATE SET t.Price = s.Price
+WHEN NOT MATCHED THEN INSERT (ProductId, Price)
+  VALUES (s.ProductId, s.Price)
+WHEN NOT MATCHED BY SOURCE THEN DELETE;</code></pre><h3>Key Points</h3><ul>
+<li>Requires proper indexes on join keys for performance.</li>
+<li>Known concurrency issues—consider separate INSERT/UPDATE in high contention.</li>
+<li>OUTPUT clause can capture merged rows for auditing.</li>
+</ul><h3>Interview Answer</h3><p>MERGE upserts and syncs target tables from a source in one statement. I use it for ETL staging loads but watch for locking and known race conditions under heavy concurrency.</p></div>
+<div class="answer-pane" id="q_30"><h2>Stored Procedure Parameter Limits</h2><p>SQL Server limits stored procedure parameters to 2,100 per procedure. Hitting this usually means the design should change—table-valued parameters, JSON, or bulk insert patterns scale better.</p><p>Table-valued parameters avoid dynamic SQL and plan cache pollution for large ID lists.</p><pre><code>-- Instead of 5000 scalar params, pass a table:
+CREATE TYPE IdList AS TABLE (Id INT PRIMARY KEY);
+CREATE PROC usp_ProcessIds @Ids IdList READONLY AS
+  SELECT * FROM Orders o JOIN @Ids i ON o.OrderId = i.Id;
+
+-- Or JSON (SQL Server 2016+):
+CREATE PROC usp_ProcessJson @Payload NVARCHAR(MAX) AS
+  SELECT value FROM OPENJSON(@Payload);</code></pre><h3>Key Points</h3><ul>
+<li>2,100 param limit is hard—redesign with TVPs or temp staging tables.</li>
+<li>Table-valued parameters avoid dynamic SQL and plan cache pollution.</li>
+<li>Bulk insert/BCP for massive datasets, not thousands of parameters.</li>
+</ul><h3>Interview Answer</h3><p>SQL Server caps SP parameters at 2,100. If you're near that, the design is wrong—I'd use table-valued parameters, JSON OPENJSON, or staging tables instead of scalar param explosion.</p></div>
+<div class="answer-pane" id="q_31"><h2>SQL vs NoSQL</h2><p>SQL databases use structured schemas, ACID transactions, and powerful query languages (SQL). NoSQL covers document, key-value, column, and graph stores optimized for scale, flexibility, or specific access patterns.</p><p>Polyglot persistence is common—SQL for transactional core, NoSQL for logs, cache, or content at scale.</p><table>
+<tr><th>SQL</th><th>NoSQL</th></tr>
+<tr><td>Schema-on-write</td><td>Often schema-on-read</td></tr>
+<tr><td>Vertical + limited horizontal</td><td>Built for horizontal scale</td></tr>
+<tr><td>Complex joins</td><td>Denormalized, app-side joins</td></tr>
+</table><pre><code>-- SQL: JOIN across normalized tables
+-- MongoDB: db.users.find({ "address.city": "NYC" })
+-- Redis: GET session:abc123</code></pre><h3>Key Points</h3><ul>
+<li>No single winner—polyglot persistence is common.</li>
+<li>SQL for transactions/reporting; NoSQL for scale/flexibility.</li>
+<li>Consider operational complexity of running multiple stores.</li>
+</ul><h3>Interview Answer</h3><p>SQL gives strong consistency and relational modeling; NoSQL trades that for scale and schema flexibility. I choose based on access patterns, consistency needs, and team skills—not religion.</p></div>
+<div class="answer-pane" id="q_32"><h2>NoSQL Partitioning (Sharding)</h2><p>Partitioning splits data across nodes by a shard key so each node holds a subset. MongoDB uses sharded clusters; Cassandra/Dynamo partition by hash of key. Good shard keys avoid hotspots and enable even distribution.</p><p>Cross-shard queries are expensive—design for single-shard access when possible.</p><pre><code>// MongoDB sharded collection (example shard key)
+sh.shardCollection("shop.orders", { customerId: 1, orderDate: 1 });
+
+// Bad: monotonic _id only → all writes to last chunk
+// Better: compound key spreading writes</code></pre><h3>Key Points</h3><ul>
+<li>Shard key is immutable in many systems—choose carefully upfront.</li>
+<li>Hot partitions occur when key distribution is skewed.</li>
+<li>Cross-shard queries are expensive; design for single-shard access.</li>
+</ul><h3>Interview Answer</h3><p>NoSQL partitioning shards data by a key across nodes for horizontal scale. Success depends on shard key design—avoid hotspots, prefer queries that hit one shard, and plan for rebalancing.</p></div>
+<div class="answer-pane" id="q_33"><h2>Primary vs Secondary Index (NoSQL)</h2><p>In MongoDB, the <strong>_id</strong> field has a unique primary index by default. Secondary indexes index other fields for alternate query paths—they store indexed field values plus pointers to documents.</p><p>Compound index field order matters—equality fields first, then sort/range columns.</p><pre><code>db.users.createIndex({ email: 1 }, { unique: true });  // secondary
+db.orders.createIndex({ customerId: 1, orderDate: -1 }); // compound
+
+db.orders.find({ customerId: 123 }).sort({ orderDate: -1 });</code></pre><h3>Key Points</h3><ul>
+<li>Secondary indexes speed reads but slow writes (each index updated).</li>
+<li>Compound index field order matters—equality first, then sort/range.</li>
+<li>Covered queries return results entirely from the index.</li>
+</ul><h3>Interview Answer</h3><p>Primary index is on _id by default; secondary indexes support other query patterns. I design compound indexes matching filter and sort order, and limit index count on write-heavy collections.</p></div>
+<div class="answer-pane" id="q_34"><h2>SQL Server Internal Communication</h2><p>Client apps connect via Tabular Data Stream (TDS) protocol over TCP/IP or named pipes. Inside the engine, SQLOS manages threads/scheduling, the buffer pool caches pages, and components communicate through the relational engine pipeline.</p><p>DMVs (sys.dm_*) expose sessions, waits, IO, and plan cache internals for troubleshooting.</p><pre><code>-- Client → SQL Server (TDS)
+-- Connection string: Server=...;Database=...;
+
+-- Internal flow (simplified):
+-- Parser → Optimizer → Execution Engine → Storage Engine → Buffer Pool → Disk</code></pre><h3>Key Points</h3><ul>
+<li>Batch requests parsed, optimized (cached plans), executed by relational engine.</li>
+<li>Buffer pool keeps frequently used data pages in memory.</li>
+<li>DMVs (sys.dm_*) expose sessions, waits, IO, and plan cache internals.</li>
+</ul><h3>Interview Answer</h3><p>Clients talk to SQL Server via TDS. Internally, queries go through parse, optimize, and execute against the buffer pool and storage engine, with SQLOS handling scheduling and memory. I troubleshoot with DMVs and wait stats.</p></div>
+<div class="answer-pane" id="q_35"><h2>Nth Highest Salary</h2><p>Classic window-function problem: rank salaries descending and filter where rank equals N. Alternatives include TOP with OFFSET or correlated subqueries (less efficient).</p><p>DENSE_RANK handles duplicate salaries correctly for "Nth distinct value"; ROW_NUMBER gives Nth row regardless of ties.</p><pre><code>-- 3rd highest salary:
+SELECT DISTINCT Salary FROM (
+  SELECT Salary, DENSE_RANK() OVER (ORDER BY Salary DESC) AS dr
+  FROM Employees
+) t WHERE dr = 3;
+
+-- OFFSET approach (SQL Server 2012+):
+SELECT DISTINCT Salary FROM Employees
+ORDER BY Salary DESC
+OFFSET 2 ROWS FETCH NEXT 1 ROW ONLY;</code></pre><h3>Key Points</h3><ul>
+<li>DENSE_RANK handles duplicate salaries for "Nth distinct value."</li>
+<li>ROW_NUMBER gives Nth row even if salaries duplicate—clarify requirement.</li>
+<li>Index on Salary DESC helps large tables.</li>
+</ul><h3>Interview Answer</h3><p>I use DENSE_RANK or ROW_NUMBER over ORDER BY Salary DESC in a subquery, then filter rn or dr = N. For distinct Nth value, DENSE_RANK; for Nth row regardless of ties, ROW_NUMBER.</p></div>
+<div class="answer-pane" id="q_36"><h2>Employees with Same Scores</h2><p>Find groups sharing the same score using GROUP BY/HAVING, self-join, or window functions. Clarify whether you need pairs, full groups, or ranks with ties.</p><p>Self-join returns pairs—may duplicate rows; use DISTINCT if needed.</p><pre><code>-- Groups with count &gt; 1:
+SELECT Score FROM Results
+GROUP BY Score HAVING COUNT(*) &gt; 1;
+
+SELECT r1.Name, r1.Score FROM Results r1
+JOIN Results r2 ON r1.Score = r2.Score AND r1.Id &lt;&gt; r2.Id;
+
+SELECT Name, Score, RANK() OVER (ORDER BY Score DESC) rk FROM Results;</code></pre><h3>Key Points</h3><ul>
+<li>Self-join returns pairs—may duplicate rows; use DISTINCT if needed.</li>
+<li>Window functions cleanly expose ties for ranking questions.</li>
+<li>Index on Score helps GROUP BY and join performance.</li>
+</ul><h3>Interview Answer</h3><p>For same scores, I GROUP BY Score HAVING COUNT(*) &gt; 1 to find tied values, or self-join for pairs. For ranking with ties, RANK or DENSE_RANK over the score column is clearest.</p></div>
+<div class="answer-pane" id="q_37"><h2>.NET Framework vs .NET (Core)</h2><p><strong>.NET Framework</strong> is the Windows-centric, mature runtime used for legacy desktop and ASP.NET apps. <strong>.NET</strong> (formerly .NET Core) is cross-platform, open source, and the modern unified stack for cloud, web, mobile, and microservices.</p><p>New development targets .NET 8+ for performance, container support, and long-term support releases. .NET Framework remains in maintenance mode; migration uses incremental strategies or side-by-side hosting.</p><table>
+<tr><th></th><th>.NET Framework</th><th>.NET (Core+)</th></tr>
+<tr><td>Platform</td><td>Windows primarily</td><td>Windows, Linux, macOS</td></tr>
+<tr><td>Status</td><td>Maintenance</td><td>Active development</td></tr>
+<tr><td>ASP.NET</td><td>System.Web / MVC 5</td><td>ASP.NET Core</td></tr>
+<tr><td>Deployment</td><td>Machine-wide GAC</td><td>Self-contained / framework-dependent</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>.NET is the strategic platform for new projects.</li>
+<li>ASP.NET Core is modular and runs on Kestrel.</li>
+<li>Migration tools and compatibility analyzers assist upgrades.</li>
+</ul><h3>Interview Answer</h3><p>.NET Framework is legacy Windows-only and in maintenance, while modern .NET is cross-platform, high-performance, and where Microsoft invests new features. For greenfield APIs I use ASP.NET Core on .NET 8 because of DI, middleware, and cloud-native deployment options.</p></div>
+<div class="answer-pane" id="q_38">
+<div class="qa-section" id="middleware">
+<h3>2. What is Middleware?</h3>
+<p>Middleware are software components in ASP.NET Core request pipeline.</p>
+<pre><code>
+app.Use(async (context, next) =&gt;
+{
+    Console.WriteLine("Before Request");
+
+    await next();
+
+    Console.WriteLine("After Response");
+});
+</code></pre>
+</div>
+</div>
+<div class="answer-pane" id="q_39">
+<div class="qa-section" id="di">
+<h3>3. What is Dependency Injection?</h3>
+<p>Dependency Injection means providing dependencies from outside instead of creating them inside the class.</p>
+<pre><code>
+public class EmployeeService
+{
+    private readonly IEmailService _emailService;
+
+    public EmployeeService(IEmailService emailService)
+    {
+        _emailService = emailService;
+    }
+}
+</code></pre>
+</div>
+</div>
+<div class="answer-pane" id="q_40"><h2>Service Lifetimes in DI</h2><p>ASP.NET Core supports three default lifetimes. <strong>Transient</strong> creates a new instance every time requested. <strong>Scoped</strong> creates one instance per HTTP request (or scope). <strong>Singleton</strong> creates one instance for the application lifetime.</p><p>Misconfigured lifetimes cause subtle bugs—such as injecting a scoped DbContext into a singleton—which leads to stale state or thread-safety issues.</p><table>
+<tr><th>Lifetime</th><th>Created</th><th>Typical Use</th></tr>
+<tr><td>Transient</td><td>Every resolve</td><td>Lightweight stateless helpers</td></tr>
+<tr><td>Scoped</td><td>Per request/scope</td><td>DbContext, unit of work</td></tr>
+<tr><td>Singleton</td><td>Once per app</td><td>Cache, configuration readers</td></tr>
+</table><pre><code>services.AddSingleton&lt;IMemoryCache, MemoryCache&gt;();
+services.AddScoped&lt;AppDbContext&gt;();
+services.AddTransient&lt;IEmailSender, SmtpEmailSender&gt;();</code></pre><h3>Key Points</h3><ul>
+<li>Never inject scoped into singleton without a factory.</li>
+<li>DbContext should almost always be scoped.</li>
+<li>Singleton services must be thread-safe.</li>
+</ul><h3>Interview Answer</h3><p>Transient gives a new instance per injection, scoped shares one instance per request, and singleton lives for the app lifetime. I register DbContext as scoped and caches as singleton, being careful not to capture scoped dependencies in singletons.</p></div>
+<div class="answer-pane" id="q_41"><h2>JWT Authentication in ASP.NET Core</h2><p>JSON Web Tokens (JWT) are compact, signed tokens carrying claims about a user or client. In ASP.NET Core, JWT bearer authentication validates the token signature and expiration, then builds a <code>ClaimsPrincipal</code> for authorization.</p><p>Typical flow: user authenticates, server issues JWT; client sends <code>Authorization: Bearer &lt;token&gt;</code> on API calls. Stateless APIs scale well, but token revocation and refresh strategies must be designed explicitly.</p><pre><code>builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =&gt;
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidIssuer = config["Jwt:Issuer"],
+            ValidAudience = config["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+        };
+    });</code></pre><h3>Key Points</h3><ul>
+<li>JWT enables stateless bearer authentication.</li>
+<li>Validate issuer, audience, signature, and expiry.</li>
+<li>Plan refresh tokens and secure secret storage.</li>
+</ul><h3>Interview Answer</h3><p>JWT is a signed token with claims used for stateless API authentication. ASP.NET Core validates it via JwtBearer middleware and exposes claims to authorization policies. I always validate signing key, issuer, audience, and lifetime, and I plan refresh or revocation for production security.</p></div>
+<div class="answer-pane" id="q_42"><h2>Dapper ORM</h2><p>Dapper is a lightweight micro-ORM that maps SQL query results to .NET objects with minimal overhead. Unlike full ORMs, you write SQL explicitly and Dapper handles materialization—ideal for performance-critical reads and complex queries.</p><p>Use Dapper alongside EF Core when you need raw SQL control, bulk operations, or reporting queries without change-tracking overhead.</p><pre><code>await using var conn = new SqlConnection(_connectionString);
+var orders = await conn.QueryAsync&lt;Order&gt;(
+    "SELECT Id, Total FROM Orders WHERE CustomerId = @Id",
+    new { Id = customerId });</code></pre><h3>Key Points</h3><ul>
+<li>Thin layer over ADO.NET; very fast.</li>
+<li>You own SQL, parameters, and schema mapping.</li>
+<li>Complements EF Core; does not replace migrations by itself.</li>
+</ul><h3>Interview Answer</h3><p>Dapper is a high-performance micro-ORM where I write SQL and it maps rows to objects with almost no overhead. I use it for hot-path queries or reports while keeping EF Core for domain modeling and change tracking where that productivity matters.</p></div>
+<div class="answer-pane" id="q_43">
+<div class="qa-section" id="solid">
+<h3>7. SOLID Principles</h3>
+<ul>
+<li>S - Single Responsibility Principle</li>
+<li>O - Open Closed Principle</li>
+<li>L - Liskov Substitution Principle</li>
+<li>I - Interface Segregation Principle</li>
+<li>D - Dependency Inversion Principle</li>
+</ul>
+</div>
+</div>
+<div class="answer-pane" id="q_44">
+<div class="qa-section" id="singleton">
+<h3>8. Singleton Pattern</h3>
+<pre><code>
+public sealed class Singleton
+{
+    private static readonly Singleton instance = new Singleton();
+
+    private Singleton()
+    {
+    }
+
+    public static Singleton GetInstance()
+    {
+        return instance;
+    }
+}
+</code></pre>
+</div>
+</div>
+<div class="answer-pane" id="q_45">
+<div class="qa-section" id="async-await">
+<h3>9. async/await</h3>
+<p>Used for asynchronous programming without blocking thread.</p>
+<pre><code>
+public async Task GetData()
+{
+    await Task.Delay(1000);
+}
+</code></pre>
+</div>
+</div>
+<div class="answer-pane" id="q_46">
+<div class="qa-section" id="linq">
+<h3>10. What is LINQ?</h3>
+<pre><code>
+var result = numbers.Where(x =&gt; x &gt; 10);
+</code></pre>
+<p>LINQ is Language Integrated Query used to query collections and databases.</p>
+</div>
+</div>
+<div class="answer-pane" id="q_47"><h2>Collections in C#</h2><p>The .NET collections framework provides typed containers for in-memory data. Non-generic legacy types (<code>ArrayList</code>) boxed values; modern code uses generic collections in <code>System.Collections.Generic</code> for type safety and performance.</p><p>Choose structures by access pattern: <code>List&lt;T&gt;</code> for indexed access, <code>Dictionary&lt;TKey,TValue&gt;</code> for key lookups, <code>HashSet&lt;T&gt;</code> for uniqueness, and <code>Queue&lt;T&gt;</code>/<code>Stack&lt;T&gt;</code> for FIFO/LIFO processing.</p><table>
+<tr><th>Type</th><th>Use Case</th></tr>
+<tr><td>List&lt;T&gt;</td><td>Ordered, indexable sequence</td></tr>
+<tr><td>Dictionary&lt;K,V&gt;</td><td>Fast key-value lookup</td></tr>
+<tr><td>HashSet&lt;T&gt;</td><td>Unique items, set operations</td></tr>
+<tr><td>Queue/Stack</td><td>Processing pipelines</td></tr>
+</table><pre><code>var cache = new Dictionary&lt;string, User&gt;();
+cache["u-1"] = new User { Id = 1 };</code></pre><h3>Key Points</h3><ul>
+<li>Prefer generic collections over non-generic types.</li>
+<li>Pick structure based on lookup and ordering needs.</li>
+<li>Consider thread-safe collections for concurrent scenarios.</li>
+</ul><h3>Interview Answer</h3><p>.NET offers rich generic collections like List, Dictionary, and HashSet tuned for different access patterns. I choose based on whether I need ordering, key-based lookup, or uniqueness, and I avoid legacy non-generic collections because they require casting and boxing.</p></div>
+<div class="answer-pane" id="q_48"><h2>Value Type vs Reference Type</h2><p>Value types store data directly on the stack (or inline within objects) and include primitives, enums, and structs. Reference types store a reference to heap memory and include classes, interfaces, delegates, and arrays.</p><p>Assignment copies value for value types and copies reference for reference types. Nullable value types (<code>int?</code>) and boxing/unboxing affect performance and API design.</p><table>
+<tr><th></th><th>Value Type</th><th>Reference Type</th></tr>
+<tr><td>Storage</td><td>Stack/inline</td><td>Heap (reference on stack)</td></tr>
+<tr><td>Examples</td><td>int, struct</td><td>class, string</td></tr>
+<tr><td>Default</td><td>Zeroed value</td><td>null</td></tr>
+<tr><td>Assignment</td><td>Copies data</td><td>Copies reference</td></tr>
+</table><pre><code>int a = 10, b = a; // b gets copy
+var list1 = new List&lt;int&gt;();
+var list2 = list1; // both refer to same list</code></pre><h3>Key Points</h3><ul>
+<li>Structs are value types; classes are reference types.</li>
+<li>string is a reference type but immutable.</li>
+<li>Boxing wraps value types on the heap.</li>
+</ul><h3>Interview Answer</h3><p>Value types hold data directly and are copied on assignment, while reference types hold a pointer to heap objects shared by multiple variables. Understanding this explains memory behavior, nullability, and why structs are preferred for small immutable data.</p></div>
+<div class="answer-pane" id="q_49"><h2>ref vs out Parameters</h2><p>Both pass arguments by reference, but they differ in initialization requirements and intent. A <code>ref</code> parameter must be assigned before the call; the method can read and write it. An <code>out</code> parameter does not need prior assignment; the method must assign it before returning.</p><p><code>ref</code> suits scenarios where you modify existing state. <code>out</code> is common for Try-pattern methods that return success/failure and produce a value, like <code>int.TryParse</code>.</p><table>
+<tr><th></th><th>ref</th><th>out</th></tr>
+<tr><td>Must assign before call?</td><td>Yes</td><td>No</td></tr>
+<tr><td>Must assign in method?</td><td>No</td><td>Yes</td></tr>
+<tr><td>Typical use</td><td>Modify input</td><td>Return extra output</td></tr>
+</table><pre><code>bool TryDivide(int a, int b, out int result)
+{
+    if (b == 0) { result = 0; return false; }
+    result = a / b;
+    return true;
+}</code></pre><h3>Key Points</h3><ul>
+<li>Both require <code>ref</code>/<code>out</code> at call site for clarity.</li>
+<li>Prefer return tuples or objects over many out params.</li>
+<li><code>out</code> variables can be declared inline in modern C#.</li>
+</ul><h3>Interview Answer</h3><p>ref requires the variable to be initialized before passing and allows read/write in the method. out does not require prior initialization but the method must assign it before exit. I use out for TryParse-style APIs and ref when mutating an existing variable in place.</p></div>
+<div class="answer-pane" id="q_50">
+<div class="qa-section" id="const-readonly">
+<h3>14. const vs readonly</h3>
+<table>
+<tr>
+<th>const</th>
+<th>readonly</th>
+</tr>
+<tr>
+<td>Compile-time constant</td>
+<td>Runtime constant</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="answer-pane" id="q_51"><h2>.NET Garbage Collector</h2><p>The GC reclaims managed heap memory for objects no longer reachable from GC roots (stack, static fields, CPU registers). It uses generational collection: Gen0 (short-lived), Gen1 (buffer), Gen2 (long-lived), plus LOH for large objects.</p><pre><code>// Gen0 collections are frequent and cheap
+var list = new List&lt;byte[]&gt;();
+for (int i = 0; i &lt; 1000; i++)
+    list.Add(new byte[100]); // mostly Gen0, ephemeral
+
+// LOH allocations (&gt;= 85 KB) collected less often
+var big = new byte[100_000];
+
+// Reduce GC pressure — pool/reuse
+var buffer = ArrayPool&lt;byte&gt;.Shared.Rent(4096);
+try { /* use buffer */ }
+finally { ArrayPool&lt;byte&gt;.Shared.Return(buffer); }</code></pre><h3>Key Points</h3><ul>
+<li>Generational hypothesis: most objects die young.</li>
+<li>Full GC (Gen2) is expensive—avoid unnecessary allocations in hot paths.</li>
+<li>IDisposable is for unmanaged resources; GC handles managed memory.</li>
+<li>Server GC vs Workstation GC tuned for throughput vs interactive apps.</li>
+</ul><h3>Interview Answer</h3><p>The GC traces reachable objects from roots and frees unreachable ones in generations to optimize collection cost. Minimize allocations and large object churn in hot paths; dispose unmanaged resources explicitly via IDisposable.</p></div>
+<div class="answer-pane" id="q_52"><h2>throw vs throw ex</h2><p><code>throw;</code> rethrows the current exception preserving the original stack trace. <code>throw ex;</code> (or <code>throw someCaughtEx</code>) resets the stack trace to the rethrow site, hiding where the error actually occurred—bad for diagnostics.</p><pre><code>try
+{
+    await _repo.SaveAsync(entity);
+}
+catch (SqlException ex)
+{
+    _logger.LogError(ex, "DB save failed");
+    throw; // correct — original stack preserved
+}
+
+// Anti-pattern
+catch (Exception ex)
+{
+    throw ex; // stack starts here — loses root frame info
+}
+
+// Wrapping when adding context
+catch (Exception ex)
+{
+    throw new OrderProcessingException("Save failed", ex);
+}</code></pre><h3>Key Points</h3><ul>
+<li>Always use bare throw; inside catch to rethrow.</li>
+<li>throw ex resets StackTrace—avoid in production code.</li>
+<li>Wrap with inner exception when translating domain errors.</li>
+<li>ExceptionDispatchInfo.Capture(ex).Throw() preserves stack outside catch.</li>
+</ul><h3>Interview Answer</h3><p>Use <code>throw;</code> to rethrow without losing stack trace. Use <code>throw ex;</code> only if you intentionally want a new stack (rare). When wrapping, pass the original as InnerException for full context.</p></div>
+<div class="answer-pane" id="q_53"><h2>Routing in ASP.NET Core</h2><p>Routing maps incoming HTTP requests to endpoints. Convention-based routing uses templates like <code>{controller=Home}/{action=Index}/{id?}</code>. Attribute routing decorates controllers and actions with <code>[Route]</code> templates for explicit, version-friendly APIs.</p><p>Endpoint routing builds a route table at startup. Middleware like <code>UseRouting</code> and <code>UseEndpoints</code> (or <code>MapControllers</code> in minimal hosting) dispatches to the matched handler.</p><pre><code>[ApiController]
+[Route("api/[controller]")]
+public class ProductsController : ControllerBase
+{
+    [HttpGet("{id:int}")]
+    public ActionResult&lt;Product&gt; Get(int id) =&gt; Ok(/* ... */);
+}</code></pre><h3>Key Points</h3><ul>
+<li>Attribute routing is standard for REST APIs.</li>
+<li>Route constraints (e.g., :int) validate parameters.</li>
+<li>Order and specificity determine match winner.</li>
+</ul><h3>Interview Answer</h3><p>ASP.NET Core routing matches URLs to endpoints via conventions or attributes. For APIs I use attribute routing with clear templates and constraints so clients get predictable URLs and the framework selects the correct action efficiently.</p></div>
+<div class="answer-pane" id="q_54"><h2>CORS in ASP.NET Core</h2><p>Cross-Origin Resource Sharing (CORS) is a browser security mechanism. When a web app at <code>https://app.example</code> calls your API at <code>https://api.example</code>, the browser sends a preflight OPTIONS request unless origins are allowed.</p><p>Configure CORS policies in <code>Program.cs</code> with allowed origins, methods, and headers. Apply globally or per-endpoint with <code>RequireCors</code>.</p><pre><code>builder.Services.AddCors(o =&gt; o.AddPolicy("WebApp", p =&gt;
+    p.WithOrigins("https://app.example.com")
+     .AllowAnyHeader()
+     .AllowAnyMethod()));
+
+app.UseCors("WebApp");</code></pre><h3>Key Points</h3><ul>
+<li>CORS is enforced by browsers, not server-to-server calls.</li>
+<li>Do not use AllowAnyOrigin with credentials.</li>
+<li>Place UseCors before auth/endpoints as needed.</li>
+</ul><h3>Interview Answer</h3><p>CORS lets browsers call APIs on different origins by returning appropriate Access-Control headers. In ASP.NET Core I define a named policy with specific origins and apply it via UseCors. I avoid wildcard origins when cookies or credentials are involved.</p></div>
+<div class="answer-pane" id="q_55"><h2>REST API Design</h2><p>REST organizes APIs around resources identified by URLs, using HTTP verbs for semantics: GET (read), POST (create), PUT/PATCH (update), DELETE (remove). Status codes communicate outcomes—200 OK, 201 Created, 404 Not Found, 400 Bad Request.</p><p>Good REST APIs are stateless, use nouns in paths (<code>/api/orders/5</code>), support filtering and pagination, and version explicitly when breaking changes occur.</p><table>
+<tr><th>Verb</th><th>Purpose</th><th>Idempotent?</th></tr>
+<tr><td>GET</td><td>Retrieve</td><td>Yes</td></tr>
+<tr><td>POST</td><td>Create</td><td>No</td></tr>
+<tr><td>PUT</td><td>Replace</td><td>Yes</td></tr>
+<tr><td>DELETE</td><td>Remove</td><td>Yes</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>Resources are nouns; verbs are HTTP methods.</li>
+<li>Use proper status codes and problem details.</li>
+<li>Pagination and HATEOAS optional but helpful.</li>
+</ul><h3>Interview Answer</h3><p>REST models APIs as resources manipulated with standard HTTP methods and meaningful status codes. I design stateless endpoints with clear URLs, validate input, return consistent error shapes, and version when contracts change so clients remain stable.</p></div>
+<div class="answer-pane" id="q_56">
+<div class="qa-section" id="caching">
+<h3>20. Caching</h3>
+<p>Caching stores frequently used data for faster access.</p>
+<ul>
+<li>In-Memory Cache</li>
+<li>Distributed Cache</li>
+<li>Redis Cache</li>
+</ul>
+</div>
+</div>
+<div class="answer-pane" id="q_57">
+<div class="question-card" id="q1">
+<h3>1. Different service lifetimes in .NET Core?</h3>
+<div class="answer">
+<b>Transient</b> → New instance every time requested.<br/><br/>
+<b>Scoped</b> → One instance per HTTP request.<br/><br/>
+<b>Singleton</b> → Single instance throughout application lifetime.
+            </div>
+</div>
+</div>
+<div class="answer-pane" id="q_58"><h2>Have You Used Singleton?</h2><p>Interviewers want a concrete example, tradeoffs you considered, and whether DI replaced manual Singleton. Describe real usage: logging, cache manager, or app settings—with thread safety awareness.</p><p>Show evolution from static Singleton to DI-managed singleton for testability.</p><pre><code>// Real project: centralized AppSettings via DI singleton
+services.AddSingleton&lt;IAppSettings, AppSettings&gt;();
+
+// Legacy code used static Instance; we migrated to DI
+// for testability and explicit lifetime management</code></pre><h3>Key Points</h3><ul>
+<li>Give a specific project example, not textbook definition only.</li>
+<li>Mention thread safety and testability challenges you faced.</li>
+<li>Show evolution: static Singleton → DI-managed singleton.</li>
+</ul><h3>Interview Answer</h3><p>Yes—in a .NET API I used DI singleton scope for AppSettings and a cache wrapper so one instance served the app. We avoided static Singletons to keep unit tests mockable and lifetimes explicit in Startup.</p></div>
+<div class="answer-pane" id="q_59"><h2>IServiceProvider in .NET</h2><p><code>IServiceProvider</code> is the service locator abstraction that resolves registered dependencies from the DI container. In ASP.NET Core, the built-in provider is created from <code>ServiceCollection</code> during host building.</p><p>Prefer constructor injection over manual <code>GetService</code> calls. Use <code>IServiceProvider</code> directly in factories, middleware activation, or when creating scopes with <code>CreateScope()</code>.</p><pre><code>using var scope = app.Services.CreateScope();
+var db = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();</code></pre><h3>Key Points</h3><ul>
+<li>Root provider resolves application-wide services.</li>
+<li>CreateScope() for scoped resolution outside requests.</li>
+<li>GetRequiredService throws if registration missing.</li>
+</ul><h3>Interview Answer</h3><p>IServiceProvider is the DI container interface that resolves registered services. I rely on constructor injection in normal code, but use the provider explicitly when creating scopes—like in background tasks—via CreateScope and GetRequiredService.</p></div>
+<div class="answer-pane" id="q_60"><h2>Ways to Implement Dependency Injection</h2><p>ASP.NET Core supports constructor, property, and method injection, though constructor injection is the recommended default. You can also use factory delegates (<code>AddScoped&lt;IService&gt;(sp =&gt; ...)</code>) for complex creation logic.</p><p>Third-party containers (Autofac, Simple Injector) integrate via <code>IServiceProviderFactory</code> when advanced features like decorators or conditional registration are required.</p><table>
+<tr><th>Style</th><th>When to Use</th></tr>
+<tr><td>Constructor</td><td>Default for required dependencies</td></tr>
+<tr><td>Method</td><td>[FromServices] parameters in actions</td></tr>
+<tr><td>Property</td><td>Rare; harder to test</td></tr>
+<tr><td>Factory delegate</td><td>Dynamic/complex construction</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>Constructor injection makes dependencies explicit.</li>
+<li>Built-in container is sufficient for most apps.</li>
+<li>Factory registration handles conditional setup.</li>
+</ul><h3>Interview Answer</h3><p>The primary approach is constructor injection registered in Program.cs. Method injection via [FromServices] works for action-specific services, and factory delegates handle complex creation. I avoid service locator patterns in business code to keep dependencies visible and testable.</p></div>
+<div class="answer-pane" id="q_61"><h2>Method Injection in ASP.NET Core</h2><p>Method injection supplies dependencies directly to action method parameters rather than the controller constructor. ASP.NET Core resolves parameters marked with <code>[FromServices]</code> from the DI container when the action executes.</p><p>This suits infrequently used services that should not bloat the controller constructor. Required dependencies shared across many actions still belong in constructor injection.</p><pre><code>[HttpPost]
+public async Task&lt;IActionResult&gt; Notify(
+    [FromBody] NotifyRequest request,
+    [FromServices] IEmailSender emailSender)
+{
+    await emailSender.SendAsync(request.To, request.Body);
+    return Ok();
+}</code></pre><h3>Key Points</h3><ul>
+<li>Use [FromServices] for DI-resolved action parameters.</li>
+<li>Good for optional or rare dependencies.</li>
+<li>Do not replace constructor injection for core deps.</li>
+</ul><h3>Interview Answer</h3><p>Method injection resolves services into action parameters using [FromServices], which keeps controllers lean when a dependency is used by only one endpoint. For shared core dependencies I still prefer constructor injection because it makes requirements obvious and eases testing.</p></div>
+<div class="answer-pane" id="q_62"><h2>Custom Middleware in ASP.NET Core</h2><p>Custom middleware is a class or delegate that processes HTTP requests and responses in the pipeline. Implement <code>InvokeAsync(HttpContext, RequestDelegate next)</code>, perform pre/post logic, and call <code>await next(context)</code> to pass control downstream unless short-circuiting.</p><p>Register with <code>app.UseMiddleware&lt;T&gt;()</code> or inline delegates. Typical uses: correlation IDs, request logging, global exception wrapping, and timing headers.</p><pre><code>public class RequestTimingMiddleware
+{
+    private readonly RequestDelegate _next;
+    public async Task InvokeAsync(HttpContext context)
+    {
+        var sw = Stopwatch.StartNew();
+        await _next(context);
+        context.Response.Headers["X-Elapsed-Ms"] = sw.ElapsedMilliseconds.ToString();
+    }
+}</code></pre><h3>Key Points</h3><ul>
+<li>Constructor receives next delegate and DI services.</li>
+<li>Call next unless terminating the pipeline.</li>
+<li>Registration order determines execution order.</li>
+</ul><h3>Interview Answer</h3><p>Custom middleware is a pipeline component with access to HttpContext that runs before and after inner middleware via next. I implement InvokeAsync, register it with UseMiddleware, and use it for cross-cutting concerns like logging or adding response headers globally.</p></div>
+<div class="answer-pane" id="q_63"><h2>Calling next Middleware</h2><p><code>await next(context)</code> passes the request to the next middleware in the pipeline. Code before <code>next</code> runs on the way in; code after runs on the way out when the response travels back. Omitting <code>next</code> short-circuits the pipeline—useful for auth failures or cached responses.</p><p>Always await <code>next</code> so exceptions propagate correctly and the response is fully generated before post-processing.</p><pre><code>public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+{
+    // inbound
+    await next(context);
+    // outbound — response headers/body available
+}</code></pre><h3>Key Points</h3><ul>
+<li>next delegates to the rest of the pipeline.</li>
+<li>Short-circuit by not calling next when appropriate.</li>
+<li>Post-next code can modify response headers if not started.</li>
+</ul><h3>Interview Answer</h3><p>Calling await next(context) forwards the request to subsequent middleware and returns when the response is coming back. Logic before next handles incoming requests; logic after handles outgoing responses. Skipping next stops further processing, which I use when rejecting unauthorized requests early.</p></div>
+<div class="answer-pane" id="q_64"><h2>app.Map in ASP.NET Core</h2><p><code>app.Map</code> branches the middleware pipeline based on path prefix. Requests matching the path run the nested pipeline; others skip it. This enables isolated middleware for admin areas, webhooks, or health checks.</p><p>In .NET 6+ minimal hosting, <code>MapGet</code>, <code>MapPost</code>, and <code>MapControllers</code> register endpoints directly on <code>WebApplication</code>.</p><pre><code>app.Map("/admin", adminApp =&gt;
+{
+    adminApp.UseAuthentication();
+    adminApp.UseAuthorization();
+    adminApp.Run(async ctx =&gt; await ctx.Response.WriteAsync("Admin"));
+});
+
+app.MapControllers();
+app.MapGet("/health", () =&gt; Results.Ok("healthy"));</code></pre><h3>Key Points</h3><ul>
+<li>Map creates path-based pipeline branches.</li>
+<li>MapGet/MapPost define minimal API endpoints.</li>
+<li>Branch middleware does not affect sibling branches.</li>
+</ul><h3>Interview Answer</h3><p>app.Map branches the pipeline for specific path prefixes so middleware runs only where needed. MapGet and MapControllers register endpoints in minimal hosting models. I use Map to isolate admin or webhook pipelines without affecting the main API route table.</p></div>
+<div class="answer-pane" id="q_65"><h2>app.Map for Specific Requests</h2><p>Beyond global middleware, you can target specific requests with <code>MapWhen</code>, <code>Map</code>, or endpoint filters. <code>MapWhen</code> branches on arbitrary predicates—headers, query strings, or user agent—while <code>Map</code> branches on path.</p><p>Endpoint-specific behavior also uses route attributes, authorization policies, and minimal API route groups for cohesive URL prefixes and shared filters.</p><pre><code>app.MapWhen(
+    ctx =&gt; ctx.Request.Headers.ContainsKey("X-Webhook"),
+    branch =&gt; branch.UseMiddleware&lt;WebhookSignatureMiddleware&gt;());
+
+var api = app.MapGroup("/api/v1/products").WithTags("Products");
+api.MapGet("/", GetAll);
+api.MapGet("/{id:int}", GetById);</code></pre><h3>Key Points</h3><ul>
+<li>MapWhen for conditional pipeline branches.</li>
+<li>Route groups organize related minimal endpoints.</li>
+<li>Combine with authorization for sensitive paths.</li>
+</ul><h3>Interview Answer</h3><p>I target specific requests using Map or MapWhen to branch middleware by path or condition, and route groups or attributes for endpoint-level rules. This keeps special cases like webhooks or versioned APIs isolated without polluting the global pipeline.</p></div>
+<div class="answer-pane" id="q_66"><h2>API Performance Optimization</h2><p>Production API tuning spans architecture, data access, and runtime behavior. Measure first (p95/p99 latency, throughput, error rate), then optimize the slowest layers—usually database, serialization, or unnecessary work per request.</p><pre><code>// Response caching + compression
+services.AddResponseCaching();
+services.AddResponseCompression();
+
+// Efficient data access — projection, no N+1
+var orders = await _db.Orders
+    .AsNoTracking()
+    .Where(o =&gt; o.CustomerId == id)
+    .Select(o =&gt; new OrderDto { Id = o.Id, Total = o.Total })
+    .ToListAsync();
+
+// Pagination — never return unbounded lists
+return await query.Skip(page * size).Take(size).ToListAsync();</code></pre><h3>Key Points</h3><ul>
+<li>Cache hot reads (Redis/CDN); invalidate explicitly on writes.</li>
+<li>Async I/O, connection pooling, indexed queries, avoid SELECT *.</li>
+<li>Pagination, compression, and DTO projection reduce payload size.</li>
+<li>Rate limiting, circuit breakers, and horizontal scale for resilience.</li>
+</ul><h3>Interview Answer</h3><p>Optimize APIs by profiling end-to-end, fixing database and N+1 bottlenecks, caching idempotent reads, paginating responses, using async I/O, and designing for horizontal scale with observability on latency percentiles—not just averages.</p></div>
+<div class="answer-pane" id="q_67"><h2>Caching in ASP.NET Core</h2><p>Caching stores frequently accessed data closer to the consumer to reduce latency and database load. ASP.NET Core offers <code>IMemoryCache</code> for in-process caching and <code>IDistributedCache</code> (Redis, SQL Server) for multi-instance deployments.</p><p>Define expiration, cache keys, and invalidation strategy. Cache-aside is common: check cache, on miss load from DB and populate cache.</p><pre><code>public async Task&lt;Product?&gt; GetProductAsync(int id)
+{
+    var key = $"product:{id}";
+    if (!_cache.TryGetValue(key, out Product? product))
+    {
+        product = await _db.Products.FindAsync(id);
+        _cache.Set(key, product, TimeSpan.FromMinutes(5));
+    }
+    return product;
+}</code></pre><h3>Key Points</h3><ul>
+<li>In-memory for single node; distributed for scale-out.</li>
+<li>Set TTL and invalidate on writes.</li>
+<li>Do not cache user-specific secrets without care.</li>
+</ul><h3>Interview Answer</h3><p>I use IMemoryCache for single-server scenarios and Redis via IDistributedCache when multiple nodes must share cache. I apply cache-aside with sensible TTLs and invalidate or update entries when underlying data changes to balance performance and freshness.</p></div>
+<div class="answer-pane" id="q_68"><h2>Options Pattern in ASP.NET Core</h2><p>The options pattern binds configuration sections to strongly typed POCO classes and injects them via <code>IOptions&lt;T&gt;</code>, <code>IOptionsSnapshot&lt;T&gt;</code>, or <code>IOptionsMonitor&lt;T&gt;</code>. This replaces scattered <code>Configuration["Key"]</code> access.</p><p><code>IOptionsMonitor</code> supports change tokens for reloading appsettings changes without restart in many scenarios.</p><pre><code>public class SmtpSettings { public string Host { get; set; } = ""; }
+
+builder.Services.Configure&lt;SmtpSettings&gt;(builder.Configuration.GetSection("Smtp"));
+
+public class MailService
+{
+    public MailService(IOptions&lt;SmtpSettings&gt; options) =&gt; _settings = options.Value;
+}</code></pre><h3>Key Points</h3><ul>
+<li>Strongly typed, validated configuration.</li>
+<li>IOptionsSnapshot is scoped; Monitor supports reload.</li>
+<li>Validate options with IValidateOptions or DataAnnotations.</li>
+</ul><h3>Interview Answer</h3><p>The options pattern maps configuration to typed settings classes injected through IOptions. It centralizes config access, enables validation, and with IOptionsMonitor I can react to configuration changes cleanly instead of magic strings throughout the codebase.</p></div>
+<div class="answer-pane" id="q_69"><h2>Hosted Services in ASP.NET Core</h2><p><code>IHostedService</code> and <code>BackgroundService</code> run long-running tasks inside the generic host alongside Kestrel—timers, queue consumers, or startup initialization. The host starts them on application boot and stops them gracefully on shutdown.</p><p>Register with <code>AddHostedService&lt;T&gt;()</code>. Use <code>CancellationToken</code> from <code>ExecuteAsync</code> to respect shutdown signals.</p><pre><code>public class SyncWorker : BackgroundService
+{
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await DoWorkAsync(stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+        }
+    }
+}</code></pre><h3>Key Points</h3><ul>
+<li>Runs inside same process as the web app.</li>
+<li>BackgroundService simplifies loop-based workers.</li>
+<li>Respect cancellation for clean shutdown.</li>
+</ul><h3>Interview Answer</h3><p>Hosted services are background tasks managed by the ASP.NET Core host via IHostedService or BackgroundService. I use them for periodic sync or queue polling inside the app process, always honoring CancellationToken so shutdown is graceful.</p></div>
+<div class="answer-pane" id="q_70"><h2>Background Jobs in .NET</h2><p>Background jobs process work asynchronously outside the HTTP request path—emails, reports, imports. In-process options include <code>BackgroundService</code> and <code>Task.Run</code> (limited). Production systems often use Hangfire, Azure Functions, or message queues for reliability and retries.</p><p>Fire-and-forget inside requests risks lost work if the process crashes. Durable queues with idempotent handlers scale better.</p><table>
+<tr><th>Approach</th><th>Pros</th><th>Cons</th></tr>
+<tr><td>BackgroundService</td><td>Simple, in-process</td><td>Dies with app</td></tr>
+<tr><td>Hangfire</td><td>Dashboard, retries</td><td>Extra infrastructure</td></tr>
+<tr><td>Queue + worker</td><td>Scalable, durable</td><td>More moving parts</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>Do not block HTTP threads for long work.</li>
+<li>Use durable storage for critical jobs.</li>
+<li>Design idempotent handlers for retries.</li>
+</ul><h3>Interview Answer</h3><p>Background jobs handle async work like notifications outside request lifecycle. For simple cases I use BackgroundService; for production reliability I prefer Hangfire or queue-based workers with retries and persistence so jobs survive restarts and scale independently.</p></div>
+<div class="answer-pane" id="q_71"><h2>Task.Run Explained</h2><p><code>Task.Run</code> queues a delegate on the .NET thread pool for CPU-bound work. The caller gets a <code>Task</code> immediately; pool threads execute the delegate concurrently. It is ideal when synchronous, compute-heavy code would block a sensitive thread (UI, ASP.NET request thread in older patterns).</p><pre><code>// Offload CPU work
+var result = await Task.Run(() =&gt; SimulateMonteCarlo(iterations: 1_000_000));
+
+// Overload with CancellationToken
+var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+await Task.Run(() =&gt; ProcessBatch(items, cts.Token), cts.Token);
+
+// Long-running alternative when you need a dedicated thread
+await Task.Factory.StartNew(
+    () =&gt; LongRunningListener(),
+    TaskCreationOptions.LongRunning);</code></pre><h3>Key Points</h3><ul>
+<li>Schedules work to ThreadPool—not for I/O-bound async APIs.</li>
+<li>Returns hot Task; exceptions stored on Task, surfaced on await/Wait.</li>
+<li>Prefer async I/O APIs over Task.Run for network/database calls.</li>
+<li>LongRunning creates a non-pool thread when pool starvation is a risk.</li>
+</ul><h3>Interview Answer</h3><p><code>Task.Run</code> moves CPU-bound synchronous work to a background thread-pool thread and returns a Task you can await. Use it for parallel computation, not as a substitute for truly asynchronous I/O.</p></div>
+<div class="answer-pane" id="q_72"><h2>Thread vs Task</h2><p>A <strong>Thread</strong> is an OS-level execution unit—you create it, set priority, and manage its lifetime manually. A <strong>Task</strong> is a higher-level abstraction representing work that the thread pool may run; the runtime schedules Tasks onto available threads efficiently.</p><pre><code>// Thread — explicit, heavier
+var thread = new Thread(() =&gt; DoWork()) { IsBackground = true };
+thread.Start();
+thread.Join();
+
+// Task — preferred for most scenarios
+await Task.Run(() =&gt; DoWork());
+
+// Task enables composition
+var tasks = urls.Select(url =&gt; DownloadAsync(url));
+await Task.WhenAll(tasks);</code></pre><h3>Key Points</h3><ul>
+<li>Threads are expensive (~1 MB stack); pool reuse is cheaper.</li>
+<li>Tasks support await, WhenAll, cancellation, and exception aggregation.</li>
+<li>Creating many raw Threads can hurt scalability; Task uses pool.</li>
+<li>Use dedicated Thread only for STA COM, long-blocking listeners, or special cases.</li>
+</ul><h3>Interview Answer</h3><p>Threads are low-level OS workers you manage directly. Tasks represent units of work scheduled by the thread pool with rich async composition. In modern .NET, prefer Task/async unless you have a specific reason to own a Thread.</p></div>
+<div class="answer-pane" id="q_73"><h2>Task.Wait and Blocking Pitfalls</h2><p><code>Task.Wait()</code>, <code>Task.Result</code>, and <code>GetAwaiter().GetResult()</code> synchronously block the calling thread until the Task completes. On contexts with a synchronization context (UI, legacy ASP.NET), blocking while waiting for code that needs that same context causes <strong>deadlocks</strong>.</p><pre><code>// Dangerous on UI / ASP.NET (deadlock risk)
+public Order GetOrderBlocking(int id)
+{
+    return _service.GetOrderAsync(id).Result; // blocks
+}
+
+// Preferred
+public async Task&lt;Order&gt; GetOrderAsync(int id)
+{
+    return await _service.GetOrderAsync(id);
+}
+
+// Library code avoiding context capture
+await _httpClient.GetAsync(url).ConfigureAwait(false);</code></pre><h3>Key Points</h3><ul>
+<li>Never block on async code in ASP.NET Core request paths if avoidable.</li>
+<li>AggregateException wraps Task exceptions on Wait/Result—harder to debug.</li>
+<li>async all the way down is the scalable pattern.</li>
+<li>ConfigureAwait(false) in libraries reduces deadlock on sync-over-async.</li>
+</ul><h3>Interview Answer</h3><p><code>Task.Wait</code> blocks the current thread until completion. Avoid it in async-friendly apps—use await instead. Blocking on incomplete Tasks tied to the same synchronization context is a common deadlock source.</p></div>
+<div class="answer-pane" id="q_74"><h2>Consuming External APIs in .NET</h2><p>Use <code>IHttpClientFactory</code> to create configured <code>HttpClient</code> instances with proper DNS handling and Polly resilience policies. Register typed clients for strong typing and centralized base address, headers, and timeouts.</p><p>Deserialize JSON with <code>System.Text.Json</code>, handle transient faults with retries, and propagate correlation IDs for distributed tracing.</p><pre><code>builder.Services.AddHttpClient&lt;IWeatherClient, WeatherClient&gt;(client =&gt;
+{
+    client.BaseAddress = new Uri("https://api.weather.example/");
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+
+public async Task&lt;Forecast?&gt; GetAsync(string city) =&gt;
+    await _http.GetFromJsonAsync&lt;Forecast&gt;($"forecast?city={city}");</code></pre><h3>Key Points</h3><ul>
+<li>IHttpClientFactory avoids socket exhaustion.</li>
+<li>Use Polly for retry, circuit breaker, timeout.</li>
+<li>Typed clients improve testability and configuration.</li>
+</ul><h3>Interview Answer</h3><p>I consume external APIs with IHttpClientFactory and typed clients registered in DI, which manages HttpClient lifetime correctly. I configure base URLs, timeouts, and Polly policies for retries, deserialize with System.Text.Json, and log failures with correlation IDs for observability.</p></div>
+<div class="answer-pane" id="q_75"><h2>Delegates in C#</h2><p>A <strong>delegate</strong> is a type-safe function pointer: it references a method with a matching signature. Delegates enable callbacks, event handling, LINQ, and functional patterns. Multicast delegates invoke multiple methods in order.</p><pre><code>public delegate int MathOp(int a, int b);
+
+MathOp add = (a, b) =&gt; a + b;
+MathOp multiply = (a, b) =&gt; a * b;
+
+MathOp combined = add + multiply; // multicast
+Console.WriteLine(combined(2, 3)); // 5 then 6
+
+// Common built-ins
+Func&lt;int, int, int&gt; sum = (a, b) =&gt; a + b;
+Action&lt;string&gt; log = msg =&gt; Console.WriteLine(msg);</code></pre><h3>Key Points</h3><ul>
+<li>Delegates are reference types; null delegate throws on invoke.</li>
+<li>+= and -= add/remove targets on multicast delegates.</li>
+<li>Func, Action, Predicate are predefined generic delegate types.</li>
+<li>Events are delegates with restricted add/remove accessors.</li>
+</ul><h3>Interview Answer</h3><p>A delegate defines a method signature and holds one or more method references. They decouple callers from implementations—used for events, callbacks, and passing behavior as data. Built-in generic delegates reduce boilerplate.</p></div>
+<div class="answer-pane" id="q_76">
+<div class="question-card" id="q20">
+<h3>20. Generic Delegates</h3>
+<div class="answer">
+<ul>
+<li>Action</li>
+<li>Func</li>
+<li>Predicate</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="answer-pane" id="q_77"><h2>Action, Func, and Predicate</h2><p>These are predefined generic delegates in <code>System</code>. <strong>Action</strong> returns void. <strong>Func</strong> returns a value (last type parameter is return type). <strong>Predicate</strong> returns bool—a special case of Func for filtering.</p><pre><code>Action&lt;string&gt; print = s =&gt; Console.WriteLine(s);
+Action&lt;int, int&gt; logSum = (a, b) =&gt; Console.WriteLine(a + b);
+
+Func&lt;int, int, int&gt; add = (a, b) =&gt; a + b;
+Func&lt;string, bool&gt; isValid = s =&gt; !string.IsNullOrEmpty(s);
+
+Predicate&lt;int&gt; isEven = n =&gt; n % 2 == 0;
+// equivalent: Func&lt;int, bool&gt; isEven = n =&gt; n % 2 == 0;
+
+var evens = numbers.FindAll(isEven);</code></pre><h3>Key Points</h3><ul>
+<li>Action&lt;T1,...&gt; — up to 16 params, no return value.</li>
+<li>Func&lt;T1,..., TResult&gt; — last generic arg is return type.</li>
+<li>Predicate&lt;T&gt; is Func&lt;T, bool&gt;; common in List.FindAll.</li>
+<li>Prefer these over custom delegate types unless naming adds clarity.</li>
+</ul><h3>Interview Answer</h3><p>Action is a void-returning delegate, Func returns a typed result, and Predicate is a bool-returning filter delegate. They standardize passing lambdas and methods as arguments across LINQ, callbacks, and APIs.</p></div>
+<div class="answer-pane" id="q_78"><h2>Extension Methods</h2><p>Extension methods are static methods in static classes that appear as instance methods on the extended type via <code>this</code> on the first parameter. They cannot access private members; they enable fluent APIs without modifying sealed or third-party types.</p><pre><code>public static class StringExtensions
+{
+    public static bool IsNullOrBlank(this string? value)
+        =&gt; string.IsNullOrWhiteSpace(value);
+
+    public static string Truncate(this string value, int max)
+        =&gt; value.Length &lt;= max ? value : value[..max];
+}
+
+// Usage
+if (input.IsNullOrBlank()) return;
+var shortText = name.Truncate(50);
+
+// LINQ itself uses extensions on IEnumerable&lt;T&gt;</code></pre><h3>Key Points</h3><ul>
+<li>Must live in non-generic static class; method must be static.</li>
+<li>Namespace must be in scope (using) for IntelliSense to find it.</li>
+<li>Resolution: instance method wins over extension if both match.</li>
+<li>Use sparingly—avoid polluting IntelliSense on core types.</li>
+</ul><h3>Interview Answer</h3><p>Extension methods add functionality to existing types syntactically like instance methods but compile to static calls. They power LINQ and cross-cutting helpers on types you cannot inherit or modify.</p></div>
+<div class="answer-pane" id="q_79"><h2>Preventing Memory Leaks in .NET</h2><p>.NET has GC, but leaks still occur when rooted objects hold references to objects that should be collected—event handlers, static caches, undisposed unmanaged resources, and long-lived collections capturing short-lived contexts.</p><pre><code>// Leak: subscriber never unsubscribes
+publisher.Raised += OnRaised;
+
+// Fix: unsubscribe or weak event pattern
+publisher.Raised -= OnRaised;
+
+// Always dispose unmanaged / IDisposable resources
+await using var conn = new SqlConnection(cs);
+await conn.OpenAsync();
+
+// Avoid capturing large graphs in static caches without eviction
+_cache.Set(key, value, TimeSpan.FromMinutes(5));</code></pre><h3>Key Points</h3><ul>
+<li>Unsubscribe events or use WeakReference for long-lived publishers.</li>
+<li>Implement IDisposable/IAsyncDisposable for files, sockets, handles.</li>
+<li>Be cautious with static fields, singletons, and Timer callbacks.</li>
+<li>Profile with dotMemory, PerfView, or VS Diagnostic Tools for retained paths.</li>
+</ul><h3>Interview Answer</h3><p>Prevent leaks by breaking unintended object graphs: unsubscribe events, dispose resources, limit static/cache retention, and avoid holding references to UI or request-scoped objects in singletons. Use profiling to find what keeps objects alive.</p></div>
+<div class="answer-pane" id="q_80">
+<div class="question-card" id="q24">
+<h3>24. IDisposable</h3>
+<div class="answer">
+<pre>
+using(var con = new SqlConnection())
+{
+}
+</pre>
+
+                IDisposable is used to release unmanaged resources.
+            </div>
+</div>
+</div>
+<div class="answer-pane" id="q_81"><h2>IEnumerable vs IQueryable</h2><p><code>IEnumerable&lt;T&gt;</code> represents in-memory sequences evaluated on the client when enumerated. <code>IQueryable&lt;T&gt;</code> builds expression trees that LINQ providers (like EF Core) can translate to remote queries such as SQL.</p><p>Filtering on <code>IQueryable</code> before materialization pushes work to the database, reducing memory and network cost. Calling <code>ToList()</code> too early forces client-side evaluation.</p><table>
+<tr><th></th><th>IEnumerable</th><th>IQueryable</th></tr>
+<tr><td>Execution</td><td>In-memory</td><td>Provider-dependent (often DB)</td></tr>
+<tr><td>Best for</td><td>Collections, post-query logic</td><td>EF Core, remote data</td></tr>
+<tr><td>Deferred</td><td>Yes</td><td>Yes</td></tr>
+</table><pre><code>IQueryable&lt;Product&gt; query = db.Products.Where(p =&gt; p.IsActive);
+var sqlSide = query.OrderBy(p =&gt; p.Name).Take(20); // translated to SQL</code></pre><h3>Key Points</h3><ul>
+<li>IQueryable enables server-side filtering via expression trees.</li>
+<li>IEnumerable is for LINQ to Objects after data is loaded.</li>
+<li>Materialize (ToList) only when necessary.</li>
+</ul><h3>Interview Answer</h3><p>IEnumerable runs LINQ in memory, while IQueryable delegates to a provider that can translate expressions to SQL. With EF Core I keep filters on IQueryable so the database does the work, and I only switch to IEnumerable after materializing results.</p></div>
+<div class="answer-pane" id="q_82"><h2>yield return and Iterators</h2><p><code>yield return</code> builds an iterator: the compiler generates a state machine implementing <code>IEnumerable&lt;T&gt;</code> or <code>IAsyncEnumerable&lt;T&gt;</code>. Elements are produced lazily on demand—memory-efficient for large or infinite sequences.</p><pre><code>public IEnumerable&lt;int&gt; GetSquares(int max)
+{
+    for (int i = 0; i &lt; max; i++)
+        yield return i * i;
+}
+
+foreach (var sq in GetSquares(1_000_000)) { /* one at a time */ }
+
+// Async streaming (.NET Core+)
+async IAsyncEnumerable&lt;Order&gt; StreamOrdersAsync()
+{
+    await foreach (var batch in _repo.ReadBatchesAsync())
+        foreach (var order in batch)
+            yield return order;
+}</code></pre><h3>Key Points</h3><ul>
+<li>Lazy evaluation—work runs when enumerator moves Next.</li>
+<li>Cannot yield in try block with catch (language restriction; use finally carefully).</li>
+<li>Iterator methods cannot have ref/out parameters.</li>
+<li>Prefer yield for pipelines; materialize with ToList when reuse needed.</li>
+</ul><h3>Interview Answer</h3><p><code>yield return</code> defers execution and streams items one-by-one instead of building a full in-memory collection. It simplifies lazy pipelines and reduces memory for large datasets.</p></div>
+<div class="answer-pane" id="q_83"><h2>Alternatives to Task.WhenAll</h2><p><code>Task.WhenAll</code> waits for multiple Tasks concurrently. Alternatives depend on semantics: fail-fast vs collect-all-errors, throttling, sequential dependency, or parallel loops over CPU work.</p><pre><code>// WhenAll — all parallel, one exception on await (others may still run)
+var results = await Task.WhenAll(tasks);
+
+// WhenAny — first completion (timeout/race pattern)
+var finished = await Task.WhenAny(task, Task.Delay(5000));
+
+// Parallel.ForEachAsync — bounded parallelism (.NET 6+)
+await Parallel.ForEachAsync(items,
+    new ParallelOptions { MaxDegreeOfParallelism = 4 },
+    async (item, ct) =&gt; await ProcessAsync(item, ct));
+
+// Manual throttling with SemaphoreSlim
+using var gate = new SemaphoreSlim(4);
+var throttled = items.Select(async i =&gt; {
+    await gate.WaitAsync();
+    try { return await WorkAsync(i); }
+    finally { gate.Release(); }
+});
+await Task.WhenAll(throttled);</code></pre><h3>Key Points</h3><ul>
+<li>WhenAny for timeouts, caching first response, or competitive calls.</li>
+<li>Parallel.ForEach/ForEachAsync for CPU-bound batch with degree control.</li>
+<li>SemaphoreSlim limits concurrent I/O when APIs have rate limits.</li>
+<li>Task.WhenAll fails on first fault unless you observe all Task.Exception.</li>
+</ul><h3>Interview Answer</h3><p>Use WhenAll for unconstrained parallel awaits. Use WhenAny for first-wins scenarios, Parallel.ForEachAsync for bounded CPU parallelism, and SemaphoreSlim when you must cap concurrent operations. Choose based on error handling and resource limits.</p></div>
+<div class="answer-pane" id="q_84"><h2>Parallel Programming in .NET</h2><p>Parallel programming splits work across cores. .NET offers <code>Parallel</code> (PLINQ, Parallel.For/ForEach), TPL Dataflow for pipelines, and async coordination via Tasks. Effective parallelism requires CPU-bound work and minimal shared mutable state.</p><pre><code>// Parallel.For — partition work across cores
+Parallel.For(0, items.Length, i =&gt; Process(items[i]));
+
+// PLINQ
+var primes = Enumerable.Range(2, 10000)
+    .AsParallel()
+    .WithDegreeOfParallelism(4)
+    .Where(IsPrime)
+    .ToList();
+
+// Thread-safe aggregation
+var bag = new ConcurrentBag&lt;Result&gt;();
+Parallel.ForEach(source, item =&gt; bag.Add(Transform(item)));</code></pre><h3>Key Points</h3><ul>
+<li>Parallelism helps CPU-bound work—not blocked I/O (use async there).</li>
+<li>Race conditions need locks, Interlocked, or concurrent collections.</li>
+<li>Over-parallelization adds scheduling overhead—tune MaxDegreeOfParallelism.</li>
+<li>Amdahl's Law: speedup limited by serial portions of algorithm.</li>
+</ul><h3>Interview Answer</h3><p>.NET parallel APIs map work to multiple cores via the thread pool. Use Parallel/PLINQ for CPU-heavy batches with controlled concurrency and thread-safe aggregation. Combine with async for I/O, not as a replacement.</p></div>
+<div class="answer-pane" id="q_85"><h2>Multithreading Fundamentals</h2><p>Multithreading runs multiple threads within one process sharing memory space. It improves throughput for parallel workloads but introduces complexity: race conditions, deadlocks, and visibility issues without proper synchronization.</p><pre><code>private readonly object _lock = new();
+private int _count;
+
+void Increment()
+{
+    lock (_lock) { _count++; } // mutual exclusion
+}
+
+// Or lock-free
+Interlocked.Increment(ref _count);
+
+// Reader/writer scenario
+private readonly ReaderWriterLockSlim _rw = new();
+_rw.EnterReadLock();
+try { /* read shared data */ }
+finally { _rw.ExitReadLock(); }</code></pre><h3>Key Points</h3><ul>
+<li>Shared mutable state requires synchronization (lock, Monitor, SemaphoreSlim).</li>
+<li>Prefer higher abstractions (Task, ConcurrentDictionary) over raw locks when possible.</li>
+<li>Deadlock: circular lock acquisition—consistent lock ordering prevents it.</li>
+<li>volatile/Interlocked address visibility and atomic ops, not complex invariants.</li>
+</ul><h3>Interview Answer</h3><p>Multithreading executes concurrent paths in one process for parallelism. Success depends on identifying shared state, choosing correct synchronization, and avoiding deadlocks and races—often by immutability or concurrent collections.</p></div>
+<div class="answer-pane" id="q_86"><h2>Production RCA Steps</h2><p>Root Cause Analysis in production is a structured incident response: stabilize, observe, hypothesize, verify, fix, and prevent recurrence. Speed matters, but changing production without evidence increases blast radius.</p><pre><code>// Observability-first mindset
+// 1. Check alerts, dashboards (latency, errors, saturation)
+// 2. Correlate logs/traces by correlationId
+_logger.LogError(ex, "Payment failed {OrderId} {CorrelationId}",
+    orderId, Activity.Current?.Id);
+
+// 3. Compare deploy/config changes in incident window
+// 4. Roll forward fix or rollback behind feature flag
+if (_flags.IsEnabled("new-pricing-engine"))
+    await _newEngine.PriceAsync(order);
+else
+    await _legacyEngine.PriceAsync(order);</code></pre><h3>Key Points</h3><ul>
+<li>Stabilize: rollback, scale, drain, or feature-flag off bad path.</li>
+<li>Timeline: deploys, config, traffic spikes, dependency outages.</li>
+<li>Use logs, metrics, traces—not guesses; reproduce in staging if possible.</li>
+<li>Post-incident: blameless review, action items, runbooks, alerting gaps.</li>
+</ul><h3>Interview Answer</h3><p>RCA starts with customer impact and mitigation, then uses telemetry and change history to find the true root cause—not the symptom. Document timeline, fix with validation, and close with preventive measures and improved monitoring.</p></div>
+<div class="answer-pane" id="q_87">
+<section id="designpatterns">
+<h1>Design Patterns</h1>
+<p>Design Patterns are reusable solutions to commonly occurring problems in software design.</p>
+<h2>Types of Design Patterns</h2>
+<table>
+<tr>
+<th>Category</th>
+<th>Examples</th>
+</tr>
+<tr>
+<td>Creational</td>
+<td>Singleton, Factory, Builder</td>
+</tr>
+<tr>
+<td>Structural</td>
+<td>Adapter, Facade, Decorator</td>
+</tr>
+<tr>
+<td>Behavioral</td>
+<td>Strategy, Observer, Command</td>
+</tr>
+</table>
+<h2>Singleton Pattern</h2>
+<pre><code>public sealed class Singleton
+{
+    private static Singleton _instance;
+    private static readonly object _lock = new object();
+
+    private Singleton() {}
+
+    public static Singleton GetInstance()
+    {
+        lock(_lock)
+        {
+            if(_instance == null)
+            {
+                _instance = new Singleton();
+            }
+
+            return _instance;
+        }
+    }
+}</code></pre>
+<h2>Factory Pattern</h2>
+<pre><code>public interface IVehicle
+{
+    void Drive();
+}
+
+public class Car : IVehicle
+{
+    public void Drive()
+    {
+        Console.WriteLine("Driving Car");
+    }
+}</code></pre>
+<h2>Strategy Pattern</h2>
+<pre><code>public interface IPaymentStrategy
+{
+    void Pay(int amount);
+}</code></pre>
+</section>
+</div>
+<div class="answer-pane" id="q_88"><h2>Repository Pattern</h2><p>Repository mediates between domain and data mapping layers, exposing collection-like access to aggregates while hiding persistence details (EF, Dapper, SQL). It improves testability and centralizes query logic.</p><p>One repository per aggregate root, not necessarily per table—avoid anemic pass-through wrappers.</p><pre><code>public interface IOrderRepository {
+  Task&lt;Order?&gt; GetByIdAsync(int id);
+  Task AddAsync(Order order);
+  Task SaveChangesAsync();
+}
+public class OrderRepository(DbContext db) : IOrderRepository {
+  public Task&lt;Order?&gt; GetByIdAsync(int id) =&gt;
+    db.Orders.FindAsync(id).AsTask();
+}</code></pre><h3>Key Points</h3><ul>
+<li>One repository per aggregate root, not necessarily per table.</li>
+<li>Don't wrap EF DbSet with zero-value pass-through—add value or skip.</li>
+<li>Unit of Work often pairs with Repository for transaction boundaries.</li>
+</ul><h3>Interview Answer</h3><p>Repository abstracts data access behind domain-focused interfaces so services don't depend on EF or SQL directly. I use it for test doubles and consistent query methods, avoiding anemic CRUD wrappers.</p></div>
+<div class="answer-pane" id="q_89"><h2>CQRS (Command Query Responsibility Segregation)</h2><p>CQRS separates read models from write models. Commands change state through validated handlers; queries return optimized read DTOs—possibly from different stores or denormalized views.</p><p>Adds complexity—use when read/write shapes diverge significantly; often paired with Event Sourcing but not required.</p><pre><code>// Command side
+public record CreateOrderCommand(int CustomerId, decimal Total);
+public class CreateOrderHandler {
+  public async Task Handle(CreateOrderCommand cmd) {
+    // validate, persist event/entity
+  }
+}
+
+// Query side
+public class OrderSummaryQuery {
+  public async Task&lt;OrderDto&gt; Get(int id) =&gt;
+    await _readDb.OrderSummaries.FindAsync(id);
+}</code></pre><h3>Key Points</h3><ul>
+<li>Scales reads and writes independently; read models can be denormalized.</li>
+<li>Adds complexity—use when read/write shapes diverge significantly.</li>
+<li>Often paired with Event Sourcing but not required.</li>
+</ul><h3>Interview Answer</h3><p>CQRS splits commands that mutate state from queries that read it, allowing optimized read models and clear validation paths. I adopt it when read patterns differ heavily from writes—not for simple CRUD apps.</p></div>
+<div class="answer-pane" id="q_90"><h2>Encapsulation in C#</h2><p>Encapsulation is an OOP principle that bundles data and behavior inside a class while hiding internal state from outside code. In C#, you achieve this with access modifiers (<code>private</code>, <code>protected</code>, <code>internal</code>) and controlled entry points such as properties and methods.</p><p>Instead of exposing fields directly, you validate and transform data through properties. This prevents invalid states, localizes change, and makes classes easier to test and maintain.</p><pre><code>public class BankAccount
+{
+    private decimal _balance;
+    public decimal Balance =&gt; _balance;
+
+    public void Deposit(decimal amount)
+    {
+        if (amount &lt;= 0) throw new ArgumentException("Amount must be positive.");
+        _balance += amount;
+    }
+}</code></pre><h3>Key Points</h3><ul>
+<li>Hides implementation details and protects invariants.</li>
+<li>Properties provide read/write control without breaking encapsulation.</li>
+<li>Encapsulation improves maintainability and reduces coupling.</li>
+</ul><h3>Interview Answer</h3><p>Encapsulation means keeping an object's data private and exposing only what is necessary through a public API. In C#, I use private fields with public properties or methods so validation and business rules stay inside the class. This protects data integrity and makes future changes safer.</p></div>
+<div class="answer-pane" id="q_91"><h2>Abstract Class vs Interface</h2><p>Both support abstraction and polymorphism, but they solve different design problems. An abstract class can contain state, constructors, and both abstract and concrete members. An interface defines a contract—method signatures and, since C# 8, default implementations—without enforcing a single inheritance hierarchy.</p><p>Choose an abstract class when related types share common behavior and fields. Choose an interface when you need multiple contracts or want to decouple consumers from concrete implementations.</p><table>
+<tr><th>Feature</th><th>Abstract Class</th><th>Interface</th></tr>
+<tr><td>Inheritance</td><td>Single base class</td><td>Multiple interfaces</td></tr>
+<tr><td>State</td><td>Can have fields</td><td>No instance fields (until C# 8 defaults)</td></tr>
+<tr><td>Constructors</td><td>Supported</td><td>Not allowed</td></tr>
+<tr><td>Best for</td><td>Shared base behavior</td><td>Capabilities/contracts</td></tr>
+</table><pre><code>public abstract class PaymentProcessor
+{
+    public abstract Task ProcessAsync(decimal amount);
+}
+
+public interface IEmailSender
+{
+    Task SendAsync(string to, string body);
+}</code></pre><h3>Key Points</h3><ul>
+<li>Abstract class = "is-a" with shared implementation.</li>
+<li>Interface = "can-do" contract, supports multiple inheritance.</li>
+<li>Prefer composition + interfaces for flexible ASP.NET Core designs.</li>
+</ul><h3>Interview Answer</h3><p>I use abstract classes when derived types share common state and partial implementation, and interfaces when I need a contract that multiple unrelated classes can implement. In .NET APIs, interfaces are common for DI and testability because a class can implement many interfaces but inherit only one base class.</p></div>
+<div class="answer-pane" id="q_92"><h2>Why Use Interfaces?</h2><p>Interfaces define what a component can do without tying callers to a specific implementation. In C# and ASP.NET Core, this is the foundation of dependency inversion: controllers depend on <code>IUserService</code>, not on a concrete database-backed service.</p><p>Interfaces improve testability because you can substitute mocks or fakes in unit tests. They also enable swapping implementations—SQL vs NoSQL, SMTP vs SendGrid—without changing consumer code.</p><pre><code>public interface IOrderRepository
+{
+    Task&lt;Order?&gt; GetByIdAsync(int id);
+}
+
+public class OrderController : ControllerBase
+{
+    private readonly IOrderRepository _repo;
+    public OrderController(IOrderRepository repo) =&gt; _repo = repo;
+}</code></pre><h3>Key Points</h3><ul>
+<li>Decouples consumers from concrete types.</li>
+<li>Enables DI, mocking, and plug-in architectures.</li>
+<li>Supports multiple contracts per class.</li>
+</ul><h3>Interview Answer</h3><p>Interfaces let me program against abstractions instead of concrete classes, which makes code easier to test and extend. In ASP.NET Core, registering <code>IEmailSender</code> in DI means I can change the implementation without touching controllers. They express capabilities clearly and support loose coupling across layers.</p></div>
+<div class="answer-pane" id="q_93"><h2>Generics in C#</h2><p>Generics let you write type-safe, reusable code without boxing value types or casting on every use. A generic class or method is defined with a type parameter (for example, <code>T</code>) that is resolved at compile time.</p><p>Collections like <code>List&lt;T&gt;</code> and patterns like repositories use generics to enforce correctness while staying flexible. The compiler generates specialized code for value types and shares code for reference types.</p><pre><code>public class Repository&lt;T&gt; where T : class
+{
+    private readonly List&lt;T&gt; _items = new();
+    public void Add(T item) =&gt; _items.Add(item);
+    public T? Find(Predicate&lt;T&gt; match) =&gt; _items.Find(match);
+}
+
+var users = new List&lt;User&gt;();
+users.Add(new User { Id = 1 }); // compile-time type safety</code></pre><h3>Key Points</h3><ul>
+<li>Compile-time type safety; fewer runtime casts.</li>
+<li>Constraints (<code>where T : ...</code>) limit allowed type arguments.</li>
+<li>Avoids boxing for value types in generic collections.</li>
+</ul><h3>Interview Answer</h3><p>Generics allow reusable, strongly typed APIs like <code>List&lt;int&gt;</code> or <code>Repository&lt;Order&gt;</code> without sacrificing performance or safety. The compiler checks types at compile time, so I get IntelliSense and fewer <code>InvalidCastException</code> issues at runtime.</p></div>
+<div class="answer-pane" id="q_94">
+<div class="section" id="q5">
+<h2>5. Dependency Injection</h2>
+<p>Dependencies are injected from outside instead of being created internally.</p>
+<pre>
+public class TransactionService
+{
+    private readonly INotificationService notificationService;
+
+    public TransactionService(INotificationService service)
+    {
+        notificationService = service;
+    }
+}
+</pre>
+</div>
+</div>
+<div class="answer-pane" id="q_95">
+<div class="section" id="q6">
+<h2>6. Scoped vs Singleton vs Transient</h2>
+<table border="1" cellpadding="8">
+<tr>
+<th>Lifetime</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>Transient</td>
+<td>New instance every time</td>
+</tr>
+<tr>
+<td>Scoped</td>
+<td>One instance per request</td>
+</tr>
+<tr>
+<td>Singleton</td>
+<td>Single instance for app lifetime</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="answer-pane" id="q_96"><h2>Why DbContext Is Scoped</h2><p><code>DbContext</code> is not thread-safe and tracks entity changes for a unit of work. Registering it as <strong>scoped</strong> gives each HTTP request its own context instance, aligning with one logical transaction per request and preventing cross-request state leakage.</p><p>A singleton DbContext would be shared across concurrent requests, causing race conditions and stale tracked entities. Transient DbContext per injection would multiply connections and break change tracking coherence within a request.</p><pre><code>builder.Services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
+    options.UseSqlServer(connectionString)); // scoped by default</code></pre><h3>Key Points</h3><ul>
+<li>DbContext tracks entities per unit of work.</li>
+<li>Scoped = one context per request scope.</li>
+<li>Do not share DbContext across threads.</li>
+</ul><h3>Interview Answer</h3><p>EF Core DbContext is scoped because it is not thread-safe and represents a single unit of work per request. One instance per HTTP request ensures consistent change tracking and avoids concurrency bugs that would occur with a singleton context shared by all users.</p></div>
+<div class="answer-pane" id="q_97">
+<div class="section" id="q8">
+<h2>8. OOPS in C#</h2>
+<ul>
+<li>Encapsulation</li>
+<li>Abstraction</li>
+<li>Inheritance</li>
+<li>Polymorphism</li>
+</ul>
+</div>
+</div>
+<div class="answer-pane" id="q_98">
+<div class="section" id="q9">
+<h2>9. Abstraction vs Encapsulation</h2>
+<table border="1" cellpadding="8">
+<tr>
+<th>Abstraction</th>
+<th>Encapsulation</th>
+</tr>
+<tr>
+<td>Hides complexity</td>
+<td>Hides data</td>
+</tr>
+<tr>
+<td>Focus on simplicity</td>
+<td>Focus on security</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="answer-pane" id="q_99"><h2>Overloading vs Overriding</h2><p><strong>Method overloading</strong> defines multiple methods with the same name but different parameter lists in the same class. Resolution happens at compile time (static polymorphism). <strong>Method overriding</strong> replaces a base class virtual/abstract method in a derived class; resolution happens at runtime (dynamic polymorphism).</p><p>Overloading improves API ergonomics (<code>Send(string)</code>, <code>Send(string, bool)</code>). Overriding enables specialized behavior in inheritance hierarchies while keeping a common contract.</p><table>
+<tr><th></th><th>Overloading</th><th>Overriding</th></tr>
+<tr><td>Scope</td><td>Same class</td><td>Base + derived class</td></tr>
+<tr><td>Signature</td><td>Must differ</td><td>Same signature</td></tr>
+<tr><td>Keywords</td><td>None</td><td><code>virtual</code>, <code>override</code></td></tr>
+<tr><td>Binding</td><td>Compile-time</td><td>Runtime</td></tr>
+</table><pre><code>public void Log(string msg) { }
+public void Log(string msg, int level) { } // overload
+
+public class Base { public virtual void Run() { } }
+public class Derived : Base { public override void Run() { } }</code></pre><h3>Key Points</h3><ul>
+<li>Overload = same name, different parameters, same class.</li>
+<li>Override = redefine inherited virtual/abstract method.</li>
+<li>Do not confuse override with <code>new</code> hiding.</li>
+</ul><h3>Interview Answer</h3><p>Overloading is compile-time polymorphism where I define multiple methods with the same name but different signatures. Overriding is runtime polymorphism where a derived class replaces a base virtual method. Overloading improves usability; overriding enables extensible inheritance.</p></div>
+<div class="answer-pane" id="q_100"><h2>Virtual vs Abstract Methods</h2><p>Both support polymorphism, but they serve different roles. A <code>virtual</code> method has a default implementation in the base class and may be overridden. An <code>abstract</code> method has no implementation and must be overridden in a non-abstract derived class.</p><p>Virtual methods suit optional customization points. Abstract methods force derived types to provide behavior and are only allowed in abstract classes.</p><table>
+<tr><th></th><th>virtual</th><th>abstract</th></tr>
+<tr><td>Implementation</td><td>Provided in base</td><td>Not provided</td></tr>
+<tr><td>Class requirement</td><td>Any class</td><td>Abstract class only</td></tr>
+<tr><td>Override required?</td><td>No</td><td>Yes (in concrete child)</td></tr>
+</table><pre><code>public abstract class Shape
+{
+    public abstract double Area();
+    public virtual void Draw() =&gt; Console.WriteLine("Drawing shape");
+}
+
+public class Circle : Shape
+{
+    public override double Area() =&gt; Math.PI * Radius * Radius;
+}</code></pre><h3>Key Points</h3><ul>
+<li>virtual = optional override with default behavior.</li>
+<li>abstract = mandatory override, no base body.</li>
+<li>Sealed override (<code>sealed override</code>) stops further overriding.</li>
+</ul><h3>Interview Answer</h3><p>A virtual method provides a default implementation that derived classes can optionally replace. An abstract method declares a required operation with no implementation, so concrete subclasses must override it. I use virtual for extension points and abstract when every derived type must define the behavior.</p></div>
+<div class="answer-pane" id="q_101"><h2>Sealed Class in C#</h2><p>A <code>sealed</code> class cannot be inherited. You seal a class when further derivation would break invariants, security assumptions, or performance optimizations. You can also use <code>sealed override</code> on a method to prevent further overriding down the hierarchy.</p><p>Common examples include framework types like <code>string</code> and utility classes that are not designed for extension. Sealing makes intent explicit and can enable compiler optimizations in some scenarios.</p><pre><code>public sealed class ConfigurationReader
+{
+    public string Read(string key) =&gt; Environment.GetEnvironmentVariable(key) ?? "";
+}
+
+// public class ExtendedReader : ConfigurationReader { } // compile error
+
+public class Base
+{
+    public virtual void Execute() { }
+}
+public class Derived : Base
+{
+    public sealed override void Execute() { }
+}</code></pre><h3>Key Points</h3><ul>
+<li><code>sealed class</code> blocks inheritance entirely.</li>
+<li><code>sealed override</code> blocks further method overriding.</li>
+<li>Use when extension would be unsafe or unsupported.</li>
+</ul><h3>Interview Answer</h3><p>A sealed class cannot be subclassed, which I use when inheritance would violate design or security guarantees. Sealed methods stop further overrides in the inheritance chain. It is a deliberate restriction to keep behavior predictable.</p></div>
+<div class="answer-pane" id="q_102"><h2>Constructor Chaining in C#</h2><p>Constructor chaining lets one constructor call another in the same class (<code>this</code>) or a base class constructor (<code>base</code>). This avoids duplicating initialization logic and ensures objects are always created in a valid state.</p><p>The called constructor runs first. Use <code>: this(...)</code> to forward to another constructor in the same type, and <code>: base(...)</code> to invoke a parent constructor before your own body executes.</p><pre><code>public class Employee
+{
+    public int Id { get; }
+    public string Name { get; }
+
+    public Employee(int id) : this(id, "Unknown") { }
+
+    public Employee(int id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
+}
+
+public class Manager : Employee
+{
+    public Manager(int id, string name) : base(id, name) { }
+}</code></pre><h3>Key Points</h3><ul>
+<li><code>this(...)</code> chains constructors within the same class.</li>
+<li><code>base(...)</code> calls a base class constructor.</li>
+<li>Chaining must be the first statement in the constructor header.</li>
+</ul><h3>Interview Answer</h3><p>Constructor chaining reuses initialization through <code>this</code> or <code>base</code> calls so setup logic is not duplicated. The chained constructor always runs first, which helps enforce consistent object construction across overloads and inheritance.</p></div>
+<div class="answer-pane" id="q_103"><h2>Association vs Aggregation vs Composition</h2><p>These describe relationships between classes. <strong>Association</strong> is a general "uses" relationship. <strong>Aggregation</strong> is a weak "has-a" where the child can exist independently. <strong>Composition</strong> is a strong "part-of" where the child lifecycle is owned by the parent.</p><p>In C#, composition often means the parent creates and disposes nested objects. Aggregation might pass in dependencies via constructor injection without owning their lifetime.</p><table>
+<tr><th>Relationship</th><th>Ownership</th><th>Example</th></tr>
+<tr><td>Association</td><td>Independent</td><td>Teacher teaches Student</td></tr>
+<tr><td>Aggregation</td><td>Weak</td><td>Department has Employees</td></tr>
+<tr><td>Composition</td><td>Strong</td><td>House has Rooms</td></tr>
+</table><pre><code>public class Order // composition
+{
+    private readonly List&lt;OrderLine&gt; _lines = new();
+    public IReadOnlyList&lt;OrderLine&gt; Lines =&gt; _lines;
+}</code></pre><h3>Key Points</h3><ul>
+<li>Composition implies lifecycle dependency.</li>
+<li>Aggregation allows shared ownership elsewhere.</li>
+<li>Prefer composition over inheritance for flexibility.</li>
+</ul><h3>Interview Answer</h3><p>Association is a general link between classes. Aggregation is has-a with independent lifecycles, while composition is part-of where the parent owns and controls the child. In .NET, composition shows up when a class creates and manages its contained objects.</p></div>
+<div class="answer-pane" id="q_104"><h2>const vs readonly in C#</h2><p>Both define values that should not change casually, but they differ in when they are resolved and where they can be used. <code>const</code> values are compile-time constants and implicitly static. <code>readonly</code> fields are assigned at declaration or in the constructor and can be instance-level.</p><p>Use <code>const</code> for true fixed values known at compile time (mathematical constants). Use <code>readonly</code> for values computed at runtime, such as configuration loaded in a constructor.</p><table>
+<tr><th></th><th>const</th><th>readonly</th></tr>
+<tr><td>When set</td><td>Compile time</td><td>Declaration or constructor</td></tr>
+<tr><td>Instance/static</td><td>Implicitly static</td><td>Either</td></tr>
+<tr><td>Type restriction</td><td>Primitive/string/null</td><td>Any type</td></tr>
+</table><pre><code>public class AppSettings
+{
+    public const int MaxRetries = 3;
+    public readonly DateTime StartedAt;
+
+    public AppSettings() =&gt; StartedAt = DateTime.UtcNow;
+}</code></pre><h3>Key Points</h3><ul>
+<li>const is compile-time; readonly is runtime-assigned once.</li>
+<li>readonly supports instance fields and complex types.</li>
+<li>const cannot be set from constructor logic.</li>
+</ul><h3>Interview Answer</h3><p>const is a compile-time constant and must be static, while readonly is set at runtime in the constructor or field initializer and can be per-instance. I use const for fixed literals and readonly for values determined when the object is created, like injected settings.</p></div>
+<div class="answer-pane" id="q_105"><h2>Why async/await When Task Already Exists?</h2><p><code>Task</code> and <code>Task&lt;T&gt;</code> represent ongoing or completed asynchronous work. Raw Tasks force manual continuation chaining (<code>.ContinueWith</code>, callbacks), exception handling, and return-value plumbing. <strong>async/await</strong> is syntactic sugar that compiles to a state machine: readable sequential code, automatic exception propagation, and correct Task return types for callers.</p><pre><code>// Without async/await — hard to read and error-prone
+Task&lt;Order&gt; GetOrderOld(int id)
+{
+    return _repo.GetCustomerAsync(id)
+        .ContinueWith(t =&gt;
+        {
+            if (t.IsFaulted) throw t.Exception!;
+            return _repo.GetOrderAsync(t.Result.OrderId);
+        }).Unwrap();
+}
+
+// With async/await — same semantics, clearer flow
+async Task&lt;Order&gt; GetOrderAsync(int id)
+{
+    var customer = await _repo.GetCustomerAsync(id);
+    return await _repo.GetOrderAsync(customer.OrderId);
+}</code></pre><h3>Key Points</h3><ul>
+<li>Task = the abstraction; async/await = ergonomic way to compose Tasks.</li>
+<li>Await unwraps exceptions; ContinueWith requires manual fault checking.</li>
+<li>Compiler generates IAsyncStateMachine—no magic threads, just continuations.</li>
+<li>Methods marked async always return Task/Task&lt;T&gt; (or ValueTask) to callers.</li>
+</ul><h3>Interview Answer</h3><p>We still use <code>Task</code>—async/await does not replace it. Tasks model async operations; async/await lets us write and maintain that logic like synchronous code while preserving non-blocking behavior and proper exception flow.</p></div>
+<div class="answer-pane" id="q_106"><h2>OOP Concepts in C#</h2><p>Object-Oriented Programming organizes software around objects that combine data and behavior. C# supports the four pillars: encapsulation, abstraction, inheritance, and polymorphism—plus related ideas like composition and interfaces.</p><p>In practice, you model domain entities as classes, hide details behind abstractions, reuse behavior through inheritance or composition, and invoke the right implementation at runtime via virtual methods or interfaces.</p><table>
+<tr><th>Pillar</th><th>C# Example</th></tr>
+<tr><td>Encapsulation</td><td>Private fields + public properties</td></tr>
+<tr><td>Abstraction</td><td>Abstract classes, interfaces</td></tr>
+<tr><td>Inheritance</td><td><code>class Dog : Animal</code></td></tr>
+<tr><td>Polymorphism</td><td><code>override</code>, interface dispatch</td></tr>
+</table><pre><code>public interface INotifier { void Notify(string msg); }
+public class EmailNotifier : INotifier
+{
+    public void Notify(string msg) =&gt; Console.WriteLine(msg);
+}</code></pre><h3>Key Points</h3><ul>
+<li>Four pillars guide maintainable domain modeling.</li>
+<li>Favor composition and interfaces over deep inheritance trees.</li>
+<li>Polymorphism enables extensible, testable designs.</li>
+</ul><h3>Interview Answer</h3><p>C# OOP is built on encapsulation, abstraction, inheritance, and polymorphism. I encapsulate state in classes, abstract behavior with interfaces, reuse code through inheritance or composition, and rely on polymorphism so consumers depend on contracts rather than concrete types.</p></div>
+<div class="answer-pane" id="q_107"><h2>Middleware and Filters in ASP.NET Core</h2><p><strong>Middleware</strong> forms the HTTP request pipeline—cross-cutting concerns like authentication, logging, and exception handling that run for most requests. <strong>Filters</strong> run within MVC/minimal-API controller execution for authorization, action logic, and result transformation.</p><p>Middleware is pipeline-order sensitive and ideal for global HTTP concerns. Filters integrate with MVC action lifecycle and can access action context like route data and model state.</p><table>
+<tr><th></th><th>Middleware</th><th>Filters</th></tr>
+<tr><td>Scope</td><td>Entire pipeline</td><td>MVC/action specific</td></tr>
+<tr><td>Registration</td><td><code>app.Use...</code></td><td>Attributes or DI</td></tr>
+<tr><td>Examples</td><td>Auth, CORS, routing</td><td>Authorize, Validate, Exception</td></tr>
+</table><pre><code>app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers(); // filters apply inside MVC</code></pre><h3>Key Points</h3><ul>
+<li>Middleware = HTTP pipeline; filters = MVC pipeline.</li>
+<li>Order matters for middleware registration.</li>
+<li>Use filters for action-level cross-cutting logic.</li>
+</ul><h3>Interview Answer</h3><p>Middleware handles global HTTP pipeline concerns in order, like authentication and routing. Filters plug into the MVC action lifecycle for things like validation or authorization at controller/action level. I use middleware for request-wide behavior and filters when I need action-specific context.</p></div>
+<div class="answer-pane" id="q_108"><h2>Singleton Pattern</h2><p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection pools—though DI containers often manage lifetime instead.</p><p>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#) is essential; avoid Singleton abuse for every shared object.</p><pre><code>public sealed class Logger {
+  private static readonly Lazy&lt;Logger&gt; _instance =
+    new(() =&gt; new Logger());
+  public static Logger Instance =&gt; _instance.Value;
+  private Logger() { }
+  public void Log(string msg) =&gt; Console.WriteLine(msg);
+}</code></pre><h3>Key Points</h3><ul>
+<li>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#).</li>
+<li>Hard to unit test due to global state—prefer DI singleton scope.</li>
+<li>Avoid Singleton abuse; not every shared object needs the pattern.</li>
+</ul><h3>Interview Answer</h3><p>Singleton guarantees one instance with global access—useful for shared config or logging. In modern apps I often register a single instance in DI rather than hand-rolling static Instance properties.</p></div>
+<div class="answer-pane" id="q_109">
+<div class="section" id="solid">
+<span class="tag">SOLID</span>
+<h1>SOLID Principles</h1>
+<h2>SRP - Single Responsibility Principle</h2>
+<p>
+                A class should have only one reason to change.
+            </p>
+<pre><code>// BAD
+class Report
+{
+    public void Generate() {}
+    public void Print() {}
+}
+
+// GOOD
+class ReportGenerator
+{
+    public void Generate() {}
+}
+
+class ReportPrinter
+{
+    public void Print() {}
+}
+</code></pre>
+<h2>Other SOLID Principles</h2>
+<ul>
+<li>O → Open Closed Principle</li>
+<li>L → Liskov Substitution Principle</li>
+<li>I → Interface Segregation Principle</li>
+<li>D → Dependency Inversion Principle</li>
+</ul>
+</div>
+</div>
+<div class="answer-pane" id="q_110"><h2>Dependency Injection in ASP.NET Core</h2><p>Dependency Injection (DI) is a built-in IoC container that resolves interfaces to concrete implementations at runtime. You register services in <code>Program.cs</code> and consume them via constructor injection in controllers, services, and middleware.</p><p>DI promotes loose coupling, testability, and clear lifetimes (singleton, scoped, transient). ASP.NET Core's default container can be extended with Autofac or other providers if advanced registration is needed.</p><pre><code>builder.Services.AddScoped&lt;IOrderService, OrderService&gt;();
+
+public class OrdersController : ControllerBase
+{
+    private readonly IOrderService _orders;
+    public OrdersController(IOrderService orders) =&gt; _orders = orders;
+}</code></pre><h3>Key Points</h3><ul>
+<li>Register abstractions, inject via constructors.</li>
+<li>Choose correct service lifetimes to avoid bugs.</li>
+<li>Built-in container covers most application needs.</li>
+</ul><h3>Interview Answer</h3><p>ASP.NET Core has first-class DI where I register services in Program.cs and receive them through constructor injection. This decouples layers, makes unit testing straightforward with mocks, and lets the framework manage object lifetimes per request or application scope.</p></div>
+<div class="answer-pane" id="q_111"><h2>async/await vs Task.Run</h2><p><strong>async/await</strong> is for non-blocking asynchronous I/O (HTTP, database, file streams). It frees the calling thread while work completes and resumes on a synchronization context when the await finishes. <strong>Task.Run</strong> offloads CPU-bound work to a thread-pool thread; it does not make I/O async—it wraps synchronous CPU work so the UI or request thread stays responsive.</p><pre><code>// I/O-bound: async/await (no extra thread while waiting)
+public async Task&lt;string&gt; GetUserAsync(int id)
+{
+    var response = await _httpClient.GetAsync($"/users/{id}");
+    return await response.Content.ReadAsStringAsync();
+}
+
+// CPU-bound: Task.Run (uses thread pool)
+public async Task&lt;int&gt; ComputeHashAsync(byte[] data)
+{
+    return await Task.Run(() =&gt; ExpensiveHash(data));
+}
+
+// Anti-pattern: Task.Run around I/O
+await Task.Run(() =&gt; _httpClient.GetStringAsync(url)); // wastes a thread</code></pre><h3>Key Points</h3><ul>
+<li>async/await = cooperative, I/O-bound; Task.Run = parallel CPU on pool threads.</li>
+<li>Never wrap pure async I/O in Task.Run on ASP.NET Core—it reduces scalability.</li>
+<li>async void only for event handlers; prefer async Task everywhere else.</li>
+<li>ConfigureAwait(false) in library code avoids deadlocks on UI/legacy ASP.NET.</li>
+</ul><h3>Interview Answer</h3><p>Use <strong>async/await</strong> when waiting on I/O so threads are not blocked. Use <strong>Task.Run</strong> when you must run CPU-intensive synchronous code off the caller thread. They solve different problems; combining them means async/await waits for CPU work queued via Task.Run, not replacing it.</p></div>
+<div class="answer-pane" id="q_112"><h2>SQL Performance Bottlenecks</h2><p>Common bottlenecks include missing indexes, stale statistics, implicit conversions, table scans, blocking locks, tempdb pressure, parameter sniffing, and inefficient queries returning too much data.</p><p>Measure first with execution plans, wait stats, and IO stats—not guess.</p><table>
+<tr><th>Symptom</th><th>Likely Cause</th></tr>
+<tr><td>Slow SELECT</td><td>Missing index, scan, bad estimate</td></tr>
+<tr><td>Blocking</td><td>Long transactions, lock escalation</td></tr>
+<tr><td>High CPU</td><td>Scans, sorts, scalar UDFs</td></tr>
+<tr><td>tempdb spike</td><td>Sorts, spills, temp table abuse</td></tr>
+</table><pre><code>SELECT wait_type, wait_time_ms FROM sys.dm_os_wait_stats
+ORDER BY wait_time_ms DESC;</code></pre><h3>Key Points</h3><ul>
+<li>Measure first: execution plans, wait stats, IO stats—not guess.</li>
+<li>Fix highest wait type; index and rewrite queries iteratively.</li>
+<li>Avoid SELECT * and functions on indexed columns in WHERE.</li>
+</ul><h3>Interview Answer</h3><p>I diagnose SQL bottlenecks with execution plans and wait stats—looking for scans, bad cardinality, blocking, and tempdb spills. Fixes are usually better indexes, query rewrites, updated stats, and shorter transactions.</p></div>
+<div class="answer-pane" id="q_113"><h2>JOIN vs CTE vs Subquery</h2><p>JOINs combine tables horizontally. Subqueries nest queries for filtering or scalar values. CTEs name subqueries for readability and recursion. The optimizer often produces similar plans—choose for clarity and maintainability.</p><p>JOIN when combining related tables; EXISTS for semi-join existence checks; CTE when the same subquery is referenced multiple times.</p><pre><code>-- JOIN: combine entities
+SELECT o.Id, c.Name FROM Orders o JOIN Customers c ON o.CustId = c.Id;
+
+-- Subquery filter:
+SELECT * FROM Orders WHERE CustId IN (SELECT Id FROM VIPCustomers);
+
+-- CTE: readable multi-step
+WITH VIP AS (SELECT Id FROM Customers WHERE Tier = 'Gold')
+SELECT o.* FROM Orders o JOIN VIP v ON o.CustId = v.Id;</code></pre><h3>Key Points</h3><ul>
+<li>JOIN when combining related tables; EXISTS for semi-join existence checks.</li>
+<li>CTE when same subquery referenced multiple times or recursive.</li>
+<li>Always validate performance with actual execution plans.</li>
+</ul><h3>Interview Answer</h3><p>JOINs merge tables; subqueries embed logic for filters or scalars; CTEs organize complex SQL. I prioritize readable intent, then tune with plans—often they're equivalent under the hood.</p></div>
+<div class="answer-pane" id="q_114"><h2>Singleton vs Static Class</h2><p>Both offer single-instance-like access, but Singleton is an instance class you can implement interfaces, inherit from, and pass as dependency. Static classes cannot be instantiated, inherited, or interface-implemented—harder to mock.</p><p>Prefer instance + DI over static helpers for testability; static classes suit pure stateless utilities.</p><table>
+<tr><th>Singleton</th><th>Static Class</th></tr>
+<tr><td>Instance methods, implements interfaces</td><td>All members static</td></tr>
+<tr><td>Lazy init possible</td><td>Initialized on first access</td></tr>
+<tr><td>DI-friendly (as singleton)</td><td>Tight coupling, poor testability</td></tr>
+</table><pre><code>public interface IDateProvider { DateTime Now { get; } }
+public class SystemDateProvider : IDateProvider {
+  public DateTime Now =&gt; DateTime.UtcNow;
+}
+// vs static DateHelper.Now — can't mock in tests</code></pre><h3>Key Points</h3><ul>
+<li>Prefer instance + DI over static helpers for testability.</li>
+<li>Static classes suit pure utility functions with no state.</li>
+<li>Singleton can enforce one instance; static is inherently one.</li>
+</ul><h3>Interview Answer</h3><p>Singleton is an instantiable class with one instance—I can inject and mock it. Static classes can't implement interfaces or be substituted. I use static only for pure stateless utilities; otherwise DI singleton.</p></div>
+<div class="answer-pane" id="q_115"><h2>Private Constructor in C#</h2><p>A private constructor prevents external code from creating instances with <code>new</code>. This pattern supports singletons, factory methods, and static utility classes where controlled instantiation is required.</p><p>When all constructors are private, the class cannot be subclassed unless a protected constructor exists in a base class scenario. Often you expose a static <code>Create</code> or <code>Instance</code> property that manages object creation.</p><pre><code>public sealed class LoggerFactory
+{
+    private static LoggerFactory? _instance;
+    private LoggerFactory() { }
+
+    public static LoggerFactory Instance
+        =&gt; _instance ??= new LoggerFactory();
+
+    public ILogger Create(string name) =&gt; new ConsoleLogger(name);
+}</code></pre><h3>Key Points</h3><ul>
+<li>Blocks direct instantiation from outside the class.</li>
+<li>Common in singleton and factory patterns.</li>
+<li>Static classes implicitly have private instance constructors.</li>
+</ul><h3>Interview Answer</h3><p>A private constructor means only the class itself can create instances, which is useful for singletons or factory-controlled creation. Callers use a static method or property instead of <code>new</code>, giving you centralized control over object lifetime.</p></div>
+<div class="answer-pane" id="q_116"><h2>Encapsulation vs Abstraction</h2><p>These concepts are related but not the same. <strong>Encapsulation</strong> is about hiding internal details and controlling access to data. <strong>Abstraction</strong> is about exposing only essential behavior and suppressing complexity—what an object does, not how it does it.</p><p>Encapsulation uses access modifiers and properties. Abstraction uses interfaces, abstract classes, and high-level APIs. You often use both together: an interface abstracts payment processing while the concrete class encapsulates gateway credentials and retry logic.</p><table>
+<tr><th>Aspect</th><th>Encapsulation</th><th>Abstraction</th></tr>
+<tr><td>Focus</td><td>Data hiding</td><td>Complexity hiding</td></tr>
+<tr><td>Mechanism</td><td>private, properties</td><td>interfaces, abstract members</td></tr>
+<tr><td>Question answered</td><td>Who can see/change state?</td><td>What capability is offered?</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>Encapsulation protects invariants; abstraction simplifies usage.</li>
+<li>Interfaces provide abstraction; private members provide encapsulation.</li>
+<li>Good design uses both at different layers.</li>
+</ul><h3>Interview Answer</h3><p>Encapsulation hides and protects an object's internal state, while abstraction hides implementation complexity and shows only what callers need. A public interface method is abstraction; making the database connection string private is encapsulation.</p></div>
+<div class="answer-pane" id="q_117"><h2>Static vs Dynamic Binding</h2><p><strong>Static binding</strong> (early binding) resolves method calls at compile time—method overloading and non-virtual method calls. <strong>Dynamic binding</strong> (late binding) resolves calls at runtime based on the actual object type—virtual method overriding and interface dispatch.</p><p>Static binding is faster because the compiler knows the exact method to invoke. Dynamic binding enables polymorphism but requires virtual tables or interface lookup at runtime.</p><table>
+<tr><th></th><th>Static Binding</th><th>Dynamic Binding</th></tr>
+<tr><td>When resolved</td><td>Compile time</td><td>Runtime</td></tr>
+<tr><td>Examples</td><td>Overloading, non-virtual calls</td><td>override, interface methods</td></tr>
+<tr><td>Polymorphism</td><td>No</td><td>Yes</td></tr>
+</table><pre><code>Animal a = new Dog();
+a.MakeSound(); // dynamic binding if MakeSound is virtual</code></pre><h3>Key Points</h3><ul>
+<li>Overloading uses static binding.</li>
+<li>virtual/override and interfaces use dynamic binding.</li>
+<li>C# also has <code>dynamic</code> keyword for runtime binding via DLR.</li>
+</ul><h3>Interview Answer</h3><p>Static binding resolves methods at compile time, like overload selection. Dynamic binding resolves at runtime based on the actual object type, which is how virtual methods and interfaces achieve polymorphism. Understanding both helps explain performance and extensibility trade-offs.</p></div>
+<div class="answer-pane" id="q_118"><h2>IDisposable vs using Statement</h2><p><code>IDisposable</code> defines a contract for releasing unmanaged resources such as file handles, database connections, or network streams. The <code>using</code> statement (or declaration) ensures <code>Dispose()</code> is called even when exceptions occur.</p><p>In modern C#, <code>await using</code> works with <code>IAsyncDisposable</code> for async cleanup. ASP.NET Core scopes often dispose scoped services like DbContext at request end.</p><pre><code>await using var connection = new SqlConnection(connString);
+await connection.OpenAsync();
+// DisposeAsync called automatically at scope end</code></pre><h3>Key Points</h3><ul>
+<li>IDisposable releases unmanaged/scarce resources.</li>
+<li>using guarantees Dispose in a finally block.</li>
+<li>Implement IDisposable pattern for classes owning handles.</li>
+</ul><h3>Interview Answer</h3><p>IDisposable is the interface for deterministic cleanup of resources like files or DB connections. The using statement wraps objects so Dispose runs automatically, even on exceptions. In async code I use await using with IAsyncDisposable for the same guarantee.</p></div>
+<div class="answer-pane" id="q_119">
+<section class="card" id="sec5">
+<h2>Why Middleware is Used</h2>
+<p>Middleware handles HTTP requests and responses in ASP.NET Core pipeline.</p>
+<h3>Common Uses</h3>
+<ul>
+<li>Authentication</li>
+<li>Authorization</li>
+<li>Exception handling</li>
+<li>Logging</li>
+<li>Routing</li>
+<li>CORS</li>
+</ul>
+<h3>Pipeline Flow</h3>
+<pre><code>Request → Middleware → Controller → Middleware → Response</code></pre>
+<h3>Custom Middleware Example</h3>
+<pre><code>public class LoggingMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public LoggingMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task Invoke(HttpContext context)
+    {
+        Console.WriteLine("Request");
+        await _next(context);
+        Console.WriteLine("Response");
+    }
+}</code></pre>
+</section>
+</div>
+<div class="answer-pane" id="q_120"><h2>Web API Performance Optimization</h2><p>Performance tuning spans database access, serialization, caching, and async patterns. Avoid N+1 queries with EF <code>Include</code> or projections, paginate large result sets, and use <code>AsNoTracking</code> for read-only queries.</p><p>Enable response compression, cache stable reads, minimize payload size with DTOs, and use <code>async/await</code> throughout to free threads during I/O.</p><pre><code>var page = await _db.Orders
+    .AsNoTracking()
+    .Where(o =&gt; o.CustomerId == id)
+    .OrderByDescending(o =&gt; o.CreatedAt)
+    .Select(o =&gt; new OrderDto(o.Id, o.Total))
+    .Take(pageSize)
+    .ToListAsync();</code></pre><h3>Key Points</h3><ul>
+<li>Profile before optimizing; measure latency and SQL.</li>
+<li>Project to DTOs; avoid over-fetching entities.</li>
+<li>Use caching and compression for hot read paths.</li>
+</ul><h3>Interview Answer</h3><p>I optimize APIs by reducing database round trips with efficient EF queries, pagination, and AsNoTracking for reads. I add caching for hot data, compress responses, use async I/O, and profile with Application Insights or dotTrace to fix real bottlenecks rather than guessing.</p></div>
+<div class="answer-pane" id="q_121"><h2>LINQ in C#</h2><p>Language Integrated Query (LINQ) provides a consistent syntax to query collections, databases, XML, and more. You can write queries with method syntax (<code>Where</code>, <code>Select</code>) or query syntax (<code>from ... where ... select</code>).</p><p>LINQ to Objects executes in memory; LINQ providers like EF Core translate <code>IQueryable</code> expressions to SQL. Deferred execution means the query runs when you enumerate results unless you call operators like <code>ToList()</code>.</p><pre><code>var activeUsers = users
+    .Where(u =&gt; u.IsActive)
+    .OrderBy(u =&gt; u.LastName)
+    .Select(u =&gt; new { u.Id, u.Email });
+
+foreach (var u in activeUsers) { /* executes here */ }</code></pre><h3>Key Points</h3><ul>
+<li>Unified query model across data sources.</li>
+<li>Deferred execution unless materialized.</li>
+<li>Method syntax and query syntax are equivalent.</li>
+</ul><h3>Interview Answer</h3><p>LINQ lets me query data with a fluent, type-safe API in C#. It supports in-memory collections and remote providers like EF Core, with deferred execution until enumeration. I use it daily for filtering, projection, grouping, and joins with readable, composable code.</p></div>
+<div class="answer-pane" id="q_122"><h2>First vs Single in LINQ</h2><p><code>First()</code> returns the first element matching a predicate or sequence start and throws if empty. <code>Single()</code> expects exactly one element and throws if zero or more than one match. Each has <code>OrDefault</code> variants that return default instead of throwing.</p><p>Use <code>Single</code> when duplicates indicate a data integrity bug. Use <code>First</code> when any matching row is acceptable, such as top-ranked item after <code>OrderBy</code>.</p><table>
+<tr><th>Method</th><th>0 items</th><th>1 item</th><th>2+ items</th></tr>
+<tr><td>First()</td><td>Throws</td><td>Returns</td><td>Returns first</td></tr>
+<tr><td>Single()</td><td>Throws</td><td>Returns</td><td>Throws</td></tr>
+</table><pre><code>var admin = users.Single(u =&gt; u.Role == "Admin"); // expect one
+var latest = orders.OrderByDescending(o =&gt; o.Date).First();</code></pre><h3>Key Points</h3><ul>
+<li>Single enforces uniqueness; First does not.</li>
+<li>OrDefault variants avoid exceptions for missing data.</li>
+<li>Choice communicates data expectations to readers.</li>
+</ul><h3>Interview Answer</h3><p>First returns the first match and is fine when multiple results exist. Single requires exactly one element and throws if there are zero or many, which I use when the business rule demands uniqueness. Picking the right operator documents intent and catches bad data early.</p></div>
+<div class="answer-pane" id="q_123"><h2>Benefits of Stored Procedures</h2><p>Stored procedures encapsulate SQL logic on the server, offering performance, security, and maintainability advantages over ad hoc queries sent from application code.</p><p>Parameterized SPs prevent SQL injection when called correctly; avoid hiding all business logic in SPs when ORM migrations matter.</p><pre><code>CREATE PROC usp_TransferFunds
+  @From INT, @To INT, @Amount DECIMAL(18,2)
+AS
+BEGIN TRANSACTION;
+  UPDATE Accounts SET Balance = Balance - @Amount WHERE Id = @From;
+  UPDATE Accounts SET Balance = Balance + @Amount WHERE Id = @To;
+COMMIT;</code></pre><h3>Key Points</h3><ul>
+<li>Performance: execution plans cached; reduced network traffic.</li>
+<li>Security: grant EXEC without exposing base tables.</li>
+<li>Maintainability: single place to change business rules.</li>
+</ul><h3>Interview Answer</h3><p>Stored procedures improve performance via plan reuse, boost security through EXEC grants, centralize business rules, and cut network round trips. I use them for complex transactional logic close to the data.</p></div>
+<div class="answer-pane" id="q_124"><h2>CTE vs Temp Table</h2><p>CTEs exist only for the duration of one statement and are ideal for readability and recursion. Temp tables (#table) persist for the session, support indexes/statistics, and suit multi-step ETL or large intermediate results.</p><p>Table variables (@t) are a third option for small in-memory staging sets.</p><table>
+<tr><th>CTE</th><th>Temp Table</th></tr>
+<tr><td>Single statement scope</td><td>Session scope</td></tr>
+<tr><td>No indexes (generally)</td><td>Indexes and stats possible</td></tr>
+<tr><td>Recursive support</td><td>Better for large datasets</td></tr>
+</table><pre><code>SELECT * INTO #TopSales FROM Sales WHERE Year = 2024;
+CREATE INDEX IX_Region ON #TopSales(Region);
+-- reuse across batches</code></pre><h3>Key Points</h3><ul>
+<li>Use CTE for clarity; temp table when data is reused or needs indexing.</li>
+<li>Temp tables live in tempdb; watch contention at scale.</li>
+<li>Table variables (@t) are a third option for small sets.</li>
+</ul><h3>Interview Answer</h3><p>CTEs are inline, single-statement helpers; temp tables persist in tempdb with indexes for heavier multi-step work. I choose based on reuse, size, and whether I need statistics for the optimizer.</p></div>
+<div class="answer-pane" id="q_125"><h2>TRUNCATE vs DELETE</h2><p>DELETE removes rows one at a time (or in batches), can use WHERE, fires triggers, and is fully logged per row. TRUNCATE deallocates data pages for the whole table, is faster, resets identity seeds, and cannot use WHERE.</p><p>TRUNCATE fails when foreign keys reference the table unless constraints are handled; use DELETE for selective removal and auditing.</p><table>
+<tr><th>DELETE</th><th>TRUNCATE</th></tr>
+<tr><td>Row-level DML</td><td>Page deallocation</td></tr>
+<tr><td>WHERE supported</td><td>Removes all rows</td></tr>
+<tr><td>Triggers fire</td><td>Minimal logging (varies by edition)</td></tr>
+<tr><td>Can rollback in transaction</td><td>Needs ALTER permission; FK restrictions</td></tr>
+</table><pre><code>DELETE FROM AuditLog WHERE LogDate &lt; '2024-01-01';
+TRUNCATE TABLE StagingOrders;  -- fast empty staging table</code></pre><h3>Key Points</h3><ul>
+<li>Use TRUNCATE to quickly clear staging tables without filters.</li>
+<li>Use DELETE for selective removal and when triggers/auditing matter.</li>
+<li>TRUNCATE fails if FK references exist unless handled.</li>
+</ul><h3>Interview Answer</h3><p>DELETE removes specific rows and fires triggers; TRUNCATE wipes the whole table by deallocating pages—much faster but no WHERE. I TRUNCATE staging tables and DELETE when I need filters or referential safety.</p></div>
+<div class="answer-pane" id="q_solid_detailed"><h2>SOLID Principles with Examples</h2><p>SOLID guides maintainable OOP design: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.</p><p>Each principle reduces coupling and improves testability—apply pragmatically, not as dogma on every class.</p><pre><code>// S: OrderService only handles orders—not email
+class OrderService { void PlaceOrder(Order o) { ... } }
+
+// O: extend via IDiscountStrategy, don't modify Checkout
+interface IDiscountStrategy { decimal Apply(decimal total); }
+
+// L: subtypes must honor base contracts
+
+// I: split IPrinter into IPrint and IScan
+
+// D: depend on IEmailSender, not SmtpClient
+class Notifier(IEmailSender sender) { ... }</code></pre><h3>Key Points</h3><ul>
+<li>S: one reason to change per class.</li>
+<li>O: open for extension, closed for modification.</li>
+<li>L: subtypes must be substitutable without breaking callers.</li>
+<li>I: small focused interfaces; D: depend on abstractions.</li>
+</ul><h3>Interview Answer</h3><p>SOLID reduces coupling and improves testability. I apply S for focused classes, O via strategy/plugins, L by avoiding brittle inheritance, I with lean interfaces, and D through DI containers and abstractions.</p></div>
+<div class="answer-pane" id="q_factory_pattern"><h2>Factory Pattern</h2><p>Factory encapsulates object creation behind an interface or method so callers depend on abstractions, not concrete types. Simple Factory uses one method; Factory Method subclasses decide type; Abstract Factory creates families of related objects.</p><p>DI containers often replace hand-rolled factories via registration in ASP.NET Core.</p><pre><code>public interface INotification { void Send(string msg); }
+public class NotificationFactory {
+  public static INotification Create(string channel) =&gt; channel switch {
+    "email" =&gt; new EmailNotification(),
+    "sms"   =&gt; new SmsNotification(),
+    _       =&gt; throw new ArgumentException()
+  };
+}</code></pre><h3>Key Points</h3><ul>
+<li>Centralizes creation logic and supports Open/Closed extension.</li>
+<li>DI containers often replace hand-rolled factories via registration.</li>
+<li>Abstract Factory when creating coordinated product families.</li>
+</ul><h3>Interview Answer</h3><p>Factory hides concrete instantiation behind an abstraction—callers ask for INotification, not new EmailNotification. I use it when creation logic is complex or varies by config, often delegating to DI in ASP.NET.</p></div>
+<div class="answer-pane" id="q_strategy_pattern"><h2>Strategy Pattern</h2><p>Strategy defines a family of interchangeable algorithms behind a common interface, letting runtime behavior change without modifying the client. It replaces large if/else or switch blocks.</p><p>Works well with DI—register strategy per tenant or feature flag.</p><pre><code>public interface IPricingStrategy {
+  decimal Calculate(Order order);
+}
+public class CheckoutService(IPricingStrategy pricing) {
+  public decimal Total(Order o) =&gt; pricing.Calculate(o);
+}
+// Register RegularPricing, PremiumPricing, PromoPricing via DI</code></pre><h3>Key Points</h3><ul>
+<li>Encapsulates varying behavior; client depends on interface only.</li>
+<li>Works well with DI—register strategy per tenant or feature flag.</li>
+<li>Combine with Factory when strategy selection is dynamic.</li>
+</ul><h3>Interview Answer</h3><p>Strategy swaps algorithms at runtime through a shared interface—pricing rules, payment methods, compression. I inject the strategy so new behaviors are new classes, not growing switch statements.</p></div>
+<div class="answer-pane" id="q_design_pattern_types"><h2>Types of Design Patterns</h2><p>GoF patterns divide into Creational (object creation), Structural (composition), and Behavioral (communication/responsibility). Modern catalogs add concurrency and architectural patterns.</p><p>Patterns are vocabulary—not goals. Don't force them everywhere; use when they match a real problem.</p><table>
+<tr><th>Category</th><th>Examples</th><th>Purpose</th></tr>
+<tr><td>Creational</td><td>Singleton, Factory, Builder</td><td>Encapsulate creation</td></tr>
+<tr><td>Structural</td><td>Adapter, Decorator, Facade</td><td>Compose objects</td></tr>
+<tr><td>Behavioral</td><td>Strategy, Observer, Command</td><td>Algorithms &amp; interaction</td></tr>
+</table><pre><code>// Creational: Factory creates without exposing new()
+// Structural: Adapter wraps legacy API
+// Behavioral: Strategy swaps algorithms at runtime</code></pre><h3>Key Points</h3><ul>
+<li>Patterns are vocabulary—not goals. Don't force them everywhere.</li>
+<li>Prefer composition over inheritance in most structural cases.</li>
+<li>Know when a pattern adds clarity vs unnecessary indirection.</li>
+</ul><h3>Interview Answer</h3><p>Design patterns fall into creational, structural, and behavioral groups. I name them when they match a real problem—Factory for creation complexity, Strategy for swappable behavior—not as boilerplate.</p></div>
+</div>
+</body>
+</html>
