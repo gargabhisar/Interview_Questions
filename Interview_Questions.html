@@ -1,4 +1,4 @@
-
+﻿
 <!DOCTYPE html>
 
 <html lang="en">
@@ -543,11 +543,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="sidebar"><h2>Interview Questions</h2>
 <div class="search-container">
 <input id="searchBox" onkeyup="filterQuestions()" placeholder="Search questions..." type="text"/>
-<span id="clearSearch" onclick="clearSearch()">✖</span>
+<span id="clearSearch" onclick="clearSearch()">âœ–</span>
 </div>
 <h3 class="topic-header">OOPS &amp; C#</h3>
 <div class="question-group">
-<div class="question-item" onclick="showAnswer('q_106')">1. 4 Pillars of OOPS — explain each</div>
+<div class="question-item" onclick="showAnswer('q_106')">1. 4 Pillars of OOPS â€” explain each</div>
 <div class="question-item" onclick="showAnswer('q_99')">2. Overloading vs Overriding (same class?)</div>
 <div class="question-item" onclick="showAnswer('q_91')">3. Abstract Class vs Interface (3+ diffs, when to use)</div>
 <div class="question-item" onclick="showAnswer('q_oops_instance')">4. Instance of Abstract class or Interface?</div>
@@ -597,6 +597,33 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_70')">20. Background Job Processing</div>
 <div class="question-item" onclick="showAnswer('q_120')">21. Web API Performance Optimization</div>
 <div class="question-item" onclick="showAnswer('q_74')">22. How to consume external APIs?</div>
+</div>
+<h3 class="topic-header">ASP.NET Core â€” Top 24 Interview Q&amp;A</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_37')">1. .NET Core vs .NET Framework</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q02')">2. Create Web API project</div>
+<div class="question-item" onclick="showAnswer('q_107')">3. Middleware components</div>
+<div class="question-item" onclick="showAnswer('q_110')">4. Dependency injection</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q05')">5. Configure appsettings.json</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q06')">6. IActionResult vs ActionResult&lt;T&gt;</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q07')">7. Enable Swagger</div>
+<div class="question-item" onclick="showAnswer('q_40')">8. Transient, Scoped, Singleton</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q09')">9. Logging in .NET Core</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q10_filters')">10. MVC Filters</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q11')">11. Global exception handling</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q12')">12. Program.cs purpose</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q13_auth')">13. Authentication &amp; authorization</div>
+<div class="question-item" onclick="showAnswer('q_kestrel')">14. Kestrel vs IIS</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q15')">15. Health checks</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q16')">16. Retry &amp; Circuit Breaker</div>
+<div class="question-item" onclick="showAnswer('q_69')">17. IHostedService</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q18')">18. Minimal APIs vs Controllers</div>
+<div class="question-item" onclick="showAnswer('q_67')">19. Caching</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q20')">20. EF Core migrations &amp; seeding</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q21')">21. gRPC services</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q22')">22. Docker containerization</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q23')">23. JWT &amp; IdentityServer</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q24')">24. BackgroundService</div>
 </div>
 <h3 class="topic-header">SQL &amp; Database</h3>
 <div class="question-group">
@@ -681,8 +708,8 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_78')">4. Extension Methods</div>
 </div></div>
 <div class="content">
-<button type="button" class="back-btn" onclick="backToQuestions(event)" aria-label="Back to question list">← Back to questions</button>
-<div class="answer-pane" id="q_1"><h2>MongoDB vs SQL Databases</h2><p>SQL databases are relational, schema-first systems that store data in tables with enforced relationships and ACID transactions. MongoDB is a document-oriented NoSQL database that stores flexible JSON-like BSON documents in collections, optimized for horizontal scaling and rapid schema evolution.</p><p>On SQL Server you also tune parallelism with <code>MAXDOP</code> (maximum degree of parallelism), which limits how many CPUs a single query may use—separate from the SQL vs document-store choice but important for relational performance.</p><table>
+<button type="button" class="back-btn" onclick="backToQuestions(event)" aria-label="Back to question list">â† Back to questions</button>
+<div class="answer-pane" id="q_1"><h2>MongoDB vs SQL Databases</h2><p>SQL databases are relational, schema-first systems that store data in tables with enforced relationships and ACID transactions. MongoDB is a document-oriented NoSQL database that stores flexible JSON-like BSON documents in collections, optimized for horizontal scaling and rapid schema evolution.</p><p>On SQL Server you also tune parallelism with <code>MAXDOP</code> (maximum degree of parallelism), which limits how many CPUs a single query may useâ€”separate from the SQL vs document-store choice but important for relational performance.</p><table>
 <tr><th>Aspect</th><th>SQL</th><th>MongoDB</th></tr>
 <tr><td>Data model</td><td>Tables, rows, columns</td><td>Collections, documents</td></tr>
 <tr><td>Schema</td><td>Fixed, enforced</td><td>Flexible, optional</td></tr>
@@ -701,8 +728,8 @@ db.orders.aggregate([
 <li>Choose SQL when you need strong consistency, complex joins, and reporting.</li>
 <li>Choose MongoDB for flexible schemas, high write throughput, and document-centric apps.</li>
 <li>Many teams use both: SQL for transactional core, MongoDB for logs or content.</li>
-</ul><h3>Interview Answer</h3><p>SQL is relational and ACID-focused with strict schemas; MongoDB is document-based and schema-flexible, better for scale-out and evolving data shapes. I pick based on consistency needs, query patterns, and team expertise—not hype.</p></div>
-<div class="answer-pane active" id="q_2"><h2>Monolithic vs Microservices Architecture</h2><p>A <strong>monolith</strong> is a single deployable application containing all modules—UI, business logic, and data access—sharing one process and often one database. <strong>Microservices</strong> split the system into independently deployable services, each owning a bounded context and communicating over HTTP or messaging.</p><p>Monoliths are simpler to develop and debug early on. Microservices improve scalability and team autonomy at the cost of distributed complexity—network failures, observability, and deployment pipelines multiply.</p><table>
+</ul><h3>Interview Answer</h3><p>SQL is relational and ACID-focused with strict schemas; MongoDB is document-based and schema-flexible, better for scale-out and evolving data shapes. I pick based on consistency needs, query patterns, and team expertiseâ€”not hype.</p></div>
+<div class="answer-pane active" id="q_2"><h2>Monolithic vs Microservices Architecture</h2><p>A <strong>monolith</strong> is a single deployable application containing all modulesâ€”UI, business logic, and data accessâ€”sharing one process and often one database. <strong>Microservices</strong> split the system into independently deployable services, each owning a bounded context and communicating over HTTP or messaging.</p><p>Monoliths are simpler to develop and debug early on. Microservices improve scalability and team autonomy at the cost of distributed complexityâ€”network failures, observability, and deployment pipelines multiply.</p><table>
 <tr><th>Aspect</th><th>Monolith</th><th>Microservices</th></tr>
 <tr><td>Deployment</td><td>Single unit</td><td>Independent services</td></tr>
 <tr><td>Complexity</td><td>Lower initially</td><td>Higher operational overhead</td></tr>
@@ -712,7 +739,7 @@ db.orders.aggregate([
 <li>Start monolith unless clear boundaries justify splitting.</li>
 <li>Microservices need strong DevOps and observability.</li>
 <li>Domain boundaries matter more than technology choice.</li>
-</ul><h3>Interview Answer</h3><p>A monolith is one deployable app that is easy to build initially but harder to scale independently. Microservices decompose by business capability for independent deployment and scaling, but add network, consistency, and operations complexity. I choose based on team size, domain clarity, and scaling needs—not hype.</p></div>
+</ul><h3>Interview Answer</h3><p>A monolith is one deployable app that is easy to build initially but harder to scale independently. Microservices decompose by business capability for independent deployment and scaling, but add network, consistency, and operations complexity. I choose based on team size, domain clarity, and scaling needsâ€”not hype.</p></div>
 <div class="answer-pane" id="q_3"><h2>Capital Markets: KYC, AML, Trade Lifecycle, MDOP</h2><p>Capital markets systems must satisfy regulatory controls while executing trades accurately. Interviewers expect fluency in onboarding compliance and operational data flows from order capture through settlement.</p><pre><code>// Illustrative trade lifecycle states
 public enum TradeStatus
 {
@@ -726,8 +753,8 @@ if (!await _kycService.IsVerifiedAsync(clientId))
 await _amlService.ScreenTransactionAsync(trade);</code></pre><h3>Key Points</h3><ul>
 <li><strong>KYC</strong>: verify identity, beneficial ownership, risk profile before trading.</li>
 <li><strong>AML</strong>: monitor transactions, sanctions screening, SAR escalation.</li>
-<li><strong>Trade lifecycle</strong>: order → execution → allocation → confirmation → settlement (T+n).</li>
-<li><strong>MDOP</strong>: Market Data Operations Platform—feeds, entitlements, symbology, golden copy.</li>
+<li><strong>Trade lifecycle</strong>: order â†’ execution â†’ allocation â†’ confirmation â†’ settlement (T+n).</li>
+<li><strong>MDOP</strong>: Market Data Operations Platformâ€”feeds, entitlements, symbology, golden copy.</li>
 </ul><h3>Interview Answer</h3><p>KYC onboards compliant clients; AML detects suspicious activity ongoing. Trades move through capture, validation, execution, allocation, and settlement with audit trails. MDOP ensures authoritative market data distribution with entitlements and consistent instrument identifiers across front-to-back systems.</p></div>
 <div class="answer-pane" id="q_4"><h2>Multiple catch Blocks in try-catch</h2><p>C# evaluates <code>catch</code> clauses top to bottom; the first matching exception type handles it. Specific exceptions must come before general ones. Only one catch runs per thrown exception.</p><pre><code>try
 {
@@ -744,17 +771,17 @@ catch (FileNotFoundException ex)
 }
 catch (IOException ex) when (ex.HResult == -2147024784)
 {
-    // filter clause — disk full
+    // filter clause â€” disk full
 }
 catch (Exception ex)
 {
     _logger.LogCritical(ex, "Unexpected failure");
     throw; // preserve stack trace
 }</code></pre><h3>Key Points</h3><ul>
-<li>Order: most specific → least specific; Exception last.</li>
+<li>Order: most specific â†’ least specific; Exception last.</li>
 <li>catch when filters on type plus condition without catching base first incorrectly.</li>
 <li>Use throw; not throw ex; to rethrow preserving stack.</li>
-<li>finally runs regardless—use for cleanup (Dispose patterns).</li>
+<li>finally runs regardlessâ€”use for cleanup (Dispose patterns).</li>
 </ul><h3>Interview Answer</h3><p>Multiple catch blocks let you handle different failure types differently. Place specific handlers first, optionally use exception filters with when, and use a general catch only for logging before rethrow or graceful degradation.</p></div>
 <div class="answer-pane" id="q_5"><h2>Database Normalization</h2><p>Normalization organizes data to reduce redundancy and update anomalies by decomposing tables according to normal forms (1NF through BCNF). Each step removes a specific kind of dependency problem.</p><p>Well-normalized OLTP schemas prevent insert/update/delete anomalies; selective denormalization is acceptable only when profiling proves read bottlenecks.</p><table>
 <tr><th>Form</th><th>Rule</th></tr>
@@ -769,20 +796,20 @@ Customers(CustomerId, Name, City)
 Products(ProductId, Name)
 Orders(OrderId, CustomerId, ProductId, Qty)</code></pre><h3>Key Points</h3><ul>
 <li>Normalization improves data integrity and reduces duplicate storage.</li>
-<li>Over-normalization can hurt read performance—denormalize selectively for hot paths.</li>
+<li>Over-normalization can hurt read performanceâ€”denormalize selectively for hot paths.</li>
 <li>Interviewers often want you to spot redundancy and propose split tables.</li>
-</ul><h3>Interview Answer</h3><p>Normalization splits tables to eliminate redundancy and anomalies. I apply 1NF–3NF in OLTP design, then denormalize only where measured read performance requires it.</p></div>
-<div class="answer-pane" id="q_6"><h2>Boyce-Codd Normal Form (BCNF)</h2><p>BCNF is a stricter form of 3NF: every determinant must be a candidate key. A table is in BCNF when for every functional dependency X → Y, X is a superkey. It eliminates anomalies 3NF might still allow when multiple overlapping candidate keys exist.</p><p>When a non-key attribute determines another non-key attribute, decompose into separate tables while keeping joins lossless and preserving dependencies where possible.</p><pre><code>-- Violates BCNF (Teacher → Room, but Teacher is not a key):
+</ul><h3>Interview Answer</h3><p>Normalization splits tables to eliminate redundancy and anomalies. I apply 1NFâ€“3NF in OLTP design, then denormalize only where measured read performance requires it.</p></div>
+<div class="answer-pane" id="q_6"><h2>Boyce-Codd Normal Form (BCNF)</h2><p>BCNF is a stricter form of 3NF: every determinant must be a candidate key. A table is in BCNF when for every functional dependency X â†’ Y, X is a superkey. It eliminates anomalies 3NF might still allow when multiple overlapping candidate keys exist.</p><p>When a non-key attribute determines another non-key attribute, decompose into separate tables while keeping joins lossless and preserving dependencies where possible.</p><pre><code>-- Violates BCNF (Teacher â†’ Room, but Teacher is not a key):
 Enrollment(Student, Course, Teacher, Room)
 
--- Fix: separate Teacher → Room dependency
+-- Fix: separate Teacher â†’ Room dependency
 TeacherRoom(Teacher, Room)
 Enrollment(Student, Course, Teacher)</code></pre><h3>Key Points</h3><ul>
-<li>BCNF ⊂ 3NF; all BCNF tables are 3NF, not vice versa.</li>
+<li>BCNF âŠ‚ 3NF; all BCNF tables are 3NF, not vice versa.</li>
 <li>Violations occur when non-key attributes determine other non-key attributes.</li>
 <li>Decomposition must be lossless and preserve dependencies where possible.</li>
 </ul><h3>Interview Answer</h3><p>BCNF requires every determinant to be a candidate key. If Teacher determines Room but Teacher isn't a key, I decompose into separate tables to remove the anomaly while keeping joins lossless.</p></div>
-<div class="answer-pane" id="q_7"><h2>Database Indexes</h2><p>Indexes are auxiliary data structures (typically B-trees) that speed up data retrieval by avoiding full table scans. They trade faster reads for extra storage and slower writes due to index maintenance.</p><p>Design indexes around real query patterns—filters, joins, ORDER BY, and GROUP BY—and validate with execution plans rather than indexing every column.</p><pre><code>-- Clustered index on primary key (default in SQL Server)
+<div class="answer-pane" id="q_7"><h2>Database Indexes</h2><p>Indexes are auxiliary data structures (typically B-trees) that speed up data retrieval by avoiding full table scans. They trade faster reads for extra storage and slower writes due to index maintenance.</p><p>Design indexes around real query patternsâ€”filters, joins, ORDER BY, and GROUP BYâ€”and validate with execution plans rather than indexing every column.</p><pre><code>-- Clustered index on primary key (default in SQL Server)
 CREATE CLUSTERED INDEX IX_Emp_Id ON Employees(EmployeeId);
 
 -- Nonclustered index for frequent filter
@@ -796,7 +823,7 @@ ON Employees(DepartmentId) INCLUDE (LastName, Salary);</code></pre><table>
 <li>Too many indexes hurt write-heavy workloads.</li>
 <li>Use covering indexes (INCLUDE) to avoid key lookups.</li>
 </ul><h3>Interview Answer</h3><p>Indexes accelerate lookups like a book index but slow writes. I index selective, frequently queried columns, verify with execution plans, and avoid over-indexing OLTP tables.</p></div>
-<div class="answer-pane" id="q_8"><h2>Clustered vs Non-Clustered Indexes</h2><p>A clustered index defines the physical sort order of table rows—there can be only one per table. A non-clustered index is a separate structure with pointers (or row locators) back to the data.</p><p>Range scans on the clustered key are very efficient; non-clustered indexes may require key lookups when columns aren't covered.</p><table>
+<div class="answer-pane" id="q_8"><h2>Clustered vs Non-Clustered Indexes</h2><p>A clustered index defines the physical sort order of table rowsâ€”there can be only one per table. A non-clustered index is a separate structure with pointers (or row locators) back to the data.</p><p>Range scans on the clustered key are very efficient; non-clustered indexes may require key lookups when columns aren't covered.</p><table>
 <tr><th>Clustered</th><th>Non-Clustered</th></tr>
 <tr><td>One per table</td><td>Many allowed</td></tr>
 <tr><td>Data stored in index order</td><td>Separate structure + lookup</td></tr>
@@ -810,7 +837,7 @@ CREATE NONCLUSTERED INDEX IX_Dept ON Employees(DeptId);</code></pre><h3>Key Poin
 <li>Range scans on clustered key are very efficient.</li>
 <li>Non-clustered indexes may require key lookups (bookmark/RID).</li>
 <li>Choose clustered key on narrow, ever-increasing column (e.g., identity).</li>
-</ul><h3>Interview Answer</h3><p>Clustered index sorts the table physically—one per table. Non-clustered indexes are separate lookup structures. I put the clustered index on the most common range-scan column, usually the PK.</p></div>
+</ul><h3>Interview Answer</h3><p>Clustered index sorts the table physicallyâ€”one per table. Non-clustered indexes are separate lookup structures. I put the clustered index on the most common range-scan column, usually the PK.</p></div>
 <div class="answer-pane" id="q_9"><h2>SQL Execution Plans</h2><p>An execution plan shows how the optimizer retrieves data: scan vs seek, join algorithms, sort/hash operations, and estimated vs actual row counts. Reading plans is essential for performance tuning.</p><p>Compare estimated vs actual rows; large gaps often mean stale statistics or parameter sniffing issues.</p><pre><code>SET STATISTICS IO ON;
 SET STATISTICS TIME ON;
 
@@ -820,7 +847,7 @@ INNER JOIN Departments d ON e.DeptId = d.DeptId
 WHERE e.Salary &gt; 80000;
 
 -- View plan in SSMS: Ctrl+M or SET SHOWPLAN_ALL ON;</code></pre><h3>Key Points</h3><ul>
-<li>Look for table/index scans on large tables—often fixable with indexes.</li>
+<li>Look for table/index scans on large tablesâ€”often fixable with indexes.</li>
 <li>Compare estimated vs actual rows; big gaps suggest stale statistics.</li>
 <li>Watch for implicit conversions, key lookups, and expensive sorts.</li>
 </ul><h3>Interview Answer</h3><p>I use execution plans to see whether SQL Server scans or seeks, which joins it picks, and where cost concentrates. Red flags are scans on big tables, bad cardinality estimates, and missing indexes.</p></div>
@@ -835,10 +862,10 @@ WHERE e.Salary &gt; 80000;
   Phone NVARCHAR(20) UNIQUE NULL
 );</code></pre><h3>Key Points</h3><ul>
 <li>PK is the row identifier; unique constraints protect alternate business keys.</li>
-<li>Don't make every unique column a PK—use surrogate keys when needed.</li>
+<li>Don't make every unique column a PKâ€”use surrogate keys when needed.</li>
 <li>Both create indexes automatically in most engines.</li>
-</ul><h3>Interview Answer</h3><p>Primary key is the main row identifier—one per table, no NULLs. Unique constraints also block duplicates but allow NULLs and you can have several. I use PK for identity and UNIQUE for emails, codes, etc.</p></div>
-<div class="answer-pane" id="q_11"><h2>UNION vs UNION ALL</h2><p>UNION combines result sets from two or more SELECT statements and removes duplicate rows (distinct sort/hash). UNION ALL concatenates all rows including duplicates—faster when duplicates are acceptable or impossible.</p><p>Column order, count, and compatible types must match across all SELECT branches.</p><pre><code>SELECT City FROM Customers
+</ul><h3>Interview Answer</h3><p>Primary key is the main row identifierâ€”one per table, no NULLs. Unique constraints also block duplicates but allow NULLs and you can have several. I use PK for identity and UNIQUE for emails, codes, etc.</p></div>
+<div class="answer-pane" id="q_11"><h2>UNION vs UNION ALL</h2><p>UNION combines result sets from two or more SELECT statements and removes duplicate rows (distinct sort/hash). UNION ALL concatenates all rows including duplicatesâ€”faster when duplicates are acceptable or impossible.</p><p>Column order, count, and compatible types must match across all SELECT branches.</p><pre><code>SELECT City FROM Customers
 UNION
 SELECT City FROM Suppliers;
 
@@ -854,7 +881,7 @@ SELECT City FROM Suppliers;</code></pre><table>
 <li>Column order, count, and compatible types must match.</li>
 <li>ORDER BY applies to the final combined result.</li>
 </ul><h3>Interview Answer</h3><p>UNION merges queries and removes duplicates; UNION ALL just stacks them. I use UNION ALL for performance unless I explicitly need distinct combined results.</p></div>
-<div class="answer-pane" id="q_12"><h2>ISNULL vs COALESCE</h2><p>Both replace NULL with a value. ISNULL is SQL Server–specific, takes exactly two arguments, and uses the first argument's data type. COALESCE is ANSI-standard, accepts multiple arguments, and returns the first non-NULL value.</p><p>ISNULL can silently truncate if types differ; COALESCE follows data-type precedence rules—prefer COALESCE for portability.</p><pre><code>SELECT
+<div class="answer-pane" id="q_12"><h2>ISNULL vs COALESCE</h2><p>Both replace NULL with a value. ISNULL is SQL Serverâ€“specific, takes exactly two arguments, and uses the first argument's data type. COALESCE is ANSI-standard, accepts multiple arguments, and returns the first non-NULL value.</p><p>ISNULL can silently truncate if types differ; COALESCE follows data-type precedence rulesâ€”prefer COALESCE for portability.</p><pre><code>SELECT
   ISNULL(MiddleName, 'N/A') AS Middle,
   COALESCE(MiddleName, NickName, 'N/A') AS Display
 FROM Employees;
@@ -863,7 +890,7 @@ SELECT COALESCE(NullableInt, 0) FROM T;</code></pre><h3>Key Points</h3><ul>
 <li>COALESCE evaluates arguments until first non-NULL; ISNULL evaluates once.</li>
 <li>ISNULL can truncate if types differ; COALESCE follows precedence rules.</li>
 <li>Prefer COALESCE for portability and multiple fallbacks.</li>
-</ul><h3>Interview Answer</h3><p>ISNULL replaces NULL with one fallback and is SQL Server–specific. COALESCE is standard, supports multiple fallbacks, and is my default unless I need ISNULL's two-arg simplicity in T-SQL.</p></div>
+</ul><h3>Interview Answer</h3><p>ISNULL replaces NULL with one fallback and is SQL Serverâ€“specific. COALESCE is standard, supports multiple fallbacks, and is my default unless I need ISNULL's two-arg simplicity in T-SQL.</p></div>
 <div class="answer-pane" id="q_13">
 <div class="qa-section" id="q9">
 <h2>9. Truncate vs Delete</h2>
@@ -883,7 +910,7 @@ SELECT COALESCE(NullableInt, 0) FROM T;</code></pre><h3>Key Points</h3><ul>
 </table>
 </div>
 </div>
-<div class="answer-pane" id="q_14"><h2>Tables vs Views</h2><p>Tables store physical data on disk. Views are saved SELECT queries—virtual tables that present data without storing it (except indexed views in SQL Server, which materialize).</p><p>Views simplify complex joins and enforce row/column security but don't automatically improve performance unless indexed.</p><table>
+<div class="answer-pane" id="q_14"><h2>Tables vs Views</h2><p>Tables store physical data on disk. Views are saved SELECT queriesâ€”virtual tables that present data without storing it (except indexed views in SQL Server, which materialize).</p><p>Views simplify complex joins and enforce row/column security but don't automatically improve performance unless indexed.</p><table>
 <tr><th>Table</th><th>View</th></tr>
 <tr><td>Physical storage</td><td>Logical definition</td></tr>
 <tr><td>Full CRUD (with rules)</td><td>Read-mostly; updatable views limited</td></tr>
@@ -898,7 +925,7 @@ SELECT * FROM vw_ActiveEmployees WHERE DeptId = 5;</code></pre><h3>Key Points</h
 <li>They don't automatically improve performance unless indexed.</li>
 <li>Use views for abstraction; don't hide performance problems behind them.</li>
 </ul><h3>Interview Answer</h3><p>Tables hold data; views are stored queries that expose a simplified or secured interface. I use views to encapsulate joins and permissions, but the underlying tables do the real storage.</p></div>
-<div class="answer-pane" id="q_15"><h2>Stored Procedures vs Functions</h2><p>Stored procedures are precompiled batches for business logic, DML, and orchestration. Functions return a single scalar or table value and are designed for reuse inside queries—with restrictions on side effects.</p><p>Scalar UDFs can hurt performance on large sets; inline table-valued functions are preferred for set-based operations.</p><table>
+<div class="answer-pane" id="q_15"><h2>Stored Procedures vs Functions</h2><p>Stored procedures are precompiled batches for business logic, DML, and orchestration. Functions return a single scalar or table value and are designed for reuse inside queriesâ€”with restrictions on side effects.</p><p>Scalar UDFs can hurt performance on large sets; inline table-valued functions are preferred for set-based operations.</p><table>
 <tr><th>Stored Procedure</th><th>Function</th></tr>
 <tr><td>Can INSERT/UPDATE/DELETE</td><td>Deterministic reads (generally)</td></tr>
 <tr><td>OUTPUT parameters, multiple result sets</td><td>Must RETURN value or table</td></tr>
@@ -909,7 +936,7 @@ BEGIN INSERT INTO Orders(CustomerId) VALUES(@CustomerId); END;
 CREATE FUNCTION fn_Tax(@Amount DECIMAL) RETURNS DECIMAL AS
 BEGIN RETURN @Amount * 0.08; END;</code></pre><h3>Key Points</h3><ul>
 <li>SPs for transactions and workflows; functions for reusable calculations.</li>
-<li>Scalar UDFs can hurt performance on large sets—inline TVFs preferred.</li>
+<li>Scalar UDFs can hurt performance on large setsâ€”inline TVFs preferred.</li>
 <li>Functions cannot modify persistent data in SQL Server.</li>
 </ul><h3>Interview Answer</h3><p>Stored procedures execute business logic and can modify data; functions return computed values for use in queries. I use SPs for operations and functions for pure calculations embedded in SELECTs.</p></div>
 <div class="answer-pane" id="q_16"><h2>Common Table Expressions (CTE)</h2><p>A CTE is a temporary named result set defined with WITH, scoped to a single statement. It improves readability for recursive queries and multi-step transformations without creating permanent objects.</p><p>Recursive CTEs traverse hierarchies (org charts, BOMs). The optimizer may inline CTEs rather than materialize them.</p><pre><code>WITH DeptTotals AS (
@@ -921,7 +948,7 @@ SELECT d.DeptName, t.TotalSalary
 FROM DeptTotals t
 JOIN Departments d ON t.DeptId = d.DeptId;</code></pre><h3>Key Points</h3><ul>
 <li>Recursive CTEs traverse hierarchies (org charts, BOMs).</li>
-<li>CTEs are not guaranteed to be materialized—optimizer may inline.</li>
+<li>CTEs are not guaranteed to be materializedâ€”optimizer may inline.</li>
 <li>Can reference multiple CTEs in one WITH clause.</li>
 </ul><h3>Interview Answer</h3><p>A CTE is a named subquery using WITH that makes complex SQL readable and supports recursion. It's scoped to one statement and doesn't persist like a temp table unless the optimizer materializes it.</p></div>
 <div class="answer-pane" id="q_17">
@@ -950,8 +977,8 @@ CREATE INDEX IX_Id ON #Large(Id);</code></pre><h3>Key Points</h3><ul>
 <li>Use table variables for small staging (&lt; few thousand rows).</li>
 <li>Temp tables for joins on large intermediate sets.</li>
 <li>SQL Server 2019+ improved table variable estimates.</li>
-</ul><h3>Interview Answer</h3><p>Temp tables support indexes and accurate stats for larger data; table variables are lightweight for small in-memory staging. Wrong choice causes bad plans—I've moved hot paths from @vars to #temp when row counts grew.</p></div>
-<div class="answer-pane" id="q_19"><h2>Subquery vs CTE</h2><p>Both nest queries, but CTEs name intermediate results at the top for clarity and recursion. Correlated subqueries run per outer row and can be slower; CTEs read cleaner for multi-step logic.</p><p>Performance is often identical—the optimizer may produce the same plan. Prefer EXISTS over IN for correlated checks on large tables.</p><pre><code>-- Subquery
+</ul><h3>Interview Answer</h3><p>Temp tables support indexes and accurate stats for larger data; table variables are lightweight for small in-memory staging. Wrong choice causes bad plansâ€”I've moved hot paths from @vars to #temp when row counts grew.</p></div>
+<div class="answer-pane" id="q_19"><h2>Subquery vs CTE</h2><p>Both nest queries, but CTEs name intermediate results at the top for clarity and recursion. Correlated subqueries run per outer row and can be slower; CTEs read cleaner for multi-step logic.</p><p>Performance is often identicalâ€”the optimizer may produce the same plan. Prefer EXISTS over IN for correlated checks on large tables.</p><pre><code>-- Subquery
 SELECT Name FROM Employees
 WHERE DeptId IN (SELECT DeptId FROM Departments WHERE Region = 'West');
 
@@ -963,9 +990,9 @@ SELECT e.Name FROM Employees e
 JOIN WestDepts w ON e.DeptId = w.DeptId;</code></pre><h3>Key Points</h3><ul>
 <li>Prefer EXISTS over IN for correlated checks on large tables.</li>
 <li>CTEs avoid repeating the same subquery multiple times.</li>
-<li>Performance is often identical—optimizer may produce same plan.</li>
-</ul><h3>Interview Answer</h3><p>Subqueries embed logic inline; CTEs name it for readability and recursion. I pick CTEs for multi-step queries and EXISTS subqueries for existence checks—then verify with the execution plan.</p></div>
-<div class="answer-pane" id="q_20"><h2>SQL Injection</h2><p>SQL injection occurs when untrusted input is concatenated into SQL, letting attackers alter queries—reading data, bypassing auth, or executing destructive commands.</p><p>Stored procedures help only when parameters are used—not dynamic SQL built with string concatenation inside the SP.</p><pre><code>-- VULNERABLE:
+<li>Performance is often identicalâ€”optimizer may produce same plan.</li>
+</ul><h3>Interview Answer</h3><p>Subqueries embed logic inline; CTEs name it for readability and recursion. I pick CTEs for multi-step queries and EXISTS subqueries for existence checksâ€”then verify with the execution plan.</p></div>
+<div class="answer-pane" id="q_20"><h2>SQL Injection</h2><p>SQL injection occurs when untrusted input is concatenated into SQL, letting attackers alter queriesâ€”reading data, bypassing auth, or executing destructive commands.</p><p>Stored procedures help only when parameters are usedâ€”not dynamic SQL built with string concatenation inside the SP.</p><pre><code>-- VULNERABLE:
 "SELECT * FROM Users WHERE UserName = '" + input + "'"
 -- input: ' OR '1'='1
 
@@ -974,9 +1001,9 @@ SqlCommand cmd = new("SELECT * FROM Users WHERE UserName = @u", conn);
 cmd.Parameters.AddWithValue("@u", input);</code></pre><h3>Key Points</h3><ul>
 <li>Always use parameterized queries or ORM parameter binding.</li>
 <li>Never concatenate user input; validate and least-privilege DB accounts.</li>
-<li>SPs help only if parameters are used—not dynamic SQL inside.</li>
+<li>SPs help only if parameters are usedâ€”not dynamic SQL inside.</li>
 </ul><h3>Interview Answer</h3><p>SQL injection happens when user input becomes executable SQL. I prevent it with parameterized queries, avoid dynamic concatenation, apply least privilege, and use input validation as defense in depth.</p></div>
-<div class="answer-pane" id="q_21"><h2>SQL Triggers</h2><p>Triggers are special stored procedures that fire automatically on INSERT, UPDATE, or DELETE (and sometimes DDL). They enforce rules, audit changes, or maintain derived data—but add hidden complexity.</p><p>inserted and deleted pseudo-tables hold new and old row versions for DML triggers.</p><pre><code>CREATE TRIGGER trg_AuditEmployeeUpdate
+<div class="answer-pane" id="q_21"><h2>SQL Triggers</h2><p>Triggers are special stored procedures that fire automatically on INSERT, UPDATE, or DELETE (and sometimes DDL). They enforce rules, audit changes, or maintain derived dataâ€”but add hidden complexity.</p><p>inserted and deleted pseudo-tables hold new and old row versions for DML triggers.</p><pre><code>CREATE TRIGGER trg_AuditEmployeeUpdate
 ON Employees AFTER UPDATE
 AS
 BEGIN
@@ -985,10 +1012,10 @@ BEGIN
   FROM deleted d JOIN inserted i ON d.EmployeeId = i.EmployeeId;
 END;</code></pre><h3>Key Points</h3><ul>
 <li>AFTER vs INSTEAD OF triggers serve different use cases.</li>
-<li>Triggers can cascade and hurt debugging—prefer constraints when possible.</li>
+<li>Triggers can cascade and hurt debuggingâ€”prefer constraints when possible.</li>
 <li>inserted/deleted pseudo-tables hold old and new row versions.</li>
-</ul><h3>Interview Answer</h3><p>Triggers auto-run on data changes for auditing or enforcement. I use them sparingly because they're implicit side effects—prefer constraints and application logic unless cross-cutting audit is required.</p></div>
-<div class="answer-pane" id="q_22"><h2>ROW_NUMBER()</h2><p>ROW_NUMBER() assigns a unique sequential integer to each row within a partition, ordered by specified columns. It's the go-to function for top-N per group and pagination.</p><p>Filter via subquery/CTE because window functions can't go in WHERE directly. Ties get different row numbers arbitrarily—use RANK for ties with gaps.</p><pre><code>SELECT EmployeeId, Name, Salary,
+</ul><h3>Interview Answer</h3><p>Triggers auto-run on data changes for auditing or enforcement. I use them sparingly because they're implicit side effectsâ€”prefer constraints and application logic unless cross-cutting audit is required.</p></div>
+<div class="answer-pane" id="q_22"><h2>ROW_NUMBER()</h2><p>ROW_NUMBER() assigns a unique sequential integer to each row within a partition, ordered by specified columns. It's the go-to function for top-N per group and pagination.</p><p>Filter via subquery/CTE because window functions can't go in WHERE directly. Ties get different row numbers arbitrarilyâ€”use RANK for ties with gaps.</p><pre><code>SELECT EmployeeId, Name, Salary,
   ROW_NUMBER() OVER (PARTITION BY DeptId ORDER BY Salary DESC) AS rn
 FROM Employees;
 
@@ -997,10 +1024,10 @@ SELECT * FROM (
   SELECT *, ROW_NUMBER() OVER (PARTITION BY DeptId ORDER BY Salary DESC) rn
   FROM Employees
 ) x WHERE rn = 2;</code></pre><h3>Key Points</h3><ul>
-<li>Ties get different row numbers—use RANK for ties with gaps.</li>
+<li>Ties get different row numbersâ€”use RANK for ties with gaps.</li>
 <li>PARTITION BY defines groups; ORDER BY defines sequence within group.</li>
-<li>Filter via subquery/CTE—window functions can't go in WHERE directly.</li>
-</ul><h3>Interview Answer</h3><p>ROW_NUMBER() numbers rows within partitions—perfect for top-N per group and pagination. Unlike RANK, it never repeats numbers even when values tie.</p></div>
+<li>Filter via subquery/CTEâ€”window functions can't go in WHERE directly.</li>
+</ul><h3>Interview Answer</h3><p>ROW_NUMBER() numbers rows within partitionsâ€”perfect for top-N per group and pagination. Unlike RANK, it never repeats numbers even when values tie.</p></div>
 <div class="answer-pane" id="q_23"><h2>RANK vs DENSE_RANK</h2><p>Both assign ranks with ties receiving the same rank. RANK leaves gaps after ties (1,1,3); DENSE_RANK does not (1,1,2). ROW_NUMBER never ties.</p><p>Use DENSE_RANK for leaderboard positions without gaps; RANK when Olympic-style ranking (skip after tie) is intended.</p><table>
 <tr><th>Score</th><th>ROW_NUMBER</th><th>RANK</th><th>DENSE_RANK</th></tr>
 <tr><td>100</td><td>1</td><td>1</td><td>1</td></tr>
@@ -1024,7 +1051,7 @@ END;
 <li>INSERT: only inserted populated. DELETE: only deleted. UPDATE: both.</li>
 <li>They exist only inside the trigger scope.</li>
 <li>MERGE triggers expose inserted/deleted for matched operations.</li>
-</ul><h3>Interview Answer</h3><p>Magic tables inserted and deleted are virtual tables in SQL Server triggers showing new and old rows. I use them for auditing—comparing deleted vs inserted on updates to log what changed.</p></div>
+</ul><h3>Interview Answer</h3><p>Magic tables inserted and deleted are virtual tables in SQL Server triggers showing new and old rows. I use them for auditingâ€”comparing deleted vs inserted on updates to log what changed.</p></div>
 <div class="answer-pane" id="q_25"><h2>Deadlocks</h2><p>A deadlock occurs when two or more sessions hold locks each other needs, forming a cycle. SQL Server detects deadlocks, picks a victim, rolls back its transaction, and returns error 1205.</p><p>Access resources in consistent order across transactions and keep transactions short.</p><pre><code>-- Session A                    -- Session B
 BEGIN TRAN                      BEGIN TRAN
 UPDATE Accounts SET ... Id=1    UPDATE Accounts SET ... Id=2
@@ -1033,8 +1060,8 @@ UPDATE Accounts SET ... Id=2    UPDATE Accounts SET ... Id=1
 <li>Access resources in consistent order across transactions.</li>
 <li>Keep transactions short; avoid user interaction inside transactions.</li>
 <li>Use appropriate isolation; retry victim transactions in app code.</li>
-</ul><h3>Interview Answer</h3><p>Deadlocks are circular lock waits—SQL Server kills one session. I prevent them by consistent lock ordering, short transactions, proper indexes to reduce lock time, and retry logic for 1205 errors.</p></div>
-<div class="answer-pane" id="q_26"><h2>NOLOCK Hint (READ UNCOMMITTED)</h2><p>WITH (NOLOCK) or READ UNCOMMITTED allows reading uncommitted data—dirty reads, non-repeatable reads, and phantom rows are possible. It reduces blocking but sacrifices consistency.</p><p>Prefer READ COMMITTED SNAPSHOT for read concurrency without dirty reads on critical data.</p><pre><code>SELECT * FROM Orders WITH (NOLOCK)
+</ul><h3>Interview Answer</h3><p>Deadlocks are circular lock waitsâ€”SQL Server kills one session. I prevent them by consistent lock ordering, short transactions, proper indexes to reduce lock time, and retry logic for 1205 errors.</p></div>
+<div class="answer-pane" id="q_26"><h2>NOLOCK Hint (READ UNCOMMITTED)</h2><p>WITH (NOLOCK) or READ UNCOMMITTED allows reading uncommitted dataâ€”dirty reads, non-repeatable reads, and phantom rows are possible. It reduces blocking but sacrifices consistency.</p><p>Prefer READ COMMITTED SNAPSHOT for read concurrency without dirty reads on critical data.</p><pre><code>SELECT * FROM Orders WITH (NOLOCK)
 WHERE OrderDate &gt;= '2024-01-01';
 
 -- Equivalent session setting:
@@ -1043,7 +1070,7 @@ SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;</code></pre><h3>Key Points</h3
 <li>Can read rows that roll back or see inconsistent page states.</li>
 <li>Prefer READ COMMITTED SNAPSHOT for read concurrency without dirty reads.</li>
 </ul><h3>Interview Answer</h3><p>NOLOCK reads without shared locks, allowing dirty reads and inconsistencies. I avoid it for critical data; if I need read concurrency, I use RCSI or snapshot isolation instead.</p></div>
-<div class="answer-pane" id="q_27"><h2>Transaction Isolation Levels</h2><p>Isolation levels control how transactions interact regarding dirty reads, non-repeatable reads, and phantoms—from least to most strict: READ UNCOMMITTED, READ COMMITTED (default), REPEATABLE READ, SERIALIZABLE, plus SNAPSHOT.</p><p>Higher isolation means more locking or version-store overhead—match level to business consistency requirements.</p><table>
+<div class="answer-pane" id="q_27"><h2>Transaction Isolation Levels</h2><p>Isolation levels control how transactions interact regarding dirty reads, non-repeatable reads, and phantomsâ€”from least to most strict: READ UNCOMMITTED, READ COMMITTED (default), REPEATABLE READ, SERIALIZABLE, plus SNAPSHOT.</p><p>Higher isolation means more locking or version-store overheadâ€”match level to business consistency requirements.</p><table>
 <tr><th>Level</th><th>Dirty</th><th>Non-Repeat</th><th>Phantom</th></tr>
 <tr><td>READ UNCOMMITTED</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
 <tr><td>READ COMMITTED</td><td>No</td><td>Yes</td><td>Yes</td></tr>
@@ -1065,18 +1092,18 @@ COMMIT;</code></pre><h3>Key Points</h3><ul>
 <li>Keep transactions short to reduce lock duration and deadlocks.</li>
 <li>Use TRY/CATCH with XACT_ABORT ON in modern T-SQL.</li>
 <li>Nested transactions use @@TRANCOUNT; savepoints allow partial rollback.</li>
-</ul><h3>Interview Answer</h3><p>Transactions ensure ACID—either all SQL in the batch succeeds or none does. I wrap related DML in explicit transactions, handle errors with rollback, and keep them as short as possible.</p></div>
-<div class="answer-pane" id="q_29"><h2>MERGE Statement</h2><p>MERGE performs INSERT, UPDATE, or DELETE in one statement based on a join between target and source. Useful for upserts and synchronizing staging to production tables.</p><p>Requires proper indexes on join keys; known concurrency issues exist under heavy contention—consider separate INSERT/UPDATE paths.</p><pre><code>MERGE Products AS t
+</ul><h3>Interview Answer</h3><p>Transactions ensure ACIDâ€”either all SQL in the batch succeeds or none does. I wrap related DML in explicit transactions, handle errors with rollback, and keep them as short as possible.</p></div>
+<div class="answer-pane" id="q_29"><h2>MERGE Statement</h2><p>MERGE performs INSERT, UPDATE, or DELETE in one statement based on a join between target and source. Useful for upserts and synchronizing staging to production tables.</p><p>Requires proper indexes on join keys; known concurrency issues exist under heavy contentionâ€”consider separate INSERT/UPDATE paths.</p><pre><code>MERGE Products AS t
 USING StagingProducts AS s ON t.ProductId = s.ProductId
 WHEN MATCHED THEN UPDATE SET t.Price = s.Price
 WHEN NOT MATCHED THEN INSERT (ProductId, Price)
   VALUES (s.ProductId, s.Price)
 WHEN NOT MATCHED BY SOURCE THEN DELETE;</code></pre><h3>Key Points</h3><ul>
 <li>Requires proper indexes on join keys for performance.</li>
-<li>Known concurrency issues—consider separate INSERT/UPDATE in high contention.</li>
+<li>Known concurrency issuesâ€”consider separate INSERT/UPDATE in high contention.</li>
 <li>OUTPUT clause can capture merged rows for auditing.</li>
 </ul><h3>Interview Answer</h3><p>MERGE upserts and syncs target tables from a source in one statement. I use it for ETL staging loads but watch for locking and known race conditions under heavy concurrency.</p></div>
-<div class="answer-pane" id="q_30"><h2>Stored Procedure Parameter Limits</h2><p>SQL Server limits stored procedure parameters to 2,100 per procedure. Hitting this usually means the design should change—table-valued parameters, JSON, or bulk insert patterns scale better.</p><p>Table-valued parameters avoid dynamic SQL and plan cache pollution for large ID lists.</p><pre><code>-- Instead of 5000 scalar params, pass a table:
+<div class="answer-pane" id="q_30"><h2>Stored Procedure Parameter Limits</h2><p>SQL Server limits stored procedure parameters to 2,100 per procedure. Hitting this usually means the design should changeâ€”table-valued parameters, JSON, or bulk insert patterns scale better.</p><p>Table-valued parameters avoid dynamic SQL and plan cache pollution for large ID lists.</p><pre><code>-- Instead of 5000 scalar params, pass a table:
 CREATE TYPE IdList AS TABLE (Id INT PRIMARY KEY);
 CREATE PROC usp_ProcessIds @Ids IdList READONLY AS
   SELECT * FROM Orders o JOIN @Ids i ON o.OrderId = i.Id;
@@ -1084,11 +1111,11 @@ CREATE PROC usp_ProcessIds @Ids IdList READONLY AS
 -- Or JSON (SQL Server 2016+):
 CREATE PROC usp_ProcessJson @Payload NVARCHAR(MAX) AS
   SELECT value FROM OPENJSON(@Payload);</code></pre><h3>Key Points</h3><ul>
-<li>2,100 param limit is hard—redesign with TVPs or temp staging tables.</li>
+<li>2,100 param limit is hardâ€”redesign with TVPs or temp staging tables.</li>
 <li>Table-valued parameters avoid dynamic SQL and plan cache pollution.</li>
 <li>Bulk insert/BCP for massive datasets, not thousands of parameters.</li>
-</ul><h3>Interview Answer</h3><p>SQL Server caps SP parameters at 2,100. If you're near that, the design is wrong—I'd use table-valued parameters, JSON OPENJSON, or staging tables instead of scalar param explosion.</p></div>
-<div class="answer-pane" id="q_31"><h2>SQL vs NoSQL</h2><p>SQL databases use structured schemas, ACID transactions, and powerful query languages (SQL). NoSQL covers document, key-value, column, and graph stores optimized for scale, flexibility, or specific access patterns.</p><p>Polyglot persistence is common—SQL for transactional core, NoSQL for logs, cache, or content at scale.</p><table>
+</ul><h3>Interview Answer</h3><p>SQL Server caps SP parameters at 2,100. If you're near that, the design is wrongâ€”I'd use table-valued parameters, JSON OPENJSON, or staging tables instead of scalar param explosion.</p></div>
+<div class="answer-pane" id="q_31"><h2>SQL vs NoSQL</h2><p>SQL databases use structured schemas, ACID transactions, and powerful query languages (SQL). NoSQL covers document, key-value, column, and graph stores optimized for scale, flexibility, or specific access patterns.</p><p>Polyglot persistence is commonâ€”SQL for transactional core, NoSQL for logs, cache, or content at scale.</p><table>
 <tr><th>SQL</th><th>NoSQL</th></tr>
 <tr><td>Schema-on-write</td><td>Often schema-on-read</td></tr>
 <tr><td>Vertical + limited horizontal</td><td>Built for horizontal scale</td></tr>
@@ -1096,32 +1123,32 @@ CREATE PROC usp_ProcessJson @Payload NVARCHAR(MAX) AS
 </table><pre><code>-- SQL: JOIN across normalized tables
 -- MongoDB: db.users.find({ "address.city": "NYC" })
 -- Redis: GET session:abc123</code></pre><h3>Key Points</h3><ul>
-<li>No single winner—polyglot persistence is common.</li>
+<li>No single winnerâ€”polyglot persistence is common.</li>
 <li>SQL for transactions/reporting; NoSQL for scale/flexibility.</li>
 <li>Consider operational complexity of running multiple stores.</li>
-</ul><h3>Interview Answer</h3><p>SQL gives strong consistency and relational modeling; NoSQL trades that for scale and schema flexibility. I choose based on access patterns, consistency needs, and team skills—not religion.</p></div>
-<div class="answer-pane" id="q_32"><h2>NoSQL Partitioning (Sharding)</h2><p>Partitioning splits data across nodes by a shard key so each node holds a subset. MongoDB uses sharded clusters; Cassandra/Dynamo partition by hash of key. Good shard keys avoid hotspots and enable even distribution.</p><p>Cross-shard queries are expensive—design for single-shard access when possible.</p><pre><code>// MongoDB sharded collection (example shard key)
+</ul><h3>Interview Answer</h3><p>SQL gives strong consistency and relational modeling; NoSQL trades that for scale and schema flexibility. I choose based on access patterns, consistency needs, and team skillsâ€”not religion.</p></div>
+<div class="answer-pane" id="q_32"><h2>NoSQL Partitioning (Sharding)</h2><p>Partitioning splits data across nodes by a shard key so each node holds a subset. MongoDB uses sharded clusters; Cassandra/Dynamo partition by hash of key. Good shard keys avoid hotspots and enable even distribution.</p><p>Cross-shard queries are expensiveâ€”design for single-shard access when possible.</p><pre><code>// MongoDB sharded collection (example shard key)
 sh.shardCollection("shop.orders", { customerId: 1, orderDate: 1 });
 
-// Bad: monotonic _id only → all writes to last chunk
+// Bad: monotonic _id only â†’ all writes to last chunk
 // Better: compound key spreading writes</code></pre><h3>Key Points</h3><ul>
-<li>Shard key is immutable in many systems—choose carefully upfront.</li>
+<li>Shard key is immutable in many systemsâ€”choose carefully upfront.</li>
 <li>Hot partitions occur when key distribution is skewed.</li>
 <li>Cross-shard queries are expensive; design for single-shard access.</li>
-</ul><h3>Interview Answer</h3><p>NoSQL partitioning shards data by a key across nodes for horizontal scale. Success depends on shard key design—avoid hotspots, prefer queries that hit one shard, and plan for rebalancing.</p></div>
-<div class="answer-pane" id="q_33"><h2>Primary vs Secondary Index (NoSQL)</h2><p>In MongoDB, the <strong>_id</strong> field has a unique primary index by default. Secondary indexes index other fields for alternate query paths—they store indexed field values plus pointers to documents.</p><p>Compound index field order matters—equality fields first, then sort/range columns.</p><pre><code>db.users.createIndex({ email: 1 }, { unique: true });  // secondary
+</ul><h3>Interview Answer</h3><p>NoSQL partitioning shards data by a key across nodes for horizontal scale. Success depends on shard key designâ€”avoid hotspots, prefer queries that hit one shard, and plan for rebalancing.</p></div>
+<div class="answer-pane" id="q_33"><h2>Primary vs Secondary Index (NoSQL)</h2><p>In MongoDB, the <strong>_id</strong> field has a unique primary index by default. Secondary indexes index other fields for alternate query pathsâ€”they store indexed field values plus pointers to documents.</p><p>Compound index field order mattersâ€”equality fields first, then sort/range columns.</p><pre><code>db.users.createIndex({ email: 1 }, { unique: true });  // secondary
 db.orders.createIndex({ customerId: 1, orderDate: -1 }); // compound
 
 db.orders.find({ customerId: 123 }).sort({ orderDate: -1 });</code></pre><h3>Key Points</h3><ul>
 <li>Secondary indexes speed reads but slow writes (each index updated).</li>
-<li>Compound index field order matters—equality first, then sort/range.</li>
+<li>Compound index field order mattersâ€”equality first, then sort/range.</li>
 <li>Covered queries return results entirely from the index.</li>
 </ul><h3>Interview Answer</h3><p>Primary index is on _id by default; secondary indexes support other query patterns. I design compound indexes matching filter and sort order, and limit index count on write-heavy collections.</p></div>
-<div class="answer-pane" id="q_34"><h2>SQL Server Internal Communication</h2><p>Client apps connect via Tabular Data Stream (TDS) protocol over TCP/IP or named pipes. Inside the engine, SQLOS manages threads/scheduling, the buffer pool caches pages, and components communicate through the relational engine pipeline.</p><p>DMVs (sys.dm_*) expose sessions, waits, IO, and plan cache internals for troubleshooting.</p><pre><code>-- Client → SQL Server (TDS)
+<div class="answer-pane" id="q_34"><h2>SQL Server Internal Communication</h2><p>Client apps connect via Tabular Data Stream (TDS) protocol over TCP/IP or named pipes. Inside the engine, SQLOS manages threads/scheduling, the buffer pool caches pages, and components communicate through the relational engine pipeline.</p><p>DMVs (sys.dm_*) expose sessions, waits, IO, and plan cache internals for troubleshooting.</p><pre><code>-- Client â†’ SQL Server (TDS)
 -- Connection string: Server=...;Database=...;
 
 -- Internal flow (simplified):
--- Parser → Optimizer → Execution Engine → Storage Engine → Buffer Pool → Disk</code></pre><h3>Key Points</h3><ul>
+-- Parser â†’ Optimizer â†’ Execution Engine â†’ Storage Engine â†’ Buffer Pool â†’ Disk</code></pre><h3>Key Points</h3><ul>
 <li>Batch requests parsed, optimized (cached plans), executed by relational engine.</li>
 <li>Buffer pool keeps frequently used data pages in memory.</li>
 <li>DMVs (sys.dm_*) expose sessions, waits, IO, and plan cache internals.</li>
@@ -1137,10 +1164,10 @@ SELECT DISTINCT Salary FROM Employees
 ORDER BY Salary DESC
 OFFSET 2 ROWS FETCH NEXT 1 ROW ONLY;</code></pre><h3>Key Points</h3><ul>
 <li>DENSE_RANK handles duplicate salaries for "Nth distinct value."</li>
-<li>ROW_NUMBER gives Nth row even if salaries duplicate—clarify requirement.</li>
+<li>ROW_NUMBER gives Nth row even if salaries duplicateâ€”clarify requirement.</li>
 <li>Index on Salary DESC helps large tables.</li>
 </ul><h3>Interview Answer</h3><p>I use DENSE_RANK or ROW_NUMBER over ORDER BY Salary DESC in a subquery, then filter rn or dr = N. For distinct Nth value, DENSE_RANK; for Nth row regardless of ties, ROW_NUMBER.</p></div>
-<div class="answer-pane" id="q_36"><h2>Employees with Same Scores</h2><p>Find groups sharing the same score using GROUP BY/HAVING, self-join, or window functions. Clarify whether you need pairs, full groups, or ranks with ties.</p><p>Self-join returns pairs—may duplicate rows; use DISTINCT if needed.</p><pre><code>-- Groups with count &gt; 1:
+<div class="answer-pane" id="q_36"><h2>Employees with Same Scores</h2><p>Find groups sharing the same score using GROUP BY/HAVING, self-join, or window functions. Clarify whether you need pairs, full groups, or ranks with ties.</p><p>Self-join returns pairsâ€”may duplicate rows; use DISTINCT if needed.</p><pre><code>-- Groups with count &gt; 1:
 SELECT Score FROM Results
 GROUP BY Score HAVING COUNT(*) &gt; 1;
 
@@ -1148,21 +1175,23 @@ SELECT r1.Name, r1.Score FROM Results r1
 JOIN Results r2 ON r1.Score = r2.Score AND r1.Id &lt;&gt; r2.Id;
 
 SELECT Name, Score, RANK() OVER (ORDER BY Score DESC) rk FROM Results;</code></pre><h3>Key Points</h3><ul>
-<li>Self-join returns pairs—may duplicate rows; use DISTINCT if needed.</li>
+<li>Self-join returns pairsâ€”may duplicate rows; use DISTINCT if needed.</li>
 <li>Window functions cleanly expose ties for ranking questions.</li>
 <li>Index on Score helps GROUP BY and join performance.</li>
 </ul><h3>Interview Answer</h3><p>For same scores, I GROUP BY Score HAVING COUNT(*) &gt; 1 to find tied values, or self-join for pairs. For ranking with ties, RANK or DENSE_RANK over the score column is clearest.</p></div>
-<div class="answer-pane" id="q_37"><h2>.NET Framework vs .NET (Core)</h2><p><strong>.NET Framework</strong> is the Windows-centric, mature runtime used for legacy desktop and ASP.NET apps. <strong>.NET</strong> (formerly .NET Core) is cross-platform, open source, and the modern unified stack for cloud, web, mobile, and microservices.</p><p>New development targets .NET 8+ for performance, container support, and long-term support releases. .NET Framework remains in maintenance mode; migration uses incremental strategies or side-by-side hosting.</p><table>
-<tr><th></th><th>.NET Framework</th><th>.NET (Core+)</th></tr>
-<tr><td>Platform</td><td>Windows primarily</td><td>Windows, Linux, macOS</td></tr>
-<tr><td>Status</td><td>Maintenance</td><td>Active development</td></tr>
-<tr><td>ASP.NET</td><td>System.Web / MVC 5</td><td>ASP.NET Core</td></tr>
-<tr><td>Deployment</td><td>Machine-wide GAC</td><td>Self-contained / framework-dependent</td></tr>
+<div class="answer-pane" id="q_37"><h2>What is .NET Core, and How Does It Differ from .NET Framework?</h2><p><strong>.NET Core</strong> (now unified as .NET 5+) is a cross-platform, open-source framework for building modern applications.</p><table>
+<tr><th>.NET Core / .NET</th><th>.NET Framework</th></tr>
+<tr><td>Cross-platform</td><td>Windows only</td></tr>
+<tr><td>Open source</td><td>Mostly closed source</td></tr>
+<tr><td>High performance</td><td>Older architecture</td></tr>
+<tr><td>Microservices &amp; cloud friendly</td><td>Monolithic enterprise apps</td></tr>
+<tr><td>Side-by-side versioning</td><td>Machine-wide installation</td></tr>
+<tr><td>Lightweight</td><td>Heavy framework</td></tr>
 </table><h3>Key Points</h3><ul>
 <li>.NET is the strategic platform for new projects.</li>
 <li>ASP.NET Core is modular and runs on Kestrel.</li>
-<li>Migration tools and compatibility analyzers assist upgrades.</li>
-</ul><h3>Interview Answer</h3><p>.NET Framework is legacy Windows-only and in maintenance, while modern .NET is cross-platform, high-performance, and where Microsoft invests new features. For greenfield APIs I use ASP.NET Core on .NET 8 because of DI, middleware, and cloud-native deployment options.</p></div>
+<li>.NET Framework remains in maintenance mode.</li>
+</ul><h3>Interview Answer</h3><p>.NET Core/.NET is cross-platform, open source, and built for cloud and microservices. .NET Framework is Windows-only and suited for legacy enterprise apps. For new APIs I target .NET 8+ with ASP.NET Core.</p></div>
 <div class="answer-pane" id="q_38">
 <div class="qa-section" id="middleware">
 <h3>2. What is Middleware?</h3>
@@ -1196,7 +1225,7 @@ public class EmployeeService
 </code></pre>
 </div>
 </div>
-<div class="answer-pane" id="q_40"><h2>Service Lifetimes in DI</h2><p>ASP.NET Core supports three default lifetimes. <strong>Transient</strong> creates a new instance every time requested. <strong>Scoped</strong> creates one instance per HTTP request (or scope). <strong>Singleton</strong> creates one instance for the application lifetime.</p><p>Misconfigured lifetimes cause subtle bugs—such as injecting a scoped DbContext into a singleton—which leads to stale state or thread-safety issues.</p><table>
+<div class="answer-pane" id="q_40"><h2>Service Lifetimes in DI</h2><p>ASP.NET Core supports three default lifetimes. <strong>Transient</strong> creates a new instance every time requested. <strong>Scoped</strong> creates one instance per HTTP request (or scope). <strong>Singleton</strong> creates one instance for the application lifetime.</p><p>Misconfigured lifetimes cause subtle bugsâ€”such as injecting a scoped DbContext into a singletonâ€”which leads to stale state or thread-safety issues.</p><table>
 <tr><th>Lifetime</th><th>Created</th><th>Typical Use</th></tr>
 <tr><td>Transient</td><td>Every resolve</td><td>Lightweight stateless helpers</td></tr>
 <tr><td>Scoped</td><td>Per request/scope</td><td>DbContext, unit of work</td></tr>
@@ -1225,7 +1254,7 @@ services.AddTransient&lt;IEmailSender, SmtpEmailSender&gt;();</code></pre><h3>Ke
 <li>Validate issuer, audience, signature, and expiry.</li>
 <li>Plan refresh tokens and secure secret storage.</li>
 </ul><h3>Interview Answer</h3><p>JWT is a signed token with claims used for stateless API authentication. ASP.NET Core validates it via JwtBearer middleware and exposes claims to authorization policies. I always validate signing key, issuer, audience, and lifetime, and I plan refresh or revocation for production security.</p></div>
-<div class="answer-pane" id="q_42"><h2>Dapper ORM</h2><p>Dapper is a lightweight micro-ORM that maps SQL query results to .NET objects with minimal overhead. Unlike full ORMs, you write SQL explicitly and Dapper handles materialization—ideal for performance-critical reads and complex queries.</p><p>Use Dapper alongside EF Core when you need raw SQL control, bulk operations, or reporting queries without change-tracking overhead.</p><pre><code>await using var conn = new SqlConnection(_connectionString);
+<div class="answer-pane" id="q_42"><h2>Dapper ORM</h2><p>Dapper is a lightweight micro-ORM that maps SQL query results to .NET objects with minimal overhead. Unlike full ORMs, you write SQL explicitly and Dapper handles materializationâ€”ideal for performance-critical reads and complex queries.</p><p>Use Dapper alongside EF Core when you need raw SQL control, bulk operations, or reporting queries without change-tracking overhead.</p><pre><code>await using var conn = new SqlConnection(_connectionString);
 var orders = await conn.QueryAsync&lt;Order&gt;(
     "SELECT Id, Total FROM Orders WHERE CustomerId = @Id",
     new { Id = customerId });</code></pre><h3>Key Points</h3><ul>
@@ -1349,29 +1378,29 @@ for (int i = 0; i &lt; 1000; i++)
 // LOH allocations (&gt;= 85 KB) collected less often
 var big = new byte[100_000];
 
-// Reduce GC pressure — pool/reuse
+// Reduce GC pressure â€” pool/reuse
 var buffer = ArrayPool&lt;byte&gt;.Shared.Rent(4096);
 try { /* use buffer */ }
 finally { ArrayPool&lt;byte&gt;.Shared.Return(buffer); }</code></pre><h3>Key Points</h3><ul>
 <li>Generational hypothesis: most objects die young.</li>
-<li>Full GC (Gen2) is expensive—avoid unnecessary allocations in hot paths.</li>
+<li>Full GC (Gen2) is expensiveâ€”avoid unnecessary allocations in hot paths.</li>
 <li>IDisposable is for unmanaged resources; GC handles managed memory.</li>
 <li>Server GC vs Workstation GC tuned for throughput vs interactive apps.</li>
 </ul><h3>Interview Answer</h3><p>The GC traces reachable objects from roots and frees unreachable ones in generations to optimize collection cost. Minimize allocations and large object churn in hot paths; dispose unmanaged resources explicitly via IDisposable.</p></div>
-<div class="answer-pane" id="q_52"><h2>throw vs throw ex</h2><p><code>throw;</code> rethrows the current exception preserving the original stack trace. <code>throw ex;</code> (or <code>throw someCaughtEx</code>) resets the stack trace to the rethrow site, hiding where the error actually occurred—bad for diagnostics.</p><pre><code>try
+<div class="answer-pane" id="q_52"><h2>throw vs throw ex</h2><p><code>throw;</code> rethrows the current exception preserving the original stack trace. <code>throw ex;</code> (or <code>throw someCaughtEx</code>) resets the stack trace to the rethrow site, hiding where the error actually occurredâ€”bad for diagnostics.</p><pre><code>try
 {
     await _repo.SaveAsync(entity);
 }
 catch (SqlException ex)
 {
     _logger.LogError(ex, "DB save failed");
-    throw; // correct — original stack preserved
+    throw; // correct â€” original stack preserved
 }
 
 // Anti-pattern
 catch (Exception ex)
 {
-    throw ex; // stack starts here — loses root frame info
+    throw ex; // stack starts here â€” loses root frame info
 }
 
 // Wrapping when adding context
@@ -1380,7 +1409,7 @@ catch (Exception ex)
     throw new OrderProcessingException("Save failed", ex);
 }</code></pre><h3>Key Points</h3><ul>
 <li>Always use bare throw; inside catch to rethrow.</li>
-<li>throw ex resets StackTrace—avoid in production code.</li>
+<li>throw ex resets StackTraceâ€”avoid in production code.</li>
 <li>Wrap with inner exception when translating domain errors.</li>
 <li>ExceptionDispatchInfo.Capture(ex).Throw() preserves stack outside catch.</li>
 </ul><h3>Interview Answer</h3><p>Use <code>throw;</code> to rethrow without losing stack trace. Use <code>throw ex;</code> only if you intentionally want a new stack (rare). When wrapping, pass the original as InnerException for full context.</p></div>
@@ -1405,7 +1434,7 @@ app.UseCors("WebApp");</code></pre><h3>Key Points</h3><ul>
 <li>Do not use AllowAnyOrigin with credentials.</li>
 <li>Place UseCors before auth/endpoints as needed.</li>
 </ul><h3>Interview Answer</h3><p>CORS lets browsers call APIs on different origins by returning appropriate Access-Control headers. In ASP.NET Core I define a named policy with specific origins and apply it via UseCors. I avoid wildcard origins when cookies or credentials are involved.</p></div>
-<div class="answer-pane" id="q_55"><h2>REST API Design</h2><p>REST organizes APIs around resources identified by URLs, using HTTP verbs for semantics: GET (read), POST (create), PUT/PATCH (update), DELETE (remove). Status codes communicate outcomes—200 OK, 201 Created, 404 Not Found, 400 Bad Request.</p><p>Good REST APIs are stateless, use nouns in paths (<code>/api/orders/5</code>), support filtering and pagination, and version explicitly when breaking changes occur.</p><table>
+<div class="answer-pane" id="q_55"><h2>REST API Design</h2><p>REST organizes APIs around resources identified by URLs, using HTTP verbs for semantics: GET (read), POST (create), PUT/PATCH (update), DELETE (remove). Status codes communicate outcomesâ€”200 OK, 201 Created, 404 Not Found, 400 Bad Request.</p><p>Good REST APIs are stateless, use nouns in paths (<code>/api/orders/5</code>), support filtering and pagination, and version explicitly when breaking changes occur.</p><table>
 <tr><th>Verb</th><th>Purpose</th><th>Idempotent?</th></tr>
 <tr><td>GET</td><td>Retrieve</td><td>Yes</td></tr>
 <tr><td>POST</td><td>Create</td><td>No</td></tr>
@@ -1431,27 +1460,27 @@ app.UseCors("WebApp");</code></pre><h3>Key Points</h3><ul>
 <div class="question-card" id="q1">
 <h3>1. Different service lifetimes in .NET Core?</h3>
 <div class="answer">
-<b>Transient</b> → New instance every time requested.<br/><br/>
-<b>Scoped</b> → One instance per HTTP request.<br/><br/>
-<b>Singleton</b> → Single instance throughout application lifetime.
+<b>Transient</b> â†’ New instance every time requested.<br/><br/>
+<b>Scoped</b> â†’ One instance per HTTP request.<br/><br/>
+<b>Singleton</b> â†’ Single instance throughout application lifetime.
             </div>
 </div>
 </div>
-<div class="answer-pane" id="q_58"><h2>Have You Used Singleton?</h2><p>Interviewers want a concrete example, tradeoffs you considered, and whether DI replaced manual Singleton. Describe real usage: logging, cache manager, or app settings—with thread safety awareness.</p><p>Show evolution from static Singleton to DI-managed singleton for testability.</p><pre><code>// Real project: centralized AppSettings via DI singleton
+<div class="answer-pane" id="q_58"><h2>Have You Used Singleton?</h2><p>Interviewers want a concrete example, tradeoffs you considered, and whether DI replaced manual Singleton. Describe real usage: logging, cache manager, or app settingsâ€”with thread safety awareness.</p><p>Show evolution from static Singleton to DI-managed singleton for testability.</p><pre><code>// Real project: centralized AppSettings via DI singleton
 services.AddSingleton&lt;IAppSettings, AppSettings&gt;();
 
 // Legacy code used static Instance; we migrated to DI
 // for testability and explicit lifetime management</code></pre><h3>Key Points</h3><ul>
 <li>Give a specific project example, not textbook definition only.</li>
 <li>Mention thread safety and testability challenges you faced.</li>
-<li>Show evolution: static Singleton → DI-managed singleton.</li>
-</ul><h3>Interview Answer</h3><p>Yes—in a .NET API I used DI singleton scope for AppSettings and a cache wrapper so one instance served the app. We avoided static Singletons to keep unit tests mockable and lifetimes explicit in Startup.</p></div>
+<li>Show evolution: static Singleton â†’ DI-managed singleton.</li>
+</ul><h3>Interview Answer</h3><p>Yesâ€”in a .NET API I used DI singleton scope for AppSettings and a cache wrapper so one instance served the app. We avoided static Singletons to keep unit tests mockable and lifetimes explicit in Startup.</p></div>
 <div class="answer-pane" id="q_59"><h2>IServiceProvider in .NET</h2><p><code>IServiceProvider</code> is the service locator abstraction that resolves registered dependencies from the DI container. In ASP.NET Core, the built-in provider is created from <code>ServiceCollection</code> during host building.</p><p>Prefer constructor injection over manual <code>GetService</code> calls. Use <code>IServiceProvider</code> directly in factories, middleware activation, or when creating scopes with <code>CreateScope()</code>.</p><pre><code>using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();</code></pre><h3>Key Points</h3><ul>
 <li>Root provider resolves application-wide services.</li>
 <li>CreateScope() for scoped resolution outside requests.</li>
 <li>GetRequiredService throws if registration missing.</li>
-</ul><h3>Interview Answer</h3><p>IServiceProvider is the DI container interface that resolves registered services. I rely on constructor injection in normal code, but use the provider explicitly when creating scopes—like in background tasks—via CreateScope and GetRequiredService.</p></div>
+</ul><h3>Interview Answer</h3><p>IServiceProvider is the DI container interface that resolves registered services. I rely on constructor injection in normal code, but use the provider explicitly when creating scopesâ€”like in background tasksâ€”via CreateScope and GetRequiredService.</p></div>
 <div class="answer-pane" id="q_60"><h2>Ways to Implement Dependency Injection</h2><p>ASP.NET Core supports constructor, property, and method injection, though constructor injection is the recommended default. You can also use factory delegates (<code>AddScoped&lt;IService&gt;(sp =&gt; ...)</code>) for complex creation logic.</p><p>Third-party containers (Autofac, Simple Injector) integrate via <code>IServiceProviderFactory</code> when advanced features like decorators or conditional registration are required.</p><table>
 <tr><th>Style</th><th>When to Use</th></tr>
 <tr><td>Constructor</td><td>Default for required dependencies</td></tr>
@@ -1489,11 +1518,11 @@ public async Task&lt;IActionResult&gt; Notify(
 <li>Call next unless terminating the pipeline.</li>
 <li>Registration order determines execution order.</li>
 </ul><h3>Interview Answer</h3><p>Custom middleware is a pipeline component with access to HttpContext that runs before and after inner middleware via next. I implement InvokeAsync, register it with UseMiddleware, and use it for cross-cutting concerns like logging or adding response headers globally.</p></div>
-<div class="answer-pane" id="q_63"><h2>Calling next Middleware</h2><p><code>await next(context)</code> passes the request to the next middleware in the pipeline. Code before <code>next</code> runs on the way in; code after runs on the way out when the response travels back. Omitting <code>next</code> short-circuits the pipeline—useful for auth failures or cached responses.</p><p>Always await <code>next</code> so exceptions propagate correctly and the response is fully generated before post-processing.</p><pre><code>public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+<div class="answer-pane" id="q_63"><h2>Calling next Middleware</h2><p><code>await next(context)</code> passes the request to the next middleware in the pipeline. Code before <code>next</code> runs on the way in; code after runs on the way out when the response travels back. Omitting <code>next</code> short-circuits the pipelineâ€”useful for auth failures or cached responses.</p><p>Always await <code>next</code> so exceptions propagate correctly and the response is fully generated before post-processing.</p><pre><code>public async Task InvokeAsync(HttpContext context, RequestDelegate next)
 {
     // inbound
     await next(context);
-    // outbound — response headers/body available
+    // outbound â€” response headers/body available
 }</code></pre><h3>Key Points</h3><ul>
 <li>next delegates to the rest of the pipeline.</li>
 <li>Short-circuit by not calling next when appropriate.</li>
@@ -1512,7 +1541,7 @@ app.MapGet("/health", () =&gt; Results.Ok("healthy"));</code></pre><h3>Key Point
 <li>MapGet/MapPost define minimal API endpoints.</li>
 <li>Branch middleware does not affect sibling branches.</li>
 </ul><h3>Interview Answer</h3><p>app.Map branches the pipeline for specific path prefixes so middleware runs only where needed. MapGet and MapControllers register endpoints in minimal hosting models. I use Map to isolate admin or webhook pipelines without affecting the main API route table.</p></div>
-<div class="answer-pane" id="q_65"><h2>app.Map for Specific Requests</h2><p>Beyond global middleware, you can target specific requests with <code>MapWhen</code>, <code>Map</code>, or endpoint filters. <code>MapWhen</code> branches on arbitrary predicates—headers, query strings, or user agent—while <code>Map</code> branches on path.</p><p>Endpoint-specific behavior also uses route attributes, authorization policies, and minimal API route groups for cohesive URL prefixes and shared filters.</p><pre><code>app.MapWhen(
+<div class="answer-pane" id="q_65"><h2>app.Map for Specific Requests</h2><p>Beyond global middleware, you can target specific requests with <code>MapWhen</code>, <code>Map</code>, or endpoint filters. <code>MapWhen</code> branches on arbitrary predicatesâ€”headers, query strings, or user agentâ€”while <code>Map</code> branches on path.</p><p>Endpoint-specific behavior also uses route attributes, authorization policies, and minimal API route groups for cohesive URL prefixes and shared filters.</p><pre><code>app.MapWhen(
     ctx =&gt; ctx.Request.Headers.ContainsKey("X-Webhook"),
     branch =&gt; branch.UseMiddleware&lt;WebhookSignatureMiddleware&gt;());
 
@@ -1523,24 +1552,24 @@ api.MapGet("/{id:int}", GetById);</code></pre><h3>Key Points</h3><ul>
 <li>Route groups organize related minimal endpoints.</li>
 <li>Combine with authorization for sensitive paths.</li>
 </ul><h3>Interview Answer</h3><p>I target specific requests using Map or MapWhen to branch middleware by path or condition, and route groups or attributes for endpoint-level rules. This keeps special cases like webhooks or versioned APIs isolated without polluting the global pipeline.</p></div>
-<div class="answer-pane" id="q_66"><h2>API Performance Optimization</h2><p>Production API tuning spans architecture, data access, and runtime behavior. Measure first (p95/p99 latency, throughput, error rate), then optimize the slowest layers—usually database, serialization, or unnecessary work per request.</p><pre><code>// Response caching + compression
+<div class="answer-pane" id="q_66"><h2>API Performance Optimization</h2><p>Production API tuning spans architecture, data access, and runtime behavior. Measure first (p95/p99 latency, throughput, error rate), then optimize the slowest layersâ€”usually database, serialization, or unnecessary work per request.</p><pre><code>// Response caching + compression
 services.AddResponseCaching();
 services.AddResponseCompression();
 
-// Efficient data access — projection, no N+1
+// Efficient data access â€” projection, no N+1
 var orders = await _db.Orders
     .AsNoTracking()
     .Where(o =&gt; o.CustomerId == id)
     .Select(o =&gt; new OrderDto { Id = o.Id, Total = o.Total })
     .ToListAsync();
 
-// Pagination — never return unbounded lists
+// Pagination â€” never return unbounded lists
 return await query.Skip(page * size).Take(size).ToListAsync();</code></pre><h3>Key Points</h3><ul>
 <li>Cache hot reads (Redis/CDN); invalidate explicitly on writes.</li>
 <li>Async I/O, connection pooling, indexed queries, avoid SELECT *.</li>
 <li>Pagination, compression, and DTO projection reduce payload size.</li>
 <li>Rate limiting, circuit breakers, and horizontal scale for resilience.</li>
-</ul><h3>Interview Answer</h3><p>Optimize APIs by profiling end-to-end, fixing database and N+1 bottlenecks, caching idempotent reads, paginating responses, using async I/O, and designing for horizontal scale with observability on latency percentiles—not just averages.</p></div>
+</ul><h3>Interview Answer</h3><p>Optimize APIs by profiling end-to-end, fixing database and N+1 bottlenecks, caching idempotent reads, paginating responses, using async I/O, and designing for horizontal scale with observability on latency percentilesâ€”not just averages.</p></div>
 <div class="answer-pane" id="q_67"><h2>Caching in ASP.NET Core</h2><p>Caching stores frequently accessed data closer to the consumer to reduce latency and database load. ASP.NET Core offers <code>IMemoryCache</code> for in-process caching and <code>IDistributedCache</code> (Redis, SQL Server) for multi-instance deployments.</p><p>Define expiration, cache keys, and invalidation strategy. Cache-aside is common: check cache, on miss load from DB and populate cache.</p><pre><code>public async Task&lt;Product?&gt; GetProductAsync(int id)
 {
     var key = $"product:{id}";
@@ -1567,7 +1596,7 @@ public class MailService
 <li>IOptionsSnapshot is scoped; Monitor supports reload.</li>
 <li>Validate options with IValidateOptions or DataAnnotations.</li>
 </ul><h3>Interview Answer</h3><p>The options pattern maps configuration to typed settings classes injected through IOptions. It centralizes config access, enables validation, and with IOptionsMonitor I can react to configuration changes cleanly instead of magic strings throughout the codebase.</p></div>
-<div class="answer-pane" id="q_69"><h2>Hosted Services in ASP.NET Core</h2><p><code>IHostedService</code> and <code>BackgroundService</code> run long-running tasks inside the generic host alongside Kestrel—timers, queue consumers, or startup initialization. The host starts them on application boot and stops them gracefully on shutdown.</p><p>Register with <code>AddHostedService&lt;T&gt;()</code>. Use <code>CancellationToken</code> from <code>ExecuteAsync</code> to respect shutdown signals.</p><pre><code>public class SyncWorker : BackgroundService
+<div class="answer-pane" id="q_69"><h2>Hosted Services in ASP.NET Core</h2><p><code>IHostedService</code> and <code>BackgroundService</code> run long-running tasks inside the generic host alongside Kestrelâ€”timers, queue consumers, or startup initialization. The host starts them on application boot and stops them gracefully on shutdown.</p><p>Register with <code>AddHostedService&lt;T&gt;()</code>. Use <code>CancellationToken</code> from <code>ExecuteAsync</code> to respect shutdown signals.</p><pre><code>public class SyncWorker : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -1582,7 +1611,7 @@ public class MailService
 <li>BackgroundService simplifies loop-based workers.</li>
 <li>Respect cancellation for clean shutdown.</li>
 </ul><h3>Interview Answer</h3><p>Hosted services are background tasks managed by the ASP.NET Core host via IHostedService or BackgroundService. I use them for periodic sync or queue polling inside the app process, always honoring CancellationToken so shutdown is graceful.</p></div>
-<div class="answer-pane" id="q_70"><h2>Background Jobs in .NET</h2><p>Background jobs process work asynchronously outside the HTTP request path—emails, reports, imports. In-process options include <code>BackgroundService</code> and <code>Task.Run</code> (limited). Production systems often use Hangfire, Azure Functions, or message queues for reliability and retries.</p><p>Fire-and-forget inside requests risks lost work if the process crashes. Durable queues with idempotent handlers scale better.</p><table>
+<div class="answer-pane" id="q_70"><h2>Background Jobs in .NET</h2><p>Background jobs process work asynchronously outside the HTTP request pathâ€”emails, reports, imports. In-process options include <code>BackgroundService</code> and <code>Task.Run</code> (limited). Production systems often use Hangfire, Azure Functions, or message queues for reliability and retries.</p><p>Fire-and-forget inside requests risks lost work if the process crashes. Durable queues with idempotent handlers scale better.</p><table>
 <tr><th>Approach</th><th>Pros</th><th>Cons</th></tr>
 <tr><td>BackgroundService</td><td>Simple, in-process</td><td>Dies with app</td></tr>
 <tr><td>Hangfire</td><td>Dashboard, retries</td><td>Extra infrastructure</td></tr>
@@ -1603,17 +1632,17 @@ await Task.Run(() =&gt; ProcessBatch(items, cts.Token), cts.Token);
 await Task.Factory.StartNew(
     () =&gt; LongRunningListener(),
     TaskCreationOptions.LongRunning);</code></pre><h3>Key Points</h3><ul>
-<li>Schedules work to ThreadPool—not for I/O-bound async APIs.</li>
+<li>Schedules work to ThreadPoolâ€”not for I/O-bound async APIs.</li>
 <li>Returns hot Task; exceptions stored on Task, surfaced on await/Wait.</li>
 <li>Prefer async I/O APIs over Task.Run for network/database calls.</li>
 <li>LongRunning creates a non-pool thread when pool starvation is a risk.</li>
 </ul><h3>Interview Answer</h3><p><code>Task.Run</code> moves CPU-bound synchronous work to a background thread-pool thread and returns a Task you can await. Use it for parallel computation, not as a substitute for truly asynchronous I/O.</p></div>
-<div class="answer-pane" id="q_72"><h2>Thread vs Task</h2><p>A <strong>Thread</strong> is an OS-level execution unit—you create it, set priority, and manage its lifetime manually. A <strong>Task</strong> is a higher-level abstraction representing work that the thread pool may run; the runtime schedules Tasks onto available threads efficiently.</p><pre><code>// Thread — explicit, heavier
+<div class="answer-pane" id="q_72"><h2>Thread vs Task</h2><p>A <strong>Thread</strong> is an OS-level execution unitâ€”you create it, set priority, and manage its lifetime manually. A <strong>Task</strong> is a higher-level abstraction representing work that the thread pool may run; the runtime schedules Tasks onto available threads efficiently.</p><pre><code>// Thread â€” explicit, heavier
 var thread = new Thread(() =&gt; DoWork()) { IsBackground = true };
 thread.Start();
 thread.Join();
 
-// Task — preferred for most scenarios
+// Task â€” preferred for most scenarios
 await Task.Run(() =&gt; DoWork());
 
 // Task enables composition
@@ -1639,10 +1668,10 @@ public async Task&lt;Order&gt; GetOrderAsync(int id)
 // Library code avoiding context capture
 await _httpClient.GetAsync(url).ConfigureAwait(false);</code></pre><h3>Key Points</h3><ul>
 <li>Never block on async code in ASP.NET Core request paths if avoidable.</li>
-<li>AggregateException wraps Task exceptions on Wait/Result—harder to debug.</li>
+<li>AggregateException wraps Task exceptions on Wait/Resultâ€”harder to debug.</li>
 <li>async all the way down is the scalable pattern.</li>
 <li>ConfigureAwait(false) in libraries reduces deadlock on sync-over-async.</li>
-</ul><h3>Interview Answer</h3><p><code>Task.Wait</code> blocks the current thread until completion. Avoid it in async-friendly apps—use await instead. Blocking on incomplete Tasks tied to the same synchronization context is a common deadlock source.</p></div>
+</ul><h3>Interview Answer</h3><p><code>Task.Wait</code> blocks the current thread until completion. Avoid it in async-friendly appsâ€”use await instead. Blocking on incomplete Tasks tied to the same synchronization context is a common deadlock source.</p></div>
 <div class="answer-pane" id="q_74"><h2>Consuming External APIs in .NET</h2><p>Use <code>IHttpClientFactory</code> to create configured <code>HttpClient</code> instances with proper DNS handling and Polly resilience policies. Register typed clients for strong typing and centralized base address, headers, and timeouts.</p><p>Deserialize JSON with <code>System.Text.Json</code>, handle transient faults with retries, and propagate correlation IDs for distributed tracing.</p><pre><code>builder.Services.AddHttpClient&lt;IWeatherClient, WeatherClient&gt;(client =&gt;
 {
     client.BaseAddress = new Uri("https://api.weather.example/");
@@ -1670,7 +1699,7 @@ Action&lt;string&gt; log = msg =&gt; Console.WriteLine(msg);</code></pre><h3>Key
 <li>+= and -= add/remove targets on multicast delegates.</li>
 <li>Func, Action, Predicate are predefined generic delegate types.</li>
 <li>Events are delegates with restricted add/remove accessors.</li>
-</ul><h3>Interview Answer</h3><p>A delegate defines a method signature and holds one or more method references. They decouple callers from implementations—used for events, callbacks, and passing behavior as data. Built-in generic delegates reduce boilerplate.</p></div>
+</ul><h3>Interview Answer</h3><p>A delegate defines a method signature and holds one or more method references. They decouple callers from implementationsâ€”used for events, callbacks, and passing behavior as data. Built-in generic delegates reduce boilerplate.</p></div>
 <div class="answer-pane" id="q_76">
 <div class="question-card" id="q20">
 <h3>20. Generic Delegates</h3>
@@ -1683,7 +1712,7 @@ Action&lt;string&gt; log = msg =&gt; Console.WriteLine(msg);</code></pre><h3>Key
 </div>
 </div>
 </div>
-<div class="answer-pane" id="q_77"><h2>Action, Func, and Predicate</h2><p>These are predefined generic delegates in <code>System</code>. <strong>Action</strong> returns void. <strong>Func</strong> returns a value (last type parameter is return type). <strong>Predicate</strong> returns bool—a special case of Func for filtering.</p><pre><code>Action&lt;string&gt; print = s =&gt; Console.WriteLine(s);
+<div class="answer-pane" id="q_77"><h2>Action, Func, and Predicate</h2><p>These are predefined generic delegates in <code>System</code>. <strong>Action</strong> returns void. <strong>Func</strong> returns a value (last type parameter is return type). <strong>Predicate</strong> returns boolâ€”a special case of Func for filtering.</p><pre><code>Action&lt;string&gt; print = s =&gt; Console.WriteLine(s);
 Action&lt;int, int&gt; logSum = (a, b) =&gt; Console.WriteLine(a + b);
 
 Func&lt;int, int, int&gt; add = (a, b) =&gt; a + b;
@@ -1693,8 +1722,8 @@ Predicate&lt;int&gt; isEven = n =&gt; n % 2 == 0;
 // equivalent: Func&lt;int, bool&gt; isEven = n =&gt; n % 2 == 0;
 
 var evens = numbers.FindAll(isEven);</code></pre><h3>Key Points</h3><ul>
-<li>Action&lt;T1,...&gt; — up to 16 params, no return value.</li>
-<li>Func&lt;T1,..., TResult&gt; — last generic arg is return type.</li>
+<li>Action&lt;T1,...&gt; â€” up to 16 params, no return value.</li>
+<li>Func&lt;T1,..., TResult&gt; â€” last generic arg is return type.</li>
 <li>Predicate&lt;T&gt; is Func&lt;T, bool&gt;; common in List.FindAll.</li>
 <li>Prefer these over custom delegate types unless naming adds clarity.</li>
 </ul><h3>Interview Answer</h3><p>Action is a void-returning delegate, Func returns a typed result, and Predicate is a bool-returning filter delegate. They standardize passing lambdas and methods as arguments across LINQ, callbacks, and APIs.</p></div>
@@ -1715,9 +1744,9 @@ var shortText = name.Truncate(50);
 <li>Must live in non-generic static class; method must be static.</li>
 <li>Namespace must be in scope (using) for IntelliSense to find it.</li>
 <li>Resolution: instance method wins over extension if both match.</li>
-<li>Use sparingly—avoid polluting IntelliSense on core types.</li>
+<li>Use sparinglyâ€”avoid polluting IntelliSense on core types.</li>
 </ul><h3>Interview Answer</h3><p>Extension methods add functionality to existing types syntactically like instance methods but compile to static calls. They power LINQ and cross-cutting helpers on types you cannot inherit or modify.</p></div>
-<div class="answer-pane" id="q_79"><h2>Preventing Memory Leaks in .NET</h2><p>.NET has GC, but leaks still occur when rooted objects hold references to objects that should be collected—event handlers, static caches, undisposed unmanaged resources, and long-lived collections capturing short-lived contexts.</p><pre><code>// Leak: subscriber never unsubscribes
+<div class="answer-pane" id="q_79"><h2>Preventing Memory Leaks in .NET</h2><p>.NET has GC, but leaks still occur when rooted objects hold references to objects that should be collectedâ€”event handlers, static caches, undisposed unmanaged resources, and long-lived collections capturing short-lived contexts.</p><pre><code>// Leak: subscriber never unsubscribes
 publisher.Raised += OnRaised;
 
 // Fix: unsubscribe or weak event pattern
@@ -1759,7 +1788,7 @@ var sqlSide = query.OrderBy(p =&gt; p.Name).Take(20); // translated to SQL</code
 <li>IEnumerable is for LINQ to Objects after data is loaded.</li>
 <li>Materialize (ToList) only when necessary.</li>
 </ul><h3>Interview Answer</h3><p>IEnumerable runs LINQ in memory, while IQueryable delegates to a provider that can translate expressions to SQL. With EF Core I keep filters on IQueryable so the database does the work, and I only switch to IEnumerable after materializing results.</p></div>
-<div class="answer-pane" id="q_82"><h2>yield return and Iterators</h2><p><code>yield return</code> builds an iterator: the compiler generates a state machine implementing <code>IEnumerable&lt;T&gt;</code> or <code>IAsyncEnumerable&lt;T&gt;</code>. Elements are produced lazily on demand—memory-efficient for large or infinite sequences.</p><pre><code>public IEnumerable&lt;int&gt; GetSquares(int max)
+<div class="answer-pane" id="q_82"><h2>yield return and Iterators</h2><p><code>yield return</code> builds an iterator: the compiler generates a state machine implementing <code>IEnumerable&lt;T&gt;</code> or <code>IAsyncEnumerable&lt;T&gt;</code>. Elements are produced lazily on demandâ€”memory-efficient for large or infinite sequences.</p><pre><code>public IEnumerable&lt;int&gt; GetSquares(int max)
 {
     for (int i = 0; i &lt; max; i++)
         yield return i * i;
@@ -1774,18 +1803,18 @@ async IAsyncEnumerable&lt;Order&gt; StreamOrdersAsync()
         foreach (var order in batch)
             yield return order;
 }</code></pre><h3>Key Points</h3><ul>
-<li>Lazy evaluation—work runs when enumerator moves Next.</li>
+<li>Lazy evaluationâ€”work runs when enumerator moves Next.</li>
 <li>Cannot yield in try block with catch (language restriction; use finally carefully).</li>
 <li>Iterator methods cannot have ref/out parameters.</li>
 <li>Prefer yield for pipelines; materialize with ToList when reuse needed.</li>
 </ul><h3>Interview Answer</h3><p><code>yield return</code> defers execution and streams items one-by-one instead of building a full in-memory collection. It simplifies lazy pipelines and reduces memory for large datasets.</p></div>
-<div class="answer-pane" id="q_83"><h2>Alternatives to Task.WhenAll</h2><p><code>Task.WhenAll</code> waits for multiple Tasks concurrently. Alternatives depend on semantics: fail-fast vs collect-all-errors, throttling, sequential dependency, or parallel loops over CPU work.</p><pre><code>// WhenAll — all parallel, one exception on await (others may still run)
+<div class="answer-pane" id="q_83"><h2>Alternatives to Task.WhenAll</h2><p><code>Task.WhenAll</code> waits for multiple Tasks concurrently. Alternatives depend on semantics: fail-fast vs collect-all-errors, throttling, sequential dependency, or parallel loops over CPU work.</p><pre><code>// WhenAll â€” all parallel, one exception on await (others may still run)
 var results = await Task.WhenAll(tasks);
 
-// WhenAny — first completion (timeout/race pattern)
+// WhenAny â€” first completion (timeout/race pattern)
 var finished = await Task.WhenAny(task, Task.Delay(5000));
 
-// Parallel.ForEachAsync — bounded parallelism (.NET 6+)
+// Parallel.ForEachAsync â€” bounded parallelism (.NET 6+)
 await Parallel.ForEachAsync(items,
     new ParallelOptions { MaxDegreeOfParallelism = 4 },
     async (item, ct) =&gt; await ProcessAsync(item, ct));
@@ -1803,7 +1832,7 @@ await Task.WhenAll(throttled);</code></pre><h3>Key Points</h3><ul>
 <li>SemaphoreSlim limits concurrent I/O when APIs have rate limits.</li>
 <li>Task.WhenAll fails on first fault unless you observe all Task.Exception.</li>
 </ul><h3>Interview Answer</h3><p>Use WhenAll for unconstrained parallel awaits. Use WhenAny for first-wins scenarios, Parallel.ForEachAsync for bounded CPU parallelism, and SemaphoreSlim when you must cap concurrent operations. Choose based on error handling and resource limits.</p></div>
-<div class="answer-pane" id="q_84"><h2>Parallel Programming in .NET</h2><p>Parallel programming splits work across cores. .NET offers <code>Parallel</code> (PLINQ, Parallel.For/ForEach), TPL Dataflow for pipelines, and async coordination via Tasks. Effective parallelism requires CPU-bound work and minimal shared mutable state.</p><pre><code>// Parallel.For — partition work across cores
+<div class="answer-pane" id="q_84"><h2>Parallel Programming in .NET</h2><p>Parallel programming splits work across cores. .NET offers <code>Parallel</code> (PLINQ, Parallel.For/ForEach), TPL Dataflow for pipelines, and async coordination via Tasks. Effective parallelism requires CPU-bound work and minimal shared mutable state.</p><pre><code>// Parallel.For â€” partition work across cores
 Parallel.For(0, items.Length, i =&gt; Process(items[i]));
 
 // PLINQ
@@ -1816,9 +1845,9 @@ var primes = Enumerable.Range(2, 10000)
 // Thread-safe aggregation
 var bag = new ConcurrentBag&lt;Result&gt;();
 Parallel.ForEach(source, item =&gt; bag.Add(Transform(item)));</code></pre><h3>Key Points</h3><ul>
-<li>Parallelism helps CPU-bound work—not blocked I/O (use async there).</li>
+<li>Parallelism helps CPU-bound workâ€”not blocked I/O (use async there).</li>
 <li>Race conditions need locks, Interlocked, or concurrent collections.</li>
-<li>Over-parallelization adds scheduling overhead—tune MaxDegreeOfParallelism.</li>
+<li>Over-parallelization adds scheduling overheadâ€”tune MaxDegreeOfParallelism.</li>
 <li>Amdahl's Law: speedup limited by serial portions of algorithm.</li>
 </ul><h3>Interview Answer</h3><p>.NET parallel APIs map work to multiple cores via the thread pool. Use Parallel/PLINQ for CPU-heavy batches with controlled concurrency and thread-safe aggregation. Combine with async for I/O, not as a replacement.</p></div>
 <div class="answer-pane" id="q_85"><h2>Multithreading Fundamentals</h2><p>Multithreading runs multiple threads within one process sharing memory space. It improves throughput for parallel workloads but introduces complexity: race conditions, deadlocks, and visibility issues without proper synchronization.</p><pre><code>private readonly object _lock = new();
@@ -1839,9 +1868,9 @@ try { /* read shared data */ }
 finally { _rw.ExitReadLock(); }</code></pre><h3>Key Points</h3><ul>
 <li>Shared mutable state requires synchronization (lock, Monitor, SemaphoreSlim).</li>
 <li>Prefer higher abstractions (Task, ConcurrentDictionary) over raw locks when possible.</li>
-<li>Deadlock: circular lock acquisition—consistent lock ordering prevents it.</li>
+<li>Deadlock: circular lock acquisitionâ€”consistent lock ordering prevents it.</li>
 <li>volatile/Interlocked address visibility and atomic ops, not complex invariants.</li>
-</ul><h3>Interview Answer</h3><p>Multithreading executes concurrent paths in one process for parallelism. Success depends on identifying shared state, choosing correct synchronization, and avoiding deadlocks and races—often by immutability or concurrent collections.</p></div>
+</ul><h3>Interview Answer</h3><p>Multithreading executes concurrent paths in one process for parallelism. Success depends on identifying shared state, choosing correct synchronization, and avoiding deadlocks and racesâ€”often by immutability or concurrent collections.</p></div>
 <div class="answer-pane" id="q_86"><h2>Production RCA Steps</h2><p>Root Cause Analysis in production is a structured incident response: stabilize, observe, hypothesize, verify, fix, and prevent recurrence. Speed matters, but changing production without evidence increases blast radius.</p><pre><code>// Observability-first mindset
 // 1. Check alerts, dashboards (latency, errors, saturation)
 // 2. Correlate logs/traces by correlationId
@@ -1856,9 +1885,9 @@ else
     await _legacyEngine.PriceAsync(order);</code></pre><h3>Key Points</h3><ul>
 <li>Stabilize: rollback, scale, drain, or feature-flag off bad path.</li>
 <li>Timeline: deploys, config, traffic spikes, dependency outages.</li>
-<li>Use logs, metrics, traces—not guesses; reproduce in staging if possible.</li>
+<li>Use logs, metrics, tracesâ€”not guesses; reproduce in staging if possible.</li>
 <li>Post-incident: blameless review, action items, runbooks, alerting gaps.</li>
-</ul><h3>Interview Answer</h3><p>RCA starts with customer impact and mitigation, then uses telemetry and change history to find the true root cause—not the symptom. Document timeline, fix with validation, and close with preventive measures and improved monitoring.</p></div>
+</ul><h3>Interview Answer</h3><p>RCA starts with customer impact and mitigation, then uses telemetry and change history to find the true root causeâ€”not the symptom. Document timeline, fix with validation, and close with preventive measures and improved monitoring.</p></div>
 <div class="answer-pane" id="q_87">
 <section id="designpatterns">
 <h1>Design Patterns</h1>
@@ -1923,7 +1952,7 @@ public class Car : IVehicle
 }</code></pre>
 </section>
 </div>
-<div class="answer-pane" id="q_88"><h2>Repository Pattern</h2><p>Repository mediates between domain and data mapping layers, exposing collection-like access to aggregates while hiding persistence details (EF, Dapper, SQL). It improves testability and centralizes query logic.</p><p>One repository per aggregate root, not necessarily per table—avoid anemic pass-through wrappers.</p><pre><code>public interface IOrderRepository {
+<div class="answer-pane" id="q_88"><h2>Repository Pattern</h2><p>Repository mediates between domain and data mapping layers, exposing collection-like access to aggregates while hiding persistence details (EF, Dapper, SQL). It improves testability and centralizes query logic.</p><p>One repository per aggregate root, not necessarily per tableâ€”avoid anemic pass-through wrappers.</p><pre><code>public interface IOrderRepository {
   Task&lt;Order?&gt; GetByIdAsync(int id);
   Task AddAsync(Order order);
   Task SaveChangesAsync();
@@ -1933,10 +1962,10 @@ public class OrderRepository(DbContext db) : IOrderRepository {
     db.Orders.FindAsync(id).AsTask();
 }</code></pre><h3>Key Points</h3><ul>
 <li>One repository per aggregate root, not necessarily per table.</li>
-<li>Don't wrap EF DbSet with zero-value pass-through—add value or skip.</li>
+<li>Don't wrap EF DbSet with zero-value pass-throughâ€”add value or skip.</li>
 <li>Unit of Work often pairs with Repository for transaction boundaries.</li>
 </ul><h3>Interview Answer</h3><p>Repository abstracts data access behind domain-focused interfaces so services don't depend on EF or SQL directly. I use it for test doubles and consistent query methods, avoiding anemic CRUD wrappers.</p></div>
-<div class="answer-pane" id="q_89"><h2>CQRS (Command Query Responsibility Segregation)</h2><p>CQRS separates read models from write models. Commands change state through validated handlers; queries return optimized read DTOs—possibly from different stores or denormalized views.</p><p>Adds complexity—use when read/write shapes diverge significantly; often paired with Event Sourcing but not required.</p><pre><code>// Command side
+<div class="answer-pane" id="q_89"><h2>CQRS (Command Query Responsibility Segregation)</h2><p>CQRS separates read models from write models. Commands change state through validated handlers; queries return optimized read DTOsâ€”possibly from different stores or denormalized views.</p><p>Adds complexityâ€”use when read/write shapes diverge significantly; often paired with Event Sourcing but not required.</p><pre><code>// Command side
 public record CreateOrderCommand(int CustomerId, decimal Total);
 public class CreateOrderHandler {
   public async Task Handle(CreateOrderCommand cmd) {
@@ -1950,9 +1979,9 @@ public class OrderSummaryQuery {
     await _readDb.OrderSummaries.FindAsync(id);
 }</code></pre><h3>Key Points</h3><ul>
 <li>Scales reads and writes independently; read models can be denormalized.</li>
-<li>Adds complexity—use when read/write shapes diverge significantly.</li>
+<li>Adds complexityâ€”use when read/write shapes diverge significantly.</li>
 <li>Often paired with Event Sourcing but not required.</li>
-</ul><h3>Interview Answer</h3><p>CQRS splits commands that mutate state from queries that read it, allowing optimized read models and clear validation paths. I adopt it when read patterns differ heavily from writes—not for simple CRUD apps.</p></div>
+</ul><h3>Interview Answer</h3><p>CQRS splits commands that mutate state from queries that read it, allowing optimized read models and clear validation paths. I adopt it when read patterns differ heavily from writesâ€”not for simple CRUD apps.</p></div>
 <div class="answer-pane" id="q_90"><h2>Encapsulation in C#</h2><p>Encapsulation is an OOP principle that bundles data and behavior inside a class while hiding internal state from outside code. In C#, you achieve this with access modifiers (<code>private</code>, <code>protected</code>, <code>internal</code>) and controlled entry points such as properties and methods.</p><p>Instead of exposing fields directly, you validate and transform data through properties. This prevents invalid states, localizes change, and makes classes easier to test and maintain.</p><pre><code>public class BankAccount
 {
     private decimal _balance;
@@ -1996,7 +2025,7 @@ public class OrderSummaryQuery {
 
     public abstract void Drive();
 }</code></pre></div>
-<div class="answer-pane" id="q_92"><h2>Why Use Interfaces?</h2><p>Interfaces define what a component can do without tying callers to a specific implementation. In C# and ASP.NET Core, this is the foundation of dependency inversion: controllers depend on <code>IUserService</code>, not on a concrete database-backed service.</p><p>Interfaces improve testability because you can substitute mocks or fakes in unit tests. They also enable swapping implementations—SQL vs NoSQL, SMTP vs SendGrid—without changing consumer code.</p><pre><code>public interface IOrderRepository
+<div class="answer-pane" id="q_92"><h2>Why Use Interfaces?</h2><p>Interfaces define what a component can do without tying callers to a specific implementation. In C# and ASP.NET Core, this is the foundation of dependency inversion: controllers depend on <code>IUserService</code>, not on a concrete database-backed service.</p><p>Interfaces improve testability because you can substitute mocks or fakes in unit tests. They also enable swapping implementationsâ€”SQL vs NoSQL, SMTP vs SendGridâ€”without changing consumer code.</p><pre><code>public interface IOrderRepository
 {
     Task&lt;Order?&gt; GetByIdAsync(int id);
 }
@@ -2111,15 +2140,15 @@ public class TransactionService
 </table><h3>Is it possible to do overriding in the same class?</h3><p><strong>No.</strong> Overriding requires:</p><ul>
 <li>Parent class</li>
 <li>Child class</li>
-</ul><p>It cannot happen within the same class.</p><pre><code>// Overloading — same class
+</ul><p>It cannot happen within the same class.</p><pre><code>// Overloading â€” same class
 public void Log(string msg) { }
 public void Log(string msg, int level) { }
 
-// Overriding — parent and child
+// Overriding â€” parent and child
 public class Base { public virtual void Run() { } }
 public class Derived : Base { public override void Run() { } }
 
-// Invalid: override in same class — compile error</code></pre></div>
+// Invalid: override in same class â€” compile error</code></pre></div>
 <div class="answer-pane" id="q_100"><h2>Virtual vs Abstract Methods</h2><p>Both support polymorphism, but they serve different roles. A <code>virtual</code> method has a default implementation in the base class and may be overridden. An <code>abstract</code> method has no implementation and must be overridden in a non-abstract derived class.</p><p>Virtual methods suit optional customization points. Abstract methods force derived types to provide behavior and are only allowed in abstract classes.</p><table>
 <tr><th></th><th>virtual</th><th>abstract</th></tr>
 <tr><td>Implementation</td><td>Provided in base</td><td>Not provided</td></tr>
@@ -2210,7 +2239,7 @@ public class Manager : Employee
 <li>readonly supports instance fields and complex types.</li>
 <li>const cannot be set from constructor logic.</li>
 </ul><h3>Interview Answer</h3><p>const is a compile-time constant and must be static, while readonly is set at runtime in the constructor or field initializer and can be per-instance. I use const for fixed literals and readonly for values determined when the object is created, like injected settings.</p></div>
-<div class="answer-pane" id="q_105"><h2>Why async/await When Task Already Exists?</h2><p><code>Task</code> and <code>Task&lt;T&gt;</code> represent ongoing or completed asynchronous work. Raw Tasks force manual continuation chaining (<code>.ContinueWith</code>, callbacks), exception handling, and return-value plumbing. <strong>async/await</strong> is syntactic sugar that compiles to a state machine: readable sequential code, automatic exception propagation, and correct Task return types for callers.</p><pre><code>// Without async/await — hard to read and error-prone
+<div class="answer-pane" id="q_105"><h2>Why async/await When Task Already Exists?</h2><p><code>Task</code> and <code>Task&lt;T&gt;</code> represent ongoing or completed asynchronous work. Raw Tasks force manual continuation chaining (<code>.ContinueWith</code>, callbacks), exception handling, and return-value plumbing. <strong>async/await</strong> is syntactic sugar that compiles to a state machine: readable sequential code, automatic exception propagation, and correct Task return types for callers.</p><pre><code>// Without async/await â€” hard to read and error-prone
 Task&lt;Order&gt; GetOrderOld(int id)
 {
     return _repo.GetCustomerAsync(id)
@@ -2221,7 +2250,7 @@ Task&lt;Order&gt; GetOrderOld(int id)
         }).Unwrap();
 }
 
-// With async/await — same semantics, clearer flow
+// With async/await â€” same semantics, clearer flow
 async Task&lt;Order&gt; GetOrderAsync(int id)
 {
     var customer = await _repo.GetCustomerAsync(id);
@@ -2229,9 +2258,9 @@ async Task&lt;Order&gt; GetOrderAsync(int id)
 }</code></pre><h3>Key Points</h3><ul>
 <li>Task = the abstraction; async/await = ergonomic way to compose Tasks.</li>
 <li>Await unwraps exceptions; ContinueWith requires manual fault checking.</li>
-<li>Compiler generates IAsyncStateMachine—no magic threads, just continuations.</li>
+<li>Compiler generates IAsyncStateMachineâ€”no magic threads, just continuations.</li>
 <li>Methods marked async always return Task/Task&lt;T&gt; (or ValueTask) to callers.</li>
-</ul><h3>Interview Answer</h3><p>We still use <code>Task</code>—async/await does not replace it. Tasks model async operations; async/await lets us write and maintain that logic like synchronous code while preserving non-blocking behavior and proper exception flow.</p></div>
+</ul><h3>Interview Answer</h3><p>We still use <code>Task</code>â€”async/await does not replace it. Tasks model async operations; async/await lets us write and maintain that logic like synchronous code while preserving non-blocking behavior and proper exception flow.</p></div>
 <div class="answer-pane" id="q_106"><h2>4 Pillars of OOPS</h2><p>The four pillars of Object-Oriented Programming (OOP) are:</p><ol>
 <li><strong>Encapsulation</strong></li>
 <li><strong>Abstraction</strong></li>
@@ -2241,7 +2270,7 @@ async Task&lt;Order&gt; GetOrderAsync(int id)
 <li>Data hiding</li>
 <li>Security</li>
 <li>Controlled access</li>
-</ul><h3>Real-life Example — ATM</h3><ul>
+</ul><h3>Real-life Example â€” ATM</h3><ul>
 <li>You cannot directly access bank balance variables.</li>
 <li>You use methods like <code>Withdraw()</code>, <code>Deposit()</code>.</li>
 </ul><h3>C# Example</h3><pre><code>class Employee
@@ -2264,7 +2293,7 @@ Console.WriteLine(emp.GetSalary());</code></pre><h3>Important Points</h3><ul>
 <li>Use <code>private</code> fields</li>
 <li>Access through <code>public</code> methods/properties</li>
 <li>Achieved using access modifiers</li>
-</ul><h3>2. Abstraction</h3><p>Abstraction means <strong>showing only essential details and hiding implementation</strong>.</p><h3>Real-life Example — Car</h3><ul>
+</ul><h3>2. Abstraction</h3><p>Abstraction means <strong>showing only essential details and hiding implementation</strong>.</p><h3>Real-life Example â€” Car</h3><ul>
 <li>You use steering, brake, accelerator.</li>
 <li>You don't know internal engine implementation.</li>
 </ul><h3>Achieved Using</h3><ul>
@@ -2383,7 +2412,7 @@ class Circle : IShape
 
 // IShape s = new IShape();  // ERROR
 IShape s = new Circle();     // OK</code></pre></div>
-<div class="answer-pane" id="q_oops_inheritance_types"><h2>Different Types of Inheritance</h2><h3>1. Single Inheritance</h3><p>One child from one parent.</p><pre><code>A → B</code></pre><h3>2. Multilevel Inheritance</h3><p>Chain inheritance.</p><pre><code>A → B → C</code></pre><h3>3. Hierarchical Inheritance</h3><p>Multiple children from one parent.</p><pre><code>     A
+<div class="answer-pane" id="q_oops_inheritance_types"><h2>Different Types of Inheritance</h2><h3>1. Single Inheritance</h3><p>One child from one parent.</p><pre><code>A â†’ B</code></pre><h3>2. Multilevel Inheritance</h3><p>Chain inheritance.</p><pre><code>A â†’ B â†’ C</code></pre><h3>3. Hierarchical Inheritance</h3><p>Multiple children from one parent.</p><pre><code>     A
    /   \
   B     C</code></pre><h3>4. Multiple Inheritance</h3><p>One child from multiple parents.</p><pre><code>A   B
  \ /
@@ -2394,7 +2423,7 @@ IShape s = new Circle();     // OK</code></pre></div>
        D</code></pre><table>
 <tr><th>Type</th><th>Description</th><th>C# support</th></tr>
 <tr><td>Single</td><td>One child, one parent</td><td><code>class B : A</code></td></tr>
-<tr><td>Multilevel</td><td>Chain of inheritance</td><td><code>A → B → C</code></td></tr>
+<tr><td>Multilevel</td><td>Chain of inheritance</td><td><code>A â†’ B â†’ C</code></td></tr>
 <tr><td>Hierarchical</td><td>Multiple children, one parent</td><td><code>Dog : Animal</code>, <code>Cat : Animal</code></td></tr>
 <tr><td>Multiple</td><td>Many parents</td><td>Interfaces only (<code>class X : IA, IB</code>)</td></tr>
 <tr><td>Hybrid</td><td>Mix of types</td><td><code>class X : Base, IA, IB</code></td></tr>
@@ -2403,7 +2432,7 @@ IShape s = new Circle();     // OK</code></pre></div>
 void Show(int a, int b)</code></pre><h3>2. Type of Parameters</h3><pre><code>void Show(int a)
 void Show(string a)</code></pre><h3>3. Order of Parameters</h3><pre><code>void Show(int a, string b)
 void Show(string b, int a)</code></pre><h3>Invalid Overloading Cases</h3><h3>Only Return Type Changed</h3><p><strong>Not valid.</strong> The compiler gets confused.</p><pre><code>int Add(int a, int b)
-double Add(int a, int b)   // ERROR — same signature</code></pre><div class="interview-tip"><h3>Interview Tip Summary</h3><table>
+double Add(int a, int b)   // ERROR â€” same signature</code></pre><div class="interview-tip"><h3>Interview Tip Summary</h3><table>
 <tr><th>Overloading Rule</th><th>Valid?</th></tr>
 <tr><td>Different number of parameters</td><td>Yes</td></tr>
 <tr><td>Different type of parameters</td><td>Yes</td></tr>
@@ -2450,7 +2479,7 @@ class Child : Parent
 
 Child c = new Child();
 c.Show(); // OK
-// c.age;  // Error — not accessible via object</code></pre><h3>4. Internal</h3><p><code>internal</code> members are accessible only within the <strong>same assembly/project</strong>.</p><pre><code>internal class Test
+// c.age;  // Error â€” not accessible via object</code></pre><h3>4. Internal</h3><p><code>internal</code> members are accessible only within the <strong>same assembly/project</strong>.</p><pre><code>internal class Test
 {
     public void Show()
     {
@@ -2501,7 +2530,7 @@ class Child : Parent
 <tr><td>Accessible everywhere</td><td><code>public</code></td></tr>
 <tr><td>Project-specific access</td><td><code>internal</code></td></tr>
 </table><div class="interview-tip"><h3>Interview Answer</h3><p>Access modifiers control visibility: <code>public</code> (everywhere), <code>private</code> (same class only), <code>protected</code> (class + derived), <code>internal</code> (same assembly), plus combined forms. Default for members is private; for classes is internal. I use private for fields, public for APIs, and protected when child classes need shared state.</p></div></div>
-<div class="answer-pane" id="q_107"><h2>Middleware and Filters in ASP.NET Core</h2><p><strong>Middleware</strong> forms the HTTP request pipeline—cross-cutting concerns like authentication, logging, and exception handling that run for most requests. <strong>Filters</strong> run within MVC/minimal-API controller execution for authorization, action logic, and result transformation.</p><p>Middleware is pipeline-order sensitive and ideal for global HTTP concerns. Filters integrate with MVC action lifecycle and can access action context like route data and model state.</p><table>
+<div class="answer-pane" id="q_107"><h2>Middleware and Filters in ASP.NET Core</h2><p><strong>Middleware</strong> forms the HTTP request pipelineâ€”cross-cutting concerns like authentication, logging, and exception handling that run for most requests. <strong>Filters</strong> run within MVC/minimal-API controller execution for authorization, action logic, and result transformation.</p><p>Middleware is pipeline-order sensitive and ideal for global HTTP concerns. Filters integrate with MVC action lifecycle and can access action context like route data and model state.</p><table>
 <tr><th></th><th>Middleware</th><th>Filters</th></tr>
 <tr><td>Scope</td><td>Entire pipeline</td><td>MVC/action specific</td></tr>
 <tr><td>Registration</td><td><code>app.Use...</code></td><td>Attributes or DI</td></tr>
@@ -2513,7 +2542,7 @@ app.MapControllers(); // filters apply inside MVC</code></pre><h3>Key Points</h3
 <li>Order matters for middleware registration.</li>
 <li>Use filters for action-level cross-cutting logic.</li>
 </ul><h3>Interview Answer</h3><p>Middleware handles global HTTP pipeline concerns in order, like authentication and routing. Filters plug into the MVC action lifecycle for things like validation or authorization at controller/action level. I use middleware for request-wide behavior and filters when I need action-specific context.</p></div>
-<div class="answer-pane" id="q_aspnet_run_use_map"><h2>Run(), Use(), and Map() in ASP.NET Core</h2><p>In ASP.NET Core, <code>Run()</code>, <code>Use()</code>, and <code>Map()</code> are middleware extension methods used to build the <strong>HTTP request pipeline</strong>.</p><h3>ASP.NET Core Request Pipeline</h3><pre><code>Client → Middleware 1 → Middleware 2 → Middleware 3 → Response</code></pre><p>Each middleware can handle the request, pass it to the next middleware, or stop the pipeline.</p><h3>1. app.Run()</h3><p><code>Run()</code> is a <strong>terminal middleware</strong>. It handles the request, does <strong>not</strong> call the next middleware, and the pipeline stops there.</p><pre><code>app.Run(async context =&gt;
+<div class="answer-pane" id="q_aspnet_run_use_map"><h2>Run(), Use(), and Map() in ASP.NET Core</h2><p>In ASP.NET Core, <code>Run()</code>, <code>Use()</code>, and <code>Map()</code> are middleware extension methods used to build the <strong>HTTP request pipeline</strong>.</p><h3>ASP.NET Core Request Pipeline</h3><pre><code>Client â†’ Middleware 1 â†’ Middleware 2 â†’ Middleware 3 â†’ Response</code></pre><p>Each middleware can handle the request, pass it to the next middleware, or stop the pipeline.</p><h3>1. app.Run()</h3><p><code>Run()</code> is a <strong>terminal middleware</strong>. It handles the request, does <strong>not</strong> call the next middleware, and the pipeline stops there.</p><pre><code>app.Run(async context =&gt;
 {
     await context.Response.WriteAsync("Hello World");
 });</code></pre><p><strong>Important:</strong> Anything written <strong>after</strong> <code>Run()</code> will never execute for that branch.</p><pre><code>app.Run(async context =&gt;
@@ -2524,7 +2553,7 @@ app.MapControllers(); // filters apply inside MVC</code></pre><h3>Key Points</h3
 app.Use(async (context, next) =&gt;
 {
     await next(); // NEVER executes for requests handled above
-});</code></pre><p><strong>Analogy:</strong> Road closed here — no request moves further.</p><h3>2. app.Use()</h3><p><code>Use()</code> adds custom middleware and can pass the request to the next middleware. Code runs <strong>before</strong> and <strong>after</strong> <code>await next()</code>.</p><pre><code>app.Use(async (context, next) =&gt;
+});</code></pre><p><strong>Analogy:</strong> Road closed here â€” no request moves further.</p><h3>2. app.Use()</h3><p><code>Use()</code> adds custom middleware and can pass the request to the next middleware. Code runs <strong>before</strong> and <strong>after</strong> <code>await next()</code>.</p><pre><code>app.Use(async (context, next) =&gt;
 {
     await context.Response.WriteAsync("Middleware 1 Start\n");
     await next();
@@ -2536,11 +2565,11 @@ app.Run(async context =&gt;
     await context.Response.WriteAsync("Run Middleware\n");
 });</code></pre><p><strong>Output:</strong></p><pre><code>Middleware 1 Start
 Run Middleware
-Middleware 1 End</code></pre><p><strong>Flow:</strong> Middleware 1 Start → Run Middleware → Middleware 1 End</p><p>Common uses: authentication, authorization, logging, exception handling, CORS, routing.</p><pre><code>app.UseAuthentication();
+Middleware 1 End</code></pre><p><strong>Flow:</strong> Middleware 1 Start â†’ Run Middleware â†’ Middleware 1 End</p><p>Common uses: authentication, authorization, logging, exception handling, CORS, routing.</p><pre><code>app.UseAuthentication();
 app.UseAuthorization();</code></pre><p>If <code>next()</code> is not called, the pipeline stops:</p><pre><code>app.Use(async (context, next) =&gt;
 {
     await context.Response.WriteAsync("Stopped");
-    // next() not called — further middleware won't run
+    // next() not called â€” further middleware won't run
 });</code></pre><h3>3. app.Map()</h3><p><code>Map()</code> creates a <strong>branch</strong> in the pipeline based on URL path.</p><pre><code>app.Map("/home", homeApp =&gt;
 {
     homeApp.Run(async context =&gt;
@@ -2587,7 +2616,7 @@ app.Run(async context =&gt;
 2
 RUN
 3
-4</code></pre><p>Middleware unwinds like a stack: 1 → 2 → RUN → 3 → 4</p><h3>Important Interview Questions</h3><h3>Q1. Can we have multiple Run() methods?</h3><p><strong>Yes</strong> technically, but the first matching <code>Run()</code> that handles the request terminates the pipeline for that path.</p><h3>Q2. What if next() is not called in Use()?</h3><p>The pipeline stops there; further middleware does not execute.</p><h3>Q3. Difference between Map() and Use()?</h3><table>
+4</code></pre><p>Middleware unwinds like a stack: 1 â†’ 2 â†’ RUN â†’ 3 â†’ 4</p><h3>Important Interview Questions</h3><h3>Q1. Can we have multiple Run() methods?</h3><p><strong>Yes</strong> technically, but the first matching <code>Run()</code> that handles the request terminates the pipeline for that path.</p><h3>Q2. What if next() is not called in Use()?</h3><p>The pipeline stops there; further middleware does not execute.</p><h3>Q3. Difference between Map() and Use()?</h3><table>
 <tr><th>Use()</th><th>Map()</th></tr>
 <tr><td>Continues same pipeline</td><td>Creates a branch</td></tr>
 <tr><td>Runs for all requests (unless short-circuited)</td><td>Runs for specific path prefix</td></tr>
@@ -2627,18 +2656,18 @@ app.Run();</code></pre><div class="interview-tip"><h3>Easy Way to Remember</h3><
 <tr><td><code>Use()</code></td><td>Continue ahead</td></tr>
 <tr><td><code>Run()</code></td><td>Stop here</td></tr>
 <tr><td><code>Map()</code></td><td>Take another route</td></tr>
-</table><h3>Interview Answer</h3><p><code>Use()</code> chains middleware and calls <code>next()</code> for before/after logic. <code>Run()</code> is terminal—it handles the response and stops the pipeline. <code>Map()</code> branches the pipeline by path so only matching URLs run that sub-pipeline. Order matters, and skipping <code>next()</code> short-circuits like <code>Run()</code>.</p></div></div>
-<div class="answer-pane" id="q_kestrel"><h2>What is Kestrel in ASP.NET Core?</h2><p>Kestrel is the <strong>cross-platform web server</strong> used internally by ASP.NET Core applications. It is lightweight, fast, asynchronous, open-source, and the <strong>default web server</strong> in ASP.NET Core (built on modern async I/O).</p><h3>Simple Definition</h3><pre><code>Browser → Kestrel Server → ASP.NET Core App (middleware pipeline)</code></pre><p>Kestrel receives HTTP, HTTPS, and WebSocket requests and forwards them to the middleware pipeline.</p><p><strong>Analogy:</strong> Kestrel is like a receptionist—receives requests, routes to the right department (middleware/controllers), returns the response.</p><h3>Default Server</h3><p>When you run <code>dotnet run</code>, the app starts with Kestrel:</p><pre><code>Now listening on:
+</table><h3>Interview Answer</h3><p><code>Use()</code> chains middleware and calls <code>next()</code> for before/after logic. <code>Run()</code> is terminalâ€”it handles the response and stops the pipeline. <code>Map()</code> branches the pipeline by path so only matching URLs run that sub-pipeline. Order matters, and skipping <code>next()</code> short-circuits like <code>Run()</code>.</p></div></div>
+<div class="answer-pane" id="q_kestrel"><h2>What is Kestrel in ASP.NET Core?</h2><p>Kestrel is the <strong>cross-platform web server</strong> used internally by ASP.NET Core applications. It is lightweight, fast, asynchronous, open-source, and the <strong>default web server</strong> in ASP.NET Core (built on modern async I/O).</p><h3>Simple Definition</h3><pre><code>Browser â†’ Kestrel Server â†’ ASP.NET Core App (middleware pipeline)</code></pre><p>Kestrel receives HTTP, HTTPS, and WebSocket requests and forwards them to the middleware pipeline.</p><p><strong>Analogy:</strong> Kestrel is like a receptionistâ€”receives requests, routes to the right department (middleware/controllers), returns the response.</p><h3>Default Server</h3><p>When you run <code>dotnet run</code>, the app starts with Kestrel:</p><pre><code>Now listening on:
 https://localhost:5001
 http://localhost:5000</code></pre><h3>Internal Flow</h3><pre><code>Client Request
-      ↓
+      â†“
 Kestrel Server
-      ↓
+      â†“
 Middleware Pipeline
-      ↓
+      â†“
 Controllers / APIs
-      ↓
-Response → Client</code></pre><h3>Features of Kestrel</h3><table>
+      â†“
+Response â†’ Client</code></pre><h3>Features of Kestrel</h3><table>
 <tr><th>Feature</th><th>Description</th></tr>
 <tr><td>Cross-platform</td><td>Windows, Linux, macOS</td></tr>
 <tr><td>High performance</td><td>Very fast, low overhead</td></tr>
@@ -2672,7 +2701,7 @@ app.Run();</code></pre><h3>appsettings.json</h3><pre><code>{
 <tr><td>Performance</td><td>Very high</td><td>Moderate</td></tr>
 <tr><td>Default in ASP.NET Core</td><td>Yes</td><td>No</td></tr>
 <tr><td>Role in production</td><td>Hosts the app</td><td>Often reverse proxy</td></tr>
-</table><h3>Does Kestrel Replace IIS?</h3><p><strong>Not exactly.</strong> In production:</p><pre><code>Client → IIS / Nginx / Apache (reverse proxy) → Kestrel → ASP.NET Core App</code></pre><p>Reverse proxy provides load balancing, security, SSL termination, request filtering, and process management. Kestrel directly handles requests in local development.</p><h3>Other Facts</h3><ul>
+</table><h3>Does Kestrel Replace IIS?</h3><p><strong>Not exactly.</strong> In production:</p><pre><code>Client â†’ IIS / Nginx / Apache (reverse proxy) â†’ Kestrel â†’ ASP.NET Core App</code></pre><p>Reverse proxy provides load balancing, security, SSL termination, request filtering, and process management. Kestrel directly handles requests in local development.</p><h3>Other Facts</h3><ul>
 <li>Static files: <code>app.UseStaticFiles()</code> works with Kestrel.</li>
 <li>Handles many concurrent requests asynchronously.</li>
 <li>Alternative on Windows: <code>HTTP.sys</code> (Windows-only).</li>
@@ -2683,20 +2712,131 @@ app.Run();</code></pre><h3>appsettings.json</h3><pre><code>{
 <tr><td>What is Kestrel?</td><td>Default cross-platform web server for ASP.NET Core</td></tr>
 <tr><td>Web server or app server?</td><td>Web server</td></tr>
 <tr><td>Run without Kestrel?</td><td>Needs a host (Kestrel or HTTP.sys)</td></tr>
-<tr><td>Expose Kestrel directly to internet?</td><td>Possible but not recommended—use reverse proxy</td></tr>
+<tr><td>Expose Kestrel directly to internet?</td><td>Possible but not recommendedâ€”use reverse proxy</td></tr>
 <tr><td>Why is Kestrel fast?</td><td>Async I/O, non-blocking, lightweight pipeline</td></tr>
 <tr><td>Protocols?</td><td>HTTP/1.1, HTTP/2, HTTP/3, WebSockets</td></tr>
 <tr><td><code>ConfigureKestrel()</code>?</td><td>Ports, HTTPS, limits, certificates</td></tr>
-<tr><td>Role in pipeline?</td><td>Receives request → middleware → response</td></tr>
+<tr><td>Role in pipeline?</td><td>Receives request â†’ middleware â†’ response</td></tr>
 <tr><td>Change port?</td><td>launchSettings.json, appsettings.json, ConfigureKestrel()</td></tr>
-</table><h3>Production Architecture</h3><pre><code>Internet → Nginx / IIS → Kestrel → ASP.NET Core App → Database</code></pre><p><strong>IIS + Kestrel together:</strong> IIS acts as reverse proxy; Kestrel hosts the app—they work together, not either/or.</p><div class="interview-tip"><h3>Easy Way to Remember</h3><table>
+</table><h3>Production Architecture</h3><pre><code>Internet â†’ Nginx / IIS â†’ Kestrel â†’ ASP.NET Core App â†’ Database</code></pre><p><strong>IIS + Kestrel together:</strong> IIS acts as reverse proxy; Kestrel hosts the appâ€”they work together, not either/or.</p><div class="interview-tip"><h3>Easy Way to Remember</h3><table>
 <tr><th>Component</th><th>Role</th></tr>
 <tr><td>Kestrel</td><td>Engine</td></tr>
 <tr><td>IIS / Nginx</td><td>Security gate (reverse proxy)</td></tr>
 <tr><td>Middleware</td><td>Traffic manager</td></tr>
 <tr><td>Controller</td><td>Business logic</td></tr>
 </table><h3>Interview Answer</h3><p>Kestrel is ASP.NET Core's default cross-platform web server that listens for HTTP/HTTPS/WebSocket traffic and hands requests to the middleware pipeline. In development it runs directly; in production it usually sits behind IIS, Nginx, or Apache as a reverse proxy for SSL, security, and load balancing while Kestrel hosts the application process.</p></div></div>
-<div class="answer-pane" id="q_108"><h2>Singleton Pattern</h2><p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection pools—though DI containers often manage lifetime instead.</p><p>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#) is essential; avoid Singleton abuse for every shared object.</p><pre><code>public sealed class Logger {
+<div class="answer-pane" id="q_aspnet_q02"><h2>Create a New Web API Project in .NET Core</h2><p><strong>CLI:</strong></p><pre><code>dotnet new webapi -n MyApi
+cd MyApi
+dotnet run</code></pre><p><strong>Visual Studio:</strong> Create New Project â†’ ASP.NET Core Web API â†’ choose .NET version â†’ enable OpenAPI/Swagger if needed.</p><h3>Interview Answer</h3><p>I use <code>dotnet new webapi</code> for quick setup or Visual Studio for solution structure. Then configure services and middleware in <code>Program.cs</code> and run with <code>dotnet run</code>.</p></div>
+<div class="answer-pane" id="q_aspnet_q05"><h2>Configure appsettings.json in .NET Core</h2><p><code>appsettings.json</code> stores configuration (connection strings, API keys, feature flags).</p><pre><code>{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.;Database=TestDb;"
+  },
+  "MySettings": {
+    "MaxRetries": 3
+  }
+}</code></pre><pre><code>var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.Configure&lt;MySettings&gt;(
+    builder.Configuration.GetSection("MySettings"));</code></pre><h3>Interview Answer</h3><p>I store environment-specific settings in appsettings.json and read them via <code>IConfiguration</code> or the options pattern with <code>Configure&lt;T&gt;()</code> for strongly typed, testable settings.</p></div>
+<div class="answer-pane" id="q_aspnet_q06"><h2>IActionResult vs ActionResult&lt;T&gt;</h2><table>
+<tr><th></th><th>IActionResult</th><th>ActionResult&lt;T&gt;</th></tr>
+<tr><td>Returns</td><td>Any HTTP result (Ok, NotFound, etc.)</td><td>Typed body + HTTP helpers</td></tr>
+<tr><td>Swagger</td><td>Less precise schema</td><td>Better OpenAPI schema</td></tr>
+<tr><td>Use when</td><td>Mixed response types</td><td>APIs with consistent DTO</td></tr>
+</table><pre><code>public IActionResult Get() =&gt; Ok(data);
+
+public ActionResult&lt;User&gt; GetUser() =&gt; Ok(user);</code></pre><h3>Interview Answer</h3><p><code>IActionResult</code> is flexible for different status codes and payloads. <code>ActionResult&lt;T&gt;</code> is preferred for Web APIs because it documents the response type and improves Swagger generation.</p></div>
+<div class="answer-pane" id="q_aspnet_q07"><h2>Enable Swagger in .NET Core Web API</h2><pre><code>dotnet add package Swashbuckle.AspNetCore
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+app.UseSwagger();
+app.UseSwaggerUI();</code></pre><h3>Interview Answer</h3><p>Add Swashbuckle, register <code>AddSwaggerGen()</code> in services, and enable <code>UseSwagger</code> / <code>UseSwaggerUI</code> in the pipelineâ€”typically only in Development unless secured.</p></div>
+<div class="answer-pane" id="q_aspnet_q09"><h2>Logging in .NET Core</h2><p>Built-in logging via <code>ILogger&lt;T&gt;</code>.</p><pre><code>private readonly ILogger&lt;UserService&gt; _logger;
+
+_logger.LogInformation("User created");
+_logger.LogError(ex, "Error occurred");</code></pre><p>Providers: Console, Debug, EventSource, plus Serilog/NLog for structured logs.</p><h3>Interview Answer</h3><p>I inject <code>ILogger&lt;T&gt;</code> and use structured log levels. In production I often add Serilog with sinks to file or cloud monitoring.</p></div>
+<div class="answer-pane" id="q_aspnet_q10_filters"><h2>Filters in ASP.NET Core MVC</h2><p>Filters run in the MVC/action pipeline (not the full HTTP pipeline like middleware).</p><table>
+<tr><th>Type</th><th>When</th></tr>
+<tr><td>Authorization</td><td>Before action â€” auth checks</td></tr>
+<tr><td>Action</td><td>Before/after action execution</td></tr>
+<tr><td>Exception</td><td>On unhandled exceptions</td></tr>
+<tr><td>Result</td><td>Before/after result execution</td></tr>
+</table><pre><code>public class LogFilter : ActionFilterAttribute
+{
+    public override void OnActionExecuting(ActionExecutingContext context) { }
+}</code></pre><p>Used for logging, validation, authorization, and transforming results.</p><h3>Interview Answer</h3><p>Filters attach to controllers or actions for MVC-specific cross-cutting logic. I use middleware for global HTTP concerns and filters when I need action context like route data or model state.</p></div>
+<div class="answer-pane" id="q_aspnet_q11"><h2>Global Exception Handling in .NET Core</h2><pre><code>app.UseExceptionHandler("/error");</code></pre><p>Custom middleware:</p><pre><code>public async Task Invoke(HttpContext context)
+{
+    try { await _next(context); }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Unhandled");
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsJsonAsync(new { error = "Internal error" });
+    }
+}</code></pre><h3>Interview Answer</h3><p>I centralize errors with exception middleware or <code>UseExceptionHandler</code> so controllers stay clean and clients get consistent error responses.</p></div>
+<div class="answer-pane" id="q_aspnet_q12"><h2>Program.cs in .NET 6+</h2><p>Replaces Startup.cs â€” configures services and middleware.</p><pre><code>var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
+
+var app = builder.Build();
+app.MapControllers();
+app.Run();</code></pre><h3>Interview Answer</h3><p><code>Program.cs</code> is the entry point: register DI services on <code>builder.Services</code>, build the app, configure middleware order, map endpoints, and run.</p></div>
+<div class="answer-pane" id="q_aspnet_q13_auth"><h2>Authentication and Authorization in .NET Core APIs</h2><p><strong>Authentication</strong> verifies identity. <strong>Authorization</strong> checks permissions.</p><pre><code>builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =&gt; { options.TokenValidationParameters = ...; });
+
+builder.Services.AddAuthorization();
+
+[Authorize]
+[Authorize(Roles = "Admin")]</code></pre><h3>Interview Answer</h3><p>I configure JWT bearer authentication in Program.cs, add authorization policies, and protect endpoints with <code>[Authorize]</code> attributes or minimal API <code>RequireAuthorization()</code>.</p></div>
+<div class="answer-pane" id="q_aspnet_q15"><h2>Health Checks in .NET Core</h2><pre><code>builder.Services.AddHealthChecks()
+    .AddSqlServer(connectionString)
+    .AddRedis(redisConnection);
+
+app.MapHealthChecks("/health");</code></pre><p>Used in Docker, Kubernetes, and load balancers to verify app and dependency health.</p><h3>Interview Answer</h3><p>I register health checks for the database, cache, and external APIs, then expose <code>/health</code> for orchestrators to probe liveness and readiness.</p></div>
+<div class="answer-pane" id="q_aspnet_q16"><h2>Retry and Circuit Breaker (Polly)</h2><p><strong>Retry:</strong> temporarily retry failed calls. <strong>Circuit breaker:</strong> stop calling a failing service for a period.</p><pre><code>services.AddHttpClient("api")
+    .AddTransientHttpErrorPolicy(p =&gt; p.RetryAsync(3))
+    .AddTransientHttpErrorPolicy(p =&gt;
+        p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));</code></pre><h3>Interview Answer</h3><p>For resilient HTTP clients I use Polly policiesâ€”retry with backoff for transient faults and circuit breaker to avoid cascading failures.</p></div>
+<div class="answer-pane" id="q_aspnet_q18"><h2>Minimal APIs vs Controllers</h2><table>
+<tr><th>Minimal APIs</th><th>Controllers</th></tr>
+<tr><td>Lightweight, less boilerplate</td><td>Structured MVC pattern</td></tr>
+<tr><td>Fast for small services</td><td>Better for large APIs</td></tr>
+<tr><td>Good for microservices</td><td>Better separation of concerns</td></tr>
+</table><pre><code>app.MapGet("/users", () =&gt; users);
+app.MapPost("/users", (User u) =&gt; Results.Created($"/users/{u.Id}", u));</code></pre><h3>Interview Answer</h3><p>Minimal APIs reduce ceremony for small endpoints; controllers scale better with filters, versioning, and team conventions on large projects.</p></div>
+<div class="answer-pane" id="q_aspnet_q20"><h2>EF Core Migrations and Seeding</h2><pre><code>dotnet ef migrations add InitialCreate
+dotnet ef database update</code></pre><pre><code>modelBuilder.Entity&lt;Role&gt;().HasData(
+    new Role { Id = 1, Name = "Admin" });</code></pre><h3>Interview Answer</h3><p>Migrations version the schema in code; <code>database update</code> applies them. I seed reference data in <code>OnModelCreating</code> or a dedicated seeding service for repeatable environments.</p></div>
+<div class="answer-pane" id="q_aspnet_q21"><h2>gRPC in .NET Core</h2><p>High-performance RPC using Protocol Buffers over HTTP/2. Strongly typed contracts; ideal for internal microservice communication.</p><p>.NET has first-class gRPC support via <code>Grpc.AspNetCore</code>.</p><h3>Interview Answer</h3><p>I use gRPC when low latency and contract-first communication matter between services; REST remains better for public browser-facing APIs.</p></div>
+<div class="answer-pane" id="q_aspnet_q22"><h2>Containerize .NET API with Docker</h2><pre><code>FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+COPY publish/ .
+ENTRYPOINT ["dotnet", "MyApi.dll"]</code></pre><pre><code>docker build -t myapi .
+docker run -p 8080:8080 myapi</code></pre><h3>Interview Answer</h3><p>I publish the app, use the official ASP.NET runtime image, copy artifacts, and run the container with mapped portsâ€”often orchestrated with Kubernetes in production.</p></div>
+<div class="answer-pane" id="q_aspnet_q23"><h2>Secure APIs with JWT and IdentityServer</h2><p><strong>JWT:</strong> stateless token authentication.</p><ol>
+<li>User logs in</li>
+<li>Server issues signed token</li>
+<li>Client sends <code>Authorization: Bearer &lt;token&gt;</code></li>
+</ol><p><strong>IdentityServer / OpenIddict:</strong> OAuth2/OpenID Connect for SSO, access tokens, and identity management across apps.</p><h3>Interview Answer</h3><p>JWT suits stateless APIs; I validate issuer, audience, and signing key. For enterprise SSO across multiple clients I use an identity provider like IdentityServer or Azure AD.</p></div>
+<div class="answer-pane" id="q_aspnet_q24"><h2>BackgroundService in .NET Core</h2><p><code>BackgroundService</code> extends <code>IHostedService</code> for long-running tasks outside HTTP requests.</p><pre><code>public class EmailWorker : BackgroundService
+{
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await ProcessEmailsAsync();
+            await Task.Delay(5000, stoppingToken);
+        }
+    }
+}
+
+builder.Services.AddHostedService&lt;EmailWorker&gt;();</code></pre><p>Use cases: queues, scheduled sync, notifications.</p><h3>Interview Answer</h3><p>I register a <code>BackgroundService</code> for work that outlives a requestâ€”email, polling, or message consumptionâ€”respecting <code>CancellationToken</code> on shutdown.</p></div>
+
+<div class="answer-pane" id="q_108"><h2>Singleton Pattern</h2><p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection poolsâ€”though DI containers often manage lifetime instead.</p><p>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#) is essential; avoid Singleton abuse for every shared object.</p><pre><code>public sealed class Logger {
   private static readonly Lazy&lt;Logger&gt; _instance =
     new(() =&gt; new Logger());
   public static Logger Instance =&gt; _instance.Value;
@@ -2704,9 +2844,9 @@ app.Run();</code></pre><h3>appsettings.json</h3><pre><code>{
   public void Log(string msg) =&gt; Console.WriteLine(msg);
 }</code></pre><h3>Key Points</h3><ul>
 <li>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#).</li>
-<li>Hard to unit test due to global state—prefer DI singleton scope.</li>
+<li>Hard to unit test due to global stateâ€”prefer DI singleton scope.</li>
 <li>Avoid Singleton abuse; not every shared object needs the pattern.</li>
-</ul><h3>Interview Answer</h3><p>Singleton guarantees one instance with global access—useful for shared config or logging. In modern apps I often register a single instance in DI rather than hand-rolling static Instance properties.</p></div>
+</ul><h3>Interview Answer</h3><p>Singleton guarantees one instance with global accessâ€”useful for shared config or logging. In modern apps I often register a single instance in DI rather than hand-rolling static Instance properties.</p></div>
 <div class="answer-pane" id="q_109">
 <div class="section" id="solid">
 <span class="tag">SOLID</span>
@@ -2735,10 +2875,10 @@ class ReportPrinter
 </code></pre>
 <h2>Other SOLID Principles</h2>
 <ul>
-<li>O → Open Closed Principle</li>
-<li>L → Liskov Substitution Principle</li>
-<li>I → Interface Segregation Principle</li>
-<li>D → Dependency Inversion Principle</li>
+<li>O â†’ Open Closed Principle</li>
+<li>L â†’ Liskov Substitution Principle</li>
+<li>I â†’ Interface Segregation Principle</li>
+<li>D â†’ Dependency Inversion Principle</li>
 </ul>
 </div>
 </div>
@@ -2753,7 +2893,7 @@ public class OrdersController : ControllerBase
 <li>Choose correct service lifetimes to avoid bugs.</li>
 <li>Built-in container covers most application needs.</li>
 </ul><h3>Interview Answer</h3><p>ASP.NET Core has first-class DI where I register services in Program.cs and receive them through constructor injection. This decouples layers, makes unit testing straightforward with mocks, and lets the framework manage object lifetimes per request or application scope.</p></div>
-<div class="answer-pane" id="q_111"><h2>async/await vs Task.Run</h2><p><strong>async/await</strong> is for non-blocking asynchronous I/O (HTTP, database, file streams). It frees the calling thread while work completes and resumes on a synchronization context when the await finishes. <strong>Task.Run</strong> offloads CPU-bound work to a thread-pool thread; it does not make I/O async—it wraps synchronous CPU work so the UI or request thread stays responsive.</p><pre><code>// I/O-bound: async/await (no extra thread while waiting)
+<div class="answer-pane" id="q_111"><h2>async/await vs Task.Run</h2><p><strong>async/await</strong> is for non-blocking asynchronous I/O (HTTP, database, file streams). It frees the calling thread while work completes and resumes on a synchronization context when the await finishes. <strong>Task.Run</strong> offloads CPU-bound work to a thread-pool thread; it does not make I/O asyncâ€”it wraps synchronous CPU work so the UI or request thread stays responsive.</p><pre><code>// I/O-bound: async/await (no extra thread while waiting)
 public async Task&lt;string&gt; GetUserAsync(int id)
 {
     var response = await _httpClient.GetAsync($"/users/{id}");
@@ -2769,11 +2909,11 @@ public async Task&lt;int&gt; ComputeHashAsync(byte[] data)
 // Anti-pattern: Task.Run around I/O
 await Task.Run(() =&gt; _httpClient.GetStringAsync(url)); // wastes a thread</code></pre><h3>Key Points</h3><ul>
 <li>async/await = cooperative, I/O-bound; Task.Run = parallel CPU on pool threads.</li>
-<li>Never wrap pure async I/O in Task.Run on ASP.NET Core—it reduces scalability.</li>
+<li>Never wrap pure async I/O in Task.Run on ASP.NET Coreâ€”it reduces scalability.</li>
 <li>async void only for event handlers; prefer async Task everywhere else.</li>
 <li>ConfigureAwait(false) in library code avoids deadlocks on UI/legacy ASP.NET.</li>
 </ul><h3>Interview Answer</h3><p>Use <strong>async/await</strong> when waiting on I/O so threads are not blocked. Use <strong>Task.Run</strong> when you must run CPU-intensive synchronous code off the caller thread. They solve different problems; combining them means async/await waits for CPU work queued via Task.Run, not replacing it.</p></div>
-<div class="answer-pane" id="q_112"><h2>SQL Performance Bottlenecks</h2><p>Common bottlenecks include missing indexes, stale statistics, implicit conversions, table scans, blocking locks, tempdb pressure, parameter sniffing, and inefficient queries returning too much data.</p><p>Measure first with execution plans, wait stats, and IO stats—not guess.</p><table>
+<div class="answer-pane" id="q_112"><h2>SQL Performance Bottlenecks</h2><p>Common bottlenecks include missing indexes, stale statistics, implicit conversions, table scans, blocking locks, tempdb pressure, parameter sniffing, and inefficient queries returning too much data.</p><p>Measure first with execution plans, wait stats, and IO statsâ€”not guess.</p><table>
 <tr><th>Symptom</th><th>Likely Cause</th></tr>
 <tr><td>Slow SELECT</td><td>Missing index, scan, bad estimate</td></tr>
 <tr><td>Blocking</td><td>Long transactions, lock escalation</td></tr>
@@ -2781,11 +2921,11 @@ await Task.Run(() =&gt; _httpClient.GetStringAsync(url)); // wastes a thread</co
 <tr><td>tempdb spike</td><td>Sorts, spills, temp table abuse</td></tr>
 </table><pre><code>SELECT wait_type, wait_time_ms FROM sys.dm_os_wait_stats
 ORDER BY wait_time_ms DESC;</code></pre><h3>Key Points</h3><ul>
-<li>Measure first: execution plans, wait stats, IO stats—not guess.</li>
+<li>Measure first: execution plans, wait stats, IO statsâ€”not guess.</li>
 <li>Fix highest wait type; index and rewrite queries iteratively.</li>
 <li>Avoid SELECT * and functions on indexed columns in WHERE.</li>
-</ul><h3>Interview Answer</h3><p>I diagnose SQL bottlenecks with execution plans and wait stats—looking for scans, bad cardinality, blocking, and tempdb spills. Fixes are usually better indexes, query rewrites, updated stats, and shorter transactions.</p></div>
-<div class="answer-pane" id="q_113"><h2>JOIN vs CTE vs Subquery</h2><p>JOINs combine tables horizontally. Subqueries nest queries for filtering or scalar values. CTEs name subqueries for readability and recursion. The optimizer often produces similar plans—choose for clarity and maintainability.</p><p>JOIN when combining related tables; EXISTS for semi-join existence checks; CTE when the same subquery is referenced multiple times.</p><pre><code>-- JOIN: combine entities
+</ul><h3>Interview Answer</h3><p>I diagnose SQL bottlenecks with execution plans and wait statsâ€”looking for scans, bad cardinality, blocking, and tempdb spills. Fixes are usually better indexes, query rewrites, updated stats, and shorter transactions.</p></div>
+<div class="answer-pane" id="q_113"><h2>JOIN vs CTE vs Subquery</h2><p>JOINs combine tables horizontally. Subqueries nest queries for filtering or scalar values. CTEs name subqueries for readability and recursion. The optimizer often produces similar plansâ€”choose for clarity and maintainability.</p><p>JOIN when combining related tables; EXISTS for semi-join existence checks; CTE when the same subquery is referenced multiple times.</p><pre><code>-- JOIN: combine entities
 SELECT o.Id, c.Name FROM Orders o JOIN Customers c ON o.CustId = c.Id;
 
 -- Subquery filter:
@@ -2797,8 +2937,8 @@ SELECT o.* FROM Orders o JOIN VIP v ON o.CustId = v.Id;</code></pre><h3>Key Poin
 <li>JOIN when combining related tables; EXISTS for semi-join existence checks.</li>
 <li>CTE when same subquery referenced multiple times or recursive.</li>
 <li>Always validate performance with actual execution plans.</li>
-</ul><h3>Interview Answer</h3><p>JOINs merge tables; subqueries embed logic for filters or scalars; CTEs organize complex SQL. I prioritize readable intent, then tune with plans—often they're equivalent under the hood.</p></div>
-<div class="answer-pane" id="q_114"><h2>Singleton vs Static Class</h2><p>Both offer single-instance-like access, but Singleton is an instance class you can implement interfaces, inherit from, and pass as dependency. Static classes cannot be instantiated, inherited, or interface-implemented—harder to mock.</p><p>Prefer instance + DI over static helpers for testability; static classes suit pure stateless utilities.</p><table>
+</ul><h3>Interview Answer</h3><p>JOINs merge tables; subqueries embed logic for filters or scalars; CTEs organize complex SQL. I prioritize readable intent, then tune with plansâ€”often they're equivalent under the hood.</p></div>
+<div class="answer-pane" id="q_114"><h2>Singleton vs Static Class</h2><p>Both offer single-instance-like access, but Singleton is an instance class you can implement interfaces, inherit from, and pass as dependency. Static classes cannot be instantiated, inherited, or interface-implementedâ€”harder to mock.</p><p>Prefer instance + DI over static helpers for testability; static classes suit pure stateless utilities.</p><table>
 <tr><th>Singleton</th><th>Static Class</th></tr>
 <tr><td>Instance methods, implements interfaces</td><td>All members static</td></tr>
 <tr><td>Lazy init possible</td><td>Initialized on first access</td></tr>
@@ -2807,11 +2947,11 @@ SELECT o.* FROM Orders o JOIN VIP v ON o.CustId = v.Id;</code></pre><h3>Key Poin
 public class SystemDateProvider : IDateProvider {
   public DateTime Now =&gt; DateTime.UtcNow;
 }
-// vs static DateHelper.Now — can't mock in tests</code></pre><h3>Key Points</h3><ul>
+// vs static DateHelper.Now â€” can't mock in tests</code></pre><h3>Key Points</h3><ul>
 <li>Prefer instance + DI over static helpers for testability.</li>
 <li>Static classes suit pure utility functions with no state.</li>
 <li>Singleton can enforce one instance; static is inherently one.</li>
-</ul><h3>Interview Answer</h3><p>Singleton is an instantiable class with one instance—I can inject and mock it. Static classes can't implement interfaces or be substituted. I use static only for pure stateless utilities; otherwise DI singleton.</p></div>
+</ul><h3>Interview Answer</h3><p>Singleton is an instantiable class with one instanceâ€”I can inject and mock it. Static classes can't implement interfaces or be substituted. I use static only for pure stateless utilities; otherwise DI singleton.</p></div>
 <div class="answer-pane" id="q_115"><h2>Private Constructor in C#</h2><p>A private constructor prevents external code from creating instances with <code>new</code>. This pattern supports singletons, factory methods, and static utility classes where controlled instantiation is required.</p><p>When all constructors are private, the class cannot be subclassed unless a protected constructor exists in a base class scenario. Often you expose a static <code>Create</code> or <code>Instance</code> property that manages object creation.</p><pre><code>public sealed class LoggerFactory
 {
     private static LoggerFactory? _instance;
@@ -2833,7 +2973,7 @@ public class SystemDateProvider : IDateProvider {
 <tr><td>Achieved By</td><td>Abstract class/interface</td><td>Access modifiers</td></tr>
 <tr><td>Example</td><td>Car driving</td><td>Bank account balance</td></tr>
 </table><h3>Simple Understanding</h3><h3>Abstraction</h3><p>"What does the object do?"</p><h3>Encapsulation</h3><p>"How is the data protected?"</p></div>
-<div class="answer-pane" id="q_117"><h2>Static vs Dynamic Binding</h2><p><strong>Static binding</strong> (early binding) resolves method calls at compile time—method overloading and non-virtual method calls. <strong>Dynamic binding</strong> (late binding) resolves calls at runtime based on the actual object type—virtual method overriding and interface dispatch.</p><p>Static binding is faster because the compiler knows the exact method to invoke. Dynamic binding enables polymorphism but requires virtual tables or interface lookup at runtime.</p><table>
+<div class="answer-pane" id="q_117"><h2>Static vs Dynamic Binding</h2><p><strong>Static binding</strong> (early binding) resolves method calls at compile timeâ€”method overloading and non-virtual method calls. <strong>Dynamic binding</strong> (late binding) resolves calls at runtime based on the actual object typeâ€”virtual method overriding and interface dispatch.</p><p>Static binding is faster because the compiler knows the exact method to invoke. Dynamic binding enables polymorphism but requires virtual tables or interface lookup at runtime.</p><table>
 <tr><th></th><th>Static Binding</th><th>Dynamic Binding</th></tr>
 <tr><td>When resolved</td><td>Compile time</td><td>Runtime</td></tr>
 <tr><td>Examples</td><td>Overloading, non-virtual calls</td><td>override, interface methods</td></tr>
@@ -2865,7 +3005,7 @@ await connection.OpenAsync();
 <li>CORS</li>
 </ul>
 <h3>Pipeline Flow</h3>
-<pre><code>Request → Middleware → Controller → Middleware → Response</code></pre>
+<pre><code>Request â†’ Middleware â†’ Controller â†’ Middleware â†’ Response</code></pre>
 <h3>Custom Middleware Example</h3>
 <pre><code>public class LoggingMiddleware
 {
@@ -2950,8 +3090,8 @@ TRUNCATE TABLE StagingOrders;  -- fast empty staging table</code></pre><h3>Key P
 <li>Use TRUNCATE to quickly clear staging tables without filters.</li>
 <li>Use DELETE for selective removal and when triggers/auditing matter.</li>
 <li>TRUNCATE fails if FK references exist unless handled.</li>
-</ul><h3>Interview Answer</h3><p>DELETE removes specific rows and fires triggers; TRUNCATE wipes the whole table by deallocating pages—much faster but no WHERE. I TRUNCATE staging tables and DELETE when I need filters or referential safety.</p></div>
-<div class="answer-pane" id="q_solid_detailed"><h2>SOLID Principles with Examples</h2><p>SOLID guides maintainable OOP design: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.</p><p>Each principle reduces coupling and improves testability—apply pragmatically, not as dogma on every class.</p><pre><code>// S: OrderService only handles orders—not email
+</ul><h3>Interview Answer</h3><p>DELETE removes specific rows and fires triggers; TRUNCATE wipes the whole table by deallocating pagesâ€”much faster but no WHERE. I TRUNCATE staging tables and DELETE when I need filters or referential safety.</p></div>
+<div class="answer-pane" id="q_solid_detailed"><h2>SOLID Principles with Examples</h2><p>SOLID guides maintainable OOP design: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.</p><p>Each principle reduces coupling and improves testabilityâ€”apply pragmatically, not as dogma on every class.</p><pre><code>// S: OrderService only handles ordersâ€”not email
 class OrderService { void PlaceOrder(Order o) { ... } }
 
 // O: extend via IDiscountStrategy, don't modify Checkout
@@ -2979,8 +3119,8 @@ public class NotificationFactory {
 <li>Centralizes creation logic and supports Open/Closed extension.</li>
 <li>DI containers often replace hand-rolled factories via registration.</li>
 <li>Abstract Factory when creating coordinated product families.</li>
-</ul><h3>Interview Answer</h3><p>Factory hides concrete instantiation behind an abstraction—callers ask for INotification, not new EmailNotification. I use it when creation logic is complex or varies by config, often delegating to DI in ASP.NET.</p></div>
-<div class="answer-pane" id="q_strategy_pattern"><h2>Strategy Pattern</h2><p>Strategy defines a family of interchangeable algorithms behind a common interface, letting runtime behavior change without modifying the client. It replaces large if/else or switch blocks.</p><p>Works well with DI—register strategy per tenant or feature flag.</p><pre><code>public interface IPricingStrategy {
+</ul><h3>Interview Answer</h3><p>Factory hides concrete instantiation behind an abstractionâ€”callers ask for INotification, not new EmailNotification. I use it when creation logic is complex or varies by config, often delegating to DI in ASP.NET.</p></div>
+<div class="answer-pane" id="q_strategy_pattern"><h2>Strategy Pattern</h2><p>Strategy defines a family of interchangeable algorithms behind a common interface, letting runtime behavior change without modifying the client. It replaces large if/else or switch blocks.</p><p>Works well with DIâ€”register strategy per tenant or feature flag.</p><pre><code>public interface IPricingStrategy {
   decimal Calculate(Order order);
 }
 public class CheckoutService(IPricingStrategy pricing) {
@@ -2988,10 +3128,10 @@ public class CheckoutService(IPricingStrategy pricing) {
 }
 // Register RegularPricing, PremiumPricing, PromoPricing via DI</code></pre><h3>Key Points</h3><ul>
 <li>Encapsulates varying behavior; client depends on interface only.</li>
-<li>Works well with DI—register strategy per tenant or feature flag.</li>
+<li>Works well with DIâ€”register strategy per tenant or feature flag.</li>
 <li>Combine with Factory when strategy selection is dynamic.</li>
-</ul><h3>Interview Answer</h3><p>Strategy swaps algorithms at runtime through a shared interface—pricing rules, payment methods, compression. I inject the strategy so new behaviors are new classes, not growing switch statements.</p></div>
-<div class="answer-pane" id="q_design_pattern_types"><h2>Types of Design Patterns</h2><p>GoF patterns divide into Creational (object creation), Structural (composition), and Behavioral (communication/responsibility). Modern catalogs add concurrency and architectural patterns.</p><p>Patterns are vocabulary—not goals. Don't force them everywhere; use when they match a real problem.</p><table>
+</ul><h3>Interview Answer</h3><p>Strategy swaps algorithms at runtime through a shared interfaceâ€”pricing rules, payment methods, compression. I inject the strategy so new behaviors are new classes, not growing switch statements.</p></div>
+<div class="answer-pane" id="q_design_pattern_types"><h2>Types of Design Patterns</h2><p>GoF patterns divide into Creational (object creation), Structural (composition), and Behavioral (communication/responsibility). Modern catalogs add concurrency and architectural patterns.</p><p>Patterns are vocabularyâ€”not goals. Don't force them everywhere; use when they match a real problem.</p><table>
 <tr><th>Category</th><th>Examples</th><th>Purpose</th></tr>
 <tr><td>Creational</td><td>Singleton, Factory, Builder</td><td>Encapsulate creation</td></tr>
 <tr><td>Structural</td><td>Adapter, Decorator, Facade</td><td>Compose objects</td></tr>
@@ -2999,10 +3139,10 @@ public class CheckoutService(IPricingStrategy pricing) {
 </table><pre><code>// Creational: Factory creates without exposing new()
 // Structural: Adapter wraps legacy API
 // Behavioral: Strategy swaps algorithms at runtime</code></pre><h3>Key Points</h3><ul>
-<li>Patterns are vocabulary—not goals. Don't force them everywhere.</li>
+<li>Patterns are vocabularyâ€”not goals. Don't force them everywhere.</li>
 <li>Prefer composition over inheritance in most structural cases.</li>
 <li>Know when a pattern adds clarity vs unnecessary indirection.</li>
-</ul><h3>Interview Answer</h3><p>Design patterns fall into creational, structural, and behavioral groups. I name them when they match a real problem—Factory for creation complexity, Strategy for swappable behavior—not as boilerplate.</p></div>
+</ul><h3>Interview Answer</h3><p>Design patterns fall into creational, structural, and behavioral groups. I name them when they match a real problemâ€”Factory for creation complexity, Strategy for swappable behaviorâ€”not as boilerplate.</p></div>
 </div>
 </body>
 </html>
