@@ -579,23 +579,24 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_37')">2. Framework vs Core</div>
 <div class="question-item" onclick="showAnswer('q_107')">3. Middleware &amp; Filters</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_run_use_map')">4. Run(), Use(), and Map()</div>
-<div class="question-item" onclick="showAnswer('q_110')">5. Dependency Injection (DI)</div>
-<div class="question-item" onclick="showAnswer('q_40')">6. Service Lifetimes</div>
-<div class="question-item" onclick="showAnswer('q_59')">7. What is IServiceProvider?</div>
-<div class="question-item" onclick="showAnswer('q_60')">8. Different ways of Dependency Injection</div>
-<div class="question-item" onclick="showAnswer('q_61')">9. Have you used Method Injection?</div>
-<div class="question-item" onclick="showAnswer('q_96')">10. Why DbContext Scoped?</div>
-<div class="question-item" onclick="showAnswer('q_41')">11. What is JWT?</div>
-<div class="question-item" onclick="showAnswer('q_42')">12. What is Dapper?</div>
-<div class="question-item" onclick="showAnswer('q_53')">13. Routing</div>
-<div class="question-item" onclick="showAnswer('q_54')">14. CORS Policy</div>
-<div class="question-item" onclick="showAnswer('q_55')">15. REST API</div>
-<div class="question-item" onclick="showAnswer('q_67')">16. Caching</div>
-<div class="question-item" onclick="showAnswer('q_68')">17. Options Pattern</div>
-<div class="question-item" onclick="showAnswer('q_69')">18. Hosted Services</div>
-<div class="question-item" onclick="showAnswer('q_70')">19. Background Job Processing</div>
-<div class="question-item" onclick="showAnswer('q_120')">20. Web API Performance Optimization</div>
-<div class="question-item" onclick="showAnswer('q_74')">21. How to consume external APIs?</div>
+<div class="question-item" onclick="showAnswer('q_kestrel')">5. What is Kestrel?</div>
+<div class="question-item" onclick="showAnswer('q_110')">6. Dependency Injection (DI)</div>
+<div class="question-item" onclick="showAnswer('q_40')">7. Service Lifetimes</div>
+<div class="question-item" onclick="showAnswer('q_59')">8. What is IServiceProvider?</div>
+<div class="question-item" onclick="showAnswer('q_60')">9. Different ways of Dependency Injection</div>
+<div class="question-item" onclick="showAnswer('q_61')">10. Have you used Method Injection?</div>
+<div class="question-item" onclick="showAnswer('q_96')">11. Why DbContext Scoped?</div>
+<div class="question-item" onclick="showAnswer('q_41')">12. What is JWT?</div>
+<div class="question-item" onclick="showAnswer('q_42')">13. What is Dapper?</div>
+<div class="question-item" onclick="showAnswer('q_53')">14. Routing</div>
+<div class="question-item" onclick="showAnswer('q_54')">15. CORS Policy</div>
+<div class="question-item" onclick="showAnswer('q_55')">16. REST API</div>
+<div class="question-item" onclick="showAnswer('q_67')">17. Caching</div>
+<div class="question-item" onclick="showAnswer('q_68')">18. Options Pattern</div>
+<div class="question-item" onclick="showAnswer('q_69')">19. Hosted Services</div>
+<div class="question-item" onclick="showAnswer('q_70')">20. Background Job Processing</div>
+<div class="question-item" onclick="showAnswer('q_120')">21. Web API Performance Optimization</div>
+<div class="question-item" onclick="showAnswer('q_74')">22. How to consume external APIs?</div>
 </div>
 <h3 class="topic-header">SQL &amp; Database</h3>
 <div class="question-group">
@@ -2627,6 +2628,74 @@ app.Run();</code></pre><div class="interview-tip"><h3>Easy Way to Remember</h3><
 <tr><td><code>Run()</code></td><td>Stop here</td></tr>
 <tr><td><code>Map()</code></td><td>Take another route</td></tr>
 </table><h3>Interview Answer</h3><p><code>Use()</code> chains middleware and calls <code>next()</code> for before/after logic. <code>Run()</code> is terminal—it handles the response and stops the pipeline. <code>Map()</code> branches the pipeline by path so only matching URLs run that sub-pipeline. Order matters, and skipping <code>next()</code> short-circuits like <code>Run()</code>.</p></div></div>
+<div class="answer-pane" id="q_kestrel"><h2>What is Kestrel in ASP.NET Core?</h2><p>Kestrel is the <strong>cross-platform web server</strong> used internally by ASP.NET Core applications. It is lightweight, fast, asynchronous, open-source, and the <strong>default web server</strong> in ASP.NET Core (built on modern async I/O).</p><h3>Simple Definition</h3><pre><code>Browser → Kestrel Server → ASP.NET Core App (middleware pipeline)</code></pre><p>Kestrel receives HTTP, HTTPS, and WebSocket requests and forwards them to the middleware pipeline.</p><p><strong>Analogy:</strong> Kestrel is like a receptionist—receives requests, routes to the right department (middleware/controllers), returns the response.</p><h3>Default Server</h3><p>When you run <code>dotnet run</code>, the app starts with Kestrel:</p><pre><code>Now listening on:
+https://localhost:5001
+http://localhost:5000</code></pre><h3>Internal Flow</h3><pre><code>Client Request
+      ↓
+Kestrel Server
+      ↓
+Middleware Pipeline
+      ↓
+Controllers / APIs
+      ↓
+Response → Client</code></pre><h3>Features of Kestrel</h3><table>
+<tr><th>Feature</th><th>Description</th></tr>
+<tr><td>Cross-platform</td><td>Windows, Linux, macOS</td></tr>
+<tr><td>High performance</td><td>Very fast, low overhead</td></tr>
+<tr><td>Async I/O</td><td>Non-blocking, scalable</td></tr>
+<tr><td>HTTPS</td><td>SSL/TLS supported</td></tr>
+<tr><td>HTTP/2 &amp; HTTP/3</td><td>Modern protocols</td></tr>
+<tr><td>WebSockets</td><td>Real-time communication</td></tr>
+</table><h3>Configuration</h3><p>Usually in <code>Program.cs</code>, <code>appsettings.json</code>, or <code>launchSettings.json</code>.</p><pre><code>var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(serverOptions =&gt;
+{
+    serverOptions.ListenAnyIP(5000);
+    serverOptions.ListenAnyIP(5001, listenOptions =&gt;
+    {
+        listenOptions.UseHttps();
+    });
+});
+
+var app = builder.Build();
+app.Run();</code></pre><h3>appsettings.json</h3><pre><code>{
+  "Kestrel": {
+    "Endpoints": {
+      "Http": { "Url": "http://localhost:5000" },
+      "Https": { "Url": "https://localhost:5001" }
+    }
+  }
+}</code></pre><h3>Kestrel vs IIS</h3><table>
+<tr><th>Feature</th><th>Kestrel</th><th>IIS</th></tr>
+<tr><td>Cross-platform</td><td>Yes</td><td>Windows only</td></tr>
+<tr><td>Lightweight</td><td>Yes</td><td>Heavier</td></tr>
+<tr><td>Performance</td><td>Very high</td><td>Moderate</td></tr>
+<tr><td>Default in ASP.NET Core</td><td>Yes</td><td>No</td></tr>
+<tr><td>Role in production</td><td>Hosts the app</td><td>Often reverse proxy</td></tr>
+</table><h3>Does Kestrel Replace IIS?</h3><p><strong>Not exactly.</strong> In production:</p><pre><code>Client → IIS / Nginx / Apache (reverse proxy) → Kestrel → ASP.NET Core App</code></pre><p>Reverse proxy provides load balancing, security, SSL termination, request filtering, and process management. Kestrel directly handles requests in local development.</p><h3>Other Facts</h3><ul>
+<li>Static files: <code>app.UseStaticFiles()</code> works with Kestrel.</li>
+<li>Handles many concurrent requests asynchronously.</li>
+<li>Alternative on Windows: <code>HTTP.sys</code> (Windows-only).</li>
+<li>Common in Docker, Kubernetes, and Linux deployments.</li>
+<li>.NET 8 Minimal APIs use Kestrel internally.</li>
+</ul><h3>Important Interview Questions</h3><table>
+<tr><th>Question</th><th>Answer</th></tr>
+<tr><td>What is Kestrel?</td><td>Default cross-platform web server for ASP.NET Core</td></tr>
+<tr><td>Web server or app server?</td><td>Web server</td></tr>
+<tr><td>Run without Kestrel?</td><td>Needs a host (Kestrel or HTTP.sys)</td></tr>
+<tr><td>Expose Kestrel directly to internet?</td><td>Possible but not recommended—use reverse proxy</td></tr>
+<tr><td>Why is Kestrel fast?</td><td>Async I/O, non-blocking, lightweight pipeline</td></tr>
+<tr><td>Protocols?</td><td>HTTP/1.1, HTTP/2, HTTP/3, WebSockets</td></tr>
+<tr><td><code>ConfigureKestrel()</code>?</td><td>Ports, HTTPS, limits, certificates</td></tr>
+<tr><td>Role in pipeline?</td><td>Receives request → middleware → response</td></tr>
+<tr><td>Change port?</td><td>launchSettings.json, appsettings.json, ConfigureKestrel()</td></tr>
+</table><h3>Production Architecture</h3><pre><code>Internet → Nginx / IIS → Kestrel → ASP.NET Core App → Database</code></pre><p><strong>IIS + Kestrel together:</strong> IIS acts as reverse proxy; Kestrel hosts the app—they work together, not either/or.</p><div class="interview-tip"><h3>Easy Way to Remember</h3><table>
+<tr><th>Component</th><th>Role</th></tr>
+<tr><td>Kestrel</td><td>Engine</td></tr>
+<tr><td>IIS / Nginx</td><td>Security gate (reverse proxy)</td></tr>
+<tr><td>Middleware</td><td>Traffic manager</td></tr>
+<tr><td>Controller</td><td>Business logic</td></tr>
+</table><h3>Interview Answer</h3><p>Kestrel is ASP.NET Core's default cross-platform web server that listens for HTTP/HTTPS/WebSocket traffic and hands requests to the middleware pipeline. In development it runs directly; in production it usually sits behind IIS, Nginx, or Apache as a reverse proxy for SSL, security, and load balancing while Kestrel hosts the application process.</p></div></div>
 <div class="answer-pane" id="q_108"><h2>Singleton Pattern</h2><p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection pools—though DI containers often manage lifetime instead.</p><p>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#) is essential; avoid Singleton abuse for every shared object.</p><pre><code>public sealed class Logger {
   private static readonly Lazy&lt;Logger&gt; _instance =
     new(() =&gt; new Logger());
