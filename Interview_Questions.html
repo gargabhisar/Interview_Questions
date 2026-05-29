@@ -74,6 +74,11 @@ body {
     background: #efefef;
 }
 
+.question-item.selected {
+    background: #d4e8ff;
+    border-left: 3px solid #0066cc;
+}
+
 .content {
     width: 68%;
     overflow-y: auto;
@@ -357,7 +362,12 @@ function showAnswer(id) {
     let answers = document.querySelectorAll('.answer-pane');
     answers.forEach(a => a.classList.remove('active'));
 
-    document.getElementById(id).classList.add('active');
+    const pane = document.getElementById(id);
+    if (!pane) {
+        console.error('Answer pane not found:', id);
+        return;
+    }
+    pane.classList.add('active');
 
     if (isMobileLayout()) {
         document.body.classList.add('show-answer');
@@ -368,7 +378,16 @@ function showAnswer(id) {
         if (content) {
             content.scrollTop = 0;
         }
+    } else {
+        var content = document.querySelector('.content');
+        if (content) {
+            content.scrollTop = 0;
+        }
     }
+
+    document.querySelectorAll('.question-item').forEach(function(item) {
+        item.classList.toggle('selected', item.dataset.answerId === id);
+    });
 }
 
 var TAP_MOVE_THRESHOLD = 12;
@@ -405,11 +424,22 @@ function initQuestionNavigation() {
             }
             item.removeAttribute('onclick');
         }
+        if (item.dataset.answerId) {
+            item.setAttribute('role', 'button');
+            item.setAttribute('tabindex', '0');
+        }
     });
 
     var sidebar = document.querySelector('.sidebar');
     if (!sidebar) {
         return;
+    }
+
+    function openQuestionFromItem(item) {
+        if (!item || !item.dataset.answerId || Date.now() < suppressTapsUntil) {
+            return;
+        }
+        showAnswer(item.dataset.answerId);
     }
 
     sidebar.addEventListener('touchstart', function(e) {
@@ -438,7 +468,7 @@ function initQuestionNavigation() {
         }
     }, {passive: true, capture: true});
 
-    sidebar.addEventListener('touchend', function() {
+    sidebar.addEventListener('touchend', function(e) {
         if (!touchTracking.active || !isMobileLayout() || Date.now() < suppressTapsUntil) {
             touchTracking.active = false;
             return;
@@ -449,9 +479,10 @@ function initQuestionNavigation() {
         touchTracking.targetItem = null;
 
         if (!moved && item && item.dataset.answerId) {
-            showAnswer(item.dataset.answerId);
+            e.preventDefault();
+            openQuestionFromItem(item);
         }
-    }, {passive: true, capture: true});
+    }, {passive: false, capture: true});
 
     sidebar.addEventListener('touchcancel', function() {
         touchTracking.active = false;
@@ -461,14 +492,24 @@ function initQuestionNavigation() {
 
     sidebar.addEventListener('click', function(e) {
         var item = e.target.closest('.question-item');
-        if (isMobileLayout()) {
-            if (item) {
-                e.preventDefault();
-            }
+        if (!item || !item.dataset.answerId) {
             return;
         }
+        if (isMobileLayout() && touchTracking.moved) {
+            return;
+        }
+        e.preventDefault();
+        openQuestionFromItem(item);
+    });
+
+    sidebar.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter' && e.key !== ' ') {
+            return;
+        }
+        var item = e.target.closest('.question-item');
         if (item && item.dataset.answerId) {
-            showAnswer(item.dataset.answerId);
+            e.preventDefault();
+            openQuestionFromItem(item);
         }
     });
 }
@@ -543,7 +584,22 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="sidebar"><h2>Interview Questions</h2>
 <div class="search-container">
 <input id="searchBox" onkeyup="filterQuestions()" placeholder="Search questions..." type="text"/>
-<span id="clearSearch" onclick="clearSearch()">âœ–</span>
+<span id="clearSearch" onclick="clearSearch()" role="button" aria-label="Clear search" title="Clear search">&times;</span>
+</div>
+<h3 class="topic-header">Complete Interview Pack (40 Questions)</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_106')">Q1. What is OOP? Four pillars</div>
+<div class="question-item" onclick="showAnswer('q_oops_file_logger')">Q2. Design File Logger class</div>
+<div class="question-item" onclick="showAnswer('q_91')">Q3. Abstract class vs Interface</div>
+<div class="question-item" onclick="showAnswer('q_107')">Q4-Q6. Middleware &amp; execution order</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q10_filters')">Q7-Q8. Filter types &amp; custom filter</div>
+<div class="question-item" onclick="showAnswer('q_108')">Q9-Q12. Singleton pattern</div>
+<div class="question-item" onclick="showAnswer('q_110')">Q16-Q19. Dependency Injection</div>
+<div class="question-item" onclick="showAnswer('q_111')">Q20-Q25. async/await &amp; Task.Run</div>
+<div class="question-item" onclick="showAnswer('q_112')">Q26-Q29. SQL performance</div>
+<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">Q30-Q38. Joins, CTE, Subquery</div>
+<div class="question-item" onclick="showAnswer('q_scenario_api_slow')">Q39. API slow - troubleshoot</div>
+<div class="question-item" onclick="showAnswer('q_scenario_middleware_filter')">Q40. Middleware vs Filters - when?</div>
 </div>
 <h3 class="topic-header">OOPS &amp; C#</h3>
 <div class="question-group">
@@ -560,6 +616,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_93')">11. Generics in C#</div>
 <div class="question-item" onclick="showAnswer('q_100')">12. Virtual vs Abstract</div>
 <div class="question-item" onclick="showAnswer('q_101')">13. Sealed Class</div>
+<div class="question-item" onclick="showAnswer('q_sealed_vs_singleton')">13a. Sealed vs Singleton</div>
 <div class="question-item" onclick="showAnswer('q_102')">14. Constructor Chaining</div>
 <div class="question-item" onclick="showAnswer('q_103')">15. Association vs Aggregation vs Composition</div>
 <div class="question-item" onclick="showAnswer('q_104')">16. Const vs Readonly</div>
@@ -616,6 +673,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_120')">25. Web API Performance Optimization</div>
 <div class="question-item" onclick="showAnswer('q_74')">26. Service-to-service calls (HttpClient)</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q16')">27. Resiliency and Polly</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_model_validation')">28. Model validation &amp; error codes</div>
 </div>
 <h3 class="topic-header">ASP.NET Core - Top 24 Interview Q&amp;A</h3>
 <div class="question-group">
@@ -695,6 +753,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_108')">3. Singleton Class Design</div>
 <div class="question-item" onclick="showAnswer('q_58')">4. Have you used Singleton?</div>
 <div class="question-item" onclick="showAnswer('q_114')">5. Singleton vs Static</div>
+<div class="question-item" onclick="showAnswer('q_sealed_vs_singleton')">5a. Sealed vs Singleton</div>
 <div class="question-item" onclick="showAnswer('q_factory_pattern')">6. Factory Pattern</div>
 <div class="question-item" onclick="showAnswer('q_strategy_pattern')">7. Strategy Pattern</div>
 <div class="question-item" onclick="showAnswer('q_88')">8. Repository Pattern</div>
@@ -2284,19 +2343,117 @@ public class Car : IVehicle
 }</code></pre>
 </section>
 </div>
-<div class="answer-pane" id="q_88"><h2>Repository Pattern</h2><p>Repository mediates between domain and data mapping layers, exposing collection-like access to aggregates while hiding persistence details (EF, Dapper, SQL). It improves testability and centralizes query logic.</p><p>One repository per aggregate root, not necessarily per tableâ€”avoid anemic pass-through wrappers.</p><pre><code>public interface IOrderRepository {
-  Task&lt;Order?&gt; GetByIdAsync(int id);
-  Task AddAsync(Order order);
-  Task SaveChangesAsync();
+<div class="answer-pane" id="q_88"><h2>Repository Pattern in .NET / C#</h2><p>The <strong>Repository Pattern</strong> separates <strong>data access logic</strong> from <strong>business logic</strong>. It acts as a middle layer between the application and the database.</p><h3>Why use it?</h3><p><strong>Without repository:</strong></p><pre><code>Controller → Direct DB Queries</code></pre><p>Problems: tight coupling, difficult testing, duplicate DB code, hard maintenance.</p><p><strong>With repository:</strong></p><pre><code>Controller → Service → Repository → Database</code></pre><p>Benefits: cleaner architecture, loose coupling, easy unit testing, reusable data access.</p><p><strong>Analogy:</strong> Repository is like a store manager — you ask the manager; you do not go directly to the warehouse.</p><h3>Basic flow</h3><pre><code>Controller
+    ↓
+Service Layer
+    ↓
+Repository
+    ↓
+Database</code></pre><h3>Step 1: Model</h3><pre><code>public class Employee
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Department { get; set; }
+}</code></pre><h3>Step 2: Repository interface</h3><pre><code>public interface IEmployeeRepository
+{
+    IEnumerable&lt;Employee&gt; GetAll();
+    Employee GetById(int id);
+    void Add(Employee employee);
+    void Update(Employee employee);
+    void Delete(int id);
+}</code></pre><p><strong>Why interface?</strong> Dependency Injection, loose coupling, easier testing, SOLID (DIP).</p><h3>Step 3: Implementation (EF Core)</h3><pre><code>public class EmployeeRepository : IEmployeeRepository
+{
+    private readonly AppDbContext _context;
+
+    public EmployeeRepository(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public IEnumerable&lt;Employee&gt; GetAll() =&gt; _context.Employees.ToList();
+
+    public Employee GetById(int id) =&gt; _context.Employees.Find(id);
+
+    public void Add(Employee employee)
+    {
+        _context.Employees.Add(employee);
+        _context.SaveChanges();
+    }
+
+    public void Update(Employee employee)
+    {
+        _context.Employees.Update(employee);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var employee = _context.Employees.Find(id);
+        if (employee != null)
+        {
+            _context.Employees.Remove(employee);
+            _context.SaveChanges();
+        }
+    }
+}</code></pre><h3>Step 4: Register in DI</h3><pre><code>builder.Services.AddScoped&lt;IEmployeeRepository, EmployeeRepository&gt;();</code></pre><p><strong>Why Scoped?</strong> One instance per HTTP request — best for <code>DbContext</code>.</p><h3>Step 5: Use in controller</h3><pre><code>[ApiController]
+[Route("api/[controller]")]
+public class EmployeeController : ControllerBase
+{
+    private readonly IEmployeeRepository _repository;
+
+    public EmployeeController(IEmployeeRepository repository)
+    {
+        _repository = repository;
+    }
+
+    [HttpGet]
+    public IActionResult GetEmployees()
+    {
+        return Ok(_repository.GetAll());
+    }
+}</code></pre><h3>Advantages</h3><table>
+<tr><th>Advantage</th><th>Explanation</th></tr>
+<tr><td>Separation of concerns</td><td>Business logic separate from DB logic</td></tr>
+<tr><td>Easy testing</td><td>Mock repository in unit tests</td></tr>
+<tr><td>Reusability</td><td>Common DB code in one place</td></tr>
+<tr><td>Maintainability</td><td>Cleaner structure</td></tr>
+<tr><td>Loose coupling</td><td>Swap DB implementation easily</td></tr>
+</table><pre><code>var mockRepo = new Mock&lt;IEmployeeRepository&gt;();</code></pre><h3>Generic repository</h3><pre><code>public interface IGenericRepository&lt;T&gt; where T : class
+{
+    IEnumerable&lt;T&gt; GetAll();
+    T GetById(int id);
+    void Add(T entity);
+    void Update(T entity);
+    void Delete(int id);
 }
-public class OrderRepository(DbContext db) : IOrderRepository {
-  public Task&lt;Order?&gt; GetByIdAsync(int id) =&gt;
-    db.Orders.FindAsync(id).AsTask();
-}</code></pre><h3>Key Points</h3><ul>
-<li>One repository per aggregate root, not necessarily per table.</li>
-<li>Don't wrap EF DbSet with zero-value pass-throughâ€”add value or skip.</li>
-<li>Unit of Work often pairs with Repository for transaction boundaries.</li>
-</ul><h3>Interview Answer</h3><p>Repository abstracts data access behind domain-focused interfaces so services don't depend on EF or SQL directly. I use it for test doubles and consistent query methods, avoiding anemic CRUD wrappers.</p></div>
+
+public class GenericRepository&lt;T&gt; : IGenericRepository&lt;T&gt; where T : class
+{
+    private readonly AppDbContext _context;
+    private readonly DbSet&lt;T&gt; _dbSet;
+
+    public GenericRepository(AppDbContext context)
+    {
+        _context = context;
+        _dbSet = context.Set&lt;T&gt;();
+    }
+
+    public IEnumerable&lt;T&gt; GetAll() =&gt; _dbSet.ToList();
+    public T GetById(int id) =&gt; _dbSet.Find(id);
+    public void Add(T entity) { _dbSet.Add(entity); _context.SaveChanges(); }
+    public void Update(T entity) { _dbSet.Update(entity); _context.SaveChanges(); }
+    public void Delete(int id)
+    {
+        var entity = _dbSet.Find(id);
+        if (entity != null) { _dbSet.Remove(entity); _context.SaveChanges(); }
+    }
+}</code></pre><h3>Repository + Unit of Work</h3><p>Unit of Work coordinates multiple repositories in <strong>one transaction</strong> (e.g. Order + Payment + Invoice succeed or fail together). EF Core <code>DbContext</code> often acts as Unit of Work.</p><h3>Clean Architecture</h3><p>Used in Clean Architecture, Onion Architecture, and Hexagonal Architecture.</p><h3>Common interview Q&amp;A</h3><table>
+<tr><th>Question</th><th>Answer</th></tr>
+<tr><td>Why Repository?</td><td>Separate business from data access; improve testability and maintainability</td></tr>
+<tr><td>Why interface?</td><td>Abstraction, DI, mocking, DIP</td></tr>
+<tr><td>Repository vs DbContext?</td><td>Repository = custom business-focused abstraction; DbContext = EF ORM (harder to mock)</td></tr>
+<tr><td>Drawbacks?</td><td>Extra layer; can be redundant with EF; overengineering for small apps</td></tr>
+</table><h3>Best practice in modern .NET</h3><pre><code>Controller → Service → Repository → EF Core</code></pre><p>Instead of <code>Controller → DbContext</code> directly in larger apps.</p><h3>Real usage</h3><p>Employee management, banking, e-commerce, healthcare, inventory systems.</p><div class="interview-tip"><h3>Interview one-liner</h3><p>Repository Pattern abstracts data access and provides clean separation between business logic and database operations.</p></div><h3>Interview Answer</h3><p>Repository sits between services and the database via an interface like <code>IEmployeeRepository</code>. I register it as Scoped with DI, implement with EF Core, and mock it in tests. I pair it with Unit of Work for transactions and use it for maintainability in layered ASP.NET Core apps.</p></div>
 <div class="answer-pane" id="q_89"><h2>CQRS (Command Query Responsibility Segregation)</h2><p>CQRS separates read models from write models. Commands change state through validated handlers; queries return optimized read DTOsâ€”possibly from different stores or denormalized views.</p><p>Adds complexityâ€”use when read/write shapes diverge significantly; often paired with Event Sourcing but not required.</p><pre><code>// Command side
 public record CreateOrderCommand(int CustomerId, decimal Total);
 public class CreateOrderHandler {
@@ -2357,6 +2514,30 @@ public class OrderSummaryQuery {
 
     public abstract void Drive();
 }</code></pre></div>
+<div class="answer-pane" id="q_oops_file_logger"><h2>Design a Class for a File Logger</h2><pre><code>public interface ILogger
+{
+    void Log(string message);
+}
+
+public class FileLogger : ILogger
+{
+    private readonly string _path;
+
+    public FileLogger(string path)
+    {
+        _path = path;
+    }
+
+    public void Log(string message)
+    {
+        File.AppendAllText(_path,
+            DateTime.Now + ": " + message + Environment.NewLine);
+    }
+}</code></pre><h3>OOP concepts used</h3><ul>
+<li><strong>Encapsulation</strong> &mdash; <code>_path</code> is private; logging logic inside the class.</li>
+<li><strong>Abstraction</strong> &mdash; <code>ILogger</code> contract hides file implementation.</li>
+<li><strong>Dependency Inversion</strong> &mdash; consumers depend on <code>ILogger</code>, not <code>FileLogger</code>.</li>
+</ul><h3>Interview Answer</h3><p>I define <code>ILogger</code> for abstraction and <code>FileLogger</code> for file append logic. Register <code>ILogger</code> in DI for testability (mock logger in unit tests).</p></div>
 <div class="answer-pane" id="q_92"><h2>Why Use Interfaces?</h2><p>Interfaces define what a component can do without tying callers to a specific implementation. In C# and ASP.NET Core, this is the foundation of dependency inversion: controllers depend on <code>IUserService</code>, not on a concrete database-backed service.</p><p>Interfaces improve testability because you can substitute mocks or fakes in unit tests. They also enable swapping implementationsâ€”SQL vs NoSQL, SMTP vs SendGridâ€”without changing consumer code.</p><pre><code>public interface IOrderRepository
 {
     Task&lt;Order?&gt; GetByIdAsync(int id);
@@ -2500,25 +2681,92 @@ public class Circle : Shape
 <li>abstract = mandatory override, no base body.</li>
 <li>Sealed override (<code>sealed override</code>) stops further overriding.</li>
 </ul><h3>Interview Answer</h3><p>A virtual method provides a default implementation that derived classes can optionally replace. An abstract method declares a required operation with no implementation, so concrete subclasses must override it. I use virtual for extension points and abstract when every derived type must define the behavior.</p></div>
-<div class="answer-pane" id="q_101"><h2>Sealed Class in C#</h2><p>A <code>sealed</code> class cannot be inherited. You seal a class when further derivation would break invariants, security assumptions, or performance optimizations. You can also use <code>sealed override</code> on a method to prevent further overriding down the hierarchy.</p><p>Common examples include framework types like <code>string</code> and utility classes that are not designed for extension. Sealing makes intent explicit and can enable compiler optimizations in some scenarios.</p><pre><code>public sealed class ConfigurationReader
+<div class="answer-pane" id="q_101"><h2>Sealed Class in C#</h2><p>A <strong>sealed class</strong> in C# is used when you want to <strong>prevent inheritance</strong>. Real-world use cases are usually related to <strong>security</strong>, <strong>consistency</strong>, or <strong>restricting behavior</strong>.</p><h3>Real-time example: Banking payment gateway</h3><p>You have a class that handles <strong>secure payment processing</strong>. You do <strong>not</strong> want developers to inherit and modify the logic because it could introduce fraud or bypass validations.</p><pre><code>sealed class PaymentGateway
 {
-    public string Read(string key) =&gt; Environment.GetEnvironmentVariable(key) ?? "";
+    public void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing payment of {amount}");
+    }
 }
 
-// public class ExtendedReader : ConfigurationReader { } // compile error
-
-public class Base
+// Compiler error if someone tries:
+class FakeGateway : PaymentGateway { }
+// cannot derive from sealed type 'PaymentGateway'</code></pre><h3>Why sealed here?</h3><p>Payment processing should remain:</p><ul>
+<li>Secure</li>
+<li>Unmodified</li>
+<li>Consistent across the application</li>
+</ul><p>If inheritance were allowed, someone could override methods and skip validations.</p><h3>Another example: Logger class</h3><p>In large enterprise apps (banking, finance), logging behavior is often fixed.</p><pre><code>sealed class ApplicationLogger
 {
-    public virtual void Execute() { }
+    public void Log(string message)
+    {
+        Console.WriteLine($"LOG: {message}");
+    }
+}</code></pre><p><strong>Reason:</strong> prevent changing log format, prevent disabling logs, ensure compliance/auditing.</p><h3>Real .NET examples</h3><p>Microsoft uses sealed classes in the framework:</p><ul>
+<li><code>System.String</code> (<code>string</code>)</li>
+<li><code>System.Math</code></li>
+</ul><pre><code>class MyString : string   // Not allowed
+{
+}</code></pre><p><strong>Reasons:</strong> immutable behavior, performance optimization, security.</p><h3>When to use sealed class</h3><ul>
+<li>Fixed behavior that must not change</li>
+<li>Security is important</li>
+<li>Inheritance makes no sense</li>
+<li>Performance optimization (compiler can devirtualize in some cases)</li>
+<li>Utility/helper classes should not be extended</li>
+</ul><h3>Bonus: Sealed method</h3><p>You can seal a <strong>method</strong> in a derived class to stop further overriding down the chain.</p><pre><code>class Vehicle
+{
+    public virtual void Start() { }
 }
-public class Derived : Base
+
+class Car : Vehicle
 {
-    public sealed override void Execute() { }
-}</code></pre><h3>Key Points</h3><ul>
-<li><code>sealed class</code> blocks inheritance entirely.</li>
-<li><code>sealed override</code> blocks further method overriding.</li>
-<li>Use when extension would be unsafe or unsupported.</li>
-</ul><h3>Interview Answer</h3><p>A sealed class cannot be subclassed, which I use when inheritance would violate design or security guarantees. Sealed methods stop further overrides in the inheritance chain. It is a deliberate restriction to keep behavior predictable.</p></div>
+    public sealed override void Start()
+    {
+        Console.WriteLine("Car Started");
+    }
+}
+
+class SportsCar : Car
+{
+    // Cannot override Start()
+}</code></pre><div class="interview-tip"><h3>Easy interview definition</h3><p>A sealed class in C# is a class that cannot be inherited. It is used to restrict class extension for security, consistency, and performance reasons.</p></div><h3>Interview Answer</h3><p>A sealed class cannot be subclassed. I use it when inheritance would break security or invariants&mdash;for example payment gateways or fixed loggers. <code>string</code> and <code>Math</code> are sealed in .NET. <code>sealed override</code> on a method prevents further overrides in derived classes.</p></div>
+<div class="answer-pane" id="q_sealed_vs_singleton"><h2>Sealed Class vs Singleton Pattern</h2><p>These are <strong>not alternatives</strong>. They solve <strong>different problems</strong> and are often used <strong>together</strong>.</p><table>
+<tr><th></th><th>Sealed</th><th>Singleton</th></tr>
+<tr><td>What it is</td><td>C# <strong>keyword</strong> on a class or method</td><td><strong>Design pattern</strong> (one instance)</td></tr>
+<tr><td>Purpose</td><td>Block <strong>inheritance</strong></td><td>Ensure <strong>one shared instance</strong></td></tr>
+<tr><td>Question answered</td><td>&ldquo;Can anyone subclass this?&rdquo;</td><td>&ldquo;How many objects exist?&rdquo;</td></tr>
+<tr><td>Compiler</td><td>Errors if you try to inherit</td><td>No special keyword; you control creation</td></tr>
+<tr><td>Typical use</td><td><code>string</code>, payment gateway, fixed logger</td><td>Config, cache, shared service</td></tr>
+</table><h3>Can they be combined?</h3><p><strong>Yes.</strong> Many singleton implementations are also sealed:</p><pre><code>public sealed class AppSettings
+{
+    private static readonly AppSettings _instance = new AppSettings();
+    private AppSettings() { }
+    public static AppSettings Instance =&gt; _instance;
+}</code></pre><p>Here <code>sealed</code> stops someone from inheriting and overriding behavior; <code>Singleton</code> stops multiple instances via private constructor + static <code>Instance</code>.</p><h3>Key differences (interview)</h3><ul>
+<li><strong>Sealed</strong> &ne; one instance. A sealed class can still create many objects with <code>new</code> (unless you also restrict construction).</li>
+<li><strong>Singleton</strong> &ne; no inheritance. A singleton class can be non-sealed (not recommended&mdash;subclasses could break the single-instance rule).</li>
+<li><strong>DI Singleton</strong> (<code>AddSingleton</code>) is ASP.NET Core lifetime&mdash;one instance per app; different from the Gang-of-Four pattern but same idea.</li>
+</ul><h3>Examples side by side</h3><pre><code>// Sealed only — multiple instances allowed
+sealed class PaymentGateway
+{
+    public void Pay() { }
+}
+var a = new PaymentGateway();
+var b = new PaymentGateway(); // OK — two instances
+
+// Singleton (often sealed) — one instance
+public sealed class Logger
+{
+    private static readonly Logger _instance = new Logger();
+    private Logger() { }
+    public static Logger Instance =&gt; _instance;
+}
+// new Logger();     // Error — private ctor
+// class X : Logger  // Error — sealed</code></pre><h3>When to use which</h3><table>
+<tr><th>Use sealed when</th><th>Use singleton when</th></tr>
+<tr><td>Inheritance must be forbidden</td><td>Exactly one shared object is required</td></tr>
+<tr><td>Security / fixed behavior</td><td>Global config, cache, connection manager</td></tr>
+<tr><td>Framework types like <code>string</code></td><td>Prefer <code>AddSingleton&lt;T&gt;()</code> in ASP.NET Core</td></tr>
+</table><div class="interview-tip"><h3>Interview one-liner</h3><p><strong>Sealed</strong> prevents inheritance; <strong>Singleton</strong> ensures one instance. They are independent&mdash;singleton classes are often sealed so nobody subclasses and breaks the pattern.</p></div><h3>Interview Answer</h3><p>Sealed is a compiler restriction on inheritance. Singleton is a design pattern for a single instance via private constructor and static access or DI. A class can be sealed without being singleton, and singleton without sealed (rare). In production APIs I use sealed for security-sensitive types and <code>AddSingleton</code> in DI instead of static Instance properties.</p></div>
 <div class="answer-pane" id="q_102"><h2>Constructor Chaining in C#</h2><p>Constructor chaining lets one constructor call another in the same class (<code>this</code>) or a base class constructor (<code>base</code>). This avoids duplicating initialization logic and ensures objects are always created in a valid state.</p><p>The called constructor runs first. Use <code>: this(...)</code> to forward to another constructor in the same type, and <code>: base(...)</code> to invoke a parent constructor before your own body executes.</p><pre><code>public class Employee
 {
     public int Id { get; }
@@ -2593,12 +2841,12 @@ async Task&lt;Order&gt; GetOrderAsync(int id)
 <li>Compiler generates IAsyncStateMachineâ€”no magic threads, just continuations.</li>
 <li>Methods marked async always return Task/Task&lt;T&gt; (or ValueTask) to callers.</li>
 </ul><h3>Interview Answer</h3><p>We still use <code>Task</code>â€”async/await does not replace it. Tasks model async operations; async/await lets us write and maintain that logic like synchronous code while preserving non-blocking behavior and proper exception flow.</p></div>
-<div class="answer-pane" id="q_106"><h2>4 Pillars of OOPS</h2><p>The four pillars of Object-Oriented Programming (OOP) are:</p><ol>
-<li><strong>Encapsulation</strong></li>
-<li><strong>Abstraction</strong></li>
-<li><strong>Inheritance</strong></li>
-<li><strong>Polymorphism</strong></li>
-</ol><h3>1. Encapsulation</h3><p>Encapsulation means <strong>binding data and methods together into a single unit (class)</strong> and restricting direct access to data.</p><p>It helps in:</p><ul>
+<div class="answer-pane" id="q_106"><h2>What is OOP and What are its Four Main Principles?</h2><p><strong>Object-Oriented Programming (OOP)</strong> is a programming paradigm based on <strong>objects</strong> and <strong>classes</strong>.</p><p>The four main principles are:</p><ol>
+<li><strong>Encapsulation</strong> &mdash; Binding data and methods together and restricting direct access.</li>
+<li><strong>Abstraction</strong> &mdash; Hiding implementation details and exposing only required functionality.</li>
+<li><strong>Inheritance</strong> &mdash; Reusing properties and behavior from a parent class.</li>
+<li><strong>Polymorphism</strong> &mdash; Same method behaving differently based on context.</li>
+</ol><h3>1. Encapsulation</h3><p>Binding data and methods into one unit (class) and hiding internal state with access modifiers.</p><p>It helps in:</p><ul>
 <li>Data hiding</li>
 <li>Security</li>
 <li>Controlled access</li>
@@ -2712,7 +2960,7 @@ a.Sound();</code></pre><p><strong>Output:</strong></p><pre><code>Dog Barks</code
 <tr><td>Abstract Class</td><td>Partial abstraction</td></tr>
 <tr><td>Interface</td><td>Contract</td></tr>
 <tr><td>Multiple Inheritance</td><td>Via interfaces only in C#</td></tr>
-</table></div></div>
+</table></div><div class="interview-tip"><h3>Interview One-Liner</h3><p>OOP uses objects and classes. Four pillars: Encapsulation (data hiding), Abstraction (hide complexity), Inheritance (reuse), Polymorphism (many forms via overloading/overriding).</p></div></div>
 <div class="answer-pane" id="q_oops_instance"><h2>Can You Create an Instance of an Abstract Class or an Interface?</h2><h3>Abstract Class</h3><p><strong>Cannot create direct instance.</strong></p><pre><code>Animal a = new Animal(); // Error</code></pre><p>But reference can be created:</p><pre><code>Animal a = new Dog();</code></pre><h3>Interface</h3><p><strong>Cannot instantiate interface.</strong></p><pre><code>IShape s = new IShape(); // Error</code></pre><p>But can hold reference:</p><pre><code>IShape s = new Circle();</code></pre><h3>Examples</h3><pre><code>abstract class Animal
 {
     public abstract void Sound();
@@ -2871,7 +3119,15 @@ class Child : Parent
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();</code></pre><h3>What is custom middleware?</h3><p>A class (or inline delegate) you write to add cross-cutting logic: correlation IDs, request timing, API keys, global exception JSON responses.</p><pre><code>public class RequestTimingMiddleware
+app.MapControllers();</code></pre><h3>Middleware execution order</h3><p>Middleware runs in the <strong>order registered</strong> in <code>Program.cs</code>.</p><pre><code>app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthentication();  // must be before Authorization
+app.UseAuthorization();
+app.MapControllers();</code></pre><ul>
+<li><strong>Request</strong> flows top to bottom.</li>
+<li><strong>Response</strong> flows bottom to top (after <code>await next()</code>).</li>
+<li>Authentication must come <strong>before</strong> Authorization.</li>
+</ul><h3>What is custom middleware?</h3><p>A class (or inline delegate) you write to add cross-cutting logic: correlation IDs, request timing, API keys, global exception JSON responses.</p><pre><code>public class RequestTimingMiddleware
 {
     private readonly RequestDelegate _next;
     public RequestTimingMiddleware(RequestDelegate next) =&gt; _next = next;
@@ -3126,16 +3382,35 @@ app.UseSwaggerUI();</code></pre><h3>Interview Answer</h3><p>Add Swashbuckle, reg
 
 _logger.LogInformation("User created");
 _logger.LogError(ex, "Error occurred");</code></pre><p>Providers: Console, Debug, EventSource, plus Serilog/NLog for structured logs.</p><h3>Interview Answer</h3><p>I inject <code>ILogger&lt;T&gt;</code> and use structured log levels. In production I often add Serilog with sinks to file or cloud monitoring.</p></div>
-<div class="answer-pane" id="q_aspnet_q10_filters"><h2>Filters in ASP.NET Core MVC</h2><p>Filters run in the MVC/action pipeline (not the full HTTP pipeline like middleware).</p><table>
-<tr><th>Type</th><th>When</th></tr>
-<tr><td>Authorization</td><td>Before action â€” auth checks</td></tr>
-<tr><td>Action</td><td>Before/after action execution</td></tr>
-<tr><td>Exception</td><td>On unhandled exceptions</td></tr>
-<tr><td>Result</td><td>Before/after result execution</td></tr>
-</table><pre><code>public class LogFilter : ActionFilterAttribute
+<div class="answer-pane" id="q_aspnet_q10_filters"><h2>Types of Filters &amp; Custom Action Filter</h2><p>Filters run in the <strong>MVC/Web API pipeline</strong> (controller/action level), not the full HTTP pipeline like middleware.</p><h3>Five filter types (execution order)</h3><ol>
+<li><strong>Authorization Filter</strong> &mdash; Is user allowed? (<code>[Authorize]</code>)</li>
+<li><strong>Resource Filter</strong> &mdash; Before model binding (caching, short-circuit)</li>
+<li><strong>Action Filter</strong> &mdash; Before/after action runs</li>
+<li><strong>Exception Filter</strong> &mdash; Handles exceptions in MVC pipeline</li>
+<li><strong>Result Filter</strong> &mdash; Before/after result execution</li>
+</ol><table>
+<tr><th>Middleware</th><th>Filters</th></tr>
+<tr><td>Application / HTTP level</td><td>MVC / controller / action level</td></tr>
+<tr><td>Every request in pipeline</td><td>Selected controllers/actions</td></tr>
+<tr><td>Auth, CORS, logging globally</td><td>Validation, action logging, result transform</td></tr>
+</table><h3>Custom Action Filter</h3><pre><code>public class LogActionFilter : ActionFilterAttribute
 {
-    public override void OnActionExecuting(ActionExecutingContext context) { }
-}</code></pre><p>Used for logging, validation, authorization, and transforming results.</p><h3>Interview Answer</h3><p>Filters attach to controllers or actions for MVC-specific cross-cutting logic. I use middleware for global HTTP concerns and filters when I need action context like route data or model state.</p></div>
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        Console.WriteLine("Action Executing");
+    }
+
+    public override void OnActionExecuted(ActionExecutedContext context)
+    {
+        Console.WriteLine("Action Executed");
+    }
+}
+
+[LogActionFilter]
+public IActionResult Index()
+{
+    return View();
+}</code></pre><h3>Interview Answer</h3><p>ASP.NET Core has five filter types from authorization through result. I use custom action filters for controller-specific logging or validation. Middleware is for global HTTP concerns; filters when I need route data, model state, or action context.</p></div>
 <div class="answer-pane" id="q_aspnet_q11"><h2>Exception Handling in ASP.NET Core APIs</h2><p>Exception handling in ASP.NET Core APIs is usually done using <strong>global exception handling middleware</strong>.</p><p><strong>Purpose:</strong></p><ul>
 <li>Prevent application crash</li>
 <li>Return proper HTTP status codes</li>
@@ -3530,17 +3805,125 @@ v3 → Added roles &amp; permissions</code></pre><h3>URI vs Header Versioning</h
 <tr><td>Deprecate gradually</td><td>Removing versions without notice</td></tr>
 <tr><td>Maintain backward compatibility</td><td></td></tr>
 </table><div class="interview-tip"><h3>Interview One-Liner</h3><p>API versioning allows multiple API versions to coexist without breaking existing clients. In ASP.NET Core it is implemented via URL path (<code>/api/v1/</code>), query string, header, or media type—URL versioning is the most common in enterprise APIs.</p></div></div>
-<div class="answer-pane" id="q_108"><h2>Singleton Pattern</h2><p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection pools—though DI containers often manage lifetime instead.</p><p>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#) is essential; avoid Singleton abuse for every shared object.</p><pre><code>public sealed class Logger {
-  private static readonly Lazy&lt;Logger&gt; _instance =
-    new(() =&gt; new Logger());
-  public static Logger Instance =&gt; _instance.Value;
-  private Logger() { }
-  public void Log(string msg) =&gt; Console.WriteLine(msg);
-}</code></pre><h3>Key Points</h3><ul>
-<li>Thread-safe lazy initialization (Lazy&lt;T&gt; in C#).</li>
-<li>Hard to unit test due to global stateâ€”prefer DI singleton scope.</li>
-<li>Avoid Singleton abuse; not every shared object needs the pattern.</li>
-</ul><h3>Interview Answer</h3><p>Singleton guarantees one instance with global accessâ€”useful for shared config or logging. In modern apps I often register a single instance in DI rather than hand-rolling static Instance properties.</p></div>
+<div class="answer-pane" id="q_aspnet_model_validation"><h2>Model Validation and Error Codes in ASP.NET Core</h2><p>Validate request DTOs <strong>before</strong> business logic. When validation fails, return <strong>HTTP 400 Bad Request</strong> with a structured error body (field names + messages), not 500.</p><h3>1. Validate the model (Data Annotations)</h3><pre><code>public class CreateUserRequest
+{
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Invalid email format")]
+    public string Email { get; set; } = "";
+
+    [Required]
+    [StringLength(100, MinimumLength = 2)]
+    public string Name { get; set; } = "";
+
+    [Range(18, 120, ErrorMessage = "Age must be 18-120")]
+    public int Age { get; set; }
+}</code></pre><p>Common attributes: <code>[Required]</code>, <code>[StringLength]</code>, <code>[Range]</code>, <code>[RegularExpression]</code>, <code>[Compare]</code>, <code>[Phone]</code>, <code>[Url]</code>.</p><h3>2. Automatic validation with [ApiController]</h3><p>Controllers with <code>[ApiController]</code> run validation automatically. If <code>ModelState</code> is invalid, the framework returns <strong>400</strong> without entering your action (unless you disable it).</p><pre><code>[ApiController]
+[Route("api/users")]
+public class UsersController : ControllerBase
+{
+    [HttpPost]
+    public IActionResult Create([FromBody] CreateUserRequest request)
+    {
+        // Reached only when ModelState is valid
+        return CreatedAtAction(nameof(Get), new { id = 1 }, request);
+    }
+}</code></pre><h3>3. Manual check (when needed)</h3><pre><code>[HttpPost]
+public IActionResult Create([FromBody] CreateUserRequest request)
+{
+    if (!ModelState.IsValid)
+        return ValidationProblem(ModelState); // 400 + ProblemDetails
+
+    return Ok();
+}</code></pre><h3>4. Default error response (400)</h3><p>Typical JSON (ValidationProblemDetails / RFC 7807 style):</p><pre><code>{
+  "type": "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+  "title": "One or more validation errors occurred.",
+  "status": 400,
+  "errors": {
+    "Email": ["Email is required"],
+    "Age": ["Age must be 18-120"]
+  }
+}</code></pre><h3>5. Customize validation error response</h3><pre><code>builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =&gt;
+    {
+        options.InvalidModelStateResponseFactory = context =&gt;
+        {
+            var errors = context.ModelState
+                .Where(e =&gt; e.Value?.Errors.Count &gt; 0)
+                .ToDictionary(
+                    e =&gt; e.Key,
+                    e =&gt; e.Value!.Errors.Select(x =&gt; x.ErrorMessage).ToArray());
+
+            return new BadRequestObjectResult(new
+            {
+                statusCode = 400,
+                message = "Validation failed",
+                errors
+            });
+        };
+    });</code></pre><h3>6. Custom validation rules</h3><pre><code>// IValidatableObject - cross-property rules
+public class RegisterRequest : IValidatableObject
+{
+    public string Password { get; set; } = "";
+    public string ConfirmPassword { get; set; } = "";
+
+    public IEnumerable&lt;ValidationResult&gt; Validate(ValidationContext context)
+    {
+        if (Password != ConfirmPassword)
+            yield return new ValidationResult(
+                "Passwords do not match", new[] { nameof(ConfirmPassword) });
+    }
+}
+
+// Custom attribute
+public class FutureDateAttribute : ValidationAttribute
+{
+    protected override ValidationResult? IsValid(object? value, ValidationContext ctx)
+    {
+        if (value is DateTime dt &amp;&amp; dt &lt;= DateTime.UtcNow)
+            return new ValidationResult("Date must be in the future");
+        return ValidationResult.Success;
+    }
+}</code></pre><h3>7. FluentValidation (popular alternative)</h3><pre><code>public class CreateUserRequestValidator : AbstractValidator&lt;CreateUserRequest&gt;
+{
+    public CreateUserRequestValidator()
+    {
+        RuleFor(x =&gt; x.Email).NotEmpty().EmailAddress();
+        RuleFor(x =&gt; x.Name).Length(2, 100);
+    }
+}
+
+// Program.cs
+builder.Services.AddValidatorsFromAssemblyContaining&lt;CreateUserRequestValidator&gt;();</code></pre><h3>HTTP status codes for validation scenarios</h3><table>
+<tr><th>Scenario</th><th>Code</th><th>Return</th></tr>
+<tr><td>Invalid JSON / missing required fields / bad format</td><td><strong>400</strong></td><td><code>BadRequest()</code>, <code>ValidationProblem()</code></td></tr>
+<tr><td>Business rule (duplicate email)</td><td><strong>409</strong></td><td><code>Conflict()</code></td></tr>
+<tr><td>Resource not found</td><td><strong>404</strong></td><td><code>NotFound()</code></td></tr>
+<tr><td>Unhandled server bug</td><td><strong>500</strong></td><td>Global exception middleware (hide details in prod)</td></tr>
+</table><h3>Minimal APIs</h3><pre><code>app.MapPost("/users", (CreateUserRequest request) =&gt; Results.Ok())
+   .AddEndpointFilter(async (ctx, next) =&gt;
+   {
+       // Or validate manually / use FluentValidation filter
+       return await next(ctx);
+   });</code></pre><h3>Best practices</h3><ul>
+<li>Validate input at the API boundary; keep domain rules in services.</li>
+<li>Always return <strong>400</strong> for client/input errors, not 500.</li>
+<li>Return field-level errors so UI can highlight inputs.</li>
+<li>Use consistent error shape across all endpoints.</li>
+</ul><div class="interview-tip"><h3>Interview One-Liner</h3><p>I validate DTOs with Data Annotations or FluentValidation. With <code>[ApiController]</code>, invalid <code>ModelState</code> automatically returns 400. I customize <code>InvalidModelStateResponseFactory</code> for consistent JSON errors with field names and messages.</p></div><h3>Interview Answer</h3><p>Model validation uses attributes or FluentValidation on request models. ASP.NET Core populates <code>ModelState</code>; invalid input returns HTTP 400 with validation errors via <code>ValidationProblem</code> or a custom factory. I separate 400 (bad input), 409 (conflict), and 404 (not found), and never return 500 for validation failures.</p></div>
+<div class="answer-pane" id="q_108"><h2>Singleton Design Pattern</h2><p>Singleton ensures <strong>only one instance</strong> of a class exists for the application lifecycle.</p><p><strong>Used for:</strong> logging, configuration, caching (prefer DI <code>AddSingleton</code> in ASP.NET Core).</p><h3>Implementation</h3><pre><code>public sealed class Singleton
+{
+    private static readonly Singleton _instance = new Singleton();
+
+    private Singleton() { }
+
+    public static Singleton Instance =&gt; _instance;
+}</code></pre><h3>Why is constructor private?</h3><p>To prevent external code from creating instances with <code>new Singleton()</code>. Only the class controls instance creation.</p><h3>Is Singleton thread-safe?</h3><p><strong>Eager static initialization</strong> in C# is thread-safe by default (CLR guarantees one init).</p><p>For <strong>lazy</strong> creation use:</p><pre><code>private static readonly Lazy&lt;Singleton&gt; _instance =
+    new Lazy&lt;Singleton&gt;(() =&gt; new Singleton());
+
+public static Singleton Instance =&gt; _instance.Value;</code></pre><h3>Key Points</h3><ul>
+<li>Prefer <code>services.AddSingleton&lt;T&gt;()</code> over hand-rolled static Instance in modern apps.</li>
+<li>Global state hurts unit tests &mdash; inject abstractions instead.</li>
+</ul><h3>Interview Answer</h3><p>Singleton provides one shared instance via private constructor and static Instance. Static init is thread-safe; use <code>Lazy&lt;T&gt;</code> for lazy thread-safe creation. In ASP.NET Core I register singleton services in DI instead of static patterns.</p></div>
 <div class="answer-pane" id="q_109">
 <div class="section" id="solid">
 <span class="tag">SOLID</span>
@@ -3605,7 +3988,21 @@ public class OrderService : IOrderService
 <li>Centralized composition in Program.cs.</li>
 <li>Correct lifetimes managed by the container.</li>
 </ul><h3>Interview Answer</h3><p>DI in ASP.NET Core means register services in Program.cs with AddTransient/Scoped/Singleton, depend on interfaces, and use constructor injection in controllers and services. The built-in container resolves dependencies per request or app lifetime, which keeps code testable and decoupled.</p></div>
-<div class="answer-pane" id="q_111"><h2>async/await vs Task.Run</h2><p><strong>async/await</strong> is for non-blocking asynchronous I/O (HTTP, database, file streams). It frees the calling thread while work completes and resumes on a synchronization context when the await finishes. <strong>Task.Run</strong> offloads CPU-bound work to a thread-pool thread; it does not make I/O asyncâ€”it wraps synchronous CPU work so the UI or request thread stays responsive.</p><pre><code>// I/O-bound: async/await (no extra thread while waiting)
+<div class="answer-pane" id="q_111"><h2>async/await, Task.Run, and Thread</h2><p><strong>async/await</strong> enables asynchronous programming without blocking threads during I/O. Improves scalability and responsiveness.</p><h3>Why use async/await?</h3><ul>
+<li>Frees threads during I/O (DB, HTTP, files)</li>
+<li>Better server scalability under load</li>
+<li>Cleaner code than manual callbacks</li>
+</ul><h3>Task vs Thread</h3><table>
+<tr><th>Task</th><th>Thread</th></tr>
+<tr><td>Lightweight</td><td>Heavyweight (OS thread)</td></tr>
+<tr><td>ThreadPool-managed</td><td>Manual thread control</td></tr>
+<tr><td>Best for async I/O work</td><td>Low-level control</td></tr>
+</table><h3>What is Task.Run?</h3><p>Runs <strong>CPU-bound</strong> work on a background thread pool thread:</p><pre><code>await Task.Run(() =&gt; HeavyCalculation());</code></pre><h3>When NOT to use Task.Run in ASP.NET Core</h3><p>Do not wrap already-async I/O in <code>Task.Run</code>:</p><pre><code>// Bad - wastes thread pool
+await Task.Run(() =&gt; db.Users.ToListAsync());</code></pre><p>EF Core already supports async; use <code>ToListAsync()</code> directly.</p><h3>Async vs Parallelism</h3><table>
+<tr><th>Async</th><th>Parallel</th></tr>
+<tr><td>Non-blocking, mostly I/O</td><td>Multiple CPU tasks at once</td></tr>
+<tr><td>await releases thread</td><td>Parallel.For / multiple cores</td></tr>
+</table><pre><code>// I/O-bound: async/await (no extra thread while waiting)
 public async Task&lt;string&gt; GetUserAsync(int id)
 {
     var response = await _httpClient.GetAsync($"/users/{id}");
@@ -3625,7 +4022,21 @@ await Task.Run(() =&gt; _httpClient.GetStringAsync(url)); // wastes a thread</co
 <li>async void only for event handlers; prefer async Task everywhere else.</li>
 <li>ConfigureAwait(false) in library code avoids deadlocks on UI/legacy ASP.NET.</li>
 </ul><h3>Interview Answer</h3><p>Use <strong>async/await</strong> when waiting on I/O so threads are not blocked. Use <strong>Task.Run</strong> when you must run CPU-intensive synchronous code off the caller thread. They solve different problems; combining them means async/await waits for CPU work queued via Task.Run, not replacing it.</p></div>
-<div class="answer-pane" id="q_112"><h2>SQL Performance Bottlenecks</h2><p>Common bottlenecks include missing indexes, stale statistics, implicit conversions, table scans, blocking locks, tempdb pressure, parameter sniffing, and inefficient queries returning too much data.</p><p>Measure first with execution plans, wait stats, and IO statsâ€”not guess.</p><table>
+<div class="answer-pane" id="q_112"><h2>SQL Performance Bottlenecks</h2><h3>Common causes</h3><ol>
+<li>Missing indexes</li>
+<li><code>SELECT *</code></li>
+<li>Unnecessary joins</li>
+<li>Functions in WHERE clause (non-sargable)</li>
+<li>Large table scans</li>
+<li>Subqueries inside loops (N+1 in app code)</li>
+<li>Poor execution plan / stale statistics</li>
+</ol><h3>How to improve performance</h3><ul>
+<li>Add indexes on filter/join columns</li>
+<li>Select only needed columns; use pagination</li>
+<li>Prefer <code>EXISTS</code> over <code>IN</code> for large datasets when appropriate</li>
+<li>Optimize joins and update statistics</li>
+<li>Analyze execution plans (<code>SET STATISTICS IO, TIME ON</code>)</li>
+</ul><p>Also watch: blocking locks, tempdb pressure, parameter sniffing.</p><table>
 <tr><th>Symptom</th><th>Likely Cause</th></tr>
 <tr><td>Slow SELECT</td><td>Missing index, scan, bad estimate</td></tr>
 <tr><td>Blocking</td><td>Long transactions, lock escalation</td></tr>
@@ -3803,23 +4214,217 @@ TRUNCATE TABLE StagingOrders;  -- fast empty staging table</code></pre><h3>Key P
 <li>Use DELETE for selective removal and when triggers/auditing matter.</li>
 <li>TRUNCATE fails if FK references exist unless handled.</li>
 </ul><h3>Interview Answer</h3><p>DELETE removes specific rows and fires triggers; TRUNCATE wipes the whole table by deallocating pagesâ€”much faster but no WHERE. I TRUNCATE staging tables and DELETE when I need filters or referential safety.</p></div>
-<div class="answer-pane" id="q_solid_detailed"><h2>SOLID Principles with Examples</h2><p>SOLID guides maintainable OOP design: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.</p><p>Each principle reduces coupling and improves testabilityâ€”apply pragmatically, not as dogma on every class.</p><pre><code>// S: OrderService only handles ordersâ€”not email
-class OrderService { void PlaceOrder(Order o) { ... } }
+<div class="answer-pane" id="q_sql_interview_pack"><h2>SQL Joins, CTE, Subquery, DELETE vs TRUNCATE</h2><h3>Types of joins</h3><table>
+<tr><th>Join</th><th>Description</th></tr>
+<tr><td>INNER JOIN</td><td>Matching rows only</td></tr>
+<tr><td>LEFT JOIN</td><td>All left rows + matched right</td></tr>
+<tr><td>RIGHT JOIN</td><td>All right rows + matched left</td></tr>
+<tr><td>FULL JOIN</td><td>All rows from both sides</td></tr>
+</table><h3>INNER JOIN example</h3><pre><code>SELECT e.Name, d.DepartmentName
+FROM Employees e
+INNER JOIN Departments d ON e.DepartmentId = d.Id;</code></pre><h3>LEFT JOIN example</h3><pre><code>SELECT e.Name, d.DepartmentName
+FROM Employees e
+LEFT JOIN Departments d ON e.DepartmentId = d.Id;</code></pre><p>Returns all employees even when department is missing.</p><h3>CTE (Common Table Expression)</h3><p>Temporary named result set for one statement; improves readability.</p><pre><code>WITH EmployeeCTE AS
+(
+    SELECT Name, Salary FROM Employees WHERE Salary &gt; 50000
+)
+SELECT * FROM EmployeeCTE;</code></pre><h3>CTE vs Temp Table</h3><table>
+<tr><th>CTE</th><th>Temp Table</th></tr>
+<tr><td>Query-scoped</td><td>Stored in tempdb</td></tr>
+<tr><td>Better readability</td><td>Better for large reusable data</td></tr>
+</table><h3>Subquery</h3><p>Query nested inside another query.</p><pre><code>SELECT Name FROM Employees
+WHERE Salary &gt; (SELECT AVG(Salary) FROM Employees);</code></pre><h3>DELETE vs TRUNCATE vs DROP</h3><table>
+<tr><th>DELETE</th><th>TRUNCATE</th><th>DROP</th></tr>
+<tr><td>Removes rows (can use WHERE)</td><td>Removes all rows</td><td>Removes table structure</td></tr>
+<tr><td>Can rollback (in transaction)</td><td>Minimal logging</td><td>Deletes object</td></tr>
+<tr><td>Fires triggers</td><td>Resets identity (usually)</td><td>Cannot rollback easily</td></tr>
+</table><h3>Interview Answer</h3><p>I use INNER/LEFT joins to combine tables, CTEs for readable multi-step SQL, subqueries for filters/scalars, and choose DELETE vs TRUNCATE vs DROP based on whether I need selective rows, full table clear, or schema removal.</p></div>
+<div class="answer-pane" id="q_scenario_api_slow"><h2>Your API is Slow — How Will You Troubleshoot?</h2><ol>
+<li>Check SQL execution plans and long-running queries</li>
+<li>Verify indexes on filter/join columns</li>
+<li>Measure API response time (per endpoint)</li>
+<li>Review logging and APM (Application Insights, Serilog, etc.)</li>
+<li>Confirm async I/O is used (no blocking <code>.Result</code> / <code>Task.Run</code> misuse)</li>
+<li>Check memory, CPU, and connection pool exhaustion</li>
+<li>Add caching where data is read-heavy and stale data is acceptable</li>
+<li>Review middleware pipeline and external HTTP dependency latency</li>
+</ol><h3>Interview Answer</h3><p>I profile end-to-end: database first (plans, indexes, slow queries), then API layer (async, N+1 calls), then infrastructure (CPU, memory, APM). Fix the biggest bottleneck with evidence, not guesses.</p></div>
+<div class="answer-pane" id="q_scenario_middleware_filter"><h2>When to Use Middleware vs Filters?</h2><table>
+<tr><th>Use Middleware for</th><th>Use Filters for</th></tr>
+<tr><td>Global exception handling</td><td>Action-specific validation</td></tr>
+<tr><td>Authentication / CORS</td><td>Controller logging</td></tr>
+<tr><td>Request/response logging for all requests</td><td>Model validation attributes</td></tr>
+<tr><td>Correlation ID on every HTTP call</td><td>Authorization on specific actions</td></tr>
+</table><h3>Interview Answer</h3><p>Middleware for application-wide HTTP pipeline concerns; filters for MVC/controller/action-level logic where I need route data, model state, or selective behavior on endpoints.</p></div>
+<div class="answer-pane" id="q_solid_detailed"><h2>SOLID Principles Explained with Examples</h2><p>The <strong>SOLID principles</strong> are five important design principles in Object-Oriented Programming (OOP) that help developers write clean, maintainable, scalable, and easily testable systems. They are heavily used in C#, Java, .NET backend development, system design, and interviews.</p><h3>SOLID overview</h3><table>
+<tr><th>Letter</th><th>Principle</th><th>Meaning</th></tr>
+<tr><td>S</td><td>Single Responsibility Principle</td><td>One class should have only one reason to change</td></tr>
+<tr><td>O</td><td>Open/Closed Principle</td><td>Open for extension, closed for modification</td></tr>
+<tr><td>L</td><td>Liskov Substitution Principle</td><td>Child class should replace parent without breaking behavior</td></tr>
+<tr><td>I</td><td>Interface Segregation Principle</td><td>Do not force classes to implement unused methods</td></tr>
+<tr><td>D</td><td>Dependency Inversion Principle</td><td>Depend on abstractions, not concrete classes</td></tr>
+</table><h3>1. Single Responsibility Principle (SRP)</h3><p>A class should have <strong>only one responsibility</strong> or one reason to change.</p><h4>Bad example</h4><pre><code>public class Employee
+{
+    public void CalculateSalary()
+    {
+        Console.WriteLine("Calculating salary");
+    }
 
-// O: extend via IDiscountStrategy, don't modify Checkout
-interface IDiscountStrategy { decimal Apply(decimal total); }
+    public void SaveToDatabase()
+    {
+        Console.WriteLine("Saving employee to DB");
+    }
 
-// L: subtypes must honor base contracts
+    public void GenerateReport()
+    {
+        Console.WriteLine("Generating report");
+    }
+}</code></pre><p><strong>Problem:</strong> salary calculation, database operations, and report generation in one class.</p><h4>Good example</h4><pre><code>public class Employee
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
 
-// I: split IPrinter into IPrint and IScan
+public class SalaryCalculator
+{
+    public void CalculateSalary(Employee emp)
+    {
+        Console.WriteLine("Calculating salary");
+    }
+}
 
-// D: depend on IEmailSender, not SmtpClient
-class Notifier(IEmailSender sender) { ... }</code></pre><h3>Key Points</h3><ul>
-<li>S: one reason to change per class.</li>
-<li>O: open for extension, closed for modification.</li>
-<li>L: subtypes must be substitutable without breaking callers.</li>
-<li>I: small focused interfaces; D: depend on abstractions.</li>
-</ul><h3>Interview Answer</h3><p>SOLID reduces coupling and improves testability. I apply S for focused classes, O via strategy/plugins, L by avoiding brittle inheritance, I with lean interfaces, and D through DI containers and abstractions.</p></div>
+public class EmployeeRepository
+{
+    public void Save(Employee emp)
+    {
+        Console.WriteLine("Saving to DB");
+    }
+}
+
+public class ReportGenerator
+{
+    public void Generate(Employee emp)
+    {
+        Console.WriteLine("Generating report");
+    }
+}</code></pre><p><strong>Benefit:</strong> easier maintenance, better testing, low coupling.</p><h3>2. Open/Closed Principle (OCP)</h3><p>Software entities should be <strong>open for extension</strong> and <strong>closed for modification</strong> &mdash; add new functionality without changing existing code.</p><h4>Bad example</h4><pre><code>public class PaymentProcessor
+{
+    public void ProcessPayment(string paymentType)
+    {
+        if (paymentType == "CreditCard")
+            Console.WriteLine("Processing credit card");
+        else if (paymentType == "PayPal")
+            Console.WriteLine("Processing PayPal");
+    }
+}</code></pre><p><strong>Problem:</strong> every new payment type requires modifying this class.</p><h4>Good example</h4><pre><code>public interface IPayment
+{
+    void Pay();
+}
+
+public class CreditCardPayment : IPayment
+{
+    public void Pay() =&gt; Console.WriteLine("Credit Card Payment");
+}
+
+public class PaypalPayment : IPayment
+{
+    public void Pay() =&gt; Console.WriteLine("Paypal Payment");
+}
+
+public class PaymentProcessor
+{
+    public void ProcessPayment(IPayment payment) =&gt; payment.Pay();
+}</code></pre><p><strong>Benefit:</strong> new payment types without changing old code.</p><h3>3. Liskov Substitution Principle (LSP)</h3><p>A derived class should be replaceable for its base class without affecting correctness.</p><h4>Bad example (Bird)</h4><pre><code>public class Bird
+{
+    public virtual void Fly() =&gt; Console.WriteLine("Flying");
+}
+
+public class Ostrich : Bird
+{
+    public override void Fly()
+    {
+        throw new Exception("Ostrich can't fly");
+    }
+}</code></pre><p><strong>Problem:</strong> <code>Ostrich</code> breaks expected behavior of <code>Bird</code>.</p><h4>Good example</h4><pre><code>public interface IBird { void Eat(); }
+public interface IFlyingBird { void Fly(); }
+
+public class Sparrow : IBird, IFlyingBird
+{
+    public void Eat() =&gt; Console.WriteLine("Eating");
+    public void Fly() =&gt; Console.WriteLine("Flying");
+}
+
+public class Ostrich : IBird
+{
+    public void Eat() =&gt; Console.WriteLine("Eating");
+}</code></pre><p><strong>Benefit:</strong> no unexpected behavior when substituting types.</p><h3>4. Interface Segregation Principle (ISP)</h3><p>Clients should not be forced to implement methods they do not use.</p><h4>Bad example</h4><pre><code>public interface IWorker
+{
+    void Work();
+    void Eat();
+}
+
+public class Robot : IWorker
+{
+    public void Work() =&gt; Console.WriteLine("Working");
+    public void Eat() =&gt; throw new Exception("Robot doesn't eat");
+}</code></pre><p><strong>Problem:</strong> <code>Robot</code> is forced to implement <code>Eat()</code>.</p><h4>Good example</h4><pre><code>public interface IWorkable { void Work(); }
+public interface IEatable { void Eat(); }
+
+public class Human : IWorkable, IEatable
+{
+    public void Work() =&gt; Console.WriteLine("Working");
+    public void Eat() =&gt; Console.WriteLine("Eating");
+}
+
+public class Robot : IWorkable
+{
+    public void Work() =&gt; Console.WriteLine("Robot working");
+}</code></pre><p><strong>Benefit:</strong> smaller, focused interfaces.</p><h3>5. Dependency Inversion Principle (DIP)</h3><p>High-level modules should not depend on low-level modules. Both should depend on <strong>abstractions</strong>.</p><h4>Bad example</h4><pre><code>public class SqlServerDatabase
+{
+    public void Save() =&gt; Console.WriteLine("Saved to SQL Server");
+}
+
+public class EmployeeService
+{
+    private SqlServerDatabase db = new SqlServerDatabase();
+
+    public void SaveEmployee() =&gt; db.Save();
+}</code></pre><p><strong>Problem:</strong> <code>EmployeeService</code> is tightly coupled to SQL Server.</p><h4>Good example</h4><pre><code>public interface IDatabase
+{
+    void Save();
+}
+
+public class SqlServerDatabase : IDatabase
+{
+    public void Save() =&gt; Console.WriteLine("Saved to SQL Server");
+}
+
+public class MongoDatabase : IDatabase
+{
+    public void Save() =&gt; Console.WriteLine("Saved to MongoDB");
+}
+
+public class EmployeeService
+{
+    private readonly IDatabase _database;
+
+    public EmployeeService(IDatabase database) =&gt; _database = database;
+
+    public void SaveEmployee() =&gt; _database.Save();
+}</code></pre><p><strong>Benefit:</strong> loose coupling, easier testing, supports Dependency Injection.</p><h3>Real-world use in .NET</h3><ul>
+<li>ASP.NET Core controllers depend on interfaces</li>
+<li>Services separated by responsibility</li>
+<li>Repositories handle database logic</li>
+<li>DI container injects dependencies</li>
+<li>Clean Architecture and microservices</li>
+</ul><h3>Interview quick summary</h3><table>
+<tr><th>Principle</th><th>One-liner</th></tr>
+<tr><td>SRP</td><td>One class &rarr; one responsibility</td></tr>
+<tr><td>OCP</td><td>Extend behavior without modifying existing code</td></tr>
+<tr><td>LSP</td><td>Child class should behave like parent</td></tr>
+<tr><td>ISP</td><td>Small specific interfaces are better</td></tr>
+<tr><td>DIP</td><td>Depend on abstraction, not implementation</td></tr>
+</table><div class="interview-tip"><h3>Easy mnemonic</h3><p><strong>SOLID</strong> = Single Objects Love Interface Driven design. In interviews: S splits classes, O uses strategies/interfaces, L avoids broken inheritance, I splits fat interfaces, D inject abstractions via DI.</p></div><h3>Interview Answer</h3><p>SOLID is five OOP design principles for maintainable .NET code: SRP (one reason to change), OCP (extend via interfaces), LSP (safe subtype substitution), ISP (lean interfaces), DIP (depend on abstractions with DI). I apply them in ASP.NET Core with interface-based services and repositories.</p></div>
 <div class="answer-pane" id="q_factory_pattern"><h2>Factory Pattern</h2><p>Factory encapsulates object creation behind an interface or method so callers depend on abstractions, not concrete types. Simple Factory uses one method; Factory Method subclasses decide type; Abstract Factory creates families of related objects.</p><p>DI containers often replace hand-rolled factories via registration in ASP.NET Core.</p><pre><code>public interface INotification { void Send(string msg); }
 public class NotificationFactory {
   public static INotification Create(string channel) =&gt; channel switch {
@@ -3843,18 +4448,119 @@ public class CheckoutService(IPricingStrategy pricing) {
 <li>Works well with DIâ€”register strategy per tenant or feature flag.</li>
 <li>Combine with Factory when strategy selection is dynamic.</li>
 </ul><h3>Interview Answer</h3><p>Strategy swaps algorithms at runtime through a shared interfaceâ€”pricing rules, payment methods, compression. I inject the strategy so new behaviors are new classes, not growing switch statements.</p></div>
-<div class="answer-pane" id="q_design_pattern_types"><h2>Types of Design Patterns</h2><p>GoF patterns divide into Creational (object creation), Structural (composition), and Behavioral (communication/responsibility). Modern catalogs add concurrency and architectural patterns.</p><p>Patterns are vocabularyâ€”not goals. Don't force them everywhere; use when they match a real problem.</p><table>
-<tr><th>Category</th><th>Examples</th><th>Purpose</th></tr>
-<tr><td>Creational</td><td>Singleton, Factory, Builder</td><td>Encapsulate creation</td></tr>
-<tr><td>Structural</td><td>Adapter, Decorator, Facade</td><td>Compose objects</td></tr>
-<tr><td>Behavioral</td><td>Strategy, Observer, Command</td><td>Algorithms &amp; interaction</td></tr>
-</table><pre><code>// Creational: Factory creates without exposing new()
-// Structural: Adapter wraps legacy API
-// Behavioral: Strategy swaps algorithms at runtime</code></pre><h3>Key Points</h3><ul>
-<li>Patterns are vocabularyâ€”not goals. Don't force them everywhere.</li>
-<li>Prefer composition over inheritance in most structural cases.</li>
-<li>Know when a pattern adds clarity vs unnecessary indirection.</li>
-</ul><h3>Interview Answer</h3><p>Design patterns fall into creational, structural, and behavioral groups. I name them when they match a real problemâ€”Factory for creation complexity, Strategy for swappable behaviorâ€”not as boilerplate.</p></div>
+<div class="answer-pane" id="q_design_pattern_types"><h2>Design Patterns in OOP / C#</h2><p>Design patterns are reusable solutions to commonly occurring software design problems. They are not ready-made code, but <strong>best-practice templates</strong> for recurring design issues.</p><p>Common .NET interview questions:</p><ul>
+<li>What is Singleton pattern?</li>
+<li>Explain Factory pattern</li>
+<li>Difference between Factory and Abstract Factory</li>
+<li>What is Repository pattern?</li>
+<li>Which design patterns have you used in projects?</li>
+</ul><h3>Types of design patterns</h3><table>
+<tr><th>Category</th><th>Purpose</th></tr>
+<tr><td>Creational</td><td>Object creation</td></tr>
+<tr><td>Structural</td><td>Class/object relationships</td></tr>
+<tr><td>Behavioral</td><td>Communication between objects</td></tr>
+</table><h3>1. Creational patterns</h3><h4>Singleton</h4><p>Ensures only <strong>one instance</strong> of a class. Used for logger, configuration, cache, connection manager.</p><pre><code>public sealed class Singleton
+{
+    private static Singleton _instance = null;
+    private static readonly object _lock = new object();
+
+    private Singleton() { }
+
+    public static Singleton GetInstance()
+    {
+        lock (_lock)
+        {
+            if (_instance == null)
+                _instance = new Singleton();
+            return _instance;
+        }
+    }
+
+    public void ShowMessage() =&gt; Console.WriteLine("Singleton instance");
+}
+
+// Usage
+var obj1 = Singleton.GetInstance();
+var obj2 = Singleton.GetInstance();
+Console.WriteLine(obj1 == obj2); // True</code></pre><p><strong>Interview:</strong> private constructor, static instance, <code>lock</code> for thread safety. In ASP.NET prefer <code>AddSingleton&lt;T&gt;()</code>.</p><h4>Factory</h4><p>Creates objects without exposing creation logic to the client.</p><pre><code>// Without factory — tight coupling
+// Car car = new Car();
+
+public interface IVehicle { void Drive(); }
+
+public class Car : IVehicle
+{
+    public void Drive() =&gt; Console.WriteLine("Driving Car");
+}
+
+public class Bike : IVehicle
+{
+    public void Drive() =&gt; Console.WriteLine("Driving Bike");
+}
+
+public class VehicleFactory
+{
+    public static IVehicle GetVehicle(string type) =&gt;
+        type == "Car" ? new Car() : new Bike();
+}
+
+IVehicle vehicle = VehicleFactory.GetVehicle("Car");
+vehicle.Drive();</code></pre><h4>Abstract Factory</h4><p>Creates <strong>families</strong> of related objects (e.g. WindowsButton + WindowsTextbox vs MacButton + MacTextbox).</p><pre><code>GUIFactory
+   ├── WindowsFactory
+   └── MacFactory</code></pre><p>Used in cross-platform apps and theme-based UI systems.</p><h4>Builder</h4><p>Constructs complex objects step-by-step (e.g. Pizza with dough, cheese, topping) when constructors have too many parameters.</p><h4>Prototype</h4><pre><code>public class Employee
+{
+    public string Name = "";
+    public Employee Clone() =&gt; (Employee)MemberwiseClone();
+}</code></pre><h3>2. Structural patterns</h3><h4>Adapter</h4><p>Makes incompatible interfaces work together (like a mobile charger adapter).</p><pre><code>public interface ITarget { void Request(); }
+
+public class Adaptee
+{
+    public void SpecificRequest() =&gt; Console.WriteLine("Specific Request");
+}
+
+public class Adapter : ITarget
+{
+    private readonly Adaptee _adaptee = new Adaptee();
+    public void Request() =&gt; _adaptee.SpecificRequest();
+}</code></pre><h4>Decorator</h4><p>Adds behavior dynamically without modifying the class (Coffee + Milk + Sugar). Alternative to large inheritance hierarchies.</p><h4>Facade</h4><p>Simplified interface to a complex subsystem — e.g. <code>StartComputer()</code> internally starts CPU, memory, OS.</p><h4>Proxy</h4><p>Controlled access — authentication proxy, lazy loading, API gateway.</p><h3>3. Behavioral patterns</h3><h4>Observer</h4><p>One-to-many: when subject changes, dependents are notified (e.g. YouTube subscribers).</p><pre><code>public interface IObserver { void Update(string message); }
+
+public class Subscriber : IObserver
+{
+    public void Update(string message) =&gt; Console.WriteLine(message);
+}</code></pre><h4>Strategy</h4><p>Encapsulates interchangeable algorithms (Credit Card, UPI, PayPal).</p><pre><code>public interface IPaymentStrategy { void Pay(); }
+
+public class UPIPayment : IPaymentStrategy
+{
+    public void Pay() =&gt; Console.WriteLine("UPI Payment");
+}</code></pre><h4>Command</h4><p>Encapsulates a request as an object (remote control buttons).</p><h4>State</h4><p>Behavior changes with internal state (ATM: no card, card inserted, PIN entered).</p><h4>Mediator</h4><p>Centralizes communication (chat room server).</p><h3>Repository pattern (.NET)</h3><p>Separates data access from business logic.</p><pre><code>public interface IEmployeeRepository
+{
+    Employee GetById(int id);
+    void Save(Employee emp);
+}</code></pre><p>Benefits: cleaner architecture, easier unit testing, works with DI.</p><h3>Unit of Work</h3><p>Groups DB operations into a single transaction. EF Core <code>DbContext</code> is a common example.</p><h3>MVC pattern</h3><p>Separates Model, View, Controller — used in ASP.NET MVC / ASP.NET Core MVC.</p><h3>Factory vs Abstract Factory</h3><table>
+<tr><th>Factory</th><th>Abstract Factory</th></tr>
+<tr><td>Creates one object</td><td>Creates families of objects</td></tr>
+<tr><td>Simpler</td><td>More complex</td></tr>
+<tr><td>One factory method</td><td>Multiple factory methods</td></tr>
+</table><h3>Adapter vs Decorator</h3><table>
+<tr><th>Adapter</th><th>Decorator</th></tr>
+<tr><td>Changes interface</td><td>Adds behavior</td></tr>
+<tr><td>Compatibility</td><td>Enhancement</td></tr>
+</table><h3>Important interview patterns</h3><table>
+<tr><th>Pattern</th><th>Frequency</th></tr>
+<tr><td>Singleton</td><td>Very high</td></tr>
+<tr><td>Factory</td><td>Very high</td></tr>
+<tr><td>Repository</td><td>Very high</td></tr>
+<tr><td>Strategy</td><td>High</td></tr>
+<tr><td>Observer</td><td>High</td></tr>
+<tr><td>Builder / Adapter / Decorator</td><td>Medium</td></tr>
+</table><h3>Real usage in ASP.NET Core</h3><table>
+<tr><th>Feature</th><th>Pattern</th></tr>
+<tr><td>Dependency Injection</td><td>Factory + DIP</td></tr>
+<tr><td>Middleware pipeline</td><td>Chain of Responsibility</td></tr>
+<tr><td>ILogger</td><td>Singleton (via DI)</td></tr>
+<tr><td>EF Core DbContext</td><td>Unit of Work</td></tr>
+<tr><td>Authentication</td><td>Strategy</td></tr>
+<tr><td>MVC</td><td>MVC pattern</td></tr>
+</table><div class="interview-tip"><h3>Interview tip</h3><p>If asked &ldquo;Which design patterns have you used?&rdquo; say: &ldquo;I have mainly used Singleton, Repository, Factory, Dependency Injection, Strategy, and MVC in ASP.NET Core applications.&rdquo;</p></div><h3>Interview Answer</h3><p>Design patterns are reusable templates in three groups: Creational (Singleton, Factory, Builder), Structural (Adapter, Decorator, Facade), Behavioral (Strategy, Observer, Command). In .NET I commonly use Repository, Factory, Strategy, Singleton via DI, and MVC — matching the problem, not forcing patterns everywhere.</p></div>
 </div>
 </body>
 </html>
