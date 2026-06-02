@@ -17,36 +17,40 @@ body {
 }
 
 .sidebar {
-    width: 32%;
+    width: 22%;
+    min-width: 220px;
+    max-width: 280px;
     background: #ffffff;
     color: #000000;
     overflow-y: auto;
-    padding: 20px;
+    padding: 10px 12px;
     border-right: 1px solid #000000;
     touch-action: pan-y;
     -webkit-overflow-scrolling: touch;
 }
 
 .sidebar h1 {
-    font-size: 18px;
-    margin-bottom: 4px;
+    font-size: 14px;
+    margin-bottom: 2px;
+    line-height: 1.25;
     color: #000000;
 }
 
 .sidebar .subtitle {
-    font-size: 12px;
+    font-size: 11px;
     color: #000000;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     opacity: 0.7;
+    line-height: 1.35;
 }
 
 .search-box {
     width: 100%;
-    padding: 10px 12px;
+    padding: 6px 8px;
     border: 1px solid #000000;
     border-radius: 0;
-    font-size: 14px;
-    margin-bottom: 8px;
+    font-size: 12px;
+    margin-bottom: 6px;
     background: #ffffff;
     color: #000000;
 }
@@ -55,9 +59,9 @@ body {
     background: none;
     border: none;
     color: #000000;
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     padding: 0;
     text-decoration: underline;
 }
@@ -67,24 +71,26 @@ body {
 .topic-header {
     background: #000000;
     color: #ffffff;
-    padding: 8px 12px;
+    padding: 5px 8px;
     border-radius: 0;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
-    margin: 16px 0 8px 0;
-    letter-spacing: 0.3px;
+    margin: 8px 0 4px 0;
+    letter-spacing: 0.2px;
+    line-height: 1.3;
 }
 
 .topic-header:first-of-type { margin-top: 0; }
 
 .question-item {
     background: #ffffff;
-    padding: 12px;
-    margin-bottom: 8px;
+    padding: 5px 8px;
+    margin-bottom: 3px;
     border-radius: 0;
     transition: 0.2s;
     color: #000000;
-    font-size: 14px;
+    font-size: 12px;
+    line-height: 1.35;
     border: 1px solid #000000;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -104,7 +110,8 @@ body {
 .question-item.hidden { display: none; }
 
 .content {
-    width: 68%;
+    flex: 1;
+    min-width: 0;
     overflow-y: auto;
     padding: 30px 40px;
     background: #ffffff;
@@ -280,8 +287,11 @@ body {
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-    .sidebar { width: 38%; }
-    .content { width: 62%; }
+    .sidebar {
+        width: 26%;
+        min-width: 200px;
+        max-width: 260px;
+    }
 }
 </style>
 </head>
@@ -290,7 +300,7 @@ body {
 <div class="sidebar">
     <div class="sidebar-scroll" id="sidebarScroll">
         <h1>Angular HackerRank Solutions</h1>
-        <p class="subtitle">Full Stack · Basic · Intermediate · Advanced · Forms · Pipes — click any problem to view solution</p>
+        <p class="subtitle">Full Stack · Basic · Intermediate · Advanced · Forms · Pipes · Decorators · Services · Lifecycle · RxJS — click any problem to view solution</p>
         <input type="text" class="search-box" id="searchBox" placeholder="Search problems..." oninput="filterQuestions()">
         <button class="clear-search" onclick="clearSearch()">Clear search</button>
 
@@ -317,6 +327,22 @@ body {
 
         <div class="topic-header">Angular Pipes</div>
         <div class="question-item" data-answer-id="q_11">Angular Pipes — Built-in &amp; Custom Examples</div>
+
+        <div class="topic-header">Angular Decorators</div>
+        <div class="question-item" data-answer-id="q_12">Angular Decorators — Reference &amp; Examples</div>
+
+        <div class="topic-header">Angular Services</div>
+        <div class="question-item" data-answer-id="q_13">Angular Services — DI, HTTP &amp; Shared State</div>
+
+        <div class="topic-header">Angular Lifecycle Hooks</div>
+        <div class="question-item" data-answer-id="q_14">Lifecycle Hooks — Order &amp; Examples</div>
+
+        <div class="topic-header">Observable / HttpClient / RxJS</div>
+        <div class="question-item" data-answer-id="q_38">Q38. What are Asynchronous operations?</div>
+        <div class="question-item" data-answer-id="q_39">Q39. Promise vs Observable <strong>(V. IMP.)</strong></div>
+        <div class="question-item" data-answer-id="q_40">Q40. What is RxJS?</div>
+        <div class="question-item" data-answer-id="q_41">Q41. What is Observable? How to implement <strong>(V. IMP.)</strong></div>
+        <div class="question-item" data-answer-id="q_42">Q42. Role of HttpClient in Angular</div>
     </div>
 </div>
 
@@ -1880,6 +1906,1000 @@ export class FilterByStatusPipe implements PipeTransform {
     </ul>
 
     <div class="tip-box"><strong>HackerRank Tip:</strong> If a custom pipe is "not found", add it to <code>declarations</code> in <code>@NgModule</code> (or use standalone <code>@Pipe({ standalone: true })</code> and import it in the component). Pipe names are <strong>case-sensitive</strong> and must match the template exactly. For dates, pass the format string from the problem spec — tests often expect a specific pattern like <code>'short'</code> or <code>'yyyy-MM-dd'</code>.</div>
+</div>
+
+<!-- ========== DECORATORS ========== -->
+
+<div class="answer-pane" id="q_12">
+    <span class="badge badge-intermediate">DECORATORS</span>
+    <h2>Angular Decorators — Reference &amp; Examples</h2>
+    <p>Decorators are functions prefixed with <code>@</code> that attach metadata to classes, properties, or methods. Angular reads this metadata to wire components, templates, DI, and communication. HackerRank tests expect you to use the correct decorator on the correct target.</p>
+
+    <h3>1. Quick Reference</h3>
+    <table>
+        <thead>
+            <tr><th>Decorator</th><th>Applied to</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>@Component</code></td><td>Class</td><td>Defines a component (selector, template, styles)</td></tr>
+            <tr><td><code>@Injectable</code></td><td>Class</td><td>Marks a service for dependency injection</td></tr>
+            <tr><td><code>@NgModule</code></td><td>Class</td><td>Groups declarations, imports, providers, bootstrap</td></tr>
+            <tr><td><code>@Pipe</code></td><td>Class</td><td>Registers a template pipe by name</td></tr>
+            <tr><td><code>@Directive</code></td><td>Class</td><td>Behavior/appearance on DOM elements</td></tr>
+            <tr><td><code>@Input</code></td><td>Property</td><td>Receives data from parent template</td></tr>
+            <tr><td><code>@Output</code></td><td>Property</td><td>Emits events to parent (<code>EventEmitter</code>)</td></tr>
+            <tr><td><code>@ViewChild</code></td><td>Property</td><td>Reference to child component/DOM in template</td></tr>
+            <tr><td><code>@HostListener</code></td><td>Method</td><td>Listen to host element DOM events</td></tr>
+            <tr><td><code>@HostBinding</code></td><td>Property</td><td>Bind host element property/class/style</td></tr>
+        </tbody>
+    </table>
+
+    <h3>2. @Component</h3>
+    <p>Every HackerRank Angular app has at least one component. The decorator links TypeScript class ↔ HTML template.</p>
+    <span class="file-label">app.component.ts</span>
+    <pre><code>import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',           // &lt;app-root&gt;&lt;/app-root&gt; in index.html
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'Temperature Converter';
+}</code></pre>
+
+    <h3>3. @Injectable</h3>
+    <p>Required on services injected into components. <code>providedIn: 'root'</code> = one app-wide singleton (most common in tests).</p>
+    <span class="file-label">weather.service.ts</span>
+    <pre><code>import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class WeatherService {
+  constructor(private http: HttpClient) {}
+
+  getWeather(city: string): Observable&lt;any&gt; {
+    return this.http.get(`/api/weather?city=${city}`);
+  }
+}</code></pre>
+
+    <span class="file-label">Inject into component constructor</span>
+    <pre><code>constructor(private weatherService: WeatherService) {}</code></pre>
+
+    <h3>4. @NgModule</h3>
+    <p>Classic module-based apps (common in HackerRank starter code). Declares components/pipes and imports <code>FormsModule</code>, <code>HttpClientModule</code>, etc.</p>
+    <span class="file-label">app.module.ts</span>
+    <pre><code>import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { WeatherService } from './weather.service';
+
+@NgModule({
+  declarations: [AppComponent],          // components, pipes, directives
+  imports: [BrowserModule, FormsModule, HttpClientModule],
+  providers: [WeatherService],           // optional if providedIn: 'root'
+  bootstrap: [AppComponent]
+})
+export class AppModule {}</code></pre>
+
+    <h3>5. @Pipe</h3>
+    <p>Custom transform used in templates: <code>{{ value | pipeName }}</code>.</p>
+    <span class="file-label">truncate.pipe.ts</span>
+    <pre><code>import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'truncate' })
+export class TruncatePipe implements PipeTransform {
+  transform(value: string, limit = 20): string {
+    return value?.length &gt; limit ? value.substring(0, limit) + '...' : value;
+  }
+}</code></pre>
+
+    <h3>6. @Input and @Output</h3>
+    <p>Parent → child with <code>@Input</code>; child → parent with <code>@Output</code> + <code>EventEmitter</code>.</p>
+    <span class="file-label">rating-star.component.ts (child)</span>
+    <pre><code>import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-rating-star',
+  template: `
+    &lt;button *ngFor="let star of [1,2,3,4,5"
+            (click)="select(star)"
+            [class.active]="star &lt;= rating"&gt;
+      ★
+    &lt;/button&gt;
+  `
+})
+export class RatingStarComponent {
+  @Input() rating = 0;                         // from parent
+  @Output() ratingChange = new EventEmitter&lt;number&gt;();  // to parent
+
+  select(star: number): void {
+    this.ratingChange.emit(star);
+  }
+}</code></pre>
+
+    <span class="file-label">Parent template — two-way style</span>
+    <pre><code>&lt;app-rating-star
+  [rating]="userRating"
+  (ratingChange)="userRating = $event"&gt;
+&lt;/app-rating-star&gt;</code></pre>
+
+    <h3>7. @ViewChild</h3>
+    <p>Access a child component or template reference from the parent class (focus input, call child method, read DOM).</p>
+    <span class="file-label">search.component.ts</span>
+    <pre><code>import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+
+@Component({
+  selector: 'app-search',
+  template: `&lt;input #searchBox type="text" /&gt;`
+})
+export class SearchComponent implements AfterViewInit {
+  @ViewChild('searchBox') searchInput!: ElementRef&lt;HTMLInputElement&gt;;
+
+  ngAfterViewInit(): void {
+    this.searchInput.nativeElement.focus();
+  }
+}</code></pre>
+
+    <h3>8. @HostListener and @HostBinding</h3>
+    <p>Used inside <strong>directives</strong> or components to react to host events / bind host attributes.</p>
+    <span class="file-label">highlight.directive.ts</span>
+    <pre><code>import { Directive, HostListener, HostBinding } from '@angular/core';
+
+@Directive({ selector: '[appHighlight]' })
+export class HighlightDirective {
+  @HostBinding('style.backgroundColor') bg = 'transparent';
+
+  @HostListener('mouseenter')
+  onEnter(): void {
+    this.bg = 'yellow';
+  }
+
+  @HostListener('mouseleave')
+  onLeave(): void {
+    this.bg = 'transparent';
+  }
+}</code></pre>
+
+    <span class="file-label">Usage</span>
+    <pre><code>&lt;p appHighlight&gt;Hover me&lt;/p&gt;</code></pre>
+
+    <h3>9. Standalone Components (Angular 14+)</h3>
+    <p>Some newer tests skip <code>@NgModule</code> and put metadata on the component itself.</p>
+    <span class="file-label">standalone example</span>
+    <pre><code>@Component({
+  selector: 'app-item-list',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './item-list.component.html'
+})
+export class ItemListComponent {}</code></pre>
+
+    <h3>10. Common HackerRank Mistakes</h3>
+    <table>
+        <thead>
+            <tr><th>Error / symptom</th><th>Fix</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>NullInjectorError: No provider for X</code></td>
+                <td>Add <code>@Injectable({ providedIn: 'root' })</code> or register in <code>providers</code></td>
+            </tr>
+            <tr>
+                <td>Component not recognized in template</td>
+                <td>Add to <code>declarations</code> in <code>@NgModule</code> (or <code>imports</code> if standalone)</td>
+            </tr>
+            <tr>
+                <td><code>@Input()</code> value always undefined</td>
+                <td>Parent must bind <code>[propName]="value"</code> — name must match (case-sensitive)</td>
+            </tr>
+            <tr>
+                <td><code>@Output()</code> not firing in parent</td>
+                <td>Parent listens with <code>(eventName)="handler($event)"</code> — name must match emitter</td>
+            </tr>
+            <tr>
+                <td><code>@ViewChild</code> is undefined in <code>ngOnInit</code></td>
+                <td>Use <code>ngAfterViewInit</code> — view children are not ready earlier</td>
+            </tr>
+            <tr>
+                <td>Pipe not found</td>
+                <td>Declare pipe in <code>@NgModule</code> or set <code>@Pipe({ standalone: true })</code> and import it</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Match the starter project's style — if it uses <code>AppModule</code>, declare new components/pipes there. If tests inject a service, always add <code>@Injectable</code>. For parent-child UI (rating, list item, modal), <code>@Input</code> / <code>@Output</code> is the expected pattern before introducing a shared service.</div>
+</div>
+
+<!-- ========== SERVICES ========== -->
+
+<div class="answer-pane" id="q_13">
+    <span class="badge badge-intermediate">SERVICES</span>
+    <h2>Angular Services — DI, HTTP &amp; Shared State</h2>
+    <p>A <strong>service</strong> is a singleton (or scoped) class that holds reusable logic: HTTP calls, business rules, and shared state. Components stay thin — they inject services via the constructor. Most HackerRank Angular tests use at least one service.</p>
+
+    <h3>1. Why Use a Service?</h3>
+    <table>
+        <thead>
+            <tr><th>Use case</th><th>Example in HackerRank</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>HTTP / API calls</td><td>Weather Finder, Survey List, Employee Grid</td></tr>
+            <tr><td>Shared data between components</td><td>Item List Manager, Kanban board state</td></tr>
+            <tr><td>Reusable business logic</td><td>Validation, formatting, calculations</td></tr>
+            <tr><td>Mock data for tests</td><td>Provided URL or in-memory array in service</td></tr>
+        </tbody>
+    </table>
+
+    <h3>2. Create &amp; Register a Service</h3>
+    <span class="file-label">item.service.ts</span>
+    <pre><code>import { Injectable } from '@angular/core';
+
+export interface Item {
+  id: number;
+  name: string;
+  quantity: number;
+}
+
+@Injectable({ providedIn: 'root' })
+export class ItemService {
+  private items: Item[] = [
+    { id: 1, name: 'Notebook', quantity: 3 },
+    { id: 2, name: 'Pen', quantity: 10 }
+  ];
+
+  getItems(): Item[] {
+    return [...this.items];
+  }
+
+  addItem(item: Item): void {
+    this.items.push(item);
+  }
+
+  deleteItem(id: number): void {
+    this.items = this.items.filter(i =&gt; i.id !== id);
+  }
+}</code></pre>
+
+    <span class="file-label">Inject in component</span>
+    <pre><code>import { Component } from '@angular/core';
+import { ItemService, Item } from './item.service';
+
+@Component({
+  selector: 'app-item-list',
+  templateUrl: './item-list.component.html'
+})
+export class ItemListComponent {
+  items: Item[] = [];
+
+  constructor(private itemService: ItemService) {}
+
+  ngOnInit(): void {
+    this.items = this.itemService.getItems();
+  }
+
+  onAdd(item: Item): void {
+    this.itemService.addItem(item);
+    this.items = this.itemService.getItems();
+  }
+}</code></pre>
+
+    <h3>3. providedIn Scopes</h3>
+    <table>
+        <thead>
+            <tr><th>Registration</th><th>Scope</th><th>When to use</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>@Injectable({ providedIn: 'root' })</code></td>
+                <td>One instance for entire app</td>
+                <td>Default — HTTP services, shared state (most HackerRank apps)</td>
+            </tr>
+            <tr>
+                <td><code>providers: [MyService]</code> in <code>@NgModule</code></td>
+                <td>One instance per lazy-loaded module</td>
+                <td>Module-specific services</td>
+            </tr>
+            <tr>
+                <td><code>providers: [MyService]</code> in <code>@Component</code></td>
+                <td>New instance per component instance</td>
+                <td>Isolated state per component tree</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>4. HTTP Service (HttpClient)</h3>
+    <p>Pattern used in Weather Finder, Survey List, and Full Stack grid problems.</p>
+    <span class="file-label">product.service.ts</span>
+    <pre><code>import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+@Injectable({ providedIn: 'root' })
+export class ProductService {
+  private baseUrl = 'https://api.example.com/products';
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable&lt;Product[]&gt; {
+    return this.http.get&lt;Product[]&gt;(this.baseUrl);
+  }
+
+  getById(id: number): Observable&lt;Product&gt; {
+    return this.http.get&lt;Product&gt;(`${this.baseUrl}/${id}`);
+  }
+
+  search(name: string): Observable&lt;Product[]&gt; {
+    const params = new HttpParams().set('name', name);
+    return this.http.get&lt;Product[]&gt;(this.baseUrl, { params });
+  }
+
+  create(product: Product): Observable&lt;Product&gt; {
+    return this.http.post&lt;Product&gt;(this.baseUrl, product);
+  }
+}</code></pre>
+
+    <span class="file-label">app.module.ts — required import</span>
+    <pre><code>import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+  imports: [BrowserModule, HttpClientModule]
+})
+export class AppModule {}</code></pre>
+
+    <span class="file-label">Component usage</span>
+    <pre><code>export class ProductListComponent implements OnInit {
+  products: Product[] = [];
+  loading = false;
+  error = '';
+
+  constructor(private productService: ProductService) {}
+
+  ngOnInit(): void {
+    this.loading = true;
+    this.productService.getAll().subscribe({
+      next: data =&gt; { this.products = data; this.loading = false; },
+      error: err =&gt; { this.error = 'Failed to load'; this.loading = false; }
+    });
+  }
+}</code></pre>
+
+    <h3>5. Shared State with RxJS (cross-component)</h3>
+    <p>When unrelated components must share data (e.g. header cart + product list), expose an <code>Observable</code> from the service.</p>
+    <span class="file-label">cart.service.ts</span>
+    <pre><code>import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+export interface CartItem {
+  id: number;
+  name: string;
+  qty: number;
+}
+
+@Injectable({ providedIn: 'root' })
+export class CartService {
+  private cartSubject = new BehaviorSubject&lt;CartItem[]&gt;([]);
+  cart$ = this.cartSubject.asObservable();
+
+  getCart(): CartItem[] {
+    return this.cartSubject.value;
+  }
+
+  addToCart(item: CartItem): void {
+    const current = this.cartSubject.value;
+    const existing = current.find(c =&gt; c.id === item.id);
+    if (existing) {
+      existing.qty += item.qty;
+      this.cartSubject.next([...current]);
+    } else {
+      this.cartSubject.next([...current, item]);
+    }
+  }
+
+  clearCart(): void {
+    this.cartSubject.next([]);
+  }
+}</code></pre>
+
+    <span class="file-label">Component A — publish</span>
+    <pre><code>constructor(private cartService: CartService) {}
+
+addProduct(p: Product): void {
+  this.cartService.addToCart({ id: p.id, name: p.name, qty: 1 });
+}</code></pre>
+
+    <span class="file-label">Component B — subscribe in template</span>
+    <pre><code>constructor(private cartService: CartService) {}
+cart$ = this.cartService.cart$;
+
+// template:
+&lt;span&gt;Items: {{ (cart$ | async)?.length }}&lt;/span&gt;</code></pre>
+
+    <h3>6. Service vs Component — Split Responsibilities</h3>
+    <table>
+        <thead>
+            <tr><th>Component</th><th>Service</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Template binding, user events</td><td>API calls, data storage</td></tr>
+            <tr><td>Display loading / error UI</td><td>Return <code>Observable</code> or data</td></tr>
+            <tr><td>Call service methods</td><td>No DOM / no <code>@Component</code> template</td></tr>
+        </tbody>
+    </table>
+
+    <h3>7. Testing a Service (Advanced tests)</h3>
+    <span class="file-label">item.service.spec.ts</span>
+    <pre><code>import { TestBed } from '@angular/core/testing';
+import { ItemService } from './item.service';
+
+describe('ItemService', () =&gt; {
+  let service: ItemService;
+
+  beforeEach(() =&gt; {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(ItemService);
+  });
+
+  it('should add an item', () =&gt; {
+    const before = service.getItems().length;
+    service.addItem({ id: 99, name: 'Eraser', quantity: 1 });
+    expect(service.getItems().length).toBe(before + 1);
+  });
+});</code></pre>
+
+    <h3>8. Common HackerRank Mistakes</h3>
+    <table>
+        <thead>
+            <tr><th>Error</th><th>Fix</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>NullInjectorError: No provider for X</code></td>
+                <td>Add <code>@Injectable({ providedIn: 'root' })</code> or register in <code>providers</code></td>
+            </tr>
+            <tr>
+                <td><code>HttpClient not found</code></td>
+                <td>Import <code>HttpClientModule</code> in <code>@NgModule imports</code></td>
+            </tr>
+            <tr>
+                <td>API returns data but UI empty</td>
+                <td>Call <code>subscribe()</code> or use <code>| async</code> in template</td>
+            </tr>
+            <tr>
+                <td>Data not shared between components</td>
+                <td>Use one root service — do not create <code>new ItemService()</code> manually</td>
+            </tr>
+            <tr>
+                <td>Wrong API URL in test</td>
+                <td>Use the exact endpoint string from HackerRank starter / spec</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Generate logic in a service file (<code>ng generate service weather</code> pattern), inject it in the component constructor, and keep HTTP + array mutations out of the component class. Import <code>HttpClientModule</code> once in the module. For list CRUD problems, mutate data in the service and refresh the component array after each add/delete so the template re-renders.</div>
+</div>
+
+<!-- ========== LIFECYCLE HOOKS ========== -->
+
+<div class="answer-pane" id="q_14">
+    <span class="badge badge-intermediate">LIFECYCLE</span>
+    <h2>Lifecycle Hooks — Order &amp; Examples</h2>
+    <p>Lifecycle hooks are methods Angular calls at specific points in a component's life — from creation to destruction. HackerRank tests often expect API calls in <code>ngOnInit</code>, DOM access in <code>ngAfterViewInit</code>, and cleanup in <code>ngOnDestroy</code>.</p>
+
+    <h3>1. Hook Order (execution sequence)</h3>
+    <table>
+        <thead>
+            <tr><th>Order</th><th>Hook</th><th>When it runs</th><th>HackerRank use</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td><code>constructor</code></td><td>Class instantiated; DI injected</td><td>Inject services only — no HTTP here</td></tr>
+            <tr><td>2</td><td><code>ngOnChanges</code></td><td><code>@Input</code> values change</td><td>React to parent binding updates</td></tr>
+            <tr><td>3</td><td><code>ngOnInit</code></td><td>Once after first <code>ngOnChanges</code></td><td><strong>Load API data, init form</strong> — most common</td></tr>
+            <tr><td>4</td><td><code>ngDoCheck</code></td><td>Every change-detection run</td><td>Rare; custom change detection</td></tr>
+            <tr><td>5</td><td><code>ngAfterContentInit</code></td><td>Projected content (<code>ng-content</code>) ready</td><td>Rare in basic tests</td></tr>
+            <tr><td>6</td><td><code>ngAfterContentChecked</code></td><td>After projected content checked</td><td>Rare</td></tr>
+            <tr><td>7</td><td><code>ngAfterViewInit</code></td><td>Component template rendered</td><td><strong>@ViewChild</strong>, focus input, chart init</td></tr>
+            <tr><td>8</td><td><code>ngAfterViewChecked</code></td><td>After view checked</td><td>Avoid heavy logic here</td></tr>
+            <tr><td>9</td><td><code>ngOnDestroy</code></td><td>Before component removed</td><td><strong>Unsubscribe</strong>, clear timers</td></tr>
+        </tbody>
+    </table>
+
+    <h3>2. ngOnInit — Load Data on Start</h3>
+    <p>Used in Weather Finder, Survey List, Employee Grid — fetch data when the screen opens.</p>
+    <span class="file-label">weather.component.ts</span>
+    <pre><code>import { Component, OnInit } from '@angular/core';
+import { WeatherService, WeatherData } from './weather.service';
+
+@Component({
+  selector: 'app-weather',
+  templateUrl: './weather.component.html'
+})
+export class WeatherComponent implements OnInit {
+  weather: WeatherData | null = null;
+  loading = false;
+  city = 'London';
+
+  constructor(private weatherService: WeatherService) {}
+
+  ngOnInit(): void {
+    this.loadWeather();
+  }
+
+  loadWeather(): void {
+    this.loading = true;
+    this.weatherService.getWeather(this.city).subscribe({
+      next: data =&gt; { this.weather = data; this.loading = false; },
+      error: () =&gt; { this.weather = null; this.loading = false; }
+    });
+  }
+}</code></pre>
+
+    <h3>3. ngOnChanges — React to @Input Updates</h3>
+    <p>Runs before <code>ngOnInit</code> on first change, and whenever a parent updates an <code>@Input</code>.</p>
+    <span class="file-label">user-card.component.ts</span>
+    <pre><code>import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+
+@Component({
+  selector: 'app-user-card',
+  template: `&lt;h3&gt;{{ displayName }}&lt;/h3&gt;&lt;p&gt;Role: {{ role }}&lt;/p&gt;`
+})
+export class UserCardComponent implements OnChanges {
+  @Input() userId = 0;
+  @Input() role = 'guest';
+  displayName = '';
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userId']) {
+      this.displayName = `User #${this.userId}`;
+    }
+  }
+}</code></pre>
+
+    <span class="file-label">Parent updates input</span>
+    <pre><code>&lt;app-user-card [userId]="selectedId" [role]="'admin'"&gt;&lt;/app-user-card&gt;</code></pre>
+
+    <h3>4. ngAfterViewInit — Access Template / ViewChild</h3>
+    <p>View and <code>@ViewChild</code> references are available here — <strong>not</strong> in <code>ngOnInit</code>.</p>
+    <span class="file-label">search.component.ts</span>
+    <pre><code>import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+
+@Component({
+  selector: 'app-search',
+  template: `&lt;input #searchBox type="text" placeholder="Search city..." /&gt;`
+})
+export class SearchComponent implements AfterViewInit {
+  @ViewChild('searchBox') searchInput!: ElementRef&lt;HTMLInputElement&gt;;
+
+  ngAfterViewInit(): void {
+    this.searchInput.nativeElement.focus();
+  }
+}</code></pre>
+
+    <h3>5. ngOnDestroy — Cleanup Subscriptions</h3>
+    <p>Prevent memory leaks when the component is destroyed (route change, *ngIf toggle).</p>
+    <span class="file-label">With Subscription + takeUntil pattern</span>
+    <pre><code>import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+@Component({ selector: 'app-survey-list', templateUrl: './survey-list.component.html' })
+export class SurveyListComponent implements OnInit, OnDestroy {
+  surveys: SurveyRecord[] = [];
+  private destroy$ = new Subject&lt;void&gt;();
+
+  constructor(private surveyService: SurveyService) {}
+
+  ngOnInit(): void {
+    this.surveyService.getSurveys()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(data =&gt; this.surveys = data);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}</code></pre>
+
+    <span class="file-label">Simple unsubscribe (single sub)</span>
+    <pre><code>private sub?: Subscription;
+
+ngOnInit(): void {
+  this.sub = this.service.getData().subscribe(d =&gt; this.data = d);
+}
+
+ngOnDestroy(): void {
+  this.sub?.unsubscribe();
+}</code></pre>
+
+    <h3>6. Full Example — Multiple Hooks Together</h3>
+    <span class="file-label">dashboard.component.ts</span>
+    <pre><code>import {
+  Component, Input, OnInit, OnChanges, OnDestroy,
+  AfterViewInit, SimpleChanges, ViewChild, ElementRef
+} from '@angular/core';
+
+@Component({
+  selector: 'app-dashboard',
+  template: `
+    &lt;p&gt;Page: {{ pageTitle }}&lt;/p&gt;
+    &lt;input #filterBox /&gt;
+    &lt;ul&gt;&lt;li *ngFor="let item of items"&gt;{{ item }}&lt;/li&gt;&lt;/ul&gt;
+  `
+})
+export class DashboardComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+  @Input() pageTitle = 'Home';
+  @ViewChild('filterBox') filterBox!: ElementRef&lt;HTMLInputElement&gt;;
+  items: string[] = [];
+  private timerId?: ReturnType&lt;typeof setInterval&gt;;
+
+  constructor(private dataService: DataService) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['pageTitle']) {
+      console.log('Title changed to', this.pageTitle);
+    }
+  }
+
+  ngOnInit(): void {
+    this.dataService.getItems().subscribe(list =&gt; this.items = list);
+    this.timerId = setInterval(() =&gt; console.log('tick'), 30000);
+  }
+
+  ngAfterViewInit(): void {
+    this.filterBox.nativeElement.placeholder = 'Filter items...';
+  }
+
+  ngOnDestroy(): void {
+    if (this.timerId) clearInterval(this.timerId);
+  }
+}</code></pre>
+
+    <h3>7. Which Hook to Use?</h3>
+    <table>
+        <thead>
+            <tr><th>Task</th><th>Use this hook</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Inject services</td><td><code>constructor</code></td></tr>
+            <tr><td>Fetch API / init component state</td><td><code>ngOnInit</code></td></tr>
+            <tr><td>Parent changed <code>@Input</code></td><td><code>ngOnChanges</code></td></tr>
+            <tr><td>Access DOM / <code>@ViewChild</code></td><td><code>ngAfterViewInit</code></td></tr>
+            <tr><td>Unsubscribe, clear interval</td><td><code>ngOnDestroy</code></td></tr>
+        </tbody>
+    </table>
+
+    <h3>8. Common HackerRank Mistakes</h3>
+    <table>
+        <thead>
+            <tr><th>Problem</th><th>Cause</th><th>Fix</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>@ViewChild</code> is <code>undefined</code></td>
+                <td>Accessed in <code>ngOnInit</code></td>
+                <td>Move to <code>ngAfterViewInit</code></td>
+            </tr>
+            <tr>
+                <td><code>ExpressionChangedAfterItHasBeenCheckedError</code></td>
+                <td>Value changed after Angular checked the view</td>
+                <td>Set values in <code>ngOnInit</code>, not after view init; or use <code>ChangeDetectorRef</code></td>
+            </tr>
+            <tr>
+                <td>HTTP in constructor</td>
+                <td>Inputs not ready; harder to test</td>
+                <td>Move HTTP to <code>ngOnInit</code></td>
+            </tr>
+            <tr>
+                <td>Data loads twice</td>
+                <td>Same call in constructor and <code>ngOnInit</code></td>
+                <td>Use <code>ngOnInit</code> only once</td>
+            </tr>
+            <tr>
+                <td>Memory leak warning in tests</td>
+                <td>Open subscription on destroy</td>
+                <td><code>ngOnDestroy</code> + <code>unsubscribe()</code> or <code>async</code> pipe</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Implement hooks via interfaces (<code>implements OnInit</code>) — it is optional but helps avoid typos. For most tests: put <code>HttpClient</code> calls in <code>ngOnInit</code>, DOM work in <code>ngAfterViewInit</code>, and prefer the <code>async</code> pipe over manual subscribe when you do not need cleanup logic.</div>
+</div>
+
+<!-- ========== OBSERVABLE / HTTPCLIENT / RXJS ========== -->
+
+<div class="answer-pane" id="q_38">
+    <span class="badge badge-intermediate">Q38</span>
+    <h2>What are Asynchronous operations?</h2>
+    <p>An <strong>asynchronous operation</strong> starts now but finishes later — the program does not block and wait. The result arrives via a callback, Promise, or Observable when the work completes (HTTP call, timer, file read, user click).</p>
+
+    <h3>Synchronous vs asynchronous</h3>
+    <table>
+        <thead>
+            <tr><th>Synchronous</th><th>Asynchronous</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Line 2 runs only after line 1 finishes</td><td>Line 2 can run while line 1 is still waiting</td></tr>
+            <tr><td><code>const x = a + b;</code></td><td><code>http.get(...).subscribe(...)</code></td></tr>
+            <tr><td>Blocks the UI thread if slow</td><td>UI stays responsive; result handled later</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Common async operations in Angular</h3>
+    <ul>
+        <li><strong>HTTP requests</strong> — <code>HttpClient.get/post</code> (Weather, Survey, Employee grid)</li>
+        <li><strong>Timers</strong> — <code>setTimeout</code>, RxJS <code>interval</code></li>
+        <li><strong>User events</strong> — button click, form submit (handled asynchronously by Angular)</li>
+        <li><strong>Route navigation</strong> — lazy-loaded modules load in background</li>
+    </ul>
+
+    <span class="file-label">Example — async HTTP in component</span>
+    <pre><code>// Synchronous — runs immediately
+this.title = 'Weather App';
+
+// Asynchronous — result comes later
+this.weatherService.getWeather('London').subscribe(data =&gt; {
+  this.weather = data;   // runs when server responds
+});</code></pre>
+
+    <div class="tip-box"><strong>Interview Answer:</strong> Async operations don't block the main thread. In Angular we handle them with Promises, Observables, or <code>async/await</code> so the UI stays responsive while waiting for APIs, timers, or events.</div>
+</div>
+
+<div class="answer-pane" id="q_39">
+    <span class="badge badge-intermediate">Q39 · V. IMP.</span>
+    <h2>What is the difference between Promise and Observable?</h2>
+
+    <table>
+        <thead>
+            <tr><th></th><th>Promise</th><th>Observable</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Values</strong></td><td>Single value (resolve once)</td><td>Zero to many values over time (stream)</td></tr>
+            <tr><td><strong>Execution</strong></td><td>Eager — starts immediately</td><td>Lazy — runs only when you <code>subscribe()</code></td></tr>
+            <tr><td><strong>Cancellable</strong></td><td>Not after settled</td><td><code>unsubscribe()</code> stops further emissions</td></tr>
+            <tr><td><strong>Operators</strong></td><td><code>then</code> / <code>catch</code> / <code>finally</code></td><td>Rich RxJS: <code>map</code>, <code>filter</code>, <code>switchMap</code>, <code>debounceTime</code></td></tr>
+            <tr><td><strong>Angular HTTP</strong></td><td>Convert with <code>lastValueFrom()</code></td><td><code>HttpClient</code> returns <code>Observable</code> by default</td></tr>
+        </tbody>
+    </table>
+
+    <span class="file-label">Promise — one result</span>
+    <pre><code>const promise = fetch('/api/user')
+  .then(res =&gt; res.json())
+  .then(user =&gt; console.log(user))
+  .catch(err =&gt; console.error(err));</code></pre>
+
+    <span class="file-label">Observable — stream, lazy, cancellable</span>
+    <pre><code>const sub = this.http.get&lt;User&gt;('/api/user').subscribe({
+  next: user =&gt; console.log(user),
+  error: err =&gt; console.error(err),
+  complete: () =&gt; console.log('done')
+});
+
+// Cancel if user navigates away
+sub.unsubscribe();</code></pre>
+
+    <span class="file-label">Convert between them</span>
+    <pre><code>import { lastValueFrom } from 'rxjs';
+
+// Observable → Promise (single value)
+const user = await lastValueFrom(this.http.get&lt;User&gt;('/api/user'));
+
+// Promise → Observable
+import { from } from 'rxjs';
+from(fetch('/api/user').then(r =&gt; r.json())).subscribe(...);</code></pre>
+
+    <div class="tip-box"><strong>Interview Answer:</strong> A Promise resolves once and runs eagerly; an Observable can emit multiple values, is lazy until subscribed, and is cancellable. Angular HTTP uses Observables so we can compose with RxJS operators and unsubscribe in <code>ngOnDestroy</code>.</div>
+</div>
+
+<div class="answer-pane" id="q_40">
+    <span class="badge badge-intermediate">Q40</span>
+    <h2>What is RxJS?</h2>
+    <p><strong>RxJS</strong> (Reactive Extensions for JavaScript) is a library for working with <strong>asynchronous data streams</strong> using the Observable pattern. Angular bundles RxJS — <code>HttpClient</code>, <code>Router</code>, and <code>FormControl.valueChanges</code> all use Observables.</p>
+
+    <h3>Core RxJS concepts</h3>
+    <table>
+        <thead>
+            <tr><th>Concept</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>Observable</code></td><td>Stream that emits values over time</td></tr>
+            <tr><td><code>Observer</code></td><td>Consumer with <code>next</code>, <code>error</code>, <code>complete</code> handlers</td></tr>
+            <tr><td><code>Subscription</code></td><td>Link between Observable and Observer; call <code>unsubscribe()</code> to stop</td></tr>
+            <tr><td><code>Operators</code></td><td>Functions to transform streams: <code>map</code>, <code>filter</code>, <code>switchMap</code>, etc.</td></tr>
+            <tr><td><code>Subject</code></td><td>Observable + Observer — multicast (e.g. <code>BehaviorSubject</code> for shared state)</td></tr>
+        </tbody>
+    </table>
+
+    <span class="file-label">Common operators in HackerRank / interviews</span>
+    <pre><code>import { map, filter, debounceTime, switchMap, catchError } from 'rxjs/operators';
+import { of, throwError } from 'rxjs';
+
+// map — transform each value
+of(1, 2, 3).pipe(map(x =&gt; x * 10)).subscribe(v =&gt; console.log(v)); // 10, 20, 30
+
+// filter — keep matching values
+of(1, 2, 3, 4).pipe(filter(x =&gt; x % 2 === 0)).subscribe(v =&gt; console.log(v)); // 2, 4
+
+// debounceTime — wait for pause (search box)
+searchInput.valueChanges.pipe(
+  debounceTime(300),
+  switchMap(term =&gt; this.api.search(term))
+).subscribe(results =&gt; this.results = results);
+
+// catchError — handle HTTP failure
+this.http.get('/api/data').pipe(
+  catchError(err =&gt; { console.error(err); return of([]); })
+).subscribe(data =&gt; this.items = data);</code></pre>
+
+    <div class="tip-box"><strong>Interview Answer:</strong> RxJS is the reactive library Angular uses for async streams. It provides Observables, Subjects, and operators like <code>map</code> and <code>switchMap</code> to transform and combine async data cleanly.</div>
+</div>
+
+<div class="answer-pane" id="q_41">
+    <span class="badge badge-intermediate">Q41 · V. IMP.</span>
+    <h2>What is Observable? How to implement Observable</h2>
+    <p>An <strong>Observable</strong> is a lazy push stream: it produces values over time and notifies subscribers via <code>next</code>, <code>error</code>, and <code>complete</code>. In Angular, you consume Observables from <code>HttpClient</code> or create your own for custom async logic.</p>
+
+    <h3>How to consume (subscribe)</h3>
+    <span class="file-label">From HttpClient (most common)</span>
+    <pre><code>this.productService.getAll().subscribe({
+  next: products =&gt; this.products = products,
+  error: err =&gt; this.error = 'Load failed',
+  complete: () =&gt; this.loading = false
+});</code></pre>
+
+    <span class="file-label">Template — async pipe (auto-unsubscribe)</span>
+    <pre><code>products$ = this.productService.getAll();
+
+&lt;ul *ngIf="products$ | async as products"&gt;
+  &lt;li *ngFor="let p of products"&gt;{{ p.name }}&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+
+    <h3>How to create / implement</h3>
+
+    <span class="file-label">1. new Observable() — custom logic</span>
+    <pre><code>import { Observable } from 'rxjs';
+
+const counter$ = new Observable&lt;number&gt;(subscriber =&gt; {
+  let count = 0;
+  const id = setInterval(() =&gt; {
+    subscriber.next(count++);
+    if (count === 5) {
+      subscriber.complete();
+      clearInterval(id);
+    }
+  }, 1000);
+
+  // Cleanup when unsubscribed
+  return () =&gt; clearInterval(id);
+});
+
+counter$.subscribe(v =&gt; console.log(v)); // 0, 1, 2, 3, 4</code></pre>
+
+    <span class="file-label">2. of() — emit fixed values immediately</span>
+    <pre><code>import { of } from 'rxjs';
+
+of({ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' })
+  .subscribe(user =&gt; console.log(user));</code></pre>
+
+    <span class="file-label">3. from() — from Promise or array</span>
+    <pre><code>import { from } from 'rxjs';
+
+from([10, 20, 30]).subscribe(n =&gt; console.log(n));
+from(fetch('/api/data').then(r =&gt; r.json())).subscribe(data =&gt; ...);</code></pre>
+
+    <span class="file-label">4. Subject / BehaviorSubject — shared stream</span>
+    <pre><code>import { BehaviorSubject } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class CartService {
+  private cartSubject = new BehaviorSubject&lt;CartItem[]&gt;([]);
+  cart$ = this.cartSubject.asObservable();
+
+  addItem(item: CartItem): void {
+    this.cartSubject.next([...this.cartSubject.value, item]);
+  }
+}</code></pre>
+
+    <span class="file-label">5. Service returns Observable from HTTP</span>
+    <pre><code>getProducts(): Observable&lt;Product[]&gt; {
+  return this.http.get&lt;Product[]&gt;('/api/products');
+}</code></pre>
+
+    <div class="tip-box"><strong>Interview Answer:</strong> An Observable is a stream you subscribe to for async values. Implement with <code>new Observable</code>, <code>of</code>, <code>from</code>, or expose HTTP/Subject streams from a service. Always unsubscribe or use the <code>async</code> pipe to avoid memory leaks.</div>
+</div>
+
+<div class="answer-pane" id="q_42">
+    <span class="badge badge-intermediate">Q42</span>
+    <h2>What is the role of HttpClient in Angular?</h2>
+    <p><strong>HttpClient</strong> is Angular's built-in service for calling REST APIs. It returns <code>Observable</code>s (not Promises), supports typed responses, query params, headers, and interceptors — used in almost every HackerRank Angular test that fetches data.</p>
+
+    <h3>Role / responsibilities</h3>
+    <ul>
+        <li>Send HTTP requests (GET, POST, PUT, DELETE, PATCH)</li>
+        <li>Parse JSON responses into typed objects (<code>get&lt;T&gt;()</code>)</li>
+        <li>Handle query parameters and request headers</li>
+        <li>Integrate with RxJS operators and interceptors (auth token, error handling)</li>
+    </ul>
+
+    <h3>Setup</h3>
+    <span class="file-label">app.module.ts</span>
+    <pre><code>import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+  imports: [BrowserModule, HttpClientModule]
+})
+export class AppModule {}</code></pre>
+
+    <span class="file-label">Inject in service</span>
+    <pre><code>import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class EmployeeService {
+  private apiUrl = 'https://api.example.com/employees';
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable&lt;Employee[]&gt; {
+    return this.http.get&lt;Employee[]&gt;(this.apiUrl);
+  }
+
+  getByPage(page: number, size: number): Observable&lt;PagedResult&lt;Employee&gt;&gt; {
+    const params = new HttpParams()
+      .set('pageNumber', page)
+      .set('pageSize', size);
+    return this.http.get&lt;PagedResult&lt;Employee&gt;&gt;(this.apiUrl, { params });
+  }
+
+  create(employee: Employee): Observable&lt;Employee&gt; {
+    return this.http.post&lt;Employee&gt;(this.apiUrl, employee);
+  }
+
+  update(id: number, employee: Employee): Observable&lt;Employee&gt; {
+    return this.http.put&lt;Employee&gt;(`${this.apiUrl}/${id}`, employee);
+  }
+
+  delete(id: number): Observable&lt;void&gt; {
+    return this.http.delete&lt;void&gt;(`${this.apiUrl}/${id}`);
+  }
+}</code></pre>
+
+    <span class="file-label">Component usage</span>
+    <pre><code>ngOnInit(): void {
+  this.employeeService.getByPage(1, 10).subscribe({
+    next: result =&gt; {
+      this.employees = result.items;
+      this.totalPages = result.totalPages;
+    },
+    error: () =&gt; this.errorMsg = 'Failed to load employees'
+  });
+}</code></pre>
+
+    <h3>HttpClient vs fetch()</h3>
+    <table>
+        <thead>
+            <tr><th>HttpClient</th><th>fetch()</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Returns <code>Observable</code></td><td>Returns <code>Promise</code></td></tr>
+            <tr><td>Typed generics <code>get&lt;T&gt;</code></td><td>Manual JSON parse</td></tr>
+            <tr><td>Interceptors for auth/errors</td><td>Manual header logic in every call</td></tr>
+            <tr><td>Angular testing with <code>HttpClientTestingModule</code></td><td>Mock fetch globally</td></tr>
+        </tbody>
+    </table>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Import <code>HttpClientModule</code> in the module — not the component. Inject <code>HttpClient</code> in a service, return <code>Observable</code> from service methods, and <code>subscribe</code> in the component (or use <code>| async</code>). Use the exact API URL from the problem statement.</div>
 </div>
 
 </div><!-- /content -->
