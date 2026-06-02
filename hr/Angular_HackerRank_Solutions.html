@@ -290,7 +290,7 @@ body {
 <div class="sidebar">
     <div class="sidebar-scroll" id="sidebarScroll">
         <h1>Angular HackerRank Solutions</h1>
-        <p class="subtitle">Full Stack · Basic · Intermediate · Advanced · Forms — click any problem to view solution</p>
+        <p class="subtitle">Full Stack · Basic · Intermediate · Advanced · Forms · Pipes — click any problem to view solution</p>
         <input type="text" class="search-box" id="searchBox" placeholder="Search problems..." oninput="filterQuestions()">
         <button class="clear-search" onclick="clearSearch()">Clear search</button>
 
@@ -314,6 +314,9 @@ body {
 
         <div class="topic-header">Angular Forms &amp; Validations</div>
         <div class="question-item" data-answer-id="q_10">Angular Forms — All Types &amp; Field Validations</div>
+
+        <div class="topic-header">Angular Pipes</div>
+        <div class="question-item" data-answer-id="q_11">Angular Pipes — Built-in &amp; Custom Examples</div>
     </div>
 </div>
 
@@ -1676,6 +1679,207 @@ username: ['', [Validators.required], [usernameTakenValidator(this.userService.i
 });</code></pre>
 
     <div class="tip-box"><strong>HackerRank Tip:</strong> If <code>ngModel</code> throws "Can't bind to ngModel", import <code>FormsModule</code>. For reactive forms, import <code>ReactiveFormsModule</code> and use <code>[formGroup]</code> on the <code>&lt;form&gt;</code> tag — not both on the same control. On submit, call <code>markAllAsTouched()</code> so hidden validation errors appear. Match exact field names and button labels from the starter template.</div>
+</div>
+
+<!-- ========== PIPES ========== -->
+
+<div class="answer-pane" id="q_11">
+    <span class="badge badge-basic">PIPES</span>
+    <h2>Angular Pipes — Built-in &amp; Custom Examples</h2>
+    <p>Pipes transform data in the template using the <code>value | pipeName:parameter</code> syntax. They keep components clean and are very common in HackerRank Angular tests (formatting dates, currency, lists, and async data).</p>
+
+    <h3>1. Common Built-in Pipes</h3>
+    <table>
+        <thead>
+            <tr><th>Pipe</th><th>Example</th><th>Output (sample)</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>uppercase</code></td><td><code>{{ 'hello' | uppercase }}</code></td><td>HELLO</td></tr>
+            <tr><td><code>lowercase</code></td><td><code>{{ 'HELLO' | lowercase }}</code></td><td>hello</td></tr>
+            <tr><td><code>titlecase</code></td><td><code>{{ 'angular pipes' | titlecase }}</code></td><td>Angular Pipes</td></tr>
+            <tr><td><code>date</code></td><td><code>{{ today | date:'mediumDate' }}</code></td><td>Jun 2, 2026</td></tr>
+            <tr><td><code>currency</code></td><td><code>{{ price | currency:'USD':'symbol':'1.2-2' }}</code></td><td>$19.99</td></tr>
+            <tr><td><code>number</code> / <code>decimal</code></td><td><code>{{ ratio | number:'1.2-2' }}</code></td><td>3.14</td></tr>
+            <tr><td><code>percent</code></td><td><code>{{ score | percent:'1.0-1' }}</code></td><td>85.5%</td></tr>
+            <tr><td><code>slice</code></td><td><code>{{ items | slice:0:3 }}</code></td><td>First 3 array items</td></tr>
+            <tr><td><code>json</code></td><td><code>{{ user | json }}</code></td><td>Debug object as JSON string</td></tr>
+            <tr><td><code>async</code></td><td><code>{{ users$ | async }}</code></td><td>Subscribes to Observable/Promise in template</td></tr>
+        </tbody>
+    </table>
+
+    <h3>2. Template Examples (HackerRank-style component)</h3>
+    <span class="file-label">pipes-demo.component.ts</span>
+    <pre><code>import { Component } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-pipes-demo',
+  templateUrl: './pipes-demo.component.html'
+})
+export class PipesDemoComponent {
+  today = new Date();
+  price = 19.99;
+  ratio = 3.14159;
+  score = 0.855;
+  title = 'angular hackerRank prep';
+  items = ['Angular', 'TypeScript', 'RxJS', 'HTML', 'CSS'];
+
+  users$ = of([
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' }
+  ]).pipe(delay(500));
+}</code></pre>
+
+    <span class="file-label">pipes-demo.component.html</span>
+    <pre><code>&lt;!-- Text formatting --&gt;
+&lt;p&gt;{{ title | titlecase }}&lt;/p&gt;
+&lt;p&gt;{{ title | uppercase }}&lt;/p&gt;
+
+&lt;!-- Date / number / currency --&gt;
+&lt;p&gt;Today: {{ today | date:'fullDate' }}&lt;/p&gt;
+&lt;p&gt;Price: {{ price | currency:'USD' }}&lt;/p&gt;
+&lt;p&gt;Ratio: {{ ratio | number:'1.2-2' }}&lt;/p&gt;
+&lt;p&gt;Score: {{ score | percent:'1.0-1' }}&lt;/p&gt;
+
+&lt;!-- Slice a list --&gt;
+&lt;ul&gt;
+  &lt;li *ngFor="let item of items | slice:0:3"&gt;{{ item }}&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- Async pipe — no manual subscribe needed --&gt;
+&lt;ul *ngIf="users$ | async as users"&gt;
+  &lt;li *ngFor="let user of users"&gt;{{ user.name }}&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- Debug in template --&gt;
+&lt;pre&gt;{{ { title, price } | json }}&lt;/pre&gt;</code></pre>
+
+    <h3>3. Chaining Pipes</h3>
+    <p>Pipes run left to right. Useful when you need multiple transforms.</p>
+    <span class="file-label">Chaining example</span>
+    <pre><code>&lt;!-- "  hello world  " → trim spaces → uppercase --&gt;
+&lt;p&gt;{{ '  hello world  ' | trim | uppercase }}&lt;/p&gt;
+
+&lt;!-- Built-in only (no custom trim pipe): --&gt;
+&lt;p&gt;{{ title | lowercase | titlecase }}&lt;/p&gt;
+
+&lt;!-- Date then slice on array of dates --&gt;
+&lt;p *ngFor="let d of dates | slice:0:2"&gt;
+  {{ d | date:'shortDate' }}
+&lt;/p&gt;</code></pre>
+
+    <div class="tip-box"><strong>Note:</strong> Angular has no built-in <code>trim</code> pipe — the first example needs a custom pipe (see below) or trim in the component.</div>
+
+    <h3>4. Custom Pipe</h3>
+    <p>Create a pipe when built-ins are not enough (truncate text, Celsius→Fahrenheit, highlight search term, etc.).</p>
+
+    <span class="file-label">truncate.pipe.ts</span>
+    <pre><code>import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'truncate' })
+export class TruncatePipe implements PipeTransform {
+  transform(value: string | null, limit = 20, trail = '...'): string {
+    if (!value) return '';
+    return value.length &gt; limit ? value.substring(0, limit) + trail : value;
+  }
+}</code></pre>
+
+    <span class="file-label">celsius-to-fahrenheit.pipe.ts (Temperature Converter pattern)</span>
+    <pre><code>import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'celsiusToFahrenheit' })
+export class CelsiusToFahrenheitPipe implements PipeTransform {
+  transform(celsius: number | null): string {
+    if (celsius == null || isNaN(celsius)) return '';
+    const fahrenheit = (celsius * 9) / 5 + 32;
+    return fahrenheit.toFixed(2);
+  }
+}</code></pre>
+
+    <span class="file-label">Usage in template</span>
+    <pre><code>&lt;p&gt;{{ longText | truncate:30 }}&lt;/p&gt;
+&lt;p&gt;{{ tempC | celsiusToFahrenheit }} °F&lt;/p&gt;</code></pre>
+
+    <span class="file-label">app.module.ts — declare custom pipes</span>
+    <pre><code>import { TruncatePipe } from './truncate.pipe';
+import { CelsiusToFahrenheitPipe } from './celsius-to-fahrenheit.pipe';
+
+@NgModule({
+  declarations: [AppComponent, TruncatePipe, CelsiusToFahrenheitPipe],
+  // ...
+})
+export class AppModule {}</code></pre>
+
+    <h3>5. Pure vs Impure Pipes</h3>
+    <table>
+        <thead>
+            <tr><th>Type</th><th>Default</th><th>When it re-runs</th><th>Use when</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Pure</strong></td>
+                <td>Yes (<code>pure: true</code>)</td>
+                <td>Input reference or primitive value changes</td>
+                <td>Most pipes — faster, predictable</td>
+            </tr>
+            <tr>
+                <td><strong>Impure</strong></td>
+                <td><code>pure: false</code></td>
+                <td>Every change-detection cycle</td>
+                <td>Transform mutating arrays/objects without new reference (rare; prefer immutable data)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <span class="file-label">Impure pipe example (use sparingly)</span>
+    <pre><code>@Pipe({ name: 'filterByStatus', pure: false })
+export class FilterByStatusPipe implements PipeTransform {
+  transform(items: { status: string }[], status: string): unknown[] {
+    if (!items || !status) return items;
+    return items.filter(item =&gt; item.status === status);
+  }
+}</code></pre>
+
+    <h3>6. async Pipe — Important for Interviews</h3>
+    <p>The <code>async</code> pipe subscribes to an <code>Observable</code> or <code>Promise</code>, returns the latest value, and unsubscribes automatically when the component is destroyed.</p>
+
+    <span class="file-label">Without async pipe (manual subscribe)</span>
+    <pre><code>export class WeatherComponent implements OnInit, OnDestroy {
+  weather: Weather | null = null;
+  private sub?: Subscription;
+
+  ngOnInit(): void {
+    this.sub = this.weatherService.getWeather('London').subscribe(w =&gt; {
+      this.weather = w;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+  }
+}</code></pre>
+
+    <span class="file-label">With async pipe (preferred in templates)</span>
+    <pre><code>export class WeatherComponent {
+  weather$ = this.weatherService.getWeather('London');
+}
+
+// template:
+&lt;div *ngIf="weather$ | async as weather"&gt;
+  &lt;p&gt;{{ weather.city }}: {{ weather.temperature | number:'1.0-0' }}°C&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+    <h3>7. Common HackerRank Pipe Tasks</h3>
+    <ul>
+        <li>Format a date column in a table → <code>{{ row.createdAt | date:'dd/MM/yyyy' }}</code></li>
+        <li>Show price with 2 decimals → <code>{{ product.price | currency:'INR' }}</code> or <code>number:'1.2-2'</code></li>
+        <li>Display only first N items → <code>*ngFor="let x of list | slice:0:5"</code></li>
+        <li>Convert temperature in template → custom <code>celsiusToFahrenheit</code> pipe or built-in math in component</li>
+        <li>Bind HTTP result without subscribe → store <code>Observable</code> in component, use <code>| async</code> in HTML</li>
+    </ul>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> If a custom pipe is "not found", add it to <code>declarations</code> in <code>@NgModule</code> (or use standalone <code>@Pipe({ standalone: true })</code> and import it in the component). Pipe names are <strong>case-sensitive</strong> and must match the template exactly. For dates, pass the format string from the problem spec — tests often expect a specific pattern like <code>'short'</code> or <code>'yyyy-MM-dd'</code>.</div>
 </div>
 
 </div><!-- /content -->
