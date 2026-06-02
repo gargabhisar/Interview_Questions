@@ -1694,16 +1694,16 @@ username: ['', [Validators.required], [usernameTakenValidator(this.userService.i
             <tr><th>Pipe</th><th>Example</th><th>Output (sample)</th></tr>
         </thead>
         <tbody>
-            <tr><td><code>uppercase</code></td><td><code>{{ 'hello' | uppercase }}</code></td><td>HELLO</td></tr>
-            <tr><td><code>lowercase</code></td><td><code>{{ 'HELLO' | lowercase }}</code></td><td>hello</td></tr>
-            <tr><td><code>titlecase</code></td><td><code>{{ 'angular pipes' | titlecase }}</code></td><td>Angular Pipes</td></tr>
-            <tr><td><code>date</code></td><td><code>{{ today | date:'mediumDate' }}</code></td><td>Jun 2, 2026</td></tr>
-            <tr><td><code>currency</code></td><td><code>{{ price | currency:'USD':'symbol':'1.2-2' }}</code></td><td>$19.99</td></tr>
-            <tr><td><code>number</code> / <code>decimal</code></td><td><code>{{ ratio | number:'1.2-2' }}</code></td><td>3.14</td></tr>
-            <tr><td><code>percent</code></td><td><code>{{ score | percent:'1.0-1' }}</code></td><td>85.5%</td></tr>
-            <tr><td><code>slice</code></td><td><code>{{ items | slice:0:3 }}</code></td><td>First 3 array items</td></tr>
-            <tr><td><code>json</code></td><td><code>{{ user | json }}</code></td><td>Debug object as JSON string</td></tr>
-            <tr><td><code>async</code></td><td><code>{{ users$ | async }}</code></td><td>Subscribes to Observable/Promise in template</td></tr>
+            <tr><td><code>uppercase</code></td><td><code>{{ 'save20now' | uppercase }}</code></td><td>SAVE20NOW</td></tr>
+            <tr><td><code>lowercase</code></td><td><code>{{ 'PRIYA.SHARMA@EXAMPLE.COM' | lowercase }}</code></td><td>priya.sharma@example.com</td></tr>
+            <tr><td><code>titlecase</code></td><td><code>{{ 'new delhi' | titlecase }}</code></td><td>New Delhi</td></tr>
+            <tr><td><code>date</code></td><td><code>{{ '2026-06-02T14:30:00' | date:'dd/MM/yyyy' }}</code></td><td>02/06/2026</td></tr>
+            <tr><td><code>currency</code></td><td><code>{{ 2499.5 | currency:'INR':'symbol-narrow':'1.2-2' }}</code></td><td>₹2,499.50</td></tr>
+            <tr><td><code>number</code> / <code>decimal</code></td><td><code>{{ 1284 | number }}</code></td><td>1,284</td></tr>
+            <tr><td><code>percent</code></td><td><code>{{ 0.2 | percent:'1.0-0' }}</code></td><td>20%</td></tr>
+            <tr><td><code>slice</code></td><td><code>{{ ['MacBook Pro', 'USB-C Hub', 'Mouse'] | slice:0:2 }}</code></td><td>MacBook Pro, USB-C Hub</td></tr>
+            <tr><td><code>json</code></td><td><code>{{ { orderId: 1042, status: 'shipped' } | json }}</code></td><td>{ "orderId": 1042, "status": "shipped" }</td></tr>
+            <tr><td><code>async</code></td><td><code>{{ products$ | async }}</code> — emits <code>[{ name: 'Wireless Mouse', price: 899 }]</code></td><td>{ name: 'Wireless Mouse', price: 899 }</td></tr>
         </tbody>
     </table>
 
