@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular HackerRank Solutions Guide (Updated Jun 2026)</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: #ffffff;
+    color: #000000;
+}
+
+.sidebar {
+    width: 32%;
+    background: #ffffff;
+    color: #000000;
+    overflow-y: auto;
+    padding: 20px;
+    border-right: 1px solid #000000;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+}
+
+.sidebar h1 {
+    font-size: 18px;
+    margin-bottom: 4px;
+    color: #000000;
+}
+
+.sidebar .subtitle {
+    font-size: 12px;
+    color: #000000;
+    margin-bottom: 16px;
+    opacity: 0.7;
+}
+
+.search-box {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #000000;
+    border-radius: 0;
+    font-size: 14px;
+    margin-bottom: 8px;
+    background: #ffffff;
+    color: #000000;
+}
+
+.clear-search {
+    background: none;
+    border: none;
+    color: #000000;
+    font-size: 12px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.clear-search:hover { opacity: 0.7; }
+
+.topic-header {
+    background: #000000;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 0;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 16px 0 8px 0;
+    letter-spacing: 0.3px;
+}
+
+.topic-header:first-of-type { margin-top: 0; }
+
+.question-item {
+    background: #ffffff;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 0;
+    transition: 0.2s;
+    color: #000000;
+    font-size: 14px;
+    border: 1px solid #000000;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.question-item:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+.question-item.active {
+    background: #000000;
+    color: #ffffff;
+    border-color: #000000;
+}
+
+.question-item.hidden { display: none; }
+
+.content {
+    width: 68%;
+    overflow-y: auto;
+    padding: 30px 40px;
+    background: #ffffff;
+}
+
+.answer-pane { display: none; }
+.answer-pane.active { display: block; }
+
+.answer-pane h2 {
+    font-size: 22px;
+    color: #000000;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #000000;
+    padding-bottom: 8px;
+}
+
+.answer-pane h3 {
+    font-size: 16px;
+    color: #000000;
+    margin: 20px 0 10px 0;
+}
+
+.answer-pane p, .answer-pane li {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+.answer-pane ul, .answer-pane ol {
+    padding-left: 24px;
+    margin-bottom: 12px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 0;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+}
+
+.badge-basic,
+.badge-intermediate,
+.badge-advanced,
+.badge-fullstack {
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+}
+
+.tip-box {
+    background: #ffffff;
+    border: 1px solid #000000;
+    border-left: 4px solid #000000;
+    padding: 12px 16px;
+    border-radius: 0;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #000000;
+}
+
+.tip-box strong { color: #000000; }
+
+.answer-pane pre {
+    background: #000000;
+    color: #ffffff;
+    padding: 16px;
+    border-radius: 0;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 12px 0;
+    border: 1px solid #000000;
+}
+
+.answer-pane code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+}
+
+.answer-pane table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+}
+
+.answer-pane th, .answer-pane td {
+    border: 1px solid #000000;
+    padding: 8px 12px;
+    text-align: left;
+    color: #000000;
+}
+
+.answer-pane th {
+    background: #000000;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.file-label {
+    display: inline-block;
+    background: #000000;
+    color: #ffffff;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 0;
+    margin-top: 16px;
+    font-family: monospace;
+}
+
+.back-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        flex-shrink: 0;
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid #000000;
+    }
+
+    .sidebar-scroll {
+        max-height: 100vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    body.show-answer .sidebar { display: none; }
+
+    .content {
+        width: 100%;
+        padding: 16px;
+        display: none;
+    }
+
+    body.show-answer .content { display: block; }
+
+    .back-btn {
+        display: inline-block;
+        background: #000000;
+        color: #ffffff;
+        border: 1px solid #000000;
+        padding: 10px 16px;
+        border-radius: 0;
+        font-size: 14px;
+        cursor: pointer;
+        margin-bottom: 16px;
+        min-height: 44px;
+    }
+
+    .question-item {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .sidebar { width: 38%; }
+    .content { width: 62%; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-scroll" id="sidebarScroll">
+        <h1>Angular HackerRank Solutions</h1>
+        <p class="subtitle">Full Stack · Basic · Intermediate · Advanced · Forms — click any problem to view solution</p>
+        <input type="text" class="search-box" id="searchBox" placeholder="Search problems..." oninput="filterQuestions()">
+        <button class="clear-search" onclick="clearSearch()">Clear search</button>
+
+        <div class="topic-header">Full Stack — C# API + Angular Grid</div>
+        <div class="question-item" data-answer-id="q_0">Load Grid from API — Pagination + Observable</div>
+
+        <div class="topic-header">Angular (Basic) — 1 hour</div>
+        <div class="question-item" data-answer-id="q_1">1. Temperature Converter</div>
+        <div class="question-item" data-answer-id="q_2">2. Code Review Feedback System</div>
+        <div class="question-item" data-answer-id="q_3">3. Simple Calculator</div>
+        <div class="question-item" data-answer-id="q_4">4. Item List Manager</div>
+
+        <div class="topic-header">Angular (Intermediate) — 1.5 hours</div>
+        <div class="question-item" data-answer-id="q_5">5. Weather Finder Application</div>
+        <div class="question-item" data-answer-id="q_6">6. Kanban Board Slider</div>
+        <div class="question-item" data-answer-id="q_7">7. Survey List / Paginated Table</div>
+
+        <div class="topic-header">Angular (Advanced)</div>
+        <div class="question-item" data-answer-id="q_8">8. Unit Testing (.spec.ts)</div>
+        <div class="question-item" data-answer-id="q_9">9. Browser Console Debugging</div>
+
+        <div class="topic-header">Angular Forms &amp; Validations</div>
+        <div class="question-item" data-answer-id="q_10">Angular Forms — All Types &amp; Field Validations</div>
+    </div>
+</div>
+
+<div class="content">
+
+<!-- ========== FULL STACK ========== -->
+
+<div class="answer-pane active" id="q_0">
+    <span class="badge badge-fullstack">FULL STACK</span>
+    <h2>Load Grid from API (Pagination + Observable)</h2>
+    <p>Build a <strong>C# ASP.NET Core Web API</strong> that returns paginated employee data, then consume it in <strong>Angular</strong> with <code>HttpClient</code>, an <code>Observable</code>, and a paginated HTML grid/table.</p>
+
+    <h3>Architecture</h3>
+    <ul>
+        <li><strong>Backend:</strong> <code>GET /api/employees?pageNumber=1&amp;pageSize=10</code> returns JSON with <code>items</code>, <code>totalCount</code>, <code>pageNumber</code>, <code>pageSize</code>, <code>totalPages</code></li>
+        <li><strong>Frontend:</strong> Service exposes <code>Observable&lt;PagedResult&lt;Employee&gt;&gt;</code> → component <code>subscribe</code>s → template binds grid rows + pagination buttons</li>
+    </ul>
+
+    <h3>Key Concepts</h3>
+    <ul>
+        <li><code>Observable</code> — async stream from HTTP; subscribe in component or use <code>async</code> pipe in template</li>
+        <li><code>HttpClient.get&lt;T&gt;()</code> — typed GET request; import <code>HttpClientModule</code></li>
+        <li><strong>Server-side pagination</strong> — API slices data; grid reloads on page change (preferred in interviews)</li>
+        <li><strong>CORS</strong> — enable in <code>Program.cs</code> so Angular (port 4200) can call API (port 5000/7000)</li>
+    </ul>
+
+    <div class="tip-box"><strong>Interview Tip:</strong> Mention why server-side pagination scales better than loading all rows client-side. Always handle loading and empty states. Unsubscribe or use <code>takeUntilDestroyed()</code> if the component can be destroyed mid-request.</div>
+
+    <h3>C# Backend</h3>
+
+    <span class="file-label">Models/Employee.cs</span>
+    <pre><code>namespace EmployeeApi.Models;
+
+public class Employee
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Department { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+}</code></pre>
+
+    <span class="file-label">Models/PagedResult.cs</span>
+    <pre><code>namespace EmployeeApi.Models;
+
+public class PagedResult&lt;T&gt;
+{
+    public List&lt;T&gt; Items { get; set; } = new();
+    public int TotalCount { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+    public int TotalPages { get; set; }
+}</code></pre>
+
+    <span class="file-label">Controllers/EmployeesController.cs</span>
+    <pre><code>using Microsoft.AspNetCore.Mvc;
+using EmployeeApi.Models;
+
+namespace EmployeeApi.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class EmployeesController : ControllerBase
+{
+    private static readonly List&lt;Employee&gt; _employees = Enumerable
+        .Range(1, 47)
+        .Select(i =&gt; new Employee
+        {
+            Id = i,
+            Name = $"Employee {i}",
+            Department = i % 2 == 0 ? "Engineering" : "Sales",
+            Email = $"emp{i}@company.com"
+        })
+        .ToList();
+
+    [HttpGet]
+    public ActionResult&lt;PagedResult&lt;Employee&gt;&gt; GetEmployees(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        if (pageNumber &lt; 1) pageNumber = 1;
+        if (pageSize &lt; 1) pageSize = 10;
+
+        var totalCount = _employees.Count;
+        var items = _employees
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return Ok(new PagedResult&lt;Employee&gt;
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+        });
+    }
+}</code></pre>
+
+    <span class="file-label">Program.cs</span>
+    <pre><code>var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddCors(options =&gt;
+{
+    options.AddPolicy("AllowAngular", policy =&gt;
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
+var app = builder.Build();
+
+app.UseCors("AllowAngular");
+app.MapControllers();
+app.Run();</code></pre>
+
+    <h3>Angular Frontend</h3>
+
+    <span class="file-label">models/employee.model.ts</span>
+    <pre><code>export interface Employee {
+  id: number;
+  name: string;
+  department: string;
+  email: string;
+}
+
+export interface PagedResult&lt;T&gt; {
+  items: T[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+}</code></pre>
+
+    <span class="file-label">services/employee.service.ts</span>
+    <pre><code>import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Employee, PagedResult } from '../models/employee.model';
+
+@Injectable({ providedIn: 'root' })
+export class EmployeeService {
+  private readonly apiUrl = 'https://localhost:7000/api/employees';
+
+  constructor(private http: HttpClient) {}
+
+  getEmployees(pageNumber: number, pageSize: number): Observable&lt;PagedResult&lt;Employee&gt;&gt; {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber)
+      .set('pageSize', pageSize);
+
+    return this.http.get&lt;PagedResult&lt;Employee&gt;&gt;(this.apiUrl, { params });
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.ts</span>
+    <pre><code>import { Component, OnInit } from '@angular/core';
+import { EmployeeService } from './services/employee.service';
+import { Employee, PagedResult } from './models/employee.model';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent implements OnInit {
+  employees: Employee[] = [];
+  currentPage = 1;
+  pageSize = 10;
+  totalPages = 1;
+  totalCount = 0;
+  loading = false;
+  error = '';
+
+  constructor(private employeeService: EmployeeService) {}
+
+  ngOnInit(): void {
+    this.loadGrid();
+  }
+
+  loadGrid(): void {
+    this.loading = true;
+    this.error = '';
+
+    this.employeeService.getEmployees(this.currentPage, this.pageSize)
+      .subscribe({
+        next: (result: PagedResult&lt;Employee&gt;) =&gt; {
+          this.employees = result.items;
+          this.currentPage = result.pageNumber;
+          this.pageSize = result.pageSize;
+          this.totalPages = result.totalPages;
+          this.totalCount = result.totalCount;
+          this.loading = false;
+        },
+        error: () =&gt; {
+          this.error = 'Failed to load employees.';
+          this.loading = false;
+        }
+      });
+  }
+
+  prevPage(): void {
+    if (this.currentPage &gt; 1) {
+      this.currentPage--;
+      this.loadGrid();
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage &lt; this.totalPages) {
+      this.currentPage++;
+      this.loadGrid();
+    }
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.html</span>
+    <pre><code>&lt;div class="grid-container"&gt;
+  &lt;p *ngIf="loading"&gt;Loading...&lt;/p&gt;
+  &lt;p *ngIf="error" class="error"&gt;{{ error }}&lt;/p&gt;
+
+  &lt;table *ngIf="!loading &amp;&amp; !error"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;ID&lt;/th&gt;
+        &lt;th&gt;Name&lt;/th&gt;
+        &lt;th&gt;Department&lt;/th&gt;
+        &lt;th&gt;Email&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr *ngFor="let emp of employees"&gt;
+        &lt;td&gt;{{ emp.id }}&lt;/td&gt;
+        &lt;td&gt;{{ emp.name }}&lt;/td&gt;
+        &lt;td&gt;{{ emp.department }}&lt;/td&gt;
+        &lt;td&gt;{{ emp.email }}&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr *ngIf="employees.length === 0"&gt;
+        &lt;td colspan="4"&gt;No records found.&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+
+  &lt;div class="pagination" *ngIf="!loading &amp;&amp; !error"&gt;
+    &lt;button (click)="prevPage()" [disabled]="currentPage === 1"&gt;Previous&lt;/button&gt;
+    &lt;span&gt;Page {{ currentPage }} of {{ totalPages }} ({{ totalCount }} total)&lt;/span&gt;
+    &lt;button (click)="nextPage()" [disabled]="currentPage === totalPages"&gt;Next&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <span class="file-label">app.module.ts</span>
+    <pre><code>import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule, HttpClientModule],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}</code></pre>
+
+    <h3>Observable with async pipe (alternative)</h3>
+    <p>If the interviewer prefers declarative templates, expose the Observable directly:</p>
+    <span class="file-label">app.component.ts (async pipe variant)</span>
+    <pre><code>gridData$ = this.employeeService.getEmployees(this.currentPage, this.pageSize);
+
+// Re-assign gridData$ inside prevPage()/nextPage() after changing currentPage</code></pre>
+    <span class="file-label">app.component.html (async pipe variant)</span>
+    <pre><code>&lt;ng-container *ngIf="gridData$ | async as result"&gt;
+  &lt;tr *ngFor="let emp of result.items"&gt;...&lt;/tr&gt;
+  &lt;span&gt;Page {{ result.pageNumber }} of {{ result.totalPages }}&lt;/span&gt;
+&lt;/ng-container&gt;</code></pre>
+
+    <div class="tip-box"><strong>HackerRank / Live Coding Tip:</strong> Match API property casing (camelCase JSON from .NET). Wire pagination buttons to re-call the API — don't slice client-side if the problem says "load from API". Run API first (<code>dotnet run</code>), then Angular (<code>ng serve</code>). For HackerRank-only Angular pads, mock the API URL they provide or use their in-browser proxy.</div>
+</div>
+
+<!-- ========== BASIC ========== -->
+
+<div class="answer-pane" id="q_1">
+    <span class="badge badge-basic">BASIC</span>
+    <h2>1. Temperature Converter</h2>
+    <p>Build a real-time °C ↔ °F converter. Typing in one field instantly updates the other using two-way binding and conversion formulas.</p>
+
+    <h3>Key Concepts</h3>
+    <ul>
+        <li><code>[(ngModel)]</code> for two-way data binding (requires <code>FormsModule</code>)</li>
+        <li>Conversion: <code>F = C × 9/5 + 32</code> and <code>C = (F − 32) × 5/9</code></li>
+        <li>Use a flag to prevent infinite update loops when both fields sync each other</li>
+    </ul>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Only edit the files they allow (usually <code>app.component.ts</code> and <code>app.component.html</code>). Import <code>FormsModule</code> in the module if ngModel throws an error.</div>
+
+    <span class="file-label">app.component.ts</span>
+    <pre><code>import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  celsius: number | null = null;
+  fahrenheit: number | null = null;
+  private updating = false;
+
+  onCelsiusChange(): void {
+    if (this.updating) return;
+    this.updating = true;
+    this.fahrenheit = this.celsius != null
+      ? +(this.celsius * 9 / 5 + 32).toFixed(2)
+      : null;
+    this.updating = false;
+  }
+
+  onFahrenheitChange(): void {
+    if (this.updating) return;
+    this.updating = true;
+    this.celsius = this.fahrenheit != null
+      ? +((this.fahrenheit - 32) * 5 / 9).toFixed(2)
+      : null;
+    this.updating = false;
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.html</span>
+    <pre><code>&lt;div class="converter"&gt;
+  &lt;label&gt;
+    Celsius
+    &lt;input type="number"
+           [(ngModel)]="celsius"
+           (ngModelChange)="onCelsiusChange()" /&gt;
+  &lt;/label&gt;
+
+  &lt;label&gt;
+    Fahrenheit
+    &lt;input type="number"
+           [(ngModel)]="fahrenheit"
+           (ngModelChange)="onFahrenheitChange()" /&gt;
+  &lt;/label&gt;
+&lt;/div&gt;</code></pre>
+
+    <span class="file-label">app.module.ts (if needed)</span>
+    <pre><code>import { FormsModule } from '@angular/forms';
+
+@NgModule({
+  imports: [BrowserModule, FormsModule],
+  ...
+})</code></pre>
+</div>
+
+<div class="answer-pane" id="q_2">
+    <span class="badge badge-basic">BASIC</span>
+    <h2>2. Code Review Feedback System</h2>
+    <p>Display categories/items with Upvote and Downvote buttons. Counters must update immediately on click.</p>
+
+    <h3>Key Concepts</h3>
+    <ul>
+        <li>Array of objects in the component class</li>
+        <li><code>(click)</code> event binding to increment/decrement</li>
+        <li><code>*ngFor</code> to render the list dynamically</li>
+    </ul>
+
+    <span class="file-label">app.component.ts</span>
+    <pre><code>import { Component } from '@angular/core';
+
+interface FeedbackItem {
+  title: string;
+  upvotes: number;
+  downvotes: number;
+}
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  items: FeedbackItem[] = [
+    { title: 'Readability', upvotes: 0, downvotes: 0 },
+    { title: 'Performance', upvotes: 0, downvotes: 0 },
+    { title: 'Security',   upvotes: 0, downvotes: 0 }
+  ];
+
+  upvote(item: FeedbackItem): void {
+    item.upvotes++;
+  }
+
+  downvote(item: FeedbackItem): void {
+    item.downvotes++;
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.html</span>
+    <pre><code>&lt;div *ngFor="let item of items" class="feedback-card"&gt;
+  &lt;h3&gt;{{ item.title }}&lt;/h3&gt;
+  &lt;button (click)="upvote(item)"&gt;Upvote ({{ item.upvotes }})&lt;/button&gt;
+  &lt;button (click)="downvote(item)"&gt;Downvote ({{ item.downvotes }})&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Match button text and class names exactly as given in the starter template. Use the object reference passed to the method — don't copy by index unless required.</div>
+</div>
+
+<div class="answer-pane" id="q_3">
+    <span class="badge badge-basic">BASIC</span>
+    <h2>3. Simple Calculator</h2>
+    <p>Wire pre-built UI buttons to <code>add</code>, <code>subtract</code>, <code>multiply</code>, <code>divide</code>, and <code>reset</code> methods.</p>
+
+    <span class="file-label">app.component.ts</span>
+    <pre><code>import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  num1 = 0;
+  num2 = 0;
+  result = 0;
+
+  add(): void      { this.result = this.num1 + this.num2; }
+  subtract(): void { this.result = this.num1 - this.num2; }
+  multiply(): void { this.result = this.num1 * this.num2; }
+  divide(): void   {
+    this.result = this.num2 !== 0 ? this.num1 / this.num2 : 0;
+  }
+  reset(): void {
+    this.num1 = 0;
+    this.num2 = 0;
+    this.result = 0;
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.html</span>
+    <pre><code>&lt;input type="number" [(ngModel)]="num1" /&gt;
+&lt;input type="number" [(ngModel)]="num2" /&gt;
+&lt;p&gt;Result: {{ result }}&lt;/p&gt;
+
+&lt;button (click)="add()"&gt;Add&lt;/button&gt;
+&lt;button (click)="subtract()"&gt;Subtract&lt;/button&gt;
+&lt;button (click)="multiply()"&gt;Multiply&lt;/button&gt;
+&lt;button (click)="divide()"&gt;Divide&lt;/button&gt;
+&lt;button (click)="reset()"&gt;Reset&lt;/button&gt;</code></pre>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Guard divide-by-zero — HackerRank tests often check edge cases. Method names must match the template exactly (case-sensitive).</div>
+</div>
+
+<div class="answer-pane" id="q_4">
+    <span class="badge badge-basic">BASIC</span>
+    <h2>4. Item List Manager</h2>
+    <p>Input field + Add button injects a new string into a <code>&lt;ul&gt;</code> list. Uses array push and <code>*ngFor</code>.</p>
+
+    <span class="file-label">app.component.ts</span>
+    <pre><code>import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  newItem = '';
+  items: string[] = [];
+
+  addItem(): void {
+    const trimmed = this.newItem.trim();
+    if (trimmed) {
+      this.items.push(trimmed);
+      this.newItem = '';
+    }
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.html</span>
+    <pre><code>&lt;input [(ngModel)]="newItem" placeholder="Enter item" /&gt;
+&lt;button (click)="addItem()"&gt;Add&lt;/button&gt;
+
+&lt;ul&gt;
+  &lt;li *ngFor="let item of items"&gt;{{ item }}&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Clear the input after adding. Some tests verify the input is empty post-add. Trim whitespace before pushing.</div>
+</div>
+
+<!-- ========== INTERMEDIATE ========== -->
+
+<div class="answer-pane" id="q_5">
+    <span class="badge badge-intermediate">INTERMEDIATE</span>
+    <h2>5. Weather Finder Application</h2>
+    <p>User enters a city name; fetch weather from a mock/API service via <code>HttpClient</code> and display wind, humidity, etc. Handle empty/not-found states.</p>
+
+    <h3>Key Concepts</h3>
+    <ul>
+        <li>Injectable service with <code>HttpClient.get()</code></li>
+        <li>Subscribe to Observable or use <code>async</code> pipe</li>
+        <li><code>*ngIf</code> for loading, error, and empty states</li>
+    </ul>
+
+    <span class="file-label">weather.service.ts</span>
+    <pre><code>import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface WeatherData {
+  city: string;
+  temperature: number;
+  humidity: number;
+  windSpeed: number;
+}
+
+@Injectable({ providedIn: 'root' })
+export class WeatherService {
+  constructor(private http: HttpClient) {}
+
+  getWeather(city: string): Observable&lt;WeatherData&gt; {
+    return this.http.get&lt;WeatherData&gt;(
+      `https://api.example.com/weather?city=${encodeURIComponent(city)}`
+    );
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.ts</span>
+    <pre><code>import { Component } from '@angular/core';
+import { WeatherService, WeatherData } from './weather.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  city = '';
+  weather: WeatherData | null = null;
+  notFound = false;
+  loading = false;
+
+  constructor(private weatherService: WeatherService) {}
+
+  search(): void {
+    if (!this.city.trim()) return;
+    this.loading = true;
+    this.notFound = false;
+    this.weather = null;
+
+    this.weatherService.getWeather(this.city.trim()).subscribe({
+      next: (data) => {
+        this.weather = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.notFound = true;
+        this.loading = false;
+      }
+    });
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.html</span>
+    <pre><code>&lt;input [(ngModel)]="city" placeholder="Enter city" /&gt;
+&lt;button (click)="search()"&gt;Search&lt;/button&gt;
+
+&lt;p *ngIf="loading"&gt;Loading...&lt;/p&gt;
+&lt;p *ngIf="notFound"&gt;No weather data found for this city.&lt;/p&gt;
+
+&lt;div *ngIf="weather"&gt;
+  &lt;h3&gt;{{ weather.city }}&lt;/h3&gt;
+  &lt;p&gt;Temperature: {{ weather.temperature }}°C&lt;/p&gt;
+  &lt;p&gt;Humidity: {{ weather.humidity }}%&lt;/p&gt;
+  &lt;p&gt;Wind: {{ weather.windSpeed }} km/h&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+    <span class="file-label">app.module.ts</span>
+    <pre><code>import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+  imports: [BrowserModule, FormsModule, HttpClientModule],
+  providers: [WeatherService]
+})</code></pre>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> HackerRank provides a mock URL — use their exact endpoint. Reset <code>notFound</code> and <code>weather</code> before each new search. Import <code>HttpClientModule</code> in the module, not the component.</div>
+</div>
+
+<div class="answer-pane" id="q_6">
+    <span class="badge badge-intermediate">INTERMEDIATE</span>
+    <h2>6. Kanban Board Slider</h2>
+    <p>Manage cards across columns (Backlog → To-Do → In-Progress → Done). Move cards left/right; disable buttons at column boundaries.</p>
+
+    <span class="file-label">app.component.ts</span>
+    <pre><code>import { Component } from '@angular/core';
+
+interface Card {
+  id: number;
+  title: string;
+}
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  columns: Card[][] = [
+    [{ id: 1, title: 'Setup project' }],
+    [{ id: 2, title: 'Write tests' }],
+    [],
+    []
+  ];
+
+  columnNames = ['Backlog', 'To-Do', 'In-Progress', 'Done'];
+
+  moveRight(colIndex: number, cardIndex: number): void {
+    if (colIndex &lt; this.columns.length - 1) {
+      const card = this.columns[colIndex].splice(cardIndex, 1)[0];
+      this.columns[colIndex + 1].push(card);
+    }
+  }
+
+  moveLeft(colIndex: number, cardIndex: number): void {
+    if (colIndex &gt; 0) {
+      const card = this.columns[colIndex].splice(cardIndex, 1)[0];
+      this.columns[colIndex - 1].push(card);
+    }
+  }
+
+  canMoveLeft(colIndex: number): boolean  { return colIndex &gt; 0; }
+  canMoveRight(colIndex: number): boolean { return colIndex &lt; this.columns.length - 1; }
+
+  addCard(colIndex: number, title: string): void {
+    if (title.trim()) {
+      this.columns[colIndex].push({
+        id: Date.now(),
+        title: title.trim()
+      });
+    }
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.html</span>
+    <pre><code>&lt;div class="board"&gt;
+  &lt;div *ngFor="let column of columns; let colIndex = index" class="column"&gt;
+    &lt;h3&gt;{{ columnNames[colIndex] }}&lt;/h3&gt;
+
+    &lt;div *ngFor="let card of column; let cardIndex = index" class="card"&gt;
+      &lt;p&gt;{{ card.title }}&lt;/p&gt;
+      &lt;button (click)="moveLeft(colIndex, cardIndex)"
+              [disabled]="!canMoveLeft(colIndex)"&gt;←&lt;/button&gt;
+      &lt;button (click)="moveRight(colIndex, cardIndex)"
+              [disabled]="!canMoveRight(colIndex)"&gt;→&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Use <code>[disabled]</code> binding — not <code>*ngIf</code> hiding buttons unless the template requires it. After <code>splice</code>, Angular change detection updates the view automatically.</div>
+</div>
+
+<div class="answer-pane" id="q_7">
+    <span class="badge badge-intermediate">INTERMEDIATE</span>
+    <h2>7. Survey List / Paginated Table</h2>
+    <p>Fetch customer records, render a paginated table, and filter/search dynamically.</p>
+
+    <span class="file-label">survey.service.ts</span>
+    <pre><code>import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface SurveyRecord {
+  id: number;
+  name: string;
+  email: string;
+  rating: number;
+}
+
+@Injectable({ providedIn: 'root' })
+export class SurveyService {
+  constructor(private http: HttpClient) {}
+
+  getRecords(): Observable&lt;SurveyRecord[]&gt; {
+    return this.http.get&lt;SurveyRecord[]&gt;('/api/surveys');
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.ts</span>
+    <pre><code>import { Component, OnInit } from '@angular/core';
+import { SurveyService, SurveyRecord } from './survey.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent implements OnInit {
+  allRecords: SurveyRecord[] = [];
+  filteredRecords: SurveyRecord[] = [];
+  searchTerm = '';
+  currentPage = 1;
+  pageSize = 5;
+
+  constructor(private surveyService: SurveyService) {}
+
+  ngOnInit(): void {
+    this.surveyService.getRecords().subscribe(data =&gt; {
+      this.allRecords = data;
+      this.applyFilter();
+    });
+  }
+
+  applyFilter(): void {
+    const term = this.searchTerm.toLowerCase();
+    this.filteredRecords = this.allRecords.filter(r =&gt;
+      r.name.toLowerCase().includes(term) ||
+      r.email.toLowerCase().includes(term)
+    );
+    this.currentPage = 1;
+  }
+
+  get paginatedRecords(): SurveyRecord[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredRecords.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredRecords.length / this.pageSize) || 1;
+  }
+
+  prevPage(): void {
+    if (this.currentPage &gt; 1) this.currentPage--;
+  }
+
+  nextPage(): void {
+    if (this.currentPage &lt; this.totalPages) this.currentPage++;
+  }
+}</code></pre>
+
+    <span class="file-label">app.component.html</span>
+    <pre><code>&lt;input [(ngModel)]="searchTerm"
+       (ngModelChange)="applyFilter()"
+       placeholder="Search by name or email" /&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;th&gt;Rating&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr *ngFor="let record of paginatedRecords"&gt;
+      &lt;td&gt;{{ record.id }}&lt;/td&gt;
+      &lt;td&gt;{{ record.name }}&lt;/td&gt;
+      &lt;td&gt;{{ record.email }}&lt;/td&gt;
+      &lt;td&gt;{{ record.rating }}&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr *ngIf="paginatedRecords.length === 0"&gt;
+      &lt;td colspan="4"&gt;No records found.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;button (click)="prevPage()" [disabled]="currentPage === 1"&gt;Previous&lt;/button&gt;
+&lt;span&gt;Page {{ currentPage }} of {{ totalPages }}&lt;/span&gt;
+&lt;button (click)="nextPage()" [disabled]="currentPage === totalPages"&gt;Next&lt;/button&gt;</code></pre>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Reset to page 1 when the filter changes. Use a getter for <code>paginatedRecords</code> so the slice recalculates automatically. Handle empty arrays gracefully.</div>
+</div>
+
+<!-- ========== ADVANCED ========== -->
+
+<div class="answer-pane" id="q_8">
+    <span class="badge badge-advanced">ADVANCED</span>
+    <h2>8. Unit Testing (.spec.ts)</h2>
+    <p>Write or fix Jasmine/Karma tests to assert component behavior. Common patterns on HackerRank Advanced tests.</p>
+
+    <h3>Standard Test Setup</h3>
+    <span class="file-label">example.component.spec.ts</span>
+    <pre><code>import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { ExampleComponent } from './example.component';
+
+describe('ExampleComponent', () =&gt; {
+  let component: ExampleComponent;
+  let fixture: ComponentFixture&lt;ExampleComponent&gt;;
+
+  beforeEach(async () =&gt; {
+    await TestBed.configureTestingModule({
+      declarations: [ExampleComponent],
+      imports: [FormsModule]   // import modules the component needs
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ExampleComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () =&gt; {
+    expect(component).toBeTruthy();
+  });
+
+  it('should add two numbers', () =&gt; {
+    component.num1 = 5;
+    component.num2 = 3;
+    component.add();
+    expect(component.result).toBe(8);
+  });
+
+  it('should add item to list', () =&gt; {
+    component.newItem = 'Test';
+    component.addItem();
+    expect(component.items.length).toBe(1);
+    expect(component.items[0]).toBe('Test');
+    expect(component.newItem).toBe('');
+  });
+});</code></pre>
+
+    <h3>Testing a Service with HttpClient</h3>
+    <span class="file-label">weather.service.spec.ts</span>
+    <pre><code>import { TestBed } from '@angular/core/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
+import { WeatherService } from './weather.service';
+
+describe('WeatherService', () =&gt; {
+  let service: WeatherService;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() =&gt; {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [WeatherService]
+    });
+    service = TestBed.inject(WeatherService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() =&gt; httpMock.verify());
+
+  it('should fetch weather data', () =&gt; {
+    const mockData = { city: 'London', temperature: 15, humidity: 60, windSpeed: 10 };
+
+    service.getWeather('London').subscribe(data =&gt; {
+      expect(data).toEqual(mockData);
+    });
+
+    const req = httpMock.expectOne(
+      r =&gt; r.url.includes('London')
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(mockData);
+  });
+});</code></pre>
+
+    <h3>Testing DOM / Template</h3>
+    <pre><code>it('should render list items', () =&gt; {
+  component.items = ['Apple', 'Banana'];
+  fixture.detectChanges();
+
+  const liElements = fixture.nativeElement.querySelectorAll('li');
+  expect(liElements.length).toBe(2);
+  expect(liElements[0].textContent).toContain('Apple');
+});
+
+it('should disable button when at first column', () =&gt; {
+  fixture.detectChanges();
+  const btn = fixture.nativeElement.querySelector('button');
+  expect(btn.disabled).toBe(true);
+});</code></pre>
+
+    <table>
+        <tr><th>Matcher</th><th>Use When</th></tr>
+        <tr><td><code>toBe()</code></td><td>Primitives (numbers, booleans, strings by reference)</td></tr>
+        <tr><td><code>toEqual()</code></td><td>Objects and arrays (deep equality)</td></tr>
+        <tr><td><code>toBeTruthy() / toBeFalsy()</code></td><td>Existence checks</td></tr>
+        <tr><td><code>toHaveBeenCalled()</code></td><td>Spy/mock function was invoked</td></tr>
+        <tr><td><code>toContain()</code></td><td>String or array contains value</td></tr>
+    </table>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Read the failing test output carefully — they often tell you exactly which assertion failed. Call <code>fixture.detectChanges()</code> after changing component state before querying the DOM.</div>
+</div>
+
+<div class="answer-pane" id="q_9">
+    <span class="badge badge-advanced">ADVANCED</span>
+    <h2>9. Browser Console Debugging</h2>
+    <p>Fix runtime errors involving service injection, change detection loops, or scope issues. These appear as red errors in the browser console during HackerRank's automated run.</p>
+
+    <h3>Common Errors &amp; Fixes</h3>
+
+    <table>
+        <tr><th>Error Message</th><th>Root Cause</th><th>Fix</th></tr>
+        <tr>
+            <td><code>NullInjectorError: No provider for X</code></td>
+            <td>Service not registered</td>
+            <td>Add <code>@Injectable({ providedIn: 'root' })</code> OR add to <code>providers</code> in module/component</td>
+        </tr>
+        <tr>
+            <td><code>Can't bind to 'ngModel' since it isn't a known property</code></td>
+            <td>FormsModule missing</td>
+            <td>Import <code>FormsModule</code> in <code>@NgModule imports</code></td>
+        </tr>
+        <tr>
+            <td><code>HttpClient not found</code></td>
+            <td>HttpClientModule missing</td>
+            <td>Import <code>HttpClientModule</code> in module</td>
+        </tr>
+        <tr>
+            <td><code>ExpressionChangedAfterItHasBeenCheckedError</code></td>
+            <td>Value changes after Angular checked the view</td>
+            <td>Move logic to <code>ngOnInit</code> or use <code>setTimeout(() =&gt; ...)</code> / <code>ChangeDetectorRef.detectChanges()</code></td>
+        </tr>
+        <tr>
+            <td><code>Maximum call stack size exceeded</code></td>
+            <td>Two-way binding infinite loop</td>
+            <td>Use an <code>updating</code> flag (see Temperature Converter) to break the cycle</td>
+        </tr>
+        <tr>
+            <td><code>Cannot read properties of undefined</code></td>
+            <td>Accessing data before async load</td>
+            <td>Use <code>*ngIf="data"</code> safe navigation <code>data?.field</code> or initialize defaults</td>
+        </tr>
+    </table>
+
+    <h3>Debugging Checklist</h3>
+    <ol>
+        <li>Open browser DevTools → Console tab — read the full stack trace</li>
+        <li>Check the file and line number in the error — HackerRank maps to your component</li>
+        <li>Verify all imports in <code>app.module.ts</code>: <code>FormsModule</code>, <code>HttpClientModule</code>, declarations</li>
+        <li>Ensure service is in <code>providers</code> or uses <code>providedIn: 'root'</code></li>
+        <li>For Observable issues: confirm you <code>subscribe()</code> or use <code>async</code> pipe</li>
+        <li>Check for typos in template property/method names (case-sensitive)</li>
+    </ol>
+
+    <span class="file-label">Fixing a missing provider example</span>
+    <pre><code>// ❌ Service without injection setup
+@Injectable()
+export class DataService { ... }
+
+// ✅ Option A — root injection (Angular 6+)
+@Injectable({ providedIn: 'root' })
+export class DataService { ... }
+
+// ✅ Option B — module providers
+@NgModule({
+  providers: [DataService]
+})</code></pre>
+
+    <span class="file-label">Fixing async undefined access</span>
+    <pre><code>// ❌ Crashes if weather is null on first render
+&lt;p&gt;{{ weather.temperature }}&lt;/p&gt;
+
+// ✅ Safe — only renders when data exists
+&lt;div *ngIf="weather"&gt;
+  &lt;p&gt;{{ weather.temperature }}&lt;/p&gt;
+&lt;/div&gt;
+
+// ✅ Or safe navigation operator
+&lt;p&gt;{{ weather?.temperature }}&lt;/p&gt;</code></pre>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Advanced tests often give you a nearly-working app with one bug. Fix the minimum — don't rewrite the whole component. The console error message usually points directly to the broken line.</div>
+</div>
+
+<!-- ========== FORMS & VALIDATIONS ========== -->
+
+<div class="answer-pane" id="q_10">
+    <span class="badge badge-intermediate">FORMS</span>
+    <h2>Angular Forms — All Types &amp; Field Validations</h2>
+    <p>Angular provides two form approaches. Both support validation, but reactive forms are preferred for complex logic and unit testing.</p>
+
+    <h3>1. Form Types Comparison</h3>
+    <table>
+        <thead>
+            <tr><th>Type</th><th>Module</th><th>Setup</th><th>Best For</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Template-driven</strong></td>
+                <td><code>FormsModule</code></td>
+                <td><code>[(ngModel)]</code>, <code>#f="ngForm"</code></td>
+                <td>Simple forms, quick prototypes</td>
+            </tr>
+            <tr>
+                <td><strong>Reactive</strong></td>
+                <td><code>ReactiveFormsModule</code></td>
+                <td><code>FormGroup</code>, <code>formControlName</code></td>
+                <td>Complex forms, dynamic fields, tests</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <span class="file-label">app.module.ts — import both if needed</span>
+    <pre><code>import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+@NgModule({
+  imports: [BrowserModule, FormsModule, ReactiveFormsModule]
+})
+export class AppModule {}</code></pre>
+
+    <h3>2. Template-Driven Forms</h3>
+    <p>Logic lives mostly in the template. Angular creates form controls implicitly from <code>ngModel</code>.</p>
+
+    <span class="file-label">template-driven.component.ts</span>
+    <pre><code>import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-template-form',
+  templateUrl: './template-driven.component.html'
+})
+export class TemplateDrivenComponent {
+  user = { name: '', email: '', age: null as number | null, role: 'user', agree: false };
+
+  onSubmit(form: any): void {
+    if (form.valid) {
+      console.log(this.user);
+    }
+  }
+}</code></pre>
+
+    <span class="file-label">template-driven.component.html</span>
+    <pre><code>&lt;form #userForm="ngForm" (ngSubmit)="onSubmit(userForm)" novalidate&gt;
+
+  &lt;!-- Text --&gt;
+  &lt;label&gt;Name&lt;/label&gt;
+  &lt;input type="text" name="name"
+         [(ngModel)]="user.name"
+         required minlength="3" maxlength="50"
+         #name="ngModel" /&gt;
+  &lt;div *ngIf="name.invalid &amp;&amp; name.touched"&gt;
+    &lt;span *ngIf="name.errors?.['required']"&gt;Name is required.&lt;/span&gt;
+    &lt;span *ngIf="name.errors?.['minlength']"&gt;Min 3 characters.&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Email --&gt;
+  &lt;label&gt;Email&lt;/label&gt;
+  &lt;input type="email" name="email"
+         [(ngModel)]="user.email"
+         required email #email="ngModel" /&gt;
+  &lt;div *ngIf="email.invalid &amp;&amp; email.touched"&gt;
+    &lt;span *ngIf="email.errors?.['required']"&gt;Email is required.&lt;/span&gt;
+    &lt;span *ngIf="email.errors?.['email']"&gt;Invalid email format.&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Number --&gt;
+  &lt;label&gt;Age&lt;/label&gt;
+  &lt;input type="number" name="age"
+         [(ngModel)]="user.age"
+         required min="18" max="100" #age="ngModel" /&gt;
+
+  &lt;!-- Select dropdown --&gt;
+  &lt;label&gt;Role&lt;/label&gt;
+  &lt;select name="role" [(ngModel)]="user.role" required&gt;
+    &lt;option value="user"&gt;User&lt;/option&gt;
+    &lt;option value="admin"&gt;Admin&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;!-- Checkbox --&gt;
+  &lt;label&gt;
+    &lt;input type="checkbox" name="agree"
+           [(ngModel)]="user.agree" required /&gt;
+    I agree to terms
+  &lt;/label&gt;
+
+  &lt;button type="submit" [disabled]="userForm.invalid"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+    <h3>3. Reactive Forms (FormGroup + FormControl)</h3>
+    <p>Form structure is defined in the component class. Preferred for interviews and production apps.</p>
+
+    <span class="file-label">reactive-form.component.ts</span>
+    <pre><code>import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-reactive-form',
+  templateUrl: './reactive-form.component.html'
+})
+export class ReactiveFormComponent implements OnInit {
+  userForm!: FormGroup;
+
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.userForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      email: ['', [Validators.required, Validators.email]],
+      age: [null, [Validators.required, Validators.min(18), Validators.max(100)]],
+      role: ['user', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required],
+      phone: ['', Validators.pattern(/^[0-9]{10}$/)],
+      website: ['', Validators.pattern(/^https?:\/\/.+/)]
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  passwordMatchValidator(group: FormGroup) {
+    const pass = group.get('password')?.value;
+    const confirm = group.get('confirmPassword')?.value;
+    return pass === confirm ? null : { passwordMismatch: true };
+  }
+
+  get name() { return this.userForm.get('name'); }
+  get email() { return this.userForm.get('email'); }
+
+  onSubmit(): void {
+    if (this.userForm.valid) {
+      console.log(this.userForm.value);
+    } else {
+      this.userForm.markAllAsTouched();
+    }
+  }
+}</code></pre>
+
+    <span class="file-label">reactive-form.component.html</span>
+    <pre><code>&lt;form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate&gt;
+
+  &lt;label&gt;Name&lt;/label&gt;
+  &lt;input type="text" formControlName="name" /&gt;
+  &lt;div *ngIf="name?.invalid &amp;&amp; name?.touched"&gt;
+    &lt;span *ngIf="name?.errors?.['required']"&gt;Name is required.&lt;/span&gt;
+    &lt;span *ngIf="name?.errors?.['minlength']"&gt;Min 3 characters.&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;label&gt;Email&lt;/label&gt;
+  &lt;input type="email" formControlName="email" /&gt;
+  &lt;div *ngIf="email?.invalid &amp;&amp; email?.touched"&gt;
+    &lt;span *ngIf="email?.errors?.['required']"&gt;Email is required.&lt;/span&gt;
+    &lt;span *ngIf="email?.errors?.['email']"&gt;Invalid email.&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;label&gt;Age&lt;/label&gt;
+  &lt;input type="number" formControlName="age" /&gt;
+
+  &lt;label&gt;Role&lt;/label&gt;
+  &lt;select formControlName="role"&gt;
+    &lt;option value="user"&gt;User&lt;/option&gt;
+    &lt;option value="admin"&gt;Admin&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;label&gt;Password&lt;/label&gt;
+  &lt;input type="password" formControlName="password" /&gt;
+
+  &lt;label&gt;Confirm Password&lt;/label&gt;
+  &lt;input type="password" formControlName="confirmPassword" /&gt;
+  &lt;div *ngIf="userForm.errors?.['passwordMismatch'] &amp;&amp; userForm.touched"&gt;
+    Passwords do not match.
+  &lt;/div&gt;
+
+  &lt;label&gt;Phone&lt;/label&gt;
+  &lt;input type="tel" formControlName="phone" placeholder="10 digits" /&gt;
+
+  &lt;label&gt;Website&lt;/label&gt;
+  &lt;input type="url" formControlName="website" /&gt;
+
+  &lt;button type="submit" [disabled]="userForm.invalid"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+    <h3>4. FormArray — Dynamic / Repeatable Fields</h3>
+    <p>Use when the user can add or remove rows (addresses, phone numbers, line items).</p>
+
+    <span class="file-label">dynamic-form.component.ts</span>
+    <pre><code>import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-dynamic-form',
+  templateUrl: './dynamic-form.component.html'
+})
+export class DynamicFormComponent implements OnInit {
+  form!: FormGroup;
+
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      company: ['', Validators.required],
+      contacts: this.fb.array([this.createContact()])
+    });
+  }
+
+  get contacts(): FormArray {
+    return this.form.get('contacts') as FormArray;
+  }
+
+  createContact(): FormGroup {
+    return this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]]
+    });
+  }
+
+  addContact(): void {
+    this.contacts.push(this.createContact());
+  }
+
+  removeContact(index: number): void {
+    this.contacts.removeAt(index);
+  }
+}</code></pre>
+
+    <span class="file-label">dynamic-form.component.html</span>
+    <pre><code>&lt;form [formGroup]="form"&gt;
+  &lt;input type="text" formControlName="company" placeholder="Company" /&gt;
+
+  &lt;div formArrayName="contacts"&gt;
+    &lt;div *ngFor="let contact of contacts.controls; let i = index"
+         [formGroupName]="i"&gt;
+      &lt;input formControlName="name" placeholder="Contact name" /&gt;
+      &lt;input formControlName="email" placeholder="Contact email" /&gt;
+      &lt;button type="button" (click)="removeContact(i)"&gt;Remove&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;button type="button" (click)="addContact()"&gt;Add Contact&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+    <h3>5. All Built-in Validators</h3>
+    <table>
+        <thead>
+            <tr><th>Validator</th><th>Usage</th><th>Error Key</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>Validators.required</code></td><td>Field must have a value</td><td><code>required</code></td><td>Text, select, checkbox</td></tr>
+            <tr><td><code>Validators.requiredTrue</code></td><td>Checkbox must be checked</td><td><code>required</code></td><td>Terms acceptance</td></tr>
+            <tr><td><code>Validators.email</code></td><td>Valid email format</td><td><code>email</code></td><td><code>user@mail.com</code></td></tr>
+            <tr><td><code>Validators.min(n)</code></td><td>Minimum numeric value</td><td><code>min</code></td><td>Age ≥ 18</td></tr>
+            <tr><td><code>Validators.max(n)</code></td><td>Maximum numeric value</td><td><code>max</code></td><td>Age ≤ 100</td></tr>
+            <tr><td><code>Validators.minLength(n)</code></td><td>Min string length</td><td><code>minlength</code></td><td>Password ≥ 8</td></tr>
+            <tr><td><code>Validators.maxLength(n)</code></td><td>Max string length</td><td><code>maxlength</code></td><td>Name ≤ 50</td></tr>
+            <tr><td><code>Validators.pattern(regex)</code></td><td>Must match regex</td><td><code>pattern</code></td><td>Phone, ZIP, URL</td></tr>
+            <tr><td><code>Validators.nullValidator</code></td><td>Always valid (placeholder)</td><td>—</td><td>Conditional setup</td></tr>
+        </tbody>
+    </table>
+
+    <h3>6. HTML Input Types in Angular Forms</h3>
+    <table>
+        <thead>
+            <tr><th>Input Type</th><th>Template-driven</th><th>Reactive</th><th>Common Validators</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>text</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>required, minLength, maxLength, pattern</td></tr>
+            <tr><td><code>email</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>required, email</td></tr>
+            <tr><td><code>password</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>required, minLength, pattern</td></tr>
+            <tr><td><code>number</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>required, min, max</td></tr>
+            <tr><td><code>tel</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>required, pattern</td></tr>
+            <tr><td><code>url</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>required, pattern</td></tr>
+            <tr><td><code>date</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>required, custom date range</td></tr>
+            <tr><td><code>checkbox</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>requiredTrue</td></tr>
+            <tr><td><code>radio</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>required</td></tr>
+            <tr><td><code>select</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>required</td></tr>
+            <tr><td><code>textarea</code></td><td><code>[(ngModel)]</code></td><td><code>formControlName</code></td><td>required, minLength, maxLength</td></tr>
+            <tr><td><code>file</code></td><td><code>(change)</code> handler</td><td><code>setValue(file)</code></td><td>custom file type/size validator</td></tr>
+        </tbody>
+    </table>
+
+    <span class="file-label">Radio buttons (reactive)</span>
+    <pre><code>&lt;label&gt;&lt;input type="radio" formControlName="gender" value="male" /&gt; Male&lt;/label&gt;
+&lt;label&gt;&lt;input type="radio" formControlName="gender" value="female" /&gt; Female&lt;/label&gt;</code></pre>
+
+    <span class="file-label">Multi-select checkbox group (reactive)</span>
+    <pre><code>// TS: skills = this.fb.control([], Validators.required)
+// HTML:
+&lt;label *ngFor="let skill of skillOptions"&gt;
+  &lt;input type="checkbox"
+         [checked]="userForm.get('skills')?.value.includes(skill)"
+         (change)="toggleSkill(skill, $event)" /&gt;
+  {{ skill }}
+&lt;/label&gt;
+
+toggleSkill(skill: string, event: Event): void {
+  const checked = (event.target as HTMLInputElement).checked;
+  const skills = [...(this.userForm.get('skills')?.value || [])];
+  if (checked) skills.push(skill);
+  else skills.splice(skills.indexOf(skill), 1);
+  this.userForm.get('skills')?.setValue(skills);
+}</code></pre>
+
+    <h3>7. Custom Validator</h3>
+    <span class="file-label">custom-validators.ts</span>
+    <pre><code>import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+
+export function noSpacesValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null =&gt; {
+    const value = control.value as string;
+    if (value &amp;&amp; value.includes(' ')) {
+      return { noSpaces: true };
+    }
+    return null;
+  };
+}
+
+export function forbiddenNameValidator(forbidden: string): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null =&gt; {
+    if (control.value?.toLowerCase() === forbidden.toLowerCase()) {
+      return { forbiddenName: true };
+    }
+    return null;
+  };
+}
+
+// Usage in FormBuilder:
+name: ['', [Validators.required, noSpacesValidator(), forbiddenNameValidator('admin')]]</code></pre>
+
+    <h3>8. Async Validator (e.g. check username on server)</h3>
+    <span class="file-label">username-async.validator.ts</span>
+    <pre><code>import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { map, delay } from 'rxjs/operators';
+
+export function usernameTakenValidator(checkFn: (name: string) =&gt; Observable&lt;boolean&gt;): AsyncValidatorFn {
+  return (control: AbstractControl): Observable&lt;ValidationErrors | null&gt; =&gt; {
+    if (!control.value) return of(null);
+    return checkFn(control.value).pipe(
+      map(taken =&gt; (taken ? { usernameTaken: true } : null))
+    );
+  };
+}
+
+// Usage:
+username: ['', [Validators.required], [usernameTakenValidator(this.userService.isTaken.bind(this.userService))]]</code></pre>
+
+    <h3>9. Form State Properties (when to show errors)</h3>
+    <table>
+        <thead>
+            <tr><th>Property</th><th>Template-driven (<code>NgModel</code>)</th><th>Reactive (<code>FormControl</code>)</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>valid</code> / <code>invalid</code></td><td><code>field.valid</code></td><td><code>control.valid</code></td></tr>
+            <tr><td><code>touched</code></td><td>User left the field</td><td><code>control.touched</code></td></tr>
+            <tr><td><code>dirty</code></td><td>User changed value</td><td><code>control.dirty</code></td></tr>
+            <tr><td><code>errors</code></td><td><code>field.errors?.['required']</code></td><td><code>control.errors?.['email']</code></td></tr>
+            <tr><td><code>pending</code></td><td>—</td><td>Async validation running</td></tr>
+        </tbody>
+    </table>
+
+    <span class="file-label">Recommended error display pattern</span>
+    <pre><code>&lt;div *ngIf="control?.invalid &amp;&amp; (control?.dirty || control?.touched)"&gt;
+  &lt;span *ngIf="control?.errors?.['required']"&gt;This field is required.&lt;/span&gt;
+  &lt;span *ngIf="control?.errors?.['email']"&gt;Enter a valid email.&lt;/span&gt;
+  &lt;span *ngIf="control?.errors?.['minlength']"&gt;
+    Min {{ control?.errors?.['minlength'].requiredLength }} characters.
+  &lt;/span&gt;
+&lt;/div&gt;</code></pre>
+
+    <h3>10. Useful Form Methods</h3>
+    <table>
+        <thead>
+            <tr><th>Method</th><th>Scope</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>markAllAsTouched()</code></td><td>FormGroup</td><td>Show all errors on submit</td></tr>
+            <tr><td><code>reset()</code></td><td>FormGroup / NgForm</td><td>Clear form to initial state</td></tr>
+            <tr><td><code>patchValue(obj)</code></td><td>FormGroup</td><td>Update some fields</td></tr>
+            <tr><td><code>setValue(obj)</code></td><td>FormGroup</td><td>Update all fields (strict)</td></tr>
+            <tr><td><code>disable() / enable()</code></td><td>FormControl</td><td>Disable fields conditionally</td></tr>
+            <tr><td><code>setValidators([])</code></td><td>FormControl</td><td>Add/remove validators dynamically</td></tr>
+            <tr><td><code>updateValueAndValidity()</code></td><td>FormControl</td><td>Re-run validation after changes</td></tr>
+        </tbody>
+    </table>
+
+    <span class="file-label">Conditional validator example</span>
+    <pre><code>this.userForm.get('role')?.valueChanges.subscribe(role =&gt; {
+  const companyControl = this.userForm.get('company');
+  if (role === 'business') {
+    companyControl?.setValidators([Validators.required]);
+  } else {
+    companyControl?.clearValidators();
+  }
+  companyControl?.updateValueAndValidity();
+});</code></pre>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> If <code>ngModel</code> throws "Can't bind to ngModel", import <code>FormsModule</code>. For reactive forms, import <code>ReactiveFormsModule</code> and use <code>[formGroup]</code> on the <code>&lt;form&gt;</code> tag — not both on the same control. On submit, call <code>markAllAsTouched()</code> so hidden validation errors appear. Match exact field names and button labels from the starter template.</div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+function showAnswer(id) {
+    document.querySelectorAll('.answer-pane').forEach(function(a) {
+        a.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+
+    document.querySelectorAll('.question-item').forEach(function(q) {
+        q.classList.toggle('active', q.dataset.answerId === id);
+    });
+
+    if (isMobileLayout()) {
+        document.body.classList.add('show-answer');
+        injectBackButton();
+    }
+
+    if (!isMobileLayout()) {
+        document.querySelector('.content').scrollTop = 0;
+    }
+}
+
+function isMobileLayout() {
+    return window.innerWidth <= 768;
+}
+
+function injectBackButton() {
+    var pane = document.querySelector('.answer-pane.active');
+    if (!pane) return;
+    var existing = pane.querySelector('.back-btn');
+    if (existing) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'back-btn';
+    btn.textContent = '← Back to problems';
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.body.classList.remove('show-answer');
+        suppressNextTap = true;
+        setTimeout(function() { suppressNextTap = false; }, 400);
+    });
+    pane.insertBefore(btn, pane.firstChild);
+}
+
+function filterQuestions() {
+    var term = document.getElementById('searchBox').value.toLowerCase();
+    document.querySelectorAll('.question-item').forEach(function(item) {
+        var match = item.textContent.toLowerCase().includes(term);
+        item.classList.toggle('hidden', !match);
+    });
+    document.querySelectorAll('.topic-header').forEach(function(header) {
+        var next = header.nextElementSibling;
+        var anyVisible = false;
+        while (next && !next.classList.contains('topic-header')) {
+            if (next.classList.contains('question-item') && !next.classList.contains('hidden')) {
+                anyVisible = true;
+                break;
+            }
+            next = next.nextElementSibling;
+        }
+        header.style.display = anyVisible || !term ? '' : 'none';
+    });
+}
+
+function clearSearch() {
+    document.getElementById('searchBox').value = '';
+    filterQuestions();
+}
+
+var suppressNextTap = false;
+var touchStartY = 0;
+var touchMoved = false;
+
+function initNavigation() {
+    var sidebar = document.querySelector('.sidebar-scroll') || document.querySelector('.sidebar');
+
+    sidebar.addEventListener('touchstart', function(e) {
+        touchStartY = e.touches[0].clientY;
+        touchMoved = false;
+    }, { passive: true });
+
+    sidebar.addEventListener('touchmove', function(e) {
+        if (Math.abs(e.touches[0].clientY - touchStartY) > 10) {
+            touchMoved = true;
+        }
+    }, { passive: true });
+
+    sidebar.addEventListener('touchend', function(e) {
+        if (touchMoved || suppressNextTap) return;
+        var item = e.target.closest('.question-item');
+        if (item && item.dataset.answerId && isMobileLayout()) {
+            showAnswer(item.dataset.answerId);
+        }
+    });
+
+    sidebar.addEventListener('click', function(e) {
+        var item = e.target.closest('.question-item');
+        if (isMobileLayout()) {
+            if (item) e.preventDefault();
+            return;
+        }
+        if (item && item.dataset.answerId) {
+            showAnswer(item.dataset.answerId);
+        }
+    });
+
+    document.querySelectorAll('.question-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+            if (!isMobileLayout()) return;
+        });
+    });
+
+    window.addEventListener('resize', function() {
+        if (!isMobileLayout()) {
+            document.body.classList.remove('show-answer');
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initNavigation();
+    var first = document.querySelector('.question-item');
+    if (first) first.classList.add('active');
+});
+</script>
+</body>
+</html>
