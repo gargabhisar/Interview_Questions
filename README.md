@@ -20,3 +20,7 @@ HackerRank Angular guide: open `hr/Angular_HackerRank_Solutions.html` locally, o
 ## Deploy
 
 Upload all files in this folder to your web host root (e.g. IIS / runasp.net).
+
+## Scripts (optional)
+
+Python helpers under `scripts/` can batch-update answer pane HTML. See `scripts/README.md`. Not required to view or host the site.
