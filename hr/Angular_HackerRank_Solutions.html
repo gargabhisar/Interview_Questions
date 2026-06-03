@@ -300,7 +300,7 @@ body {
 <div class="sidebar">
     <div class="sidebar-scroll" id="sidebarScroll">
         <h1>Angular HackerRank Solutions</h1>
-        <p class="subtitle">Full Stack · Basic · Intermediate · Advanced · Forms · Pipes · Decorators · Services · Lifecycle · RxJS — click any problem to view solution</p>
+        <p class="subtitle">Full Stack · Basic · Intermediate · Advanced · Forms · Pipes · Decorators · Services · Lifecycle · RxJS · Directives — click any problem to view solution</p>
         <input type="text" class="search-box" id="searchBox" placeholder="Search problems..." oninput="filterQuestions()">
         <button class="clear-search" onclick="clearSearch()">Clear search</button>
 
@@ -343,6 +343,9 @@ body {
         <div class="question-item" data-answer-id="q_40">Q40. What is RxJS?</div>
         <div class="question-item" data-answer-id="q_41">Q41. What is Observable? How to implement <strong>(V. IMP.)</strong></div>
         <div class="question-item" data-answer-id="q_42">Q42. Role of HttpClient in Angular</div>
+
+        <div class="topic-header">Angular Directives</div>
+        <div class="question-item" data-answer-id="q_15">Angular Directives — Built-in &amp; Custom</div>
     </div>
 </div>
 
@@ -2900,6 +2903,212 @@ export class EmployeeService {
     </table>
 
     <div class="tip-box"><strong>HackerRank Tip:</strong> Import <code>HttpClientModule</code> in the module — not the component. Inject <code>HttpClient</code> in a service, return <code>Observable</code> from service methods, and <code>subscribe</code> in the component (or use <code>| async</code>). Use the exact API URL from the problem statement.</div>
+</div>
+
+<!-- ========== DIRECTIVES ========== -->
+
+<div class="answer-pane" id="q_15">
+    <span class="badge badge-intermediate">DIRECTIVES</span>
+    <h2>Angular Directives — Built-in &amp; Custom</h2>
+    <p>A <strong>directive</strong> is a class that adds behavior to DOM elements in templates. Directives are everywhere in HackerRank Angular tests — <code>*ngIf</code>, <code>*ngFor</code>, <code>[ngClass]</code>, and custom attribute directives.</p>
+
+    <h3>1. Three Types of Directives</h3>
+    <table>
+        <thead>
+            <tr><th>Type</th><th>What it does</th><th>Examples</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Component</strong></td>
+                <td>Directive with a template (UI building block)</td>
+                <td><code>&lt;app-weather&gt;&lt;/app-weather&gt;</code></td>
+            </tr>
+            <tr>
+                <td><strong>Structural</strong></td>
+                <td>Changes DOM layout — add/remove elements</td>
+                <td><code>*ngIf</code>, <code>*ngFor</code>, <code>*ngSwitch</code></td>
+            </tr>
+            <tr>
+                <td><strong>Attribute</strong></td>
+                <td>Changes appearance or behavior of an element</td>
+                <td><code>[ngClass]</code>, <code>[ngStyle]</code>, <code>appHighlight</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>2. Structural Directives (Built-in)</h3>
+    <p>Prefixed with <code>*</code> — Angular wraps the element in an <code>&lt;ng-template&gt;</code> internally.</p>
+
+    <span class="file-label">*ngIf — show/hide</span>
+    <pre><code>&lt;p *ngIf="loading"&gt;Loading...&lt;/p&gt;
+&lt;p *ngIf="error"&gt;{{ error }}&lt;/p&gt;
+
+&lt;div *ngIf="weather; else noData"&gt;
+  &lt;p&gt;{{ weather.city }}: {{ weather.temp }}°C&lt;/p&gt;
+&lt;/div&gt;
+&lt;ng-template #noData&gt;&lt;p&gt;No data found&lt;/p&gt;&lt;/ng-template&gt;</code></pre>
+
+    <span class="file-label">*ngFor — loop list</span>
+    <pre><code>&lt;ul&gt;
+  &lt;li *ngFor="let item of items; let i = index; trackBy: trackById"&gt;
+    {{ i + 1 }}. {{ item.name }}
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+// component — trackBy avoids re-rendering entire list
+trackById(index: number, item: Item): number {
+  return item.id;
+}</code></pre>
+
+    <span class="file-label">*ngSwitch — multiple conditions</span>
+    <pre><code>&lt;div [ngSwitch]="status"&gt;
+  &lt;p *ngSwitchCase="'pending'"&gt;Awaiting payment&lt;/p&gt;
+  &lt;p *ngSwitchCase="'shipped'"&gt;On the way&lt;/p&gt;
+  &lt;p *ngSwitchDefault&gt;Unknown status&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+    <h3>3. Attribute Directives (Built-in)</h3>
+
+    <span class="file-label">[ngClass] — toggle CSS classes</span>
+    <pre><code>&lt;button [ngClass]="{ active: isSelected, disabled: !isValid }"&gt;
+  Submit
+&lt;/button&gt;
+
+&lt;!-- or object / array syntax --&gt;
+&lt;div [ngClass]="'card highlight'"&gt;...&lt;/div&gt;</code></pre>
+
+    <span class="file-label">[ngStyle] — inline styles</span>
+    <pre><code>&lt;div [ngStyle]="{ color: score &gt;= 70 ? 'green' : 'red', fontWeight: 'bold' }"&gt;
+  Score: {{ score }}
+&lt;/div&gt;</code></pre>
+
+    <span class="file-label">[(ngModel)] — two-way binding (FormsModule)</span>
+    <pre><code>&lt;input type="text" [(ngModel)]="city" name="city" /&gt;
+&lt;p&gt;You typed: {{ city }}&lt;/p&gt;</code></pre>
+
+    <h3>4. Custom Attribute Directive</h3>
+    <p>Reusable DOM behavior — highlight on hover, disable invalid fields, auto-focus, etc.</p>
+
+    <span class="file-label">highlight.directive.ts</span>
+    <pre><code>import { Directive, ElementRef, HostListener, Input, Renderer2 } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]',
+  standalone: false
+})
+export class HighlightDirective {
+  @Input('appHighlight') highlightColor = 'yellow';
+  @Input() defaultColor = 'transparent';
+
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
+
+  @HostListener('mouseenter')
+  onEnter(): void {
+    this.setBackground(this.highlightColor);
+  }
+
+  @HostListener('mouseleave')
+  onLeave(): void {
+    this.setBackground(this.defaultColor);
+  }
+
+  private setBackground(color: string): void {
+    this.renderer.setStyle(this.el.nativeElement, 'backgroundColor', color);
+  }
+}</code></pre>
+
+    <span class="file-label">Usage in template</span>
+    <pre><code>&lt;p appHighlight="lightblue"&gt;Hover me&lt;/p&gt;
+&lt;p [appHighlight]="'pink'" [defaultColor]="'white'"&gt;Custom colors&lt;/p&gt;</code></pre>
+
+    <span class="file-label">app.module.ts — declare directive</span>
+    <pre><code>@NgModule({
+  declarations: [AppComponent, HighlightDirective],
+  imports: [BrowserModule]
+})
+export class AppModule {}</code></pre>
+
+    <h3>5. Custom Structural Directive (Advanced)</h3>
+    <p>Structural directives use <code>TemplateRef</code> and <code>ViewContainerRef</code> to create/destroy embedded views.</p>
+
+    <span class="file-label">unless.directive.ts — show when condition is false</span>
+    <pre><code>import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+
+@Directive({ selector: '[appUnless]' })
+export class UnlessDirective {
+  private hasView = false;
+
+  constructor(
+    private templateRef: TemplateRef&lt;unknown&gt;,
+    private viewContainer: ViewContainerRef
+  ) {}
+
+  @Input() set appUnless(condition: boolean) {
+    if (!condition &amp;&amp; !this.hasView) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+      this.hasView = true;
+    } else if (condition &amp;&amp; this.hasView) {
+      this.viewContainer.clear();
+      this.hasView = false;
+    }
+  }
+}</code></pre>
+
+    <span class="file-label">Usage</span>
+    <pre><code>&lt;p *appUnless="isLoggedIn"&gt;Please log in to continue.&lt;/p&gt;</code></pre>
+
+    <h3>6. Component vs Directive</h3>
+    <table>
+        <thead>
+            <tr><th></th><th>Component</th><th>Directive</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Template</td><td>Has its own template</td><td>No template (uses host element)</td></tr>
+            <tr><td>Selector</td><td>Element: <code>app-card</code></td><td>Attribute: <code>[appHighlight]</code></td></tr>
+            <tr><td>Use when</td><td>Reusable UI block</td><td>Reusable behavior on existing elements</td></tr>
+        </tbody>
+    </table>
+
+    <h3>7. Common HackerRank Uses</h3>
+    <table>
+        <thead>
+            <tr><th>Problem type</th><th>Directive</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Item List Manager</td><td><code>*ngFor</code> to render list items</td></tr>
+            <tr><td>Weather Finder</td><td><code>*ngIf</code> for loading / not found / result</td></tr>
+            <tr><td>Survey / Paginated table</td><td><code>*ngFor</code> on rows, <code>*ngIf</code> for empty state</td></tr>
+            <tr><td>Form validation UI</td><td><code>*ngIf="field.invalid &amp;&amp; field.touched"</code></td></tr>
+            <tr><td>Disable submit button</td><td><code>[disabled]="form.invalid"</code> or <code>[ngClass]</code></td></tr>
+        </tbody>
+    </table>
+
+    <h3>8. Common Mistakes</h3>
+    <table>
+        <thead>
+            <tr><th>Problem</th><th>Fix</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>Can't bind to 'ngIf' since it isn't a known property</code></td>
+                <td>Import <code>CommonModule</code> (or <code>BrowserModule</code>) in module / standalone <code>imports</code></td>
+            </tr>
+            <tr>
+                <td>Two structural directives on one element</td>
+                <td>Use <code>&lt;ng-container&gt;</code> to nest: <code>&lt;ng-container *ngIf="show"&gt;&lt;li *ngFor=...&gt;</code></td>
+            </tr>
+            <tr>
+                <td>Custom directive not working</td>
+                <td>Add to <code>declarations</code> in <code>@NgModule</code> or <code>imports</code> if standalone</td>
+            </tr>
+            <tr>
+                <td>List re-renders lose focus/state</td>
+                <td>Add <code>trackBy</code> to <code>*ngFor</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> Most tests only need built-in directives — master <code>*ngIf</code>, <code>*ngFor</code>, and property binding <code>[disabled]</code> / <code>[class.active]</code> first. Import <code>CommonModule</code> for structural directives and <code>FormsModule</code> for <code>ngModel</code>. Custom directives are rare in basic tests but good to explain in interviews.</div>
 </div>
 
 </div><!-- /content -->
