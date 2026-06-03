@@ -304,47 +304,26 @@ body {
         <input type="text" class="search-box" id="searchBox" placeholder="Search problems..." oninput="filterQuestions()">
         <button class="clear-search" onclick="clearSearch()">Clear search</button>
 
-        <div class="topic-header">Full Stack — C# API + Angular Grid</div>
         <div class="question-item" data-answer-id="q_0">Load Grid from API — Pagination + Observable</div>
-
-        <div class="topic-header">Angular (Basic) — 1 hour</div>
         <div class="question-item" data-answer-id="q_1">1. Temperature Converter</div>
         <div class="question-item" data-answer-id="q_2">2. Code Review Feedback System</div>
         <div class="question-item" data-answer-id="q_3">3. Simple Calculator</div>
         <div class="question-item" data-answer-id="q_4">4. Item List Manager</div>
-
-        <div class="topic-header">Angular (Intermediate) — 1.5 hours</div>
         <div class="question-item" data-answer-id="q_5">5. Weather Finder Application</div>
         <div class="question-item" data-answer-id="q_6">6. Kanban Board Slider</div>
         <div class="question-item" data-answer-id="q_7">7. Survey List / Paginated Table</div>
-
-        <div class="topic-header">Angular (Advanced)</div>
         <div class="question-item" data-answer-id="q_8">8. Unit Testing (.spec.ts)</div>
         <div class="question-item" data-answer-id="q_9">9. Browser Console Debugging</div>
-
-        <div class="topic-header">Angular Forms &amp; Validations</div>
         <div class="question-item" data-answer-id="q_10">Angular Forms — All Types &amp; Field Validations</div>
-
-        <div class="topic-header">Angular Pipes</div>
         <div class="question-item" data-answer-id="q_11">Angular Pipes — Built-in &amp; Custom Examples</div>
-
-        <div class="topic-header">Angular Decorators</div>
         <div class="question-item" data-answer-id="q_12">Angular Decorators — Reference &amp; Examples</div>
-
-        <div class="topic-header">Angular Services</div>
         <div class="question-item" data-answer-id="q_13">Angular Services — DI, HTTP &amp; Shared State</div>
-
-        <div class="topic-header">Angular Lifecycle Hooks</div>
         <div class="question-item" data-answer-id="q_14">Lifecycle Hooks — Order &amp; Examples</div>
-
-        <div class="topic-header">Observable / HttpClient / RxJS</div>
         <div class="question-item" data-answer-id="q_38">Q38. What are Asynchronous operations?</div>
         <div class="question-item" data-answer-id="q_39">Q39. Promise vs Observable <strong>(V. IMP.)</strong></div>
         <div class="question-item" data-answer-id="q_40">Q40. What is RxJS?</div>
         <div class="question-item" data-answer-id="q_41">Q41. What is Observable? How to implement <strong>(V. IMP.)</strong></div>
         <div class="question-item" data-answer-id="q_42">Q42. Role of HttpClient in Angular</div>
-
-        <div class="topic-header">Angular Directives</div>
         <div class="question-item" data-answer-id="q_15">Angular Directives — Built-in &amp; Custom</div>
     </div>
 </div>
@@ -3161,18 +3140,6 @@ function filterQuestions() {
     document.querySelectorAll('.question-item').forEach(function(item) {
         var match = item.textContent.toLowerCase().includes(term);
         item.classList.toggle('hidden', !match);
-    });
-    document.querySelectorAll('.topic-header').forEach(function(header) {
-        var next = header.nextElementSibling;
-        var anyVisible = false;
-        while (next && !next.classList.contains('topic-header')) {
-            if (next.classList.contains('question-item') && !next.classList.contains('hidden')) {
-                anyVisible = true;
-                break;
-            }
-            next = next.nextElementSibling;
-        }
-        header.style.display = anyVisible || !term ? '' : 'none';
     });
 }
 
