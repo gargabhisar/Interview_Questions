@@ -300,7 +300,7 @@ body {
 <div class="sidebar">
     <div class="sidebar-scroll" id="sidebarScroll">
         <h1>Angular HackerRank Solutions</h1>
-        <p class="subtitle">Full Stack · Basic · Intermediate · Advanced · Forms · Pipes · Decorators · Services · Lifecycle · RxJS · Directives — click any problem to view solution</p>
+        <p class="subtitle">Full Stack · Basic · Intermediate · Advanced · Forms · Pipes · Decorators · Services · Directives · Modules · Lifecycle · RxJS — click any problem to view solution</p>
         <input type="text" class="search-box" id="searchBox" placeholder="Search problems..." oninput="filterQuestions()">
         <button class="clear-search" onclick="clearSearch()">Clear search</button>
 
@@ -318,13 +318,14 @@ body {
         <div class="question-item" data-answer-id="q_11">Angular Pipes — Built-in &amp; Custom Examples</div>
         <div class="question-item" data-answer-id="q_12">Angular Decorators — Reference &amp; Examples</div>
         <div class="question-item" data-answer-id="q_13">Angular Services — DI, HTTP &amp; Shared State</div>
+        <div class="question-item" data-answer-id="q_15">Angular Directives — Built-in &amp; Custom</div>
+        <div class="question-item" data-answer-id="q_16">Angular Modules — NgModule &amp; Imports</div>
         <div class="question-item" data-answer-id="q_14">Lifecycle Hooks — Order &amp; Examples</div>
         <div class="question-item" data-answer-id="q_38">Q38. What are Asynchronous operations?</div>
         <div class="question-item" data-answer-id="q_39">Q39. Promise vs Observable <strong>(V. IMP.)</strong></div>
         <div class="question-item" data-answer-id="q_40">Q40. What is RxJS?</div>
         <div class="question-item" data-answer-id="q_41">Q41. What is Observable? How to implement <strong>(V. IMP.)</strong></div>
         <div class="question-item" data-answer-id="q_42">Q42. Role of HttpClient in Angular</div>
-        <div class="question-item" data-answer-id="q_15">Angular Directives — Built-in &amp; Custom</div>
     </div>
 </div>
 
@@ -3088,6 +3089,188 @@ export class UnlessDirective {
     </table>
 
     <div class="tip-box"><strong>HackerRank Tip:</strong> Most tests only need built-in directives — master <code>*ngIf</code>, <code>*ngFor</code>, and property binding <code>[disabled]</code> / <code>[class.active]</code> first. Import <code>CommonModule</code> for structural directives and <code>FormsModule</code> for <code>ngModel</code>. Custom directives are rare in basic tests but good to explain in interviews.</div>
+</div>
+
+<!-- ========== MODULES ========== -->
+
+<div class="answer-pane" id="q_16">
+    <span class="badge badge-intermediate">MODULES</span>
+    <h2>Angular Modules — NgModule &amp; Imports</h2>
+    <p>An Angular <strong>module</strong> (<code>@NgModule</code>) groups related components, directives, pipes, and services into one compilation unit. HackerRank starter projects almost always use <code>AppModule</code> — knowing what goes in <code>declarations</code>, <code>imports</code>, and <code>providers</code> fixes most "not a known property" errors.</p>
+
+    <h3>1. @NgModule Metadata</h3>
+    <table>
+        <thead>
+            <tr><th>Property</th><th>Purpose</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>declarations</code></td><td>Components, directives, pipes <strong>owned</strong> by this module</td><td><code>AppComponent</code>, <code>HighlightDirective</code></td></tr>
+            <tr><td><code>imports</code></td><td>Other modules whose exported items this module can use</td><td><code>FormsModule</code>, <code>HttpClientModule</code></td></tr>
+            <tr><td><code>exports</code></td><td>Declarations made available to modules that import this one</td><td>Shared UI components</td></tr>
+            <tr><td><code>providers</code></td><td>Services registered in this module's injector</td><td><code>WeatherService</code> (if not <code>providedIn: 'root'</code>)</td></tr>
+            <tr><td><code>bootstrap</code></td><td>Root component(s) to start the app</td><td><code>[AppComponent]</code> — root module only</td></tr>
+        </tbody>
+    </table>
+
+    <h3>2. Root AppModule (typical HackerRank setup)</h3>
+    <span class="file-label">app.module.ts</span>
+    <pre><code>import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { WeatherComponent } from './weather/weather.component';
+import { WeatherService } from './weather.service';
+import { HighlightDirective } from './highlight.directive';
+import { TruncatePipe } from './truncate.pipe';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    WeatherComponent,
+    HighlightDirective,
+    TruncatePipe
+  ],
+  imports: [
+    BrowserModule,        // *ngIf, *ngFor — use once in root module
+    FormsModule,          // ngModel, template-driven forms
+    ReactiveFormsModule,  // FormGroup, formControlName
+    HttpClientModule      // HttpClient
+  ],
+  providers: [WeatherService],  // optional if providedIn: 'root'
+  bootstrap: [AppComponent]
+})
+export class AppModule {}</code></pre>
+
+    <span class="file-label">main.ts — bootstrap the module</span>
+    <pre><code>import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from './app/app.module';
+
+platformBrowserDynamic()
+  .bootstrapModule(AppModule)
+  .catch(err =&gt; console.error(err));</code></pre>
+
+    <h3>3. Common Modules to Import</h3>
+    <table>
+        <thead>
+            <tr><th>Module</th><th>Import when you need</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>BrowserModule</code></td><td>Root app only — DOM rendering, <code>*ngIf</code>, <code>*ngFor</code></td></tr>
+            <tr><td><code>CommonModule</code></td><td>Feature/shared modules (not root) — same directives as BrowserModule</td></tr>
+            <tr><td><code>FormsModule</code></td><td><code>[(ngModel)]</code>, template-driven forms</td></tr>
+            <tr><td><code>ReactiveFormsModule</code></td><td><code>[formGroup]</code>, <code>formControlName</code></td></tr>
+            <tr><td><code>HttpClientModule</code></td><td><code>HttpClient</code> for API calls</td></tr>
+            <tr><td><code>RouterModule</code></td><td><code>routerLink</code>, route config (<code>RouterModule.forRoot(routes)</code>)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="tip-box"><strong>Rule:</strong> Import <code>BrowserModule</code> only in <code>AppModule</code>. In feature modules use <code>CommonModule</code> instead to avoid duplicate browser providers.</div>
+
+    <h3>4. declarations vs imports</h3>
+    <table>
+        <thead>
+            <tr><th></th><th>declarations</th><th>imports</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>What</strong></td><td>Classes you <em>define</em> in this module</td><td>Modules you <em>pull in</em> from Angular or other feature modules</td></tr>
+            <tr><td><strong>Examples</strong></td><td>Your components, custom pipes, directives</td><td><code>FormsModule</code>, <code>SharedModule</code></td></tr>
+            <tr><td><strong>Wrong use</strong></td><td>Putting <code>FormsModule</code> here</td><td>Putting <code>AppComponent</code> here</td></tr>
+        </tbody>
+    </table>
+
+    <h3>5. Feature Module Example</h3>
+    <span class="file-label">weather.module.ts</span>
+    <pre><code>import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
+import { WeatherComponent } from './weather.component';
+import { WeatherService } from './weather.service';
+
+@NgModule({
+  declarations: [WeatherComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule],
+  providers: [WeatherService],
+  exports: [WeatherComponent]   // optional — use in other modules
+})
+export class WeatherModule {}</code></pre>
+
+    <span class="file-label">Import feature module in AppModule</span>
+    <pre><code>@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule, WeatherModule],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}</code></pre>
+
+    <h3>6. Shared Module Pattern</h3>
+    <p>Export common UI pieces (pipes, directives, components) once and import <code>SharedModule</code> everywhere.</p>
+    <span class="file-label">shared.module.ts</span>
+    <pre><code>@NgModule({
+  declarations: [TruncatePipe, HighlightDirective, LoadingSpinnerComponent],
+  imports: [CommonModule],
+  exports: [
+    CommonModule,              // re-export so consumers get *ngIf too
+    TruncatePipe,
+    HighlightDirective,
+    LoadingSpinnerComponent
+  ]
+})
+export class SharedModule {}</code></pre>
+
+    <h3>7. Standalone Components (Angular 14+) — no NgModule</h3>
+    <p>Some newer projects skip modules; the component declares its own imports.</p>
+    <span class="file-label">standalone component + bootstrapApplication</span>
+    <pre><code>// app.component.ts
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, FormsModule, HttpClientModule],
+  templateUrl: './app.component.html'
+})
+export class AppComponent {}
+
+// main.ts
+import { bootstrapApplication } from '@angular/platform-browser';
+bootstrapApplication(AppComponent);</code></pre>
+
+    <h3>8. Common HackerRank Errors &amp; Fixes</h3>
+    <table>
+        <thead>
+            <tr><th>Error</th><th>Fix</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>Can't bind to 'ngModel'</code></td>
+                <td>Add <code>FormsModule</code> to <code>imports</code></td>
+            </tr>
+            <tr>
+                <td><code>Can't bind to 'ngIf'</code> / <code>ngFor</code></td>
+                <td>Import <code>BrowserModule</code> (root) or <code>CommonModule</code> (feature)</td>
+            </tr>
+            <tr>
+                <td><code>HttpClient not found</code></td>
+                <td>Add <code>HttpClientModule</code> to <code>imports</code></td>
+            </tr>
+            <tr>
+                <td>Component is not a known element</td>
+                <td>Add component to <code>declarations</code> of the module that uses it</td>
+            </tr>
+            <tr>
+                <td>Pipe / directive not found</td>
+                <td>Declare in <code>declarations</code> or import module that exports it</td>
+            </tr>
+            <tr>
+                <td><code>NullInjectorError</code></td>
+                <td>Add service to <code>providers</code> or use <code>@Injectable({ providedIn: 'root' })</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="tip-box"><strong>HackerRank Tip:</strong> When tests fail on missing directives or HTTP, check <code>app.module.ts</code> first — add the right module to <code>imports</code> and your component to <code>declarations</code>. Do not declare the same component in two modules. Match the starter project's module style (classic <code>AppModule</code> vs standalone).</div>
 </div>
 
 </div><!-- /content -->
