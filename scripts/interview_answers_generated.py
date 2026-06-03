@@ -437,22 +437,37 @@ await connection.OpenAsync();
 "q_81": """<h2>IEnumerable vs IQueryable</h2>
 <p><code>IEnumerable&lt;T&gt;</code> represents in-memory sequences evaluated on the client when enumerated. <code>IQueryable&lt;T&gt;</code> builds expression trees that LINQ providers (like EF Core) can translate to remote queries such as SQL.</p>
 <p>Filtering on <code>IQueryable</code> before materialization pushes work to the database, reducing memory and network cost. Calling <code>ToList()</code> too early forces client-side evaluation.</p>
+<h3>Inheritance difference</h3>
+<pre><code>// IEnumerable&lt;T&gt; — base sequence abstraction (LINQ to Objects)
+IEnumerable&lt;T&gt;
+    ↑
+ICollection&lt;T&gt;  →  IList&lt;T&gt;  →  List&lt;T&gt;
+
+// IQueryable&lt;T&gt; — extends IEnumerable AND adds expression provider
+IEnumerable&lt;T&gt;
+    ↑
+IQueryable&lt;T&gt;   // + Provider (IQueryProvider), Expression</code></pre>
+<p><code>IQueryable&lt;T&gt;</code> <strong>inherits</strong> <code>IEnumerable&lt;T&gt;</code>, so every <code>IQueryable</code> is enumerable — but only <code>IQueryable</code> carries an <code>Expression</code> tree for providers like EF Core to translate to SQL.</p>
 <table>
 <tr><th></th><th>IEnumerable</th><th>IQueryable</th></tr>
 <tr><td>Execution</td><td>In-memory</td><td>Provider-dependent (often DB)</td></tr>
+<tr><td>Inheritance</td><td>Base interface</td><td>Extends <code>IEnumerable&lt;T&gt;</code></td></tr>
 <tr><td>Best for</td><td>Collections, post-query logic</td><td>EF Core, remote data</td></tr>
 <tr><td>Deferred</td><td>Yes</td><td>Yes</td></tr>
 </table>
 <pre><code>IQueryable&lt;Product&gt; query = db.Products.Where(p =&gt; p.IsActive);
-var sqlSide = query.OrderBy(p =&gt; p.Name).Take(20); // translated to SQL</code></pre>
+var sqlSide = query.OrderBy(p =&gt; p.Name).Take(20); // translated to SQL
+
+IEnumerable&lt;Product&gt; inMemory = list.Where(p =&gt; p.IsActive); // runs in CLR</code></pre>
 <h3>Key Points</h3>
 <ul>
+<li>IQueryable extends IEnumerable and adds expression-tree support.</li>
 <li>IQueryable enables server-side filtering via expression trees.</li>
 <li>IEnumerable is for LINQ to Objects after data is loaded.</li>
 <li>Materialize (ToList) only when necessary.</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>IEnumerable runs LINQ in memory, while IQueryable delegates to a provider that can translate expressions to SQL. With EF Core I keep filters on IQueryable so the database does the work, and I only switch to IEnumerable after materializing results.</p>""",
+<p>IEnumerable runs LINQ in memory; IQueryable extends it with expression trees so a provider like EF Core can translate filters to SQL. I keep filters on IQueryable until the last moment, then materialize to IEnumerable or a list for in-memory work.</p>""",
 
 "q_122": """<h2>First vs Single in LINQ</h2>
 <p><code>First()</code> returns the first element matching a predicate or sequence start and throws if empty. <code>Single()</code> expects exactly one element and throws if zero or more than one match. Each has <code>OrDefault</code> variants that return default instead of throwing.</p>
@@ -937,4 +952,182 @@ public async Task&lt;Forecast?&gt; GetAsync(string city) =&gt;
 </ul>
 <h3>Interview Answer</h3>
 <p>I consume external APIs with IHttpClientFactory and typed clients registered in DI, which manages HttpClient lifetime correctly. I configure base URLs, timeouts, and Polly policies for retries, deserialize with System.Text.Json, and log failures with correlation IDs for observability.</p>""",
+
+"q_csharp_stack_heap": """<h2>Stack vs Heap in C#</h2>
+<p>The <strong>stack</strong> holds value types and method call frames (local variables, return addresses) in LIFO order — fast allocation, automatic cleanup when a method returns. The <strong>heap</strong> holds objects referenced by reference types; memory is managed by the Garbage Collector.</p>
+<table>
+<tr><th></th><th>Stack</th><th>Heap</th></tr>
+<tr><td>Stores</td><td>Value types, references (pointers), call frames</td><td>Object instances (classes, arrays, boxed values)</td></tr>
+<tr><td>Allocation</td><td>Very fast (pointer bump)</td><td>Slower; tracked by GC</td></tr>
+<tr><td>Lifetime</td><td>Method scope</td><td>Until no longer reachable</td></tr>
+<tr><td>Thread</td><td>Each thread has its own stack</td><td>Shared managed heap</td></tr>
+</table>
+<pre><code>void Demo()
+{
+    int x = 10;              // x on stack (value type)
+    var user = new User();   // User object on heap; reference on stack
+    DoWork(user);
+} // stack frame popped; user reference gone — object may be GC'd</code></pre>
+<h3>Key Points</h3>
+<ul>
+<li>Value types live on the stack when local; reference types live on the heap.</li>
+<li>Large structs can live on the heap when boxed or embedded in heap objects.</li>
+<li>Stack overflow = too deep recursion; heap pressure = too many allocations.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>The stack stores value types and call frames with automatic scope-based cleanup. The heap stores reference-type objects managed by the GC. Understanding both helps explain performance, boxing, and why minimizing heap allocations matters in hot paths.</p>""",
+
+"q_csharp_prevent_instantiation": """<h2>Prevent Instantiation Without static/abstract</h2>
+<p>Use a <strong>private constructor</strong> on a normal class. External code cannot call <code>new MyClass()</code>, but the class itself can still create instances internally (factory method, singleton, or static helper).</p>
+<pre><code>public class ConfigurationLoader
+{
+    private ConfigurationLoader() { } // blocks external new
+
+    public static ConfigurationLoader LoadFromFile(string path)
+    {
+        var loader = new ConfigurationLoader(); // allowed inside class
+        loader.Read(path);
+        return loader;
+    }
+
+    private void Read(string path) { /* ... */ }
+}
+
+// var x = new ConfigurationLoader(); // compile error</code></pre>
+<p>Related patterns: <strong>private constructor + static Instance</strong> (singleton), or <strong>private constructor + factory</strong> that controls creation. This is different from <code>static</code> class (cannot instantiate at all) and <code>abstract</code> (must be subclassed).</p>
+<h3>Key Points</h3>
+<ul>
+<li>Private constructor prevents external <code>new</code>.</li>
+<li>Class can still be non-static and non-abstract.</li>
+<li>Common for singletons, factories, and utility holders.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>Without making the class static or abstract, I use a private constructor so only code inside the class can create instances. I expose a static factory or singleton property when callers need a controlled instance.</p>""",
+
+"q_csharp_di_where": """<h2>Where Does Injected Dependency Reside?</h2>
+<p>Dependencies live in the <strong>DI container</strong> (<code>IServiceProvider</code> / built-in IoC container). Registrations in <code>Program.cs</code> tell the container which implementation to create for each interface. At runtime the container resolves instances based on <strong>lifetime</strong> and injects them into constructors.</p>
+<pre><code>// Registration — container stores the mapping + lifetime
+builder.Services.AddScoped&lt;IOrderRepository, OrderRepository&gt;();
+builder.Services.AddSingleton&lt;ICacheService, RedisCacheService&gt;();
+
+// Resolution — container creates or returns cached instance
+public OrdersController(IOrderRepository repo) // container injects here
+{
+    _repo = repo;
+}</code></pre>
+<h3>Where instances live by lifetime</h3>
+<table>
+<tr><th>Lifetime</th><th>Where it resides</th></tr>
+<tr><td><strong>Singleton</strong></td><td>One instance in root container for app lifetime</td></tr>
+<tr><td><strong>Scoped</strong></td><td>One instance per HTTP request (scope created per request)</td></tr>
+<tr><td><strong>Transient</strong></td><td>New instance every time resolved — not cached</td></tr>
+</table>
+<h3>Key Points</h3>
+<ul>
+<li>Container holds registrations, not your manual <code>new</code> calls.</li>
+<li>Scoped services live in the request scope; singleton in root.</li>
+<li>Captive dependency bug: don't inject scoped into singleton.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>Injected dependencies are created and cached by the ASP.NET Core service provider according to their registered lifetime. Singletons sit in the root provider, scoped services in the per-request scope, and transients are created fresh on each resolution.</p>""",
+
+"q_csharp_partial_class": """<h2>Partial Class — What &amp; Use</h2>
+<p>A <strong>partial class</strong> splits one class definition across multiple source files. The compiler merges all parts into a single type at compile time. All parts must use the <code>partial</code> keyword and belong to the <strong>same namespace and assembly</strong>.</p>
+<pre><code>// User.cs
+public partial class User
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+
+// User.Validation.cs
+public partial class User
+{
+    public bool IsValid() =&gt; !string.IsNullOrWhiteSpace(Name);
+}</code></pre>
+<h3>Common uses</h3>
+<ul>
+<li><strong>Designer-generated code</strong> — WinForms/WPF <code>Form1.Designer.cs</code> separate from your logic.</li>
+<li><strong>Large classes</strong> — split by feature (validation, mapping, API) for readability.</li>
+<li><strong>Source generators</strong> — tooling emits another partial file.</li>
+</ul>
+<h3>Key Points</h3>
+<ul>
+<li>One class, multiple files — merged at compile time.</li>
+<li>All parts must be <code>partial</code> with the same class name.</li>
+<li>Cannot split a single method body across files.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>Partial classes let me split one class across files so generated UI code stays separate from business logic, or large types stay organized. The compiler combines all partial declarations into one class.</p>""",
+
+"q_csharp_partial_projects": """<h2>Can Partial Class Exist in Different Projects?</h2>
+<p><strong>No</strong> — not across different assemblies/projects. All parts of a partial class must compile into the <strong>same assembly</strong> (same project, or files explicitly included in one project).</p>
+<p>Partial types cannot span Project A and Project B because each project produces a separate DLL; the compiler merges partials only within one compilation unit.</p>
+<h3>Workarounds</h3>
+<ul>
+<li>Put all partial files in the <strong>same .csproj</strong> (can be different folders).</li>
+<li>Use <strong>linked files</strong> in MSBuild to include a .cs file from another folder into one project — still one assembly.</li>
+<li>Across projects use <strong>inheritance</strong> (<code>class Derived : Base</code>) or <strong>composition</strong>, not partial.</li>
+</ul>
+<pre><code>// ❌ User.cs in ProjectA + User.extra.cs in ProjectB — NOT valid partial
+
+// ✅ User.cs + User.validation.cs both in same ProjectA</code></pre>
+<h3>Interview Answer</h3>
+<p>Partial classes must live in the same project/assembly. Different projects produce different assemblies, so you cannot split one partial class across them — use inheritance or shared project references instead.</p>""",
+
+"q_csharp_null_reference": """<h2>NullReferenceException — Types &amp; Causes</h2>
+<p><code>NullReferenceException</code> is thrown when you dereference a <code>null</code> reference — calling a member, indexing, or accessing a field on an object that does not exist. There is only one exception type, but it arises in several common scenarios.</p>
+<table>
+<tr><th>Scenario</th><th>Example</th></tr>
+<tr><td>Object not initialized</td><td><code>User u = null; u.Name;</code></td></tr>
+<tr><td>Method returns null</td><td><code>var order = GetOrder(id); order.Total;</code> when not found</td></tr>
+<tr><td>Missing DI registration</td><td>Service resolved as null (older patterns) or failed startup</td></tr>
+<tr><td>Array / collection null</td><td><code>foreach (var x in items)</code> when <code>items</code> is null</td></tr>
+<tr><td>Nested property chain</td><td><code>customer.Address.City</code> when <code>Address</code> is null</td></tr>
+<tr><td>Event / delegate null</td><td><code>OnSaved(null)</code> if no subscribers (use <code>?.Invoke</code>)</td></tr>
+</table>
+<pre><code>// Prevention
+if (user?.Address?.City is { } city) { /* use city */ }
+
+// C# 8+ nullable reference types — compile-time warnings
+#nullable enable
+string name = null; // warning</code></pre>
+<h3>Related exceptions</h3>
+<ul>
+<li><strong>NullReferenceException</strong> — dereference of null reference.</li>
+<li><strong>ArgumentNullException</strong> — explicit throw when argument is null (<code>ArgumentNullException.ThrowIfNull(x)</code>).</li>
+<li><strong>InvalidOperationException</strong> — sometimes used instead of NRE for empty collections (<code>First()</code>).</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>NullReferenceException means you used an object reference that was null. Common causes are uninitialized fields, APIs returning null, and nested property access. I prevent it with null checks, null-conditional operators, nullable reference types, and guard clauses at method entry.</p>""",
+
+"q_csharp_hashtable_hashset": """<h2>Hashtable vs Dictionary / HashSet vs Dictionary</h2>
+<p><strong>Hashtable</strong> is legacy, non-generic, thread-safe for single writes; stores <code>object</code> keys/values with boxing. <strong>Dictionary&lt;TKey,TValue&gt;</strong> is the modern generic key-value map. <strong>HashSet&lt;T&gt;</strong> stores unique keys only — no values — optimized for membership and set operations.</p>
+<table>
+<tr><th>Type</th><th>Structure</th><th>When to use</th></tr>
+<tr><td>Hashtable</td><td>Key → value (non-generic)</td><td>Legacy code only — prefer Dictionary</td></tr>
+<tr><td>Dictionary&lt;K,V&gt;</td><td>Key → value (generic)</td><td>Lookup by key, counts, caches</td></tr>
+<tr><td>HashSet&lt;T&gt;</td><td>Unique items only</td><td>Distinct IDs, tags, deduplication</td></tr>
+</table>
+<pre><code>// Dictionary — key maps to value
+var users = new Dictionary&lt;int, string&gt;();
+users[1] = "Alice";
+users.TryGetValue(1, out var name);
+
+// HashSet — uniqueness &amp; set ops
+var ids = new HashSet&lt;int&gt; { 1, 2, 3 };
+ids.Add(2); // false — already exists
+ids.UnionWith(otherSet);
+
+// Hashtable — avoid in new code
+var legacy = new Hashtable();
+legacy["key"] = "value"; // boxing</code></pre>
+<h3>Dictionary vs HashSet</h3>
+<ul>
+<li>Need <strong>associated value</strong> per key → <code>Dictionary&lt;K,V&gt;</code>.</li>
+<li>Need only <strong>unique presence</strong> → <code>HashSet&lt;T&gt;</code>.</li>
+<li>Both use hash codes for O(1) average lookup.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>I use Dictionary for key-value lookups, HashSet when I only need unique items or set operations, and I avoid Hashtable in new code because it boxes values and lacks type safety. Generic collections in System.Collections.Generic are the standard choice.</p>""",
 }

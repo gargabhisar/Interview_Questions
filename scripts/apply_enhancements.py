@@ -16,6 +16,10 @@ sys.path.insert(0, str(SCRIPT_DIR))
 from interview_answers_generated import ANSWERS as OOPS_NET
 from interview_answers_sql_design import ANSWERS as SQL_DESIGN
 from interview_answers_async_other import ANSWERS as ASYNC_OTHER
+from interview_answers_aspnet import ANSWERS as ASPNET
+from interview_answers_sql_topics import ANSWERS as SQL_TOPICS
+from interview_answers_ef_adonet import ANSWERS as EF_ADONET
+from interview_answers_azure_arch import ANSWERS as AZURE_ARCH
 
 HTML_PATH = REPO_ROOT / "Interview_Questions.html"
 
@@ -23,6 +27,10 @@ ANSWERS = {}
 ANSWERS.update(OOPS_NET)
 ANSWERS.update(SQL_DESIGN)
 ANSWERS.update(ASYNC_OTHER)
+ANSWERS.update(ASPNET)
+ANSWERS.update(SQL_TOPICS)
+ANSWERS.update(EF_ADONET)
+ANSWERS.update(AZURE_ARCH)
 
 EXTRA_CSS = """
 .interview-tip {

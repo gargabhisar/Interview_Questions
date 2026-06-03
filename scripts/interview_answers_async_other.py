@@ -413,8 +413,56 @@ catch (Exception ex)
 <h3>Interview Answer</h3>
 <p>Multiple catch blocks let you handle different failure types differently. Place specific handlers first, optionally use exception filters with when, and use a general catch only for logging before rethrow or graceful degradation.</p>""",
 
+"q_45": """<h2>Async &amp; Await in C#</h2>
+<p><strong>async/await</strong> enables non-blocking asynchronous code. The compiler rewrites an <code>async</code> method into a state machine that can suspend at <code>await</code> and resume when the awaited <code>Task</code> completes — without holding a thread while waiting on I/O.</p>
+<pre><code>// I/O-bound — thread is released while waiting
+public async Task&lt;User&gt; GetUserAsync(int id)
+{
+    var response = await _httpClient.GetAsync($"/users/{id}");
+    response.EnsureSuccessStatusCode();
+    return await response.Content.ReadFromJsonAsync&lt;User&gt;();
+}
+
+// Multiple awaits — sequential flow, still readable
+public async Task&lt;OrderSummary&gt; BuildSummaryAsync(int orderId)
+{
+    var order = await _repo.GetOrderAsync(orderId);
+    var customer = await _repo.GetCustomerAsync(order.CustomerId);
+    return new OrderSummary(order, customer);
+}
+
+// Parallel I/O
+var tasks = ids.Select(id =&gt; GetUserAsync(id));
+var users = await Task.WhenAll(tasks);</code></pre>
+<h3>How It Works</h3>
+<ul>
+<li><code>async</code> on a method returns <code>Task</code> or <code>Task&lt;T&gt;</code> (or <code>void</code> for event handlers only).</li>
+<li>At each <code>await</code>, if the operation is incomplete, the method returns control to the caller; the thread can serve other work.</li>
+<li>When the awaited task completes, the state machine resumes — often on a thread-pool thread (ASP.NET Core has no sync context by default).</li>
+<li>Exceptions thrown inside an async method are captured on the returned Task and rethrown when you await it.</li>
+</ul>
+<h3>async/await vs Task.Run</h3>
+<p>Use <strong>async/await</strong> for I/O-bound work (HTTP, DB, files). Use <strong>Task.Run</strong> only to offload CPU-bound synchronous code to the thread pool — wrapping I/O in Task.Run wastes threads.</p>
+<h3>Key Points</h3>
+<ul>
+<li>Prefer <code>async Task</code> over <code>async void</code> except for event handlers.</li>
+<li>Avoid <code>.Result</code> and <code>.Wait()</code> on async code — can deadlock on UI or legacy ASP.NET.</li>
+<li><code>ConfigureAwait(false)</code> in library code avoids capturing synchronization context.</li>
+<li>async all the way down: async controllers/services/repos compose cleanly.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>async/await lets you write sequential-looking code that does not block threads during I/O. The compiler builds a state machine around Tasks. I use it for HTTP, database, and file operations; I avoid blocking on Tasks and I do not wrap async I/O in Task.Run on server code.</p>""",
+
 "q_51": """<h2>.NET Garbage Collector</h2>
 <p>The GC reclaims managed heap memory for objects no longer reachable from GC roots (stack, static fields, CPU registers). It uses generational collection: Gen0 (short-lived), Gen1 (buffer), Gen2 (long-lived), plus LOH for large objects.</p>
+<h3>How It Works</h3>
+<ol>
+<li><strong>Mark</strong> — Starting from roots, the GC traces object references and marks every reachable object.</li>
+<li><strong>Sweep / compact</strong> — Unmarked objects are reclaimed; on younger generations the heap may be compacted to reduce fragmentation.</li>
+<li><strong>Promote survivors</strong> — Objects that survive a Gen0 collection move to Gen1; survivors of Gen1 move to Gen2. Long-lived objects are collected less often.</li>
+<li><strong>Finalizers</strong> — Objects with destructors go to a finalizer queue; they survive one extra collection cycle (prefer <code>IDisposable</code> instead).</li>
+</ol>
+<p>Collections are triggered when a generation budget is exceeded or under memory pressure. Full Gen2 collections are the most expensive.</p>
 <pre><code>// Gen0 collections are frequent and cheap
 var list = new List&lt;byte[]&gt;();
 for (int i = 0; i &lt; 1000; i++)
@@ -435,7 +483,7 @@ finally { ArrayPool&lt;byte&gt;.Shared.Return(buffer); }</code></pre>
 <li>Server GC vs Workstation GC tuned for throughput vs interactive apps.</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>The GC traces reachable objects from roots and frees unreachable ones in generations to optimize collection cost. Minimize allocations and large object churn in hot paths; dispose unmanaged resources explicitly via IDisposable.</p>""",
+<p>The GC is a generational, tracing collector: it marks reachable objects from roots, frees unreachable ones, and promotes survivors across Gen0/Gen1/Gen2 to keep collections cheap for short-lived objects. I minimize allocations in hot paths, avoid LOH churn, and use IDisposable for unmanaged resources the GC does not know about.</p>""",
 
 "q_52": """<h2>throw vs throw ex</h2>
 <p><code>throw;</code> rethrows the current exception preserving the original stack trace. <code>throw ex;</code> (or <code>throw someCaughtEx</code>) resets the stack trace to the rethrow site, hiding where the error actually occurred—bad for diagnostics.</p>
