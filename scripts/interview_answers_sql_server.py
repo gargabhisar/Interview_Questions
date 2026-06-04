@@ -356,4 +356,526 @@ BULK INSERT dbo.Customer_Staging FROM 'file.csv' ...;</code></pre>
 </ul>
 <h3>Interview Answer</h3>
 <p>WHERE 1 = 0 creates a new table with the same columns but no rows — I use it to clone structure for staging or migrations. WHERE 1 = 1 creates the table and copies all rows — I use it for quick backups or snapshots before destructive changes. Neither copies indexes or constraints; only column definitions and optionally data.</p>""",
+
+"q_sql_scenario_pagination": """<h2>Pagination in SQL Server</h2>
+<p><strong>Pagination</strong> returns one page of rows at a time (e.g. page 2, 10 rows per page) instead of loading the entire table.</p>
+<h3>OFFSET / FETCH (SQL Server 2012+) — recommended</h3>
+<pre><code>DECLARE @PageNumber INT = 2;   -- 2nd page
+DECLARE @PageSize     INT = 10;
+
+SELECT EmployeeId, Name, DeptId
+FROM Employees
+ORDER BY EmployeeId   -- stable sort required
+OFFSET (@PageNumber - 1) * @PageSize ROWS
+FETCH NEXT @PageSize ROWS ONLY;</code></pre>
+<p>Page 1 → <code>OFFSET 0</code>, Page 2 → <code>OFFSET 10</code>, etc.</p>
+<h3>Total count for UI (optional)</h3>
+<pre><code>SELECT COUNT(*) AS TotalRows FROM Employees;
+
+-- Or window function in one query (heavier on large tables)
+SELECT *, COUNT(*) OVER() AS TotalRows
+FROM Employees
+ORDER BY EmployeeId
+OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY;</code></pre>
+<h3>Legacy: ROW_NUMBER()</h3>
+<pre><code>SELECT EmployeeId, Name
+FROM (
+    SELECT *,
+           ROW_NUMBER() OVER (ORDER BY EmployeeId) AS rn
+    FROM Employees
+) t
+WHERE rn BETWEEN 11 AND 20;  -- page 2, size 10</code></pre>
+<h3>Key Points</h3>
+<ul>
+<li>Always <code>ORDER BY</code> — without it, page order is undefined.</li>
+<li>Large <code>OFFSET</code> on huge tables can be slow (skips many rows); keyset pagination is better for deep pages.</li>
+<li>API pattern: pass <code>page</code> and <code>pageSize</code> as parameters to a stored procedure.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>I paginate with ORDER BY plus OFFSET/FETCH: OFFSET (page-1)*pageSize ROWS FETCH NEXT pageSize ROWS ONLY. I return total count separately for the UI and use a stable sort column like primary key.</p>""",
+
+"q_sql_scenario_gender_codes": """<h2>Insert Gender Values — Male = 'M', Female = 'F', Other = 'O'</h2>
+<p>Interviewers want a lookup table, constrained column, or seed INSERT. Common patterns:</p>
+<h3>Option 1 — Lookup table + INSERT</h3>
+<pre><code>CREATE TABLE Gender (
+    GenderCode CHAR(1) PRIMARY KEY,
+    GenderName VARCHAR(10) NOT NULL
+);
+
+INSERT INTO Gender (GenderName, GenderCode) VALUES
+    ('Male',   'M'),
+    ('Female', 'F'),
+    ('Other',  'O');</code></pre>
+<h3>Option 2 — UserDetails with CHECK constraint</h3>
+<pre><code>CREATE TABLE UserDetails (
+    UserId   INT PRIMARY KEY,
+    FullName NVARCHAR(100),
+    Gender   CHAR(1) NOT NULL
+        CHECK (Gender IN ('M', 'F', 'O'))
+);
+
+INSERT INTO UserDetails (UserId, FullName, Gender) VALUES
+    (1, 'Alice', 'F'),
+    (2, 'Bob',   'M'),
+    (3, 'Sam',   'O');</code></pre>
+<h3>Option 3 — Display name in query</h3>
+<pre><code>SELECT UserId, FullName, Gender,
+    CASE Gender
+        WHEN 'M' THEN 'Male'
+        WHEN 'F' THEN 'Female'
+        WHEN 'O' THEN 'Other'
+    END AS GenderLabel
+FROM UserDetails;</code></pre>
+<h3>Interview Answer</h3>
+<p>I store single-letter codes M/F/O with a CHECK constraint or foreign key to a Gender lookup table, and INSERT the three rows into the lookup. In reports I use CASE or join to Gender for full names.</p>""",
+
+"q_sql_scenario_default_age": """<h2>Create UserDetails Table — Default Age = 18</h2>
+<pre><code>CREATE TABLE UserDetails (
+    UserId   INT IDENTITY(1,1) PRIMARY KEY,
+    FullName NVARCHAR(100) NOT NULL,
+    Email    NVARCHAR(255),
+    Age      INT NOT NULL DEFAULT 18
+);</code></pre>
+<h3>Behavior</h3>
+<ul>
+<li>If INSERT omits <code>Age</code>, SQL Server sets it to <strong>18</strong>.</li>
+<li>Explicit value still allowed: <code>INSERT ... VALUES (..., 25)</code>.</li>
+</ul>
+<pre><code>-- Age becomes 18 automatically
+INSERT INTO UserDetails (FullName, Email)
+VALUES ('Priya', 'priya@example.com');
+
+-- Age explicitly 25
+INSERT INTO UserDetails (FullName, Email, Age)
+VALUES ('Rahul', 'rahul@example.com', 25);
+
+SELECT * FROM UserDetails;</code></pre>
+<h3>Alter existing table</h3>
+<pre><code>ALTER TABLE UserDetails
+ADD Age INT NOT NULL CONSTRAINT DF_UserDetails_Age DEFAULT 18
+    WITH VALUES;  -- fills existing rows with 18</code></pre>
+<h3>Interview Answer</h3>
+<p>I define the Age column as INT NOT NULL DEFAULT 18 in CREATE TABLE so new rows get 18 when Age is not supplied. For existing tables I use ALTER TABLE ADD ... DEFAULT with WITH VALUES if needed.</p>""",
+
+"q_sql_scenario_tanker": """<h2>3rd Highest Tanker Water Level &amp; Duplicate Tanker Names</h2>
+<p>Sample table:</p>
+<pre><code>CREATE TABLE Tankers (
+    TankerId    INT PRIMARY KEY,
+    TankerName  NVARCHAR(100),
+    WaterLevel  DECIMAL(10,2)  -- capacity / level reading
+);
+
+INSERT INTO Tankers VALUES
+(1, 'Alpha-1', 5000),
+(2, 'Beta-2',  8000),
+(3, 'Alpha-1', 8000),   -- duplicate name
+(4, 'Gamma',   6000),
+(5, 'Delta',   8000);</code></pre>
+<h3>1) 3rd highest water level (distinct levels)</h3>
+<pre><code>-- DENSE_RANK — 3rd distinct level (8000, 6000, 5000 → 3rd is 5000)
+SELECT WaterLevel AS ThirdHighestLevel
+FROM (
+    SELECT WaterLevel,
+           DENSE_RANK() OVER (ORDER BY WaterLevel DESC) AS dr
+    FROM Tankers
+) t
+WHERE dr = 3;
+
+-- OFFSET — 3rd row when levels ordered distinct
+SELECT DISTINCT WaterLevel
+FROM Tankers
+ORDER BY WaterLevel DESC
+OFFSET 2 ROWS FETCH NEXT 1 ROW ONLY;</code></pre>
+<h3>2) Duplicate tanker names</h3>
+<pre><code>-- Names appearing more than once
+SELECT TankerName, COUNT(*) AS DuplicateCount
+FROM Tankers
+GROUP BY TankerName
+HAVING COUNT(*) &gt; 1;
+
+-- All rows for duplicate names only
+SELECT t.*
+FROM Tankers t
+INNER JOIN (
+    SELECT TankerName
+    FROM Tankers
+    GROUP BY TankerName
+    HAVING COUNT(*) &gt; 1
+) d ON t.TankerName = d.TankerName
+ORDER BY t.TankerName, t.TankerId;</code></pre>
+<h3>Clarify in interview</h3>
+<ul>
+<li><strong>3rd highest level</strong> — distinct values (DENSE_RANK) vs 3rd row (ROW_NUMBER)?</li>
+<li>Ties at 8000: DENSE_RANK gives 1,1,2…; ROW_NUMBER gives 1,2,3…</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>For 3rd highest water level I use DENSE_RANK over ORDER BY WaterLevel DESC and filter dr = 3, or DISTINCT with OFFSET 2. For duplicate tanker names I GROUP BY TankerName HAVING COUNT(*) &gt; 1, then join back to list all matching rows.</p>""",
+
+"q_sql_scenario_2nd_salary": """<h2>SQL Query for 2nd Highest Salary</h2>
+<p>Find the <strong>second highest</strong> salary (usually the 2nd distinct value when salaries can repeat).</p>
+<h3>Method 1 — DENSE_RANK (handles ties on highest)</h3>
+<pre><code>SELECT Salary AS SecondHighestSalary
+FROM (
+    SELECT Salary,
+           DENSE_RANK() OVER (ORDER BY Salary DESC) AS dr
+    FROM Employees
+) t
+WHERE dr = 2;</code></pre>
+<h3>Method 2 — OFFSET / FETCH (2nd distinct salary)</h3>
+<pre><code>SELECT DISTINCT Salary AS SecondHighestSalary
+FROM Employees
+ORDER BY Salary DESC
+OFFSET 1 ROWS FETCH NEXT 1 ROW ONLY;</code></pre>
+<h3>Method 3 — Subquery with MAX</h3>
+<pre><code>SELECT MAX(Salary) AS SecondHighestSalary
+FROM Employees
+WHERE Salary &lt; (SELECT MAX(Salary) FROM Employees);</code></pre>
+<p>Works when you want the max salary below the top; if two people share highest salary, this still returns the correct 2nd distinct level.</p>
+<h3>Employee(s) earning 2nd highest</h3>
+<pre><code>SELECT EmployeeId, Name, Salary
+FROM Employees
+WHERE Salary = (
+    SELECT MAX(Salary) FROM Employees
+    WHERE Salary &lt; (SELECT MAX(Salary) FROM Employees)
+);</code></pre>
+<h3>Key Points</h3>
+<ul>
+<li>Clarify: <strong>2nd distinct salary</strong> vs <strong>2nd row</strong> (use ROW_NUMBER for 2nd row).</li>
+<li>Index on <code>Salary DESC</code> helps large tables.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>For 2nd highest salary I use DENSE_RANK with ORDER BY Salary DESC and filter dr = 2, or DISTINCT salaries with OFFSET 1 FETCH NEXT 1. The MAX subquery pattern also works: MAX(Salary) WHERE Salary &lt; (SELECT MAX(Salary) FROM Employees).</p>""",
+
+"q_sql_scenario_delete_duplicate": """<h2>Delete One of the Duplicate Records</h2>
+<p>Keep <strong>one row</strong> per duplicate group; delete the rest. Define the duplicate key (e.g. same <code>Email</code> or same <code>Email + UserName</code>).</p>
+<h3>Step 1 — Preview duplicates (CTE + ROW_NUMBER)</h3>
+<pre><code>WITH DupCTE AS (
+    SELECT UserID, Email, UserName,
+           ROW_NUMBER() OVER (
+               PARTITION BY Email        -- duplicate rule
+               ORDER BY UserID           -- keep lowest UserID
+           ) AS rn
+    FROM dbo.[User]
+)
+SELECT * FROM DupCTE WHERE rn &gt; 1;   -- rows to delete</code></pre>
+<h3>Step 2 — DELETE duplicates (keep rn = 1)</h3>
+<pre><code>WITH DupCTE AS (
+    SELECT UserID, Email, UserName,
+           ROW_NUMBER() OVER (
+               PARTITION BY Email
+               ORDER BY UserID
+           ) AS rn
+    FROM dbo.[User]
+)
+DELETE FROM DupCTE
+WHERE rn &gt; 1;</code></pre>
+<p>SQL Server allows <code>DELETE</code> from a CTE on a <strong>single base table</strong> when the CTE is deterministic.</p>
+<h3>With primary key (simpler)</h3>
+<pre><code>DELETE e
+FROM Employees e
+INNER JOIN (
+    SELECT Email, MIN(EmployeeId) AS KeepId
+    FROM Employees
+    GROUP BY Email
+    HAVING COUNT(*) &gt; 1
+) d ON e.Email = d.Email AND e.EmployeeId &gt; d.KeepId;</code></pre>
+<h3>Safety</h3>
+<ul>
+<li>Run <code>SELECT</code> preview first; wrap in <code>BEGIN TRAN</code> / <code>ROLLBACK</code> to test.</li>
+<li>Backup table or use <code>DELETE</code> output clause for audit.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>I use a CTE with ROW_NUMBER partitioned by the duplicate columns, ORDER BY a tie-breaker like lowest ID to choose which row to keep, then DELETE WHERE rn &gt; 1. I always preview duplicates before deleting and use a transaction in production scripts.</p>""",
+
+"q_sql_scenario_optimize_query": """<h2>How Can We Optimize Query Performance?</h2>
+<p>Optimize using <strong>measurement first</strong> (execution plan, duration, IO), then apply targeted fixes.</p>
+<h3>1. Find the bottleneck</h3>
+<ul>
+<li>Enable <strong>actual execution plan</strong> in SSMS.</li>
+<li>Look for <strong>table/clustered index scans</strong>, high cost %, missing index hints.</li>
+<li>Check <code>SET STATISTICS IO, TIME ON</code> for logical reads and elapsed time.</li>
+</ul>
+<h3>2. Indexing</h3>
+<ul>
+<li>Add nonclustered indexes on <strong>WHERE</strong>, <strong>JOIN</strong>, and <strong>ORDER BY</strong> columns.</li>
+<li>Use <strong>covering indexes</strong> (INCLUDE columns) to avoid key lookups.</li>
+<li>Remove unused/redundant indexes that slow writes.</li>
+<li>Update <strong>statistics</strong> (<code>UPDATE STATISTICS</code> or automatic).</li>
+</ul>
+<h3>3. Write better SQL</h3>
+<ul>
+<li>Avoid <code>SELECT *</code> — return only needed columns.</li>
+<li>Filter early; avoid functions on indexed columns in WHERE (<code>WHERE YEAR(d)=2024</code> → range on <code>d</code>).</li>
+<li>Replace correlated subqueries with JOINs or window functions when plans are bad.</li>
+<li>Use <code>EXISTS</code> instead of <code>IN</code> for large subqueries when appropriate.</li>
+<li>Paginate large results — do not return millions of rows.</li>
+</ul>
+<h3>4. Server &amp; design</h3>
+<ul>
+<li>Fix <strong>implicit conversions</strong> (NVARCHAR column vs VARCHAR parameter).</li>
+<li>Reduce <strong>blocking</strong> — shorter transactions, right isolation level.</li>
+<li>Partition very large tables; archive old data.</li>
+<li>Warm cache for critical reports; use read replicas for reporting.</li>
+</ul>
+<pre><code>-- Bad — non-sargable
+WHERE YEAR(OrderDate) = 2024
+
+-- Better — sargable range
+WHERE OrderDate &gt;= '2024-01-01' AND OrderDate &lt; '2025-01-01';</code></pre>
+<h3>Checklist</h3>
+<table>
+<tr><th>Symptom</th><th>Typical fix</th></tr>
+<tr><td>Scan on large table</td><td>Index on filter/join columns</td></tr>
+<tr><td>Key lookup high cost</td><td>Covering index with INCLUDE</td></tr>
+<tr><td>Bad cardinality estimate</td><td>Update stats, recompile, fix parameter sniffing</td></tr>
+<tr><td>Too many rows returned</td><td>Filter, paginate, project fewer columns</td></tr>
+</table>
+<h3>Interview Answer</h3>
+<p>I start with the execution plan and missing-index suggestions, then add or tune indexes on filter and join columns, avoid SELECT * and non-sargable predicates, and keep statistics current. I measure before and after each change rather than adding indexes blindly.</p>""",
+
+"q_sql_joins_self_join": """<h2>What Are Joins? What Is a Self Join?</h2>
+<p>A <strong>JOIN</strong> combines rows from two or more tables based on a related column (usually primary key = foreign key).</p>
+<h3>Types of joins</h3>
+<table>
+<tr><th>Join</th><th>Result</th></tr>
+<tr><td><strong>INNER JOIN</strong></td><td>Only matching rows from both tables</td></tr>
+<tr><td><strong>LEFT JOIN</strong> (LEFT OUTER)</td><td>All rows from left table + matches from right (NULL if no match)</td></tr>
+<tr><td><strong>RIGHT JOIN</strong></td><td>All rows from right + matches from left</td></tr>
+<tr><td><strong>FULL OUTER JOIN</strong></td><td>All rows from both; NULL where no match</td></tr>
+<tr><td><strong>CROSS JOIN</strong></td><td>Cartesian product — every row paired with every row</td></tr>
+</table>
+<pre><code>-- INNER JOIN — employees with department names
+SELECT e.Name, d.DeptName
+FROM Employees e
+INNER JOIN Departments d ON e.DeptId = d.DeptId;
+
+-- LEFT JOIN — all employees, even without department
+SELECT e.Name, d.DeptName
+FROM Employees e
+LEFT JOIN Departments d ON e.DeptId = d.DeptId;</code></pre>
+<h3>Self join</h3>
+<p>A <strong>self join</strong> joins a table <strong>to itself</strong> — useful for hierarchies (employee → manager) or comparing rows in the same table.</p>
+<pre><code>-- Employee and their manager name (same table, two aliases)
+SELECT
+    e.Name AS Employee,
+    m.Name AS Manager
+FROM Employees e
+LEFT JOIN Employees m ON e.ManagerId = m.EmployeeId;
+
+-- Pairs in same department (excluding self)
+SELECT a.Name, b.Name
+FROM Employees a
+INNER JOIN Employees b
+    ON a.DeptId = b.DeptId AND a.EmployeeId &lt; b.EmployeeId;</code></pre>
+<h3>Interview Answer</h3>
+<p>Joins combine tables on related keys — INNER for matches only, LEFT when you need all rows from the driving table. A self join uses two aliases on the same table, commonly for manager-employee hierarchy or intra-table comparisons.</p>""",
+
+"q_sql_index_when_to_use": """<h2>Use of Clustered and Non-Clustered Indexes</h2>
+<p>Indexes speed up <strong>reads</strong> (SELECT, JOIN, WHERE, ORDER BY) at the cost of slower <strong>writes</strong> (INSERT/UPDATE/DELETE) and extra storage.</p>
+<h3>Clustered index — when to use</h3>
+<ul>
+<li><strong>One per table</strong> — defines physical row order.</li>
+<li>Put on the column used most for <strong>range scans</strong> and sorting — often <code>PRIMARY KEY</code> (identity).</li>
+<li>Good for: <code>WHERE OrderDate BETWEEN ...</code>, <code>ORDER BY OrderId</code>, sequential inserts on ID.</li>
+<li>Avoid wide, random clustered keys (e.g. GUID) — causes page splits and fragmentation.</li>
+</ul>
+<h3>Non-clustered index — when to use</h3>
+<ul>
+<li>Add on columns in <strong>WHERE</strong>, <strong>JOIN</strong>, and <strong>ORDER BY</strong> that are not the clustered key.</li>
+<li><strong>Covering index</strong> — INCLUDE extra columns so the query is satisfied from the index alone (no key lookup).</li>
+<li>Foreign keys and highly selective filters (Status, Email, CustomerId).</li>
+<li>Many allowed per table; do not over-index every column — hurts insert/update throughput.</li>
+</ul>
+<table>
+<tr><th>Scenario</th><th>Index choice</th></tr>
+<tr><td>Primary key, sequential ID</td><td>Clustered on PK</td></tr>
+<tr><td>Search by email</td><td>Nonclustered on Email (often UNIQUE)</td></tr>
+<tr><td>Report filter + return few columns</td><td>Nonclustered with INCLUDE</td></tr>
+<tr><td>Heap table (no clustered)</td><td>Nonclustered leaf points to RID</td></tr>
+</table>
+<pre><code>CREATE CLUSTERED INDEX IX_Order_Date ON Orders(OrderDate);
+
+CREATE NONCLUSTERED INDEX IX_Order_Customer
+ON Orders(CustomerId)
+INCLUDE (OrderDate, Total);  -- covering for common query</code></pre>
+<h3>Interview Answer</h3>
+<p>I use the clustered index for the main access path—usually the PK—for physical ordering. I add nonclustered indexes on filter and join columns and covering indexes when plans show expensive key lookups. I balance read speed with write overhead and validate with execution plans.</p>""",
+
+"q_sql_profiling": """<h2>SQL Profiling — How to See It &amp; Interview Experience</h2>
+<p><strong>SQL profiling</strong> means capturing what SQL Server is executing — queries, duration, reads, waits — to find slow or expensive statements.</p>
+<h3>Tools in SQL Server</h3>
+<table>
+<tr><th>Tool</th><th>Use</th></tr>
+<tr><td><strong>Actual Execution Plan</strong> (SSMS)</td><td>Per-query plan, operators, cost, missing index hints (Ctrl+M)</td></tr>
+<tr><td><strong>SET STATISTICS IO, TIME ON</strong></td><td>Logical reads and elapsed time in Messages tab</td></tr>
+<tr><td><strong>SQL Server Profiler</strong></td><td>Legacy trace of batches, RPCs, durations (avoid heavy traces on prod)</td></tr>
+<tr><td><strong>Extended Events (XEvents)</strong></td><td>Modern, lightweight replacement for Profiler</td></tr>
+<tr><td><strong>Query Store</strong></td><td>Built-in history of plans and regressions per database</td></tr>
+<tr><td><strong>DMVs</strong></td><td><code>sys.dm_exec_query_stats</code>, wait stats for server-wide view</td></tr>
+</table>
+<h3>How to enable profiling in SSMS</h3>
+<pre><code>-- Per session — before running your query
+SET STATISTICS IO ON;
+SET STATISTICS TIME ON;
+
+SELECT * FROM Orders WHERE CustomerId = 42;
+
+-- Execution plan: Query menu → Include Actual Execution Plan
+-- Or shortcut Ctrl+M</code></pre>
+<h3>Extended Events (brief)</h3>
+<p>Create a session for <code>sql_statement_completed</code> or <code>rpc_completed</code>, filter by duration &gt; 1000 ms, export to file or live watch in SSMS.</p>
+<h3>Sample interview answer (experience)</h3>
+<p>“Yes. When a stored procedure or API was slow, I captured the <strong>actual execution plan</strong> in SSMS and looked for table scans, high-cost operators, and missing index suggestions. I used <strong>STATISTICS IO/TIME</strong> to compare logical reads before and after adding an index. On servers I preferred <strong>Extended Events</strong> or <strong>Query Store</strong> over long Profiler traces to avoid overhead. I fixed issues like missing indexes on join columns, implicit conversions, and parameter sniffing after comparing plans.”</p>
+<h3>What to look for in a plan</h3>
+<ul>
+<li>Table / clustered index <strong>scan</strong> on large tables → consider index.</li>
+<li><strong>Key lookup</strong> (nested loops) → covering index may help.</li>
+<li>High <strong>actual vs estimated</strong> rows → stale statistics.</li>
+<li>Warnings: implicit convert, no join predicate, excessive memory grant.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>I profile with actual execution plans and STATISTICS IO/TIME in SSMS, and on servers with Extended Events or Query Store. I trace slow queries, identify scans and expensive lookups, apply index or query fixes, and re-run the plan to confirm lower cost and reads.</p>""",
+
+"q_sql_opt_techniques_list": """<h2>SQL Server Optimization Techniques (5–7 Ways)</h2>
+<p>Top techniques I use to improve SQL Server performance — always <strong>measure first</strong> (plan, duration, IO), then apply fixes.</p>
+<ol>
+<li><strong>Proper indexing</strong> — nonclustered indexes on WHERE/JOIN/ORDER BY; covering indexes with INCLUDE; one sensible clustered key (often PK).</li>
+<li><strong>Update statistics</strong> — keep optimizer estimates accurate (<code>UPDATE STATISTICS</code>, auto stats, Query Store for regressions).</li>
+<li><strong>Rewrite inefficient SQL</strong> — avoid <code>SELECT *</code>, non-sargable functions on columns, correlated subqueries; use EXISTS/JOINs and filter early.</li>
+<li><strong>Read execution plans</strong> — fix scans, key lookups, implicit conversions, bad joins; use missing-index hints as starting points only.</li>
+<li><strong>Reduce locking &amp; blocking</strong> — shorter transactions, right isolation level, READ COMMITTED SNAPSHOT where appropriate.</li>
+<li><strong>Partition &amp; archive data</strong> — smaller hot working set, partition large tables by date, move history to archive tables.</li>
+<li><strong>Hardware &amp; configuration</strong> — enough memory for buffer pool, fast disks for log/data, MAXDOP/Cost Threshold for Parallelism tuned for workload.</li>
+</ol>
+<h3>Bonus techniques</h3>
+<ul>
+<li>Parameterized queries / avoid plan cache pollution.</li>
+<li>Tempdb tuning for heavy sorts/hashes.</li>
+<li>Caching at app layer (Redis) for read-heavy reference data.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>I list indexing, current statistics, query rewrites, plan analysis, shorter transactions, data archiving, and server tuning as my main levers. I pick based on what the plan and IO stats show—not by adding indexes everywhere.</p>""",
+
+"q_sql_5th_rank_cte": """<h2>Find 5th Highest Rank Using RANK and CTE</h2>
+<p>Use a <strong>CTE</strong> with <strong>RANK()</strong> (or <strong>DENSE_RANK()</strong> if you want 5th distinct value without gaps) over salaries, then filter <code>rnk = 5</code>.</p>
+<h3>Using RANK (gaps after ties — Olympic style)</h3>
+<pre><code>WITH SalaryRank AS (
+    SELECT
+        EmployeeId,
+        Name,
+        Salary,
+        RANK() OVER (ORDER BY Salary DESC) AS rnk
+    FROM Employees
+)
+SELECT EmployeeId, Name, Salary, rnk
+FROM SalaryRank
+WHERE rnk = 5;</code></pre>
+<p>If two employees tie for 4th, next rank is 6 — so <code>rnk = 5</code> may return no rows.</p>
+<h3>Using DENSE_RANK (no gaps — 5th distinct salary)</h3>
+<pre><code>WITH SalaryRank AS (
+    SELECT
+        EmployeeId,
+        Name,
+        Salary,
+        DENSE_RANK() OVER (ORDER BY Salary DESC) AS drnk
+    FROM Employees
+)
+SELECT EmployeeId, Name, Salary, drnk
+FROM SalaryRank
+WHERE drnk = 5;</code></pre>
+<h3>Return only the 5th highest salary value</h3>
+<pre><code>WITH DistinctSalaries AS (
+    SELECT DISTINCT Salary,
+           DENSE_RANK() OVER (ORDER BY Salary DESC) AS drnk
+    FROM Employees
+)
+SELECT Salary AS FifthHighestSalary
+FROM DistinctSalaries
+WHERE drnk = 5;</code></pre>
+<h3>Interview Answer</h3>
+<p>I wrap the table in a CTE, apply RANK or DENSE_RANK over ORDER BY Salary DESC, and SELECT WHERE rank = 5. I clarify whether ties should skip ranks (RANK) or not (DENSE_RANK) before choosing the function.</p>""",
+
+"q_sql_concurrent_update_conflict": """<h2>Two Users Update Same Data — Who Was First?</h2>
+<p>When two people edit the same row, the <strong>first COMMIT wins</strong>. The second update must detect that data changed and return a friendly “already updated” message — not overwrite silently.</p>
+<h3>Pattern: rowversion / timestamp token</h3>
+<pre><code>CREATE TABLE Orders (
+    OrderId    INT PRIMARY KEY,
+    Status     NVARCHAR(20),
+    Amount     DECIMAL(18,2),
+    RowVer     ROWVERSION   -- auto-updates on every change
+);
+
+-- User A reads at 10:00
+SELECT OrderId, Status, Amount, RowVer FROM Orders WHERE OrderId = 1;
+-- RowVer = 0x00000000000007D1
+
+-- User B reads same row, updates first at 10:01 — succeeds
+UPDATE Orders SET Status = 'Shipped', Amount = 500
+WHERE OrderId = 1;
+-- RowVer changes to 0x00000000000007D2
+
+-- User A tries at 10:02 with OLD RowVer — must fail
+UPDATE Orders
+SET Status = 'Approved', Amount = 450
+WHERE OrderId = 1 AND RowVer = 0x00000000000007D1;
+-- @@ROWCOUNT = 0 → someone else updated first</code></pre>
+<h3>Application logic (.NET / API)</h3>
+<pre><code>// On save, include original RowVer from when user opened the form
+var rows = await _db.Database.ExecuteSqlRawAsync(
+    @"UPDATE Orders SET Status = {0}, Amount = {1}
+      WHERE OrderId = {2} AND RowVer = {3}",
+    status, amount, orderId, originalRowVer);
+
+if (rows == 0)
+    return Conflict("Sorry, this record was already updated by another user. Please refresh.");</code></pre>
+<h3>How you know who was first</h3>
+<ul>
+<li><strong>First commit</strong> succeeds and bumps <code>ROWVERSION</code> / <code>LastModifiedUtc</code>.</li>
+<li><strong>Second update</strong> affects 0 rows when WHERE includes old token → tell user to refresh.</li>
+<li>Optional audit table: <code>UpdatedBy</code>, <code>UpdatedAt</code> shows who won.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>I store a concurrency token (ROWVERSION or LastModified). On update, the WHERE clause includes the token the user read. If no rows updated, the second person gets a 409 Conflict message to refresh — the first commit already changed the row.</p>""",
+
+"q_sql_optimistic_concurrency": """<h2>Optimistic Concurrency — What It Is &amp; How to Use It</h2>
+<p><strong>Optimistic concurrency</strong> assumes conflicts are <strong>rare</strong>: users read data without long locks; at <strong>save time</strong> the app checks whether the row still matches what they read. If not, the update fails and the user refreshes.</p>
+<h3>Optimistic vs pessimistic</h3>
+<table>
+<tr><th></th><th>Optimistic</th><th>Pessimistic</th></tr>
+<tr><td>Locks while reading?</td><td>No — read freely</td><td>Yes — UPDLOCK, HOLDLOCK</td></tr>
+<tr><td>Conflict detection</td><td>At UPDATE (token / version)</td><td>Blocked until lock released</td></tr>
+<tr><td>Best for</td><td>Web apps, low collision rate</td><td>High contention, banking counters</td></tr>
+</table>
+<h3>How to implement in SQL Server</h3>
+<ol>
+<li>Add <code>ROWVERSION</code> column (or <code>LastModified</code> datetime + user id).</li>
+<li>Client reads row <strong>including token</strong> when opening edit screen.</li>
+<li>On UPDATE/DELETE, include token in WHERE: <code>WHERE Id = @id AND RowVer = @oldVer</code>.</li>
+<li>If <code>@@ROWCOUNT = 0</code>, throw concurrency exception → “Data was modified by another user.”</li>
+</ol>
+<pre><code>UPDATE Products
+SET Name = @name, Price = @price
+WHERE ProductId = @id AND RowVer = @rowVerFromClient;
+
+IF @@ROWCOUNT = 0
+    RAISERROR('Concurrency conflict', 16, 1);</code></pre>
+<h3>Entity Framework Core</h3>
+<pre><code>public class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    [Timestamp]
+    public byte[] RowVersion { get; set; } = null!;
+}
+
+// SaveChanges throws DbUpdateConcurrencyException on conflict
+try { await _db.SaveChangesAsync(); }
+catch (DbUpdateConcurrencyException)
+{
+    return Conflict("Record already updated. Please reload.");
+}</code></pre>
+<h3>SQL Server isolation note</h3>
+<p>Optimistic concurrency is an <strong>application pattern</strong>; it works with default READ COMMITTED. It is different from <strong>SNAPSHOT</strong> isolation but often used together in OLTP apps.</p>
+<h3>Interview Answer</h3>
+<p>Optimistic concurrency means no locks during read; on save I compare a rowversion or timestamp token. If the row changed, UPDATE affects zero rows and I return a conflict to the second user. In EF Core I use a [Timestamp] property and handle DbUpdateConcurrencyException.</p>""",
 }
