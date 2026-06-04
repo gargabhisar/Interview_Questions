@@ -1,4 +1,48 @@
 ANSWERS = {
+"q_sql_transaction_implement": """<h2>Transaction in SQL — What It Is &amp; How to Implement</h2>
+<p>A <strong>transaction</strong> groups one or more SQL statements into one atomic unit: all succeed (<strong>COMMIT</strong>) or all undo (<strong>ROLLBACK</strong>).</p>
+<h3>How to implement (T-SQL)</h3>
+<pre><code>SET XACT_ABORT ON;
+BEGIN TRANSACTION;
+
+BEGIN TRY
+    INSERT INTO Orders (CustomerId, Total)
+    VALUES (101, 250.00);
+
+    INSERT INTO OrderLines (OrderId, ProductId, Qty)
+    VALUES (SCOPE_IDENTITY(), 5, 2);
+
+    UPDATE Inventory SET Qty = Qty - 2 WHERE ProductId = 5;
+
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT &gt; 0
+        ROLLBACK TRANSACTION;
+    THROW;
+END CATCH;</code></pre>
+<h3>In application code (ADO.NET)</h3>
+<pre><code>await using var tx = await connection.BeginTransactionAsync();
+try
+{
+    await cmd1.ExecuteNonQueryAsync();
+    await cmd2.ExecuteNonQueryAsync();
+    await tx.CommitAsync();
+}
+catch
+{
+    await tx.RollbackAsync();
+    throw;
+}</code></pre>
+<h3>Key rules</h3>
+<ul>
+<li>Keep transactions <strong>short</strong> to reduce locking and deadlocks.</li>
+<li>Use <code>TRY/CATCH</code> + check <code>@@TRANCOUNT</code> so failures always roll back.</li>
+<li>One business operation = one transaction boundary when possible.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>I wrap related DML in BEGIN TRANSACTION, commit on success, and roll back on any error using TRY/CATCH. In .NET I use explicit transactions on the connection or EF SaveChanges inside a transaction so related rows stay consistent.</p>""",
+
 "q_sql_cte_used": """<h2>CTE — What Is It? Have You Used It?</h2>
 <p>A <strong>Common Table Expression (CTE)</strong> is a named temporary result set defined with <code>WITH</code>, used in a single SELECT/INSERT/UPDATE/DELETE statement. It makes complex queries readable and supports <strong>recursion</strong>.</p>
 <pre><code>WITH ActiveEmployees AS (

@@ -395,8 +395,15 @@ cmd.Parameters.AddWithValue("@u", input);</code></pre>
 <h3>Interview Answer</h3>
 <p>SQL injection happens when user input becomes executable SQL. I prevent it with parameterized queries, avoid dynamic concatenation, apply least privilege, and use input validation as defense in depth.</p>""",
 
-"q_21": """<h2>SQL Triggers</h2>
+"q_21": """<h2>SQL Triggers — Purpose</h2>
 <p>Triggers are special stored procedures that fire automatically on INSERT, UPDATE, or DELETE (and sometimes DDL). They enforce rules, audit changes, or maintain derived data—but add hidden complexity.</p>
+<h3>Purpose (why use them)</h3>
+<ul>
+<li><strong>Audit trail</strong> — log who changed what and when (inserted/deleted tables).</li>
+<li><strong>Business rules</strong> — enforce cross-row constraints that CHECK constraints cannot express.</li>
+<li><strong>Derived data</strong> — maintain summary or cache tables when source rows change.</li>
+<li><strong>Replication / integration</strong> — queue outbound events on DML (use carefully).</li>
+</ul>
 <p>inserted and deleted pseudo-tables hold new and old row versions for DML triggers.</p>
 <pre><code>CREATE TRIGGER trg_AuditEmployeeUpdate
 ON Employees AFTER UPDATE
@@ -682,25 +689,36 @@ OFFSET 2 ROWS FETCH NEXT 1 ROW ONLY;</code></pre>
 <h3>Interview Answer</h3>
 <p>I use DENSE_RANK or ROW_NUMBER over ORDER BY Salary DESC in a subquery, then filter rn or dr = N. For distinct Nth value, DENSE_RANK; for Nth row regardless of ties, ROW_NUMBER.</p>""",
 
-"q_36": """<h2>Employees with Same Scores</h2>
-<p>Find groups sharing the same score using GROUP BY/HAVING, self-join, or window functions. Clarify whether you need pairs, full groups, or ranks with ties.</p>
-<p>Self-join returns pairs—may duplicate rows; use DISTINCT if needed.</p>
-<pre><code>-- Groups with count &gt; 1:
+"q_36": """<h2>Students with the Same Score — Find Names</h2>
+<p><strong>Table:</strong> <code>Students(StudentID, FirstName, LastName, Score)</code></p>
+<p>Return names of students whose <code>Score</code> appears more than once (at least one other student shares that score).</p>
+<pre><code>-- Recommended: scores that appear 2+ times, then all students on those scores
+SELECT s.FirstName, s.LastName, s.Score
+FROM Students s
+INNER JOIN (
+    SELECT Score
+    FROM Students
+    GROUP BY Score
+    HAVING COUNT(*) &gt; 1
+) tied ON s.Score = tied.Score
+ORDER BY s.Score, s.LastName, s.FirstName;</code></pre>
+<pre><code>-- Alternative: self-join (pairs; DISTINCT if you only want unique rows)
+SELECT DISTINCT s1.FirstName, s1.LastName, s1.Score
+FROM Students s1
+INNER JOIN Students s2
+    ON s1.Score = s2.Score AND s1.StudentID &lt;&gt; s2.StudentID
+ORDER BY s1.Score, s1.LastName, s1.FirstName;</code></pre>
+<pre><code>-- General pattern (any table):
 SELECT Score FROM Results
-GROUP BY Score HAVING COUNT(*) &gt; 1;
-
-SELECT r1.Name, r1.Score FROM Results r1
-JOIN Results r2 ON r1.Score = r2.Score AND r1.Id &lt;&gt; r2.Id;
-
-SELECT Name, Score, RANK() OVER (ORDER BY Score DESC) rk FROM Results;</code></pre>
+GROUP BY Score HAVING COUNT(*) &gt; 1;</code></pre>
 <h3>Key Points</h3>
 <ul>
+<li><code>GROUP BY Score HAVING COUNT(*) &gt; 1</code> finds tied score values; join back for names.</li>
 <li>Self-join returns pairs—may duplicate rows; use DISTINCT if needed.</li>
-<li>Window functions cleanly expose ties for ranking questions.</li>
-<li>Index on Score helps GROUP BY and join performance.</li>
+<li>Index on <code>Score</code> helps GROUP BY and join performance.</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>For same scores, I GROUP BY Score HAVING COUNT(*) &gt; 1 to find tied values, or self-join for pairs. For ranking with ties, RANK or DENSE_RANK over the score column is clearest.</p>""",
+<p>I find scores with COUNT &gt; 1 in a subquery, then join to Students for FirstName and LastName. That returns every student on a duplicated score, which matches “names of students who have the same scores.”</p>""",
 
 "q_112": """<h2>SQL Performance Bottlenecks</h2>
 <p>Common bottlenecks include missing indexes, stale statistics, implicit conversions, table scans, blocking locks, tempdb pressure, parameter sniffing, and inefficient queries returning too much data.</p>
