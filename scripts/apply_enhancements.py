@@ -20,6 +20,7 @@ from interview_answers_aspnet import ANSWERS as ASPNET
 from interview_answers_sql_topics import ANSWERS as SQL_TOPICS
 from interview_answers_ef_adonet import ANSWERS as EF_ADONET
 from interview_answers_azure_arch import ANSWERS as AZURE_ARCH
+from interview_answers_sql_server import ANSWERS as SQL_SERVER
 
 HTML_PATH = REPO_ROOT / "Interview_Questions.html"
 
@@ -31,6 +32,7 @@ ANSWERS.update(ASPNET)
 ANSWERS.update(SQL_TOPICS)
 ANSWERS.update(EF_ADONET)
 ANSWERS.update(AZURE_ARCH)
+ANSWERS.update(SQL_SERVER)
 
 EXTRA_CSS = """
 .interview-tip {
