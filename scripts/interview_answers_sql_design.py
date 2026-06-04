@@ -139,6 +139,47 @@ WHERE e.Salary &gt; 80000;
 <h3>Interview Answer</h3>
 <p>I use execution plans to see whether SQL Server scans or seeks, which joins it picks, and where cost concentrates. Red flags are scans on big tables, bad cardinality estimates, and missing indexes.</p>""",
 
+"q_sql_constraints": """<h2>Constraints in SQL</h2>
+<p><strong>Constraints</strong> are rules on tables or columns that the database enforces on INSERT/UPDATE/DELETE. They keep data valid and support ACID <strong>Consistency</strong>—invalid rows are rejected before they are stored.</p>
+<table>
+<tr><th>Constraint</th><th>Purpose</th></tr>
+<tr><td><strong>PRIMARY KEY</strong></td><td>Uniquely identifies each row; NOT NULL; one per table (typically)</td></tr>
+<tr><td><strong>FOREIGN KEY</strong></td><td>Links to parent table; prevents orphan rows (referential integrity)</td></tr>
+<tr><td><strong>UNIQUE</strong></td><td>No duplicates in column(s); allows one NULL per column in SQL Server</td></tr>
+<tr><td><strong>CHECK</strong></td><td>Boolean condition must be true (e.g. Age &gt;= 18)</td></tr>
+<tr><td><strong>NOT NULL</strong></td><td>Column cannot store NULL</td></tr>
+<tr><td><strong>DEFAULT</strong></td><td>Value used when INSERT omits the column</td></tr>
+</table>
+<pre><code>CREATE TABLE Orders (
+    OrderId     INT NOT NULL PRIMARY KEY,
+    CustomerId  INT NOT NULL,
+    OrderDate   DATE NOT NULL DEFAULT GETDATE(),
+    Status      VARCHAR(20) NOT NULL
+        CONSTRAINT CK_Orders_Status
+        CHECK (Status IN ('Pending','Shipped','Cancelled')),
+    CONSTRAINT FK_Orders_Customers
+        FOREIGN KEY (CustomerId) REFERENCES Customers(CustomerId)
+);
+
+CREATE TABLE Customers (
+    CustomerId INT PRIMARY KEY,
+    Email      NVARCHAR(256) NOT NULL UNIQUE
+);</code></pre>
+<h3>Foreign key actions</h3>
+<ul>
+<li><code>ON DELETE CASCADE</code> — delete child rows when parent is deleted.</li>
+<li><code>ON DELETE SET NULL</code> — null out FK when parent is deleted.</li>
+<li><code>NO ACTION</code> (default) — block delete/update if children exist.</li>
+</ul>
+<h3>Key Points</h3>
+<ul>
+<li>Prefer constraints over triggers when the rule is simple (CHECK, FK, UNIQUE).</li>
+<li><code>SELECT INTO</code> does <strong>not</strong> copy constraints—add them afterward.</li>
+<li>Constraints can be <code>NOCHECK</code> disabled for bulk loads (use carefully).</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>Constraints enforce data integrity at the database layer—PK and UNIQUE for uniqueness, FK for relationships, CHECK and NOT NULL for business rules, DEFAULT for missing values. I define them in the schema so every application gets the same rules, and I use constraints before triggers when they are enough.</p>""",
+
 "q_10": """<h2>Primary Key vs Unique Constraint</h2>
 <p>Both enforce uniqueness, but a primary key identifies each row and cannot be NULL. A table has one primary key but can have multiple unique constraints. Unique allows one NULL in SQL Server.</p>
 <p>Use a surrogate PK for identity and UNIQUE constraints for alternate business keys like email or product codes.</p>
