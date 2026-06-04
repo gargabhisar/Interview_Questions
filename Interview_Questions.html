@@ -808,95 +808,75 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_mongodb_csharp')">3. MongoDB queries (C# Driver)</div>
 <div class="question-item" onclick="showAnswer('q_5')">4. Normalization</div>
 <div class="question-item" onclick="showAnswer('q_6')">5. BCNF</div>
-<div class="question-item" onclick="showAnswer('q_7')">6. Indexes in SQL</div>
-<div class="question-item" onclick="showAnswer('q_8')">7. Clustered vs Non-Clustered Index</div>
-<div class="question-item" onclick="showAnswer('q_9')">8. Execution Plan</div>
-<div class="question-item" onclick="showAnswer('q_10')">9. Primary vs Unique Key</div>
-<div class="question-item" onclick="showAnswer('q_11')">10. Union vs Union ALL</div>
-<div class="question-item" onclick="showAnswer('q_12')">11. ISNULL vs COALESCE</div>
-<div class="question-item" onclick="showAnswer('q_13')">12. TRUNCATE vs DELETE (summary)</div>
-<div class="question-item" onclick="showAnswer('q_125')">13. TRUNCATE vs DELETE</div>
-<div class="question-item" onclick="showAnswer('q_14')">14. Table vs Views</div>
-<div class="question-item" onclick="showAnswer('q_15')">15. Stored Procedure vs Function</div>
-<div class="question-item" onclick="showAnswer('q_123')">16. Benefits of Stored Procedures</div>
-<div class="question-item" onclick="showAnswer('q_16')">17. CTE (incl. use in stored procedures)</div>
-<div class="question-item" onclick="showAnswer('q_17')">18. Temp table vs CTE (summary)</div>
-<div class="question-item" onclick="showAnswer('q_124')">19. CTE vs Temp Table</div>
-<div class="question-item" onclick="showAnswer('q_18')">20. #temp table vs @table variable</div>
-<div class="question-item" onclick="showAnswer('q_19')">21. Subquery vs CTE</div>
-<div class="question-item" onclick="showAnswer('q_113')">22. JOIN, CTE &amp; Subquery</div>
-<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">23. SQL interview pack (Joins, CTE)</div>
-<div class="question-item" onclick="showAnswer('q_20')">24. SQL Injection prevention</div>
-<div class="question-item" onclick="showAnswer('q_21')">25. Triggers</div>
-<div class="question-item" onclick="showAnswer('q_22')">26. ROW_NUMBER()</div>
-<div class="question-item" onclick="showAnswer('q_23')">27. ROW_NUMBER() vs DENSE_RANK()</div>
-<div class="question-item" onclick="showAnswer('q_35')">28. Find Nth Salary</div>
-<div class="question-item" onclick="showAnswer('q_36')">29. Same scores query</div>
-<div class="question-item" onclick="showAnswer('q_24')">30. Magic tables</div>
-<div class="question-item" onclick="showAnswer('q_25')">31. Deadlock</div>
-<div class="question-item" onclick="showAnswer('q_26')">32. WITH(NOLOCK)</div>
-<div class="question-item" onclick="showAnswer('q_27')">33. Isolation Level</div>
-<div class="question-item" onclick="showAnswer('q_28')">34. Transactions</div>
-<div class="question-item" onclick="showAnswer('q_29')">35. MERGE Statement</div>
-<div class="question-item" onclick="showAnswer('q_30')">36. Unlimited SP parameters</div>
-<div class="question-item" onclick="showAnswer('q_32')">37. NoSQL partitioning</div>
-<div class="question-item" onclick="showAnswer('q_33')">38. PK and secondary index</div>
-<div class="question-item" onclick="showAnswer('q_34')">39. SQL internal communication</div>
-<div class="question-item" onclick="showAnswer('q_112')">40. Improve query performance (SQL Server)</div>
-<div class="question-item" onclick="showAnswer('q_sql_covering_index')">41. Covering index</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_design_strategy')">42. Index design strategy (wide table)</div>
-<div class="question-item" onclick="showAnswer('q_sql_cte_vs_global_temp')">43. CTE vs ##temp (1M+ rows in SP)</div>
-<div class="question-item" onclick="showAnswer('q_sql_second_highest_dept')">44. Second highest salary (dept-wise)</div>
-<div class="question-item" onclick="showAnswer('q_sql_remove_duplicates_cte')">45. Remove duplicates (CTE + PARTITION BY)</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_types')">46. Types of indexes in SQL Server</div>
-<div class="question-item" onclick="showAnswer('q_sql_views_vs_indexes')">47. Views vs Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_types')">48. Indexes (Types)</div>
-<div class="question-item" onclick="showAnswer('q_21')">49. Triggers</div>
-<div class="question-item" onclick="showAnswer('q_15')">50. SP vs Function</div>
-<div class="question-item" onclick="showAnswer('q_sql_what_is_sp')">51. What is Stored Procedure?</div>
-<div class="question-item" onclick="showAnswer('q_sql_where_having')">52. WHERE vs HAVING</div>
-<div class="question-item" onclick="showAnswer('q_16')">53. CTE</div>
-<div class="question-item" onclick="showAnswer('q_sql_function_return_types')">54. Functions — Multiple Return Types?</div>
-<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">55. Types of Joins</div>
-<div class="question-item" onclick="showAnswer('q_sql_commission_null')">56. Query: Commission NULL → 0</div>
-<div class="question-item" onclick="showAnswer('q_sql_5th_highest_salary')">57. Get 5th Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_dept_zero_employees')">58. Department with 0 Employees</div>
-<div class="question-item" onclick="showAnswer('q_sql_missing_index')">59. How to Identify Missing Index</div>
-<div class="question-item" onclick="showAnswer('q_112')">60. SQL Optimization Techniques</div>
-<div class="question-item" onclick="showAnswer('q_sql_last_inserted')">61. Last Inserted Record</div>
-<h3 class="topic-header">SQL Server</h3>
-<div class="question-item" onclick="showAnswer('q_11')">1. UNION vs UNION ALL</div>
-<div class="question-item" onclick="showAnswer('q_sql_cte_used')">2. CTE — What &amp; Have You Used It?</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_what')">3. Transaction in SQL (not “Transition”)</div>
-<div class="question-item" onclick="showAnswer('q_sql_acid')">4. ACID Properties</div>
-<div class="question-item" onclick="showAnswer('q_21')">5. Trigger in SQL</div>
-<div class="question-item" onclick="showAnswer('q_sql_inserted_deleted')">6. INSERTED vs DELETED</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_scenario')">7. Transaction Scenario (500 Records)</div>
-<div class="question-item" onclick="showAnswer('q_sql_commit_rollback')">8. COMMIT and ROLLBACK</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_types')">9. Indexes &amp; Types</div>
+<div class="question-item" onclick="showAnswer('q_10')">6. Primary vs Unique Key</div>
+<div class="question-item" onclick="showAnswer('q_7')">7. Indexes in SQL</div>
+<div class="question-item" onclick="showAnswer('q_8')">8. Clustered vs Non-Clustered Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_index_types')">9. Types of Indexes in SQL Server</div>
 <div class="question-item" onclick="showAnswer('q_sql_clustered_one_per_table')">10. How Many Clustered Indexes per Table?</div>
-<div class="question-item" onclick="showAnswer('q_124')">11. CTE vs Temp Table</div>
-<div class="question-item" onclick="showAnswer('q_sql_window_functions')">12. Window Functions</div>
-<div class="question-item" onclick="showAnswer('q_23')">13. RANK vs DENSE_RANK</div>
-<div class="question-item" onclick="showAnswer('q_22')">14. ROW_NUMBER (Window Functions)</div>
-<div class="question-item" onclick="showAnswer('q_sql_select_into_where')">15. SELECT * INTO — WHERE 1=0 vs 1=1</div>
-<h3 class="topic-header">SQL Scenarios</h3>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_pagination')">1. Pagination in SQL</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_gender_codes')">2. Gender Codes — M / F / O (INSERT)</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_default_age')">3. UserDetails — Default Age = 18</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_tanker')">4. 3rd Highest Tanker Level &amp; Duplicate Names</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_2nd_salary')">5. SQL Query — 2nd Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_delete_duplicate')">6. Delete One Duplicate Record</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_optimize_query')">7. Optimize Query Performance</div>
-<h3 class="topic-header">SQL Server Fundamentals</h3>
-<div class="question-item" onclick="showAnswer('q_8')">1. Clustered vs Non-Clustered Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_joins_self_join')">2. Joins &amp; Self Join</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_when_to_use')">3. Use of Clustered &amp; Non-Clustered Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_profiling')">4. SQL Profiling &amp; Performance Tools</div>
-<div class="question-item" onclick="showAnswer('q_sql_opt_techniques_list')">5. SQL Optimization Techniques (5–7 Ways)</div>
-<div class="question-item" onclick="showAnswer('q_sql_5th_rank_cte')">6. 5th Highest Rank — RANK &amp; CTE</div>
-<div class="question-item" onclick="showAnswer('q_sql_concurrent_update_conflict')">7. Two Users Update Same Row — Who Was First?</div>
-<div class="question-item" onclick="showAnswer('q_sql_optimistic_concurrency')">8. Optimistic Concurrency — What &amp; How</div>
+<div class="question-item" onclick="showAnswer('q_sql_views_vs_indexes')">11. Views vs Indexes</div>
+<div class="question-item" onclick="showAnswer('q_sql_index_when_to_use')">12. Use of Clustered &amp; Non-Clustered Indexes</div>
+<div class="question-item" onclick="showAnswer('q_sql_missing_index')">13. How to Identify Missing Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_covering_index')">14. Covering Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_index_design_strategy')">15. Index Design Strategy (Wide Table)</div>
+<div class="question-item" onclick="showAnswer('q_9')">16. Execution Plan</div>
+<div class="question-item" onclick="showAnswer('q_sql_profiling')">17. SQL Profiling &amp; Performance Tools</div>
+<div class="question-item" onclick="showAnswer('q_sql_opt_techniques_list')">18. SQL Optimization Techniques (5–7 Ways)</div>
+<div class="question-item" onclick="showAnswer('q_112')">19. Improve Query Performance (SQL Server)</div>
+<div class="question-item" onclick="showAnswer('q_11')">20. UNION vs UNION ALL</div>
+<div class="question-item" onclick="showAnswer('q_12')">21. ISNULL vs COALESCE</div>
+<div class="question-item" onclick="showAnswer('q_sql_where_having')">22. WHERE vs HAVING</div>
+<div class="question-item" onclick="showAnswer('q_14')">23. Table vs Views</div>
+<div class="question-item" onclick="showAnswer('q_sql_joins_self_join')">24. Joins &amp; Self Join</div>
+<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">25. Types of Joins</div>
+<div class="question-item" onclick="showAnswer('q_113')">26. JOIN, CTE &amp; Subquery</div>
+<div class="question-item" onclick="showAnswer('q_sql_cte_used')">27. CTE — What &amp; Have You Used It?</div>
+<div class="question-item" onclick="showAnswer('q_124')">28. CTE vs Temp Table</div>
+<div class="question-item" onclick="showAnswer('q_18')">29. #temp Table vs @table Variable</div>
+<div class="question-item" onclick="showAnswer('q_19')">30. Subquery vs CTE</div>
+<div class="question-item" onclick="showAnswer('q_sql_cte_vs_global_temp')">31. CTE vs ##temp (1M+ Rows in SP)</div>
+<div class="question-item" onclick="showAnswer('q_15')">32. Stored Procedure vs Function</div>
+<div class="question-item" onclick="showAnswer('q_sql_what_is_sp')">33. What is Stored Procedure?</div>
+<div class="question-item" onclick="showAnswer('q_123')">34. Benefits of Stored Procedures</div>
+<div class="question-item" onclick="showAnswer('q_sql_function_return_types')">35. Functions — Multiple Return Types?</div>
+<div class="question-item" onclick="showAnswer('q_30')">36. Unlimited SP Parameters</div>
+<div class="question-item" onclick="showAnswer('q_13')">37. TRUNCATE vs DELETE (summary)</div>
+<div class="question-item" onclick="showAnswer('q_125')">38. TRUNCATE vs DELETE</div>
+<div class="question-item" onclick="showAnswer('q_29')">39. MERGE Statement</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_what')">40. Transaction in SQL (not “Transition”)</div>
+<div class="question-item" onclick="showAnswer('q_sql_acid')">41. ACID Properties</div>
+<div class="question-item" onclick="showAnswer('q_28')">42. Transactions</div>
+<div class="question-item" onclick="showAnswer('q_sql_commit_rollback')">43. COMMIT and ROLLBACK</div>
+<div class="question-item" onclick="showAnswer('q_27')">44. Isolation Levels</div>
+<div class="question-item" onclick="showAnswer('q_25')">45. Deadlock</div>
+<div class="question-item" onclick="showAnswer('q_26')">46. WITH(NOLOCK)</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_scenario')">47. Transaction Scenario (500 Records)</div>
+<div class="question-item" onclick="showAnswer('q_21')">48. Triggers in SQL</div>
+<div class="question-item" onclick="showAnswer('q_sql_inserted_deleted')">49. INSERTED vs DELETED</div>
+<div class="question-item" onclick="showAnswer('q_24')">50. Magic Tables in Triggers</div>
+<div class="question-item" onclick="showAnswer('q_sql_window_functions')">51. Window Functions</div>
+<div class="question-item" onclick="showAnswer('q_22')">52. ROW_NUMBER()</div>
+<div class="question-item" onclick="showAnswer('q_23')">53. RANK vs DENSE_RANK</div>
+<div class="question-item" onclick="showAnswer('q_sql_5th_rank_cte')">54. 5th Highest Rank — RANK &amp; CTE</div>
+<div class="question-item" onclick="showAnswer('q_35')">55. Nth Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_5th_highest_salary')">56. Get 5th Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_2nd_salary')">57. 2nd Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_second_highest_dept')">58. Second Highest Salary (Dept-wise)</div>
+<div class="question-item" onclick="showAnswer('q_36')">59. Employees with Same Scores</div>
+<div class="question-item" onclick="showAnswer('q_sql_commission_null')">60. Commission NULL → 0</div>
+<div class="question-item" onclick="showAnswer('q_sql_dept_zero_employees')">61. Department with 0 Employees</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_tanker')">62. 3rd Highest Tanker Level &amp; Duplicate Names</div>
+<div class="question-item" onclick="showAnswer('q_sql_remove_duplicates_cte')">63. Delete Duplicate Records (CTE + PARTITION BY)</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_pagination')">64. Pagination in SQL</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_gender_codes')">65. Gender Codes — M / F / O (INSERT)</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_default_age')">66. UserDetails — Default Age = 18</div>
+<div class="question-item" onclick="showAnswer('q_sql_select_into_where')">67. SELECT * INTO — WHERE 1=0 vs 1=1</div>
+<div class="question-item" onclick="showAnswer('q_sql_last_inserted')">68. Last Inserted Record</div>
+<div class="question-item" onclick="showAnswer('q_20')">69. SQL Injection Prevention</div>
+<div class="question-item" onclick="showAnswer('q_sql_concurrent_update_conflict')">70. Two Users Update Same Row</div>
+<div class="question-item" onclick="showAnswer('q_sql_optimistic_concurrency')">71. Optimistic Concurrency</div>
+<div class="question-item" onclick="showAnswer('q_32')">72. NoSQL Partitioning</div>
+<div class="question-item" onclick="showAnswer('q_33')">73. PK and Secondary Index (NoSQL)</div>
+<div class="question-item" onclick="showAnswer('q_34')">74. SQL Server Internal Communication</div>
 </div>
 <h3 class="topic-header">11. Production &amp; Troubleshooting</h3>
 <div class="question-group">
