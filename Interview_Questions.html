@@ -4338,10 +4338,16 @@ ON dbo.[User](UserName) INCLUDE (Email)
 WHERE IsActive = 1;
 
 -- Columnstore (reporting)
-CREATE CLUSTERED COLUMNSTORE INDEX CCI_Orders ON dbo.Orders;</code></pre><h3>Related topics on this site</h3><ul>
-<li>9.6 Indexes overview — <code>q_7</code></li>
-<li>9.7 Clustered vs nonclustered — <code>q_8</code></li>
-<li>9.41 Covering index — <code>q_sql_covering_index</code></li>
+CREATE CLUSTERED COLUMNSTORE INDEX CCI_Orders ON dbo.Orders;</code></pre><h3>Related topics on this site</h3>
+<p>Other index topics in <strong>Section 10. SQL &amp; Database</strong>:</p>
+<ul>
+<li><a href="#" onclick="showAnswer('q_7'); return false;">Indexes in SQL</a></li>
+<li><a href="#" onclick="showAnswer('q_8'); return false;">Clustered vs Non-Clustered Index</a></li>
+<li><a href="#" onclick="showAnswer('q_sql_clustered_one_per_table'); return false;">How Many Clustered Indexes per Table?</a></li>
+<li><a href="#" onclick="showAnswer('q_sql_index_when_to_use'); return false;">Use of Clustered &amp; Non-Clustered Indexes</a></li>
+<li><a href="#" onclick="showAnswer('q_sql_missing_index'); return false;">How to Identify Missing Index</a></li>
+<li><a href="#" onclick="showAnswer('q_sql_covering_index'); return false;">Covering Index</a></li>
+<li><a href="#" onclick="showAnswer('q_sql_index_design_strategy'); return false;">Index Design Strategy (Wide Table)</a></li>
 </ul><h3>Interview Answer</h3><p>The main SQL Server index types are clustered and nonclustered B-tree indexes. I also know columnstore for analytics, hash for memory-optimized tables, and XML/spatial/full-text for specialized data. In practice I design clustered plus selective nonclustered indexes, and use filtered or covering indexes when plans show scans or key lookups.</p></div>
 <div class="answer-pane" id="q_113"><h2>JOIN vs CTE vs Subquery</h2><p>JOINs combine tables horizontally. Subqueries nest queries for filtering or scalar values. CTEs name subqueries for readability and recursion. The optimizer often produces similar plans—choose for clarity and maintainability.</p><p>JOIN when combining related tables; EXISTS for semi-join existence checks; CTE when the same subquery is referenced multiple times.</p><pre><code>-- JOIN: combine entities
 SELECT o.Id, c.Name FROM Orders o JOIN Customers c ON o.CustId = c.Id;
