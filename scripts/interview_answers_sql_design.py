@@ -28,30 +28,87 @@ db.orders.aggregate([
 <h3>Interview Answer</h3>
 <p>SQL is relational and ACID-focused with strict schemas; MongoDB is document-based and schema-flexible, better for scale-out and evolving data shapes. I pick based on consistency needs, query patterns, and team expertise—not hype.</p>""",
 
-"q_5": """<h2>Database Normalization</h2>
-<p>Normalization organizes data to reduce redundancy and update anomalies by decomposing tables according to normal forms (1NF through BCNF). Each step removes a specific kind of dependency problem.</p>
-<p>Well-normalized OLTP schemas prevent insert/update/delete anomalies; selective denormalization is acceptable only when profiling proves read bottlenecks.</p>
+"q_5": """<h2>Database Normalization &amp; Its Forms (1NF, 2NF, 3NF)</h2>
+<p><strong>Normalization</strong> is the process of organizing relational tables to <strong>reduce redundancy</strong> and prevent <strong>data anomalies</strong>. Each normal form adds a rule that removes a specific kind of bad dependency.</p>
+<h3>Why normalize?</h3>
+<p>Without normalization, the same fact is stored in multiple rows. That causes:</p>
 <table>
-<tr><th>Form</th><th>Rule</th></tr>
-<tr><td>1NF</td><td>Atomic values, no repeating groups</td></tr>
-<tr><td>2NF</td><td>1NF + no partial dependency on composite key</td></tr>
-<tr><td>3NF</td><td>2NF + no transitive dependency on non-key columns</td></tr>
+<tr><th>Anomaly</th><th>Problem</th><th>Example</th></tr>
+<tr><td><strong>Insert</strong></td><td>Cannot add data without unrelated data</td><td>Cannot add a new product until someone orders it</td></tr>
+<tr><td><strong>Update</strong></td><td>Same fact updated in many places</td><td>Customer city changed in 50 order rows—some missed → inconsistent data</td></tr>
+<tr><td><strong>Delete</strong></td><td>Removing one row loses unrelated data</td><td>Deleting last order removes customer address entirely</td></tr>
 </table>
-<pre><code>-- Before (redundant):
+<h3>Quick reference</h3>
+<table>
+<tr><th>Form</th><th>Rule (simple)</th><th>Fixes</th></tr>
+<tr><td><strong>1NF</strong></td><td>Atomic values; no repeating groups</td><td>Multi-valued columns, nested lists in one cell</td></tr>
+<tr><td><strong>2NF</strong></td><td>1NF + no partial dependency on a composite key</td><td>Non-key column depends on only part of the key</td></tr>
+<tr><td><strong>3NF</strong></td><td>2NF + no transitive dependency</td><td>Non-key column depends on another non-key column</td></tr>
+</table>
+<h3>1NF — First Normal Form</h3>
+<p><strong>Rule:</strong> Each column holds a <strong>single atomic value</strong>; each row is unique; no repeating groups (arrays/lists in one column).</p>
+<p><strong>Violates 1NF:</strong></p>
+<pre><code>StudentCourses
+--------------
+StudentId | Name  | Courses
+1         | Alice | Math, Physics, Chemistry   -- multiple values in one cell</code></pre>
+<p><strong>In 1NF:</strong> one course per row (or separate Courses table).</p>
+<pre><code>StudentCourses
+--------------
+StudentId | Name  | Course
+1         | Alice | Math
+1         | Alice | Physics
+1         | Alice | Chemistry</code></pre>
+<h3>2NF — Second Normal Form</h3>
+<p><strong>Rule:</strong> Table is in 1NF, and every non-key column depends on the <strong>whole</strong> primary key—not just part of it.</p>
+<p>Only applies when the primary key is <strong>composite</strong> (multiple columns).</p>
+<p><strong>Partial dependency example:</strong></p>
+<pre><code>OrderLine(OrderId, ProductId, ProductName, Qty, UnitPrice)
+PK = (OrderId, ProductId)
+
+ProductName depends only on ProductId  -- partial dependency (not on full PK)
+Qty depends on full PK (OrderId + ProductId) -- OK</code></pre>
+<p><strong>Fix (2NF):</strong> move ProductName to Products table.</p>
+<pre><code>Products(ProductId, ProductName)
+OrderLine(OrderId, ProductId, Qty, UnitPrice)</code></pre>
+<h3>3NF — Third Normal Form</h3>
+<p><strong>Rule:</strong> Table is in 2NF, and no non-key column depends on <strong>another non-key column</strong> (transitive dependency).</p>
+<p><strong>Transitive dependency example:</strong></p>
+<pre><code>Orders(OrderId, CustomerId, CustomerName, CustomerCity, OrderDate)
+PK = OrderId
+
+CustomerId → CustomerName, CustomerCity   -- non-key depends on non-key</code></pre>
+<p>If you know CustomerId, you know Name and City—those belong in Customers, not repeated on every order.</p>
+<p><strong>Fix (3NF):</strong></p>
+<pre><code>Customers(CustomerId, CustomerName, CustomerCity)
+Products(ProductId, ProductName)
+Orders(OrderId, CustomerId, ProductId, Qty, OrderDate)</code></pre>
+<h3>Walking through 1NF → 3NF (one example)</h3>
+<pre><code>-- UNNORMALIZED (violates 1NF, 2NF, 3NF):
 Orders(OrderId, CustomerName, CustomerCity, Product, Qty)
 
--- After 3NF:
+Problems:
+- CustomerName/City repeat on every order (update/delete anomalies)
+- Product name mixed with order facts (partial/transitive issues if composite keys exist)
+
+-- AFTER 3NF:
 Customers(CustomerId, Name, City)
 Products(ProductId, Name)
 Orders(OrderId, CustomerId, ProductId, Qty)</code></pre>
-<h3>Key Points</h3>
+<h3>Functional dependency (interview vocabulary)</h3>
 <ul>
-<li>Normalization improves data integrity and reduces duplicate storage.</li>
-<li>Over-normalization can hurt read performance—denormalize selectively for hot paths.</li>
-<li>Interviewers often want you to spot redundancy and propose split tables.</li>
+<li><strong>X → Y</strong> means: if you know X, Y is uniquely determined.</li>
+<li><strong>2NF</strong> removes partial dependencies: non-key attribute → part of composite key only.</li>
+<li><strong>3NF</strong> removes transitive dependencies: non-key → non-key.</li>
+</ul>
+<h3>When not to over-normalize</h3>
+<ul>
+<li>Many joins on hot read paths can hurt performance.</li>
+<li>Reporting/data warehouse layers often denormalize intentionally (star schema).</li>
+<li>Denormalize only after measuring—keep OLTP core normalized.</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>Normalization splits tables to eliminate redundancy and anomalies. I apply 1NF–3NF in OLTP design, then denormalize only where measured read performance requires it.</p>""",
+<p>Normalization removes redundancy and insert/update/delete anomalies by splitting tables into normal forms. 1NF ensures atomic values and no repeating groups. 2NF removes partial dependencies on composite keys. 3NF removes transitive dependencies where a non-key column depends on another non-key column. In OLTP I design to 3NF, then denormalize selectively only when profiling shows a real read bottleneck.</p>""",
 
 "q_6": """<h2>Boyce-Codd Normal Form (BCNF)</h2>
 <p>BCNF is a stricter form of 3NF: every determinant must be a candidate key. A table is in BCNF when for every functional dependency X → Y, X is a superkey. It eliminates anomalies 3NF might still allow when multiple overlapping candidate keys exist.</p>
@@ -179,6 +236,55 @@ CREATE TABLE Customers (
 </ul>
 <h3>Interview Answer</h3>
 <p>Constraints enforce data integrity at the database layer—PK and UNIQUE for uniqueness, FK for relationships, CHECK and NOT NULL for business rules, DEFAULT for missing values. I define them in the schema so every application gets the same rules, and I use constraints before triggers when they are enough.</p>""",
+
+"q_sql_relationships": """<h2>Database Relationships (1:1, 1:N, M:N)</h2>
+<p>Relationships describe how rows in one table link to rows in another. In relational databases they are implemented with <strong>primary keys</strong>, <strong>foreign keys</strong>, and sometimes a <strong>junction (bridge) table</strong>.</p>
+<table>
+<tr><th>Relationship</th><th>Description</th><th>Real-world example</th></tr>
+<tr><td><strong>One-to-One (1:1)</strong></td><td>One record in Table A links to exactly one record in Table B</td><td>Employee ↔ EmployeeProfile (one person, one profile)</td></tr>
+<tr><td><strong>One-to-Many (1:N)</strong></td><td>One parent record has many child records</td><td>Customer → many Orders</td></tr>
+<tr><td><strong>Many-to-Many (M:N)</strong></td><td>Many records on both sides; resolved via a junction table</td><td>Students ↔ Courses (via Enrollment)</td></tr>
+</table>
+<h3>One-to-One (1:1)</h3>
+<p>Each row on side A matches <strong>at most one</strong> row on side B, and vice versa.</p>
+<p><strong>When to use:</strong> split optional or sensitive columns into a separate table, or divide a wide table without duplicating the main entity.</p>
+<pre><code>Employees(EmployeeId PK, Name, ...)
+EmployeeProfiles(EmployeeId PK/FK UNIQUE, Bio, PhotoUrl, ...)
+-- EmployeeId is PK and FK → enforces 1:1</code></pre>
+<p><strong>Implementation:</strong> share the same primary key, or put a <code>UNIQUE</code> constraint on the foreign key column so one parent maps to one child only.</p>
+<h3>One-to-Many (1:N)</h3>
+<p>The <strong>most common</strong> relationship. The “one” side holds the primary key; the “many” side stores a foreign key pointing to the parent.</p>
+<pre><code>Customers(CustomerId PK, Name)
+Orders(OrderId PK, CustomerId FK → Customers, OrderDate)
+
+-- One customer, many orders:
+SELECT c.Name, o.OrderId, o.OrderDate
+FROM Customers c
+JOIN Orders o ON c.CustomerId = o.CustomerId;</code></pre>
+<p><strong>Rule:</strong> FK goes on the <strong>many</strong> side (child table). Use <code>ON DELETE CASCADE</code> or <code>SET NULL</code> based on business rules.</p>
+<h3>Many-to-Many (M:N)</h3>
+<p>Neither table should hold a direct FK to the other—you cannot store multiple FK values cleanly in one column. Use a <strong>junction (associative) table</strong> with composite PK or unique pair of FKs.</p>
+<pre><code>Students(StudentId PK, Name)
+Courses(CourseId PK, Title)
+Enrollment(StudentId FK, CourseId FK, EnrolledOn,
+           PRIMARY KEY (StudentId, CourseId))
+
+-- Student takes many courses; course has many students</code></pre>
+<p><strong>Query pattern:</strong> join through the junction table.</p>
+<pre><code>SELECT s.Name, c.Title
+FROM Students s
+JOIN Enrollment e ON s.StudentId = e.StudentId
+JOIN Courses c ON e.CourseId = c.CourseId;</code></pre>
+<h3>How relationships map to SQL</h3>
+<table>
+<tr><th>Concept</th><th>SQL object</th></tr>
+<tr><td>Identify row</td><td>PRIMARY KEY</td></tr>
+<tr><td>Link tables</td><td>FOREIGN KEY</td></tr>
+<tr><td>Enforce 1:1</td><td>UNIQUE on FK column</td></tr>
+<tr><td>Resolve M:N</td><td>Junction table with two FKs</td></tr>
+</table>
+<h3>Interview Answer</h3>
+<p>One-to-one links a single parent row to a single child row—often modeled with a shared PK or UNIQUE FK. One-to-many is the standard parent/child pattern with the FK on the many side, like Customer to Orders. Many-to-many needs a junction table such as Enrollment between Students and Courses. I always enforce these with foreign keys so referential integrity is guaranteed in the database.</p>""",
 
 "q_10": """<h2>Primary Key vs Unique Constraint</h2>
 <p>Both enforce uniqueness, but a primary key identifies each row and cannot be NULL. A table has one primary key but can have multiple unique constraints. Unique allows one NULL in SQL Server.</p>
