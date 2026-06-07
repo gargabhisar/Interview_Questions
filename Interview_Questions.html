@@ -811,75 +811,76 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_sql_constraints')">6. Constraints in SQL</div>
 <div class="question-item" onclick="showAnswer('q_sql_relationships')">7. Database Relationships (1:1, 1:N, M:N)</div>
 <div class="question-item" onclick="showAnswer('q_10')">8. Primary vs Unique Key</div>
-<div class="question-item" onclick="showAnswer('q_7')">9. Indexes in SQL</div>
-<div class="question-item" onclick="showAnswer('q_8')">10. Clustered vs Non-Clustered Index</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_types')">11. Types of Indexes in SQL Server</div>
-<div class="question-item" onclick="showAnswer('q_sql_clustered_one_per_table')">12. How Many Clustered Indexes per Table?</div>
-<div class="question-item" onclick="showAnswer('q_sql_views_vs_indexes')">13. Views vs Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_when_to_use')">14. Use of Clustered &amp; Non-Clustered Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_missing_index')">15. How to Identify Missing Index</div>
-<div class="question-item" onclick="showAnswer('q_sql_covering_index')">16. Covering Index</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_design_strategy')">17. Index Design Strategy (Wide Table)</div>
-<div class="question-item" onclick="showAnswer('q_9')">18. Execution Plan</div>
-<div class="question-item" onclick="showAnswer('q_sql_profiling')">19. SQL Profiling &amp; Performance Tools</div>
-<div class="question-item" onclick="showAnswer('q_sql_profiler')">20. SQL Profiler — Interview Q&amp;A</div>
-<div class="question-item" onclick="showAnswer('q_sql_opt_techniques_list')">21. SQL Optimization Techniques (5–7 Ways)</div>
-<div class="question-item" onclick="showAnswer('q_112')">22. Improve Query Performance (SQL Server)</div>
-<div class="question-item" onclick="showAnswer('q_11')">23. UNION vs UNION ALL</div>
-<div class="question-item" onclick="showAnswer('q_12')">24. ISNULL vs COALESCE</div>
-<div class="question-item" onclick="showAnswer('q_sql_where_having')">25. WHERE vs HAVING</div>
-<div class="question-item" onclick="showAnswer('q_14')">26. Table vs Views</div>
-<div class="question-item" onclick="showAnswer('q_sql_joins_self_join')">27. Joins &amp; Self Join</div>
-<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">28. Types of Joins</div>
-<div class="question-item" onclick="showAnswer('q_113')">29. JOIN, CTE &amp; Subquery</div>
-<div class="question-item" onclick="showAnswer('q_sql_cte_used')">30. CTE — What &amp; Have You Used It?</div>
-<div class="question-item" onclick="showAnswer('q_124')">31. CTE vs Temp Table</div>
-<div class="question-item" onclick="showAnswer('q_18')">32. #temp Table vs @table Variable</div>
-<div class="question-item" onclick="showAnswer('q_19')">33. Subquery vs CTE</div>
-<div class="question-item" onclick="showAnswer('q_sql_cte_vs_global_temp')">34. CTE vs ##temp (1M+ Rows in SP)</div>
-<div class="question-item" onclick="showAnswer('q_15')">35. Stored Procedure vs Function</div>
-<div class="question-item" onclick="showAnswer('q_sql_what_is_sp')">36. What is Stored Procedure?</div>
-<div class="question-item" onclick="showAnswer('q_123')">37. Benefits of Stored Procedures</div>
-<div class="question-item" onclick="showAnswer('q_sql_function_return_types')">38. Functions — Multiple Return Types?</div>
-<div class="question-item" onclick="showAnswer('q_30')">39. Unlimited SP Parameters</div>
-<div class="question-item" onclick="showAnswer('q_125')">40. TRUNCATE vs DELETE</div>
-<div class="question-item" onclick="showAnswer('q_29')">41. MERGE Statement</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_implement')">42. Transaction — What &amp; How to Implement</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_what')">43. Transaction in SQL (not “Transition”)</div>
-<div class="question-item" onclick="showAnswer('q_sql_acid')">44. ACID Properties</div>
-<div class="question-item" onclick="showAnswer('q_28')">45. Transactions</div>
-<div class="question-item" onclick="showAnswer('q_sql_commit_rollback')">46. COMMIT and ROLLBACK</div>
-<div class="question-item" onclick="showAnswer('q_27')">47. Isolation Levels</div>
-<div class="question-item" onclick="showAnswer('q_25')">48. Deadlock</div>
-<div class="question-item" onclick="showAnswer('q_26')">49. WITH(NOLOCK)</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_scenario')">50. Transaction Scenario (500 Records)</div>
-<div class="question-item" onclick="showAnswer('q_21')">51. Triggers in SQL — Purpose</div>
-<div class="question-item" onclick="showAnswer('q_sql_inserted_deleted')">52. INSERTED vs DELETED</div>
-<div class="question-item" onclick="showAnswer('q_24')">53. Magic Tables in Triggers</div>
-<div class="question-item" onclick="showAnswer('q_sql_window_functions')">54. Window Functions</div>
-<div class="question-item" onclick="showAnswer('q_22')">55. ROW_NUMBER()</div>
-<div class="question-item" onclick="showAnswer('q_23')">56. RANK vs DENSE_RANK</div>
-<div class="question-item" onclick="showAnswer('q_sql_5th_rank_cte')">57. 5th Highest Rank — RANK &amp; CTE</div>
-<div class="question-item" onclick="showAnswer('q_35')">58. Nth Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_5th_highest_salary')">59. Get 5th Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_2nd_salary')">60. 2nd Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_second_highest_dept')">61. Second Highest Salary (Dept-wise)</div>
-<div class="question-item" onclick="showAnswer('q_36')">62. Students — Same Score (Find Names)</div>
-<div class="question-item" onclick="showAnswer('q_sql_commission_null')">63. Commission NULL → 0</div>
-<div class="question-item" onclick="showAnswer('q_sql_dept_zero_employees')">64. Department with 0 Employees</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_tanker')">65. 3rd Highest Tanker Level &amp; Duplicate Names</div>
-<div class="question-item" onclick="showAnswer('q_sql_remove_duplicates_cte')">66. Delete Duplicate Records (CTE + PARTITION BY)</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_pagination')">67. Pagination in SQL</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_gender_codes')">68. Gender Codes — M / F / O (INSERT)</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_default_age')">69. UserDetails — Default Age = 18</div>
-<div class="question-item" onclick="showAnswer('q_sql_select_into_where')">70. SELECT * INTO — WHERE 1=0 vs 1=1</div>
-<div class="question-item" onclick="showAnswer('q_sql_last_inserted')">71. Last Inserted Record</div>
-<div class="question-item" onclick="showAnswer('q_20')">72. SQL Injection Prevention</div>
-<div class="question-item" onclick="showAnswer('q_sql_concurrent_update_conflict')">73. Two Users Update Same Row</div>
-<div class="question-item" onclick="showAnswer('q_sql_optimistic_concurrency')">74. Optimistic Concurrency</div>
-<div class="question-item" onclick="showAnswer('q_32')">75. NoSQL Partitioning</div>
-<div class="question-item" onclick="showAnswer('q_33')">76. PK and Secondary Index (NoSQL)</div>
-<div class="question-item" onclick="showAnswer('q_34')">77. SQL Server Internal Communication</div>
+<div class="question-item" onclick="showAnswer('q_sql_types_of_keys')">9. Types of Keys in SQL</div>
+<div class="question-item" onclick="showAnswer('q_7')">10. Indexes in SQL</div>
+<div class="question-item" onclick="showAnswer('q_8')">11. Clustered vs Non-Clustered Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_index_types')">12. Types of Indexes in SQL Server</div>
+<div class="question-item" onclick="showAnswer('q_sql_clustered_one_per_table')">13. How Many Clustered Indexes per Table?</div>
+<div class="question-item" onclick="showAnswer('q_sql_views_vs_indexes')">14. Views vs Indexes</div>
+<div class="question-item" onclick="showAnswer('q_sql_index_when_to_use')">15. Use of Clustered &amp; Non-Clustered Indexes</div>
+<div class="question-item" onclick="showAnswer('q_sql_missing_index')">16. How to Identify Missing Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_covering_index')">17. Covering Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_index_design_strategy')">18. Index Design Strategy (Wide Table)</div>
+<div class="question-item" onclick="showAnswer('q_9')">19. Execution Plan</div>
+<div class="question-item" onclick="showAnswer('q_sql_profiling')">20. SQL Profiling &amp; Performance Tools</div>
+<div class="question-item" onclick="showAnswer('q_sql_profiler')">21. SQL Profiler — Interview Q&amp;A</div>
+<div class="question-item" onclick="showAnswer('q_sql_opt_techniques_list')">22. SQL Optimization Techniques (5–7 Ways)</div>
+<div class="question-item" onclick="showAnswer('q_112')">23. Improve Query Performance (SQL Server)</div>
+<div class="question-item" onclick="showAnswer('q_11')">24. UNION vs UNION ALL</div>
+<div class="question-item" onclick="showAnswer('q_12')">25. ISNULL vs COALESCE</div>
+<div class="question-item" onclick="showAnswer('q_sql_where_having')">26. WHERE vs HAVING</div>
+<div class="question-item" onclick="showAnswer('q_14')">27. Table vs Views</div>
+<div class="question-item" onclick="showAnswer('q_sql_joins_self_join')">28. Joins &amp; Self Join</div>
+<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">29. Types of Joins</div>
+<div class="question-item" onclick="showAnswer('q_113')">30. JOIN, CTE &amp; Subquery</div>
+<div class="question-item" onclick="showAnswer('q_sql_cte_used')">31. CTE — What &amp; Have You Used It?</div>
+<div class="question-item" onclick="showAnswer('q_124')">32. CTE vs Temp Table</div>
+<div class="question-item" onclick="showAnswer('q_18')">33. #temp Table vs @table Variable</div>
+<div class="question-item" onclick="showAnswer('q_19')">34. Subquery vs CTE</div>
+<div class="question-item" onclick="showAnswer('q_sql_cte_vs_global_temp')">35. CTE vs ##temp (1M+ Rows in SP)</div>
+<div class="question-item" onclick="showAnswer('q_15')">36. Stored Procedure vs Function</div>
+<div class="question-item" onclick="showAnswer('q_sql_what_is_sp')">37. What is Stored Procedure?</div>
+<div class="question-item" onclick="showAnswer('q_123')">38. Benefits of Stored Procedures</div>
+<div class="question-item" onclick="showAnswer('q_sql_function_return_types')">39. Functions — Multiple Return Types?</div>
+<div class="question-item" onclick="showAnswer('q_30')">40. Unlimited SP Parameters</div>
+<div class="question-item" onclick="showAnswer('q_125')">41. TRUNCATE vs DELETE</div>
+<div class="question-item" onclick="showAnswer('q_29')">42. MERGE Statement</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_implement')">43. Transaction — What &amp; How to Implement</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_what')">44. Transaction in SQL (not “Transition”)</div>
+<div class="question-item" onclick="showAnswer('q_sql_acid')">45. ACID Properties</div>
+<div class="question-item" onclick="showAnswer('q_28')">46. Transactions</div>
+<div class="question-item" onclick="showAnswer('q_sql_commit_rollback')">47. COMMIT and ROLLBACK</div>
+<div class="question-item" onclick="showAnswer('q_27')">48. Isolation Levels</div>
+<div class="question-item" onclick="showAnswer('q_25')">49. Deadlock</div>
+<div class="question-item" onclick="showAnswer('q_26')">50. WITH(NOLOCK)</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_scenario')">51. Transaction Scenario (500 Records)</div>
+<div class="question-item" onclick="showAnswer('q_21')">52. Triggers in SQL — Purpose</div>
+<div class="question-item" onclick="showAnswer('q_sql_inserted_deleted')">53. INSERTED vs DELETED</div>
+<div class="question-item" onclick="showAnswer('q_24')">54. Magic Tables in Triggers</div>
+<div class="question-item" onclick="showAnswer('q_sql_window_functions')">55. Window Functions</div>
+<div class="question-item" onclick="showAnswer('q_22')">56. ROW_NUMBER()</div>
+<div class="question-item" onclick="showAnswer('q_23')">57. RANK vs DENSE_RANK</div>
+<div class="question-item" onclick="showAnswer('q_sql_5th_rank_cte')">58. 5th Highest Rank — RANK &amp; CTE</div>
+<div class="question-item" onclick="showAnswer('q_35')">59. Nth Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_5th_highest_salary')">60. Get 5th Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_2nd_salary')">61. 2nd Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_second_highest_dept')">62. Second Highest Salary (Dept-wise)</div>
+<div class="question-item" onclick="showAnswer('q_36')">63. Students — Same Score (Find Names)</div>
+<div class="question-item" onclick="showAnswer('q_sql_commission_null')">64. Commission NULL → 0</div>
+<div class="question-item" onclick="showAnswer('q_sql_dept_zero_employees')">65. Department with 0 Employees</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_tanker')">66. 3rd Highest Tanker Level &amp; Duplicate Names</div>
+<div class="question-item" onclick="showAnswer('q_sql_remove_duplicates_cte')">67. Delete Duplicate Records (CTE + PARTITION BY)</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_pagination')">68. Pagination in SQL</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_gender_codes')">69. Gender Codes — M / F / O (INSERT)</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_default_age')">70. UserDetails — Default Age = 18</div>
+<div class="question-item" onclick="showAnswer('q_sql_select_into_where')">71. SELECT * INTO — WHERE 1=0 vs 1=1</div>
+<div class="question-item" onclick="showAnswer('q_sql_last_inserted')">72. Last Inserted Record</div>
+<div class="question-item" onclick="showAnswer('q_20')">73. SQL Injection Prevention</div>
+<div class="question-item" onclick="showAnswer('q_sql_concurrent_update_conflict')">74. Two Users Update Same Row</div>
+<div class="question-item" onclick="showAnswer('q_sql_optimistic_concurrency')">75. Optimistic Concurrency</div>
+<div class="question-item" onclick="showAnswer('q_32')">76. NoSQL Partitioning</div>
+<div class="question-item" onclick="showAnswer('q_33')">77. PK and Secondary Index (NoSQL)</div>
+<div class="question-item" onclick="showAnswer('q_34')">78. SQL Server Internal Communication</div>
 </div>
 <h3 class="topic-header">11. Production &amp; Troubleshooting</h3>
 <div class="question-group">
@@ -1292,6 +1293,56 @@ WHERE c.CustomerId = 5001 AND cra.EndDate IS NULL;</code></pre><h3>How relations
 <li>Don't make every unique column a PK—use surrogate keys when needed.</li>
 <li>Both create indexes automatically in most engines.</li>
 </ul><h3>Interview Answer</h3><p>Primary key is the main row identifier—one per table, no NULLs. Unique constraints also block duplicates but allow NULLs and you can have several. I use PK for identity and UNIQUE for emails, codes, etc.</p></div>
+<div class="answer-pane" id="q_sql_types_of_keys"><h2>Types of Keys in SQL</h2><p>Keys identify rows uniquely and link tables. Below are the key types interviewers expect, with <strong>PNC Bank</strong>–style examples.</p><table>
+<tr><th>Key type</th><th>What it is</th><th>PNC example</th></tr>
+<tr><td><strong>Super key</strong></td><td>Any column/set that uniquely identifies a row (may include extra columns)</td><td><code>{CustomerId}</code>, <code>{CustomerId, Email}</code></td></tr>
+<tr><td><strong>Candidate key</strong></td><td>Minimal super key — no subset is also unique</td><td><code>CustomerId</code> or <code>Email</code> (if unique)</td></tr>
+<tr><td><strong>Primary key (PK)</strong></td><td>Chosen candidate key; one per table; NOT NULL</td><td><code>Customer.CustomerId</code></td></tr>
+<tr><td><strong>Alternate key</strong></td><td>Other candidate keys not chosen as PK; enforced with UNIQUE</td><td><code>UNIQUE(Email)</code>, <code>UNIQUE(AccountNumber)</code></td></tr>
+<tr><td><strong>Foreign key (FK)</strong></td><td>Column(s) referencing parent PK/unique key</td><td><code>Account.CustomerId → Customer</code></td></tr>
+<tr><td><strong>Composite key</strong></td><td>Primary or foreign key made of two+ columns</td><td><code>PK (CustomerId, RMId, StartDate)</code> on assignment table</td></tr>
+<tr><td><strong>Surrogate key</strong></td><td>System-generated ID (IDENTITY/GUID), no business meaning</td><td><code>AccountId INT IDENTITY</code></td></tr>
+<tr><td><strong>Natural key</strong></td><td>Business-meaningful unique identifier</td><td>SSN (where allowed), account number, routing+account</td></tr>
+</table><h3>Super key vs candidate key vs primary key</h3><pre><code>Customer(CustomerId, Email, Phone, FirstName, LastName)
+
+Super keys:     {CustomerId}, {CustomerId, Email}, {Email} (if unique)
+Candidate keys: {CustomerId}, {Email}           -- minimal
+Primary key:    CustomerId                      -- one chosen
+Alternate keys: Email UNIQUE                    -- other candidates</code></pre><h3>Primary key</h3><ul>
+<li>One per table; identifies each row; NOT NULL</li>
+<li>In SQL Server, often creates a <strong>clustered index</strong> by default</li>
+<li>Prefer stable surrogate keys (<code>IDENTITY</code>) for OLTP when natural keys can change</li>
+</ul><pre><code>CREATE TABLE Customer (
+    CustomerId INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName  NVARCHAR(50) NOT NULL
+);</code></pre><h3>Alternate key (unique key)</h3><p>Candidate keys not selected as PK — enforced with <code>UNIQUE</code> constraint.</p><pre><code>CREATE TABLE Customer (
+    CustomerId INT PRIMARY KEY,
+    Email NVARCHAR(256) NOT NULL UNIQUE,
+    TaxId      CHAR(9) NULL UNIQUE
+);</code></pre><h3>Foreign key</h3><p>Links child to parent; enforces referential integrity.</p><pre><code>CREATE TABLE Account (
+    AccountId   INT PRIMARY KEY,
+    CustomerId  INT NOT NULL
+        REFERENCES Customer(CustomerId),
+    BranchId    INT NOT NULL
+        REFERENCES Branch(BranchId)
+);</code></pre><h3>Composite key</h3><p>Key spanning multiple columns — common on junction/transaction tables.</p><pre><code>CREATE TABLE CustomerRMAssignment (
+    CustomerId INT NOT NULL REFERENCES Customer,
+    RMId       INT NOT NULL REFERENCES RelationshipManager,
+    StartDate  DATE NOT NULL,
+    PRIMARY KEY (CustomerId, RMId, StartDate)
+);</code></pre><h3>Surrogate vs natural key</h3><table>
+<tr><th></th><th>Surrogate</th><th>Natural</th></tr>
+<tr><td>Example</td><td><code>AccountId INT IDENTITY</code></td><td><code>AccountNumber</code> (10 digits)</td></tr>
+<tr><td>Pros</td><td>Stable, narrow, simple joins</td><td>Meaningful to business users</td></tr>
+<tr><td>Cons</td><td>Extra column; no business meaning</td><td>Can change format; may be sensitive</td></tr>
+</table><p><strong>Banking practice:</strong> use surrogate PK internally; keep account number as UNIQUE alternate key for customer-facing lookups.</p><h3>Quick comparison</h3><table>
+<tr><th>Key</th><th>Count per table</th><th>NULL?</th><th>Purpose</th></tr>
+<tr><td>Primary</td><td>One</td><td>No</td><td>Row identity</td></tr>
+<tr><td>Alternate (UNIQUE)</td><td>Many</td><td>Usually one NULL allowed</td><td>Other unique business identifiers</td></tr>
+<tr><td>Foreign</td><td>Many</td><td>Depends on design</td><td>Relationship to parent</td></tr>
+<tr><td>Composite</td><td>—</td><td>—</td><td>Multi-column PK or FK</td></tr>
+</table><h3>Interview Answer</h3><p>Super keys uniquely identify rows; candidate keys are minimal super keys. I pick one candidate as the primary key—often a surrogate like CustomerId—and enforce other candidates as alternate unique keys like Email or AccountNumber. Foreign keys link Accounts to Customers and Branches. Composite keys appear on junction tables like CustomerRMAssignment. At a bank I use surrogate PKs for stability and natural or alternate keys for business lookups.</p></div>
 <div class="answer-pane" id="q_11"><h2>UNION vs UNION ALL</h2><p>UNION combines result sets from two or more SELECT statements and removes duplicate rows (distinct sort/hash). UNION ALL concatenates all rows including duplicates—faster when duplicates are acceptable or impossible.</p><p>Column order, count, and compatible types must match across all SELECT branches.</p><pre><code>SELECT City FROM Customers
 UNION
 SELECT City FROM Suppliers;

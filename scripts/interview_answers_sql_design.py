@@ -364,6 +364,80 @@ WHERE c.CustomerId = 5001 AND cra.EndDate IS NULL;</code></pre>
 <h3>Interview Answer</h3>
 <p>Primary key is the main row identifier—one per table, no NULLs. Unique constraints also block duplicates but allow NULLs and you can have several. I use PK for identity and UNIQUE for emails, codes, etc.</p>""",
 
+"q_sql_types_of_keys": """<h2>Types of Keys in SQL</h2>
+<p>Keys identify rows uniquely and link tables. Below are the key types interviewers expect, with <strong>PNC Bank</strong>–style examples.</p>
+<table>
+<tr><th>Key type</th><th>What it is</th><th>PNC example</th></tr>
+<tr><td><strong>Super key</strong></td><td>Any column/set that uniquely identifies a row (may include extra columns)</td><td><code>{CustomerId}</code>, <code>{CustomerId, Email}</code></td></tr>
+<tr><td><strong>Candidate key</strong></td><td>Minimal super key — no subset is also unique</td><td><code>CustomerId</code> or <code>Email</code> (if unique)</td></tr>
+<tr><td><strong>Primary key (PK)</strong></td><td>Chosen candidate key; one per table; NOT NULL</td><td><code>Customer.CustomerId</code></td></tr>
+<tr><td><strong>Alternate key</strong></td><td>Other candidate keys not chosen as PK; enforced with UNIQUE</td><td><code>UNIQUE(Email)</code>, <code>UNIQUE(AccountNumber)</code></td></tr>
+<tr><td><strong>Foreign key (FK)</strong></td><td>Column(s) referencing parent PK/unique key</td><td><code>Account.CustomerId → Customer</code></td></tr>
+<tr><td><strong>Composite key</strong></td><td>Primary or foreign key made of two+ columns</td><td><code>PK (CustomerId, RMId, StartDate)</code> on assignment table</td></tr>
+<tr><td><strong>Surrogate key</strong></td><td>System-generated ID (IDENTITY/GUID), no business meaning</td><td><code>AccountId INT IDENTITY</code></td></tr>
+<tr><td><strong>Natural key</strong></td><td>Business-meaningful unique identifier</td><td>SSN (where allowed), account number, routing+account</td></tr>
+</table>
+<h3>Super key vs candidate key vs primary key</h3>
+<pre><code>Customer(CustomerId, Email, Phone, FirstName, LastName)
+
+Super keys:     {CustomerId}, {CustomerId, Email}, {Email} (if unique)
+Candidate keys: {CustomerId}, {Email}           -- minimal
+Primary key:    CustomerId                      -- one chosen
+Alternate keys: Email UNIQUE                    -- other candidates</code></pre>
+<h3>Primary key</h3>
+<ul>
+<li>One per table; identifies each row; NOT NULL</li>
+<li>In SQL Server, often creates a <strong>clustered index</strong> by default</li>
+<li>Prefer stable surrogate keys (<code>IDENTITY</code>) for OLTP when natural keys can change</li>
+</ul>
+<pre><code>CREATE TABLE Customer (
+    CustomerId INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName  NVARCHAR(50) NOT NULL
+);</code></pre>
+<h3>Alternate key (unique key)</h3>
+<p>Candidate keys not selected as PK — enforced with <code>UNIQUE</code> constraint.</p>
+<pre><code>CREATE TABLE Customer (
+    CustomerId INT PRIMARY KEY,
+    Email NVARCHAR(256) NOT NULL UNIQUE,
+    TaxId      CHAR(9) NULL UNIQUE
+);</code></pre>
+<h3>Foreign key</h3>
+<p>Links child to parent; enforces referential integrity.</p>
+<pre><code>CREATE TABLE Account (
+    AccountId   INT PRIMARY KEY,
+    CustomerId  INT NOT NULL
+        REFERENCES Customer(CustomerId),
+    BranchId    INT NOT NULL
+        REFERENCES Branch(BranchId)
+);</code></pre>
+<h3>Composite key</h3>
+<p>Key spanning multiple columns — common on junction/transaction tables.</p>
+<pre><code>CREATE TABLE CustomerRMAssignment (
+    CustomerId INT NOT NULL REFERENCES Customer,
+    RMId       INT NOT NULL REFERENCES RelationshipManager,
+    StartDate  DATE NOT NULL,
+    PRIMARY KEY (CustomerId, RMId, StartDate)
+);</code></pre>
+<h3>Surrogate vs natural key</h3>
+<table>
+<tr><th></th><th>Surrogate</th><th>Natural</th></tr>
+<tr><td>Example</td><td><code>AccountId INT IDENTITY</code></td><td><code>AccountNumber</code> (10 digits)</td></tr>
+<tr><td>Pros</td><td>Stable, narrow, simple joins</td><td>Meaningful to business users</td></tr>
+<tr><td>Cons</td><td>Extra column; no business meaning</td><td>Can change format; may be sensitive</td></tr>
+</table>
+<p><strong>Banking practice:</strong> use surrogate PK internally; keep account number as UNIQUE alternate key for customer-facing lookups.</p>
+<h3>Quick comparison</h3>
+<table>
+<tr><th>Key</th><th>Count per table</th><th>NULL?</th><th>Purpose</th></tr>
+<tr><td>Primary</td><td>One</td><td>No</td><td>Row identity</td></tr>
+<tr><td>Alternate (UNIQUE)</td><td>Many</td><td>Usually one NULL allowed</td><td>Other unique business identifiers</td></tr>
+<tr><td>Foreign</td><td>Many</td><td>Depends on design</td><td>Relationship to parent</td></tr>
+<tr><td>Composite</td><td>—</td><td>—</td><td>Multi-column PK or FK</td></tr>
+</table>
+<h3>Interview Answer</h3>
+<p>Super keys uniquely identify rows; candidate keys are minimal super keys. I pick one candidate as the primary key—often a surrogate like CustomerId—and enforce other candidates as alternate unique keys like Email or AccountNumber. Foreign keys link Accounts to Customers and Branches. Composite keys appear on junction tables like CustomerRMAssignment. At a bank I use surrogate PKs for stability and natural or alternate keys for business lookups.</p>""",
+
 "q_11": """<h2>UNION vs UNION ALL</h2>
 <p>UNION combines result sets from two or more SELECT statements and removes duplicate rows (distinct sort/hash). UNION ALL concatenates all rows including duplicates—faster when duplicates are acceptable or impossible.</p>
 <p>Column order, count, and compatible types must match across all SELECT branches.</p>
