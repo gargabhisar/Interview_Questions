@@ -1209,34 +1209,50 @@ CREATE TABLE Customers (
 <li><code>SELECT INTO</code> does <strong>not</strong> copy constraints—add them afterward.</li>
 <li>Constraints can be <code>NOCHECK</code> disabled for bulk loads (use carefully).</li>
 </ul><h3>Interview Answer</h3><p>Constraints enforce data integrity at the database layer—PK and UNIQUE for uniqueness, FK for relationships, CHECK and NOT NULL for business rules, DEFAULT for missing values. I define them in the schema so every application gets the same rules, and I use constraints before triggers when they are enough.</p></div>
-<div class="answer-pane" id="q_sql_relationships"><h2>Database Relationships (1:1, 1:N, M:N)</h2><p>Relationships describe how rows in one table link to rows in another. In relational databases they are implemented with <strong>primary keys</strong>, <strong>foreign keys</strong>, and sometimes a <strong>junction (bridge) table</strong>.</p><table>
-<tr><th>Relationship</th><th>Description</th><th>Real-world example</th></tr>
-<tr><td><strong>One-to-One (1:1)</strong></td><td>One record in Table A links to exactly one record in Table B</td><td>Employee ↔ EmployeeProfile (one person, one profile)</td></tr>
-<tr><td><strong>One-to-Many (1:N)</strong></td><td>One parent record has many child records</td><td>Customer → many Orders</td></tr>
-<tr><td><strong>Many-to-Many (M:N)</strong></td><td>Many records on both sides; resolved via a junction table</td><td>Students ↔ Courses (via Enrollment)</td></tr>
-</table><h3>One-to-One (1:1)</h3><p>Each row on side A matches <strong>at most one</strong> row on side B, and vice versa.</p><p><strong>When to use:</strong> split optional or sensitive columns into a separate table, or divide a wide table without duplicating the main entity.</p><pre><code>Employees(EmployeeId PK, Name, ...)
-EmployeeProfiles(EmployeeId PK/FK UNIQUE, Bio, PhotoUrl, ...)
--- EmployeeId is PK and FK → enforces 1:1</code></pre><p><strong>Implementation:</strong> share the same primary key, or put a <code>UNIQUE</code> constraint on the foreign key column so one parent maps to one child only.</p><h3>One-to-Many (1:N)</h3><p>The <strong>most common</strong> relationship. The “one” side holds the primary key; the “many” side stores a foreign key pointing to the parent.</p><pre><code>Customers(CustomerId PK, Name)
-Orders(OrderId PK, CustomerId FK → Customers, OrderDate)
+<div class="answer-pane" id="q_sql_relationships"><h2>Database Relationships (1:1, 1:N, M:N)</h2><p>Relationships describe how rows in one table link to rows in another. In relational databases they are implemented with <strong>primary keys</strong>, <strong>foreign keys</strong>, and sometimes a <strong>junction (bridge) table</strong>.</p><p>Examples below use a <strong>PNC Bank</strong>–style retail/commercial banking model (customers, accounts, branches, engagements).</p><table>
+<tr><th>Relationship</th><th>Description</th><th>PNC Bank example</th></tr>
+<tr><td><strong>One-to-One (1:1)</strong></td><td>One record in Table A links to exactly one record in Table B</td><td>Customer ↔ KYCProfile (one customer, one compliance profile)</td></tr>
+<tr><td><strong>One-to-Many (1:N)</strong></td><td>One parent record has many child records</td><td>Customer → many Accounts (checking, savings, loan)</td></tr>
+<tr><td><strong>Many-to-Many (M:N)</strong></td><td>Many records linked on both sides via junction table</td><td>Customers ↔ Relationship Managers (via CustomerRMAssignment)</td></tr>
+</table><h3>One-to-One (1:1)</h3><p>Each row on side A matches <strong>at most one</strong> row on side B, and vice versa.</p><p><strong>PNC example:</strong> Core customer data lives in <code>Customer</code>; sensitive KYC/AML details live in <code>CustomerKYCProfile</code> — split for security and optional fields.</p><pre><code>Customer(CustomerId PK, FirstName, LastName, Email, Phone)
+CustomerKYCProfile(CustomerId PK/FK UNIQUE,
+    SSNLast4, RiskRating, LastReviewDate, PEPFlag)
+-- One CustomerId → exactly one KYC profile</code></pre><p><strong>Implementation:</strong> shared primary key, or <code>UNIQUE</code> on the FK column so one parent maps to one child only.</p><h3>One-to-Many (1:N)</h3><p>The <strong>most common</strong> relationship. The “one” side holds the primary key; the “many” side stores a foreign key.</p><p><strong>PNC examples:</strong></p><ul>
+<li>One <strong>Customer</strong> → many <strong>Accounts</strong> (Virtual Wallet, checking, savings, credit card)</li>
+<li>One <strong>Branch</strong> → many <strong>Employees</strong> (tellers, bankers, managers)</li>
+<li>One <strong>Account</strong> → many <strong>Transactions</strong> (deposits, withdrawals, transfers)</li>
+</ul><pre><code>Customer(CustomerId PK, FirstName, LastName)
+Account(AccountId PK, CustomerId FK → Customer,
+        AccountType, Balance, OpenDate)
 
--- One customer, many orders:
-SELECT c.Name, o.OrderId, o.OrderDate
-FROM Customers c
-JOIN Orders o ON c.CustomerId = o.CustomerId;</code></pre><p><strong>Rule:</strong> FK goes on the <strong>many</strong> side (child table). Use <code>ON DELETE CASCADE</code> or <code>SET NULL</code> based on business rules.</p><h3>Many-to-Many (M:N)</h3><p>Neither table should hold a direct FK to the other—you cannot store multiple FK values cleanly in one column. Use a <strong>junction (associative) table</strong> with composite PK or unique pair of FKs.</p><pre><code>Students(StudentId PK, Name)
-Courses(CourseId PK, Title)
-Enrollment(StudentId FK, CourseId FK, EnrolledOn,
-           PRIMARY KEY (StudentId, CourseId))
+Branch(BranchId PK, BranchName, City, State)
+Employee(EmployeeId PK, BranchId FK → Branch, Role, HireDate)
 
--- Student takes many courses; course has many students</code></pre><p><strong>Query pattern:</strong> join through the junction table.</p><pre><code>SELECT s.Name, c.Title
-FROM Students s
-JOIN Enrollment e ON s.StudentId = e.StudentId
-JOIN Courses c ON e.CourseId = c.CourseId;</code></pre><h3>How relationships map to SQL</h3><table>
-<tr><th>Concept</th><th>SQL object</th></tr>
-<tr><td>Identify row</td><td>PRIMARY KEY</td></tr>
-<tr><td>Link tables</td><td>FOREIGN KEY</td></tr>
-<tr><td>Enforce 1:1</td><td>UNIQUE on FK column</td></tr>
-<tr><td>Resolve M:N</td><td>Junction table with two FKs</td></tr>
-</table><h3>Interview Answer</h3><p>One-to-one links a single parent row to a single child row—often modeled with a shared PK or UNIQUE FK. One-to-many is the standard parent/child pattern with the FK on the many side, like Customer to Orders. Many-to-many needs a junction table such as Enrollment between Students and Courses. I always enforce these with foreign keys so referential integrity is guaranteed in the database.</p></div>
+-- List all accounts for a customer:
+SELECT c.FirstName, c.LastName, a.AccountType, a.Balance
+FROM Customer c
+JOIN Account a ON c.CustomerId = a.CustomerId
+WHERE c.CustomerId = 10042;</code></pre><p><strong>Rule:</strong> FK goes on the <strong>many</strong> side. Use <code>ON DELETE CASCADE</code> or <code>RESTRICT</code> based on banking rules (accounts usually cannot orphan a customer without closure workflow).</p><h3>Many-to-Many (M:N)</h3><p>Neither table holds a direct FK to the other. Use a <strong>junction table</strong> with a composite PK or unique pair of FKs.</p><p><strong>PNC examples:</strong></p><ul>
+<li><strong>Customers ↔ Relationship Managers</strong> — a customer may have multiple RMs over time; one RM serves many customers</li>
+<li><strong>Commercial clients ↔ Banking products</strong> — treasury, lending, merchant services assigned via <code>ClientProduct</code></li>
+<li><strong>Employees ↔ Certifications</strong> — CFA, AML, Series 7 tracked via <code>EmployeeCertification</code></li>
+</ul><pre><code>Customer(CustomerId PK, CompanyName)          -- commercial client
+RelationshipManager(RMId PK, Name, LineOfBusiness)
+CustomerRMAssignment(CustomerId FK, RMId FK, StartDate, EndDate,
+                     PRIMARY KEY (CustomerId, RMId, StartDate))
+
+-- Which RMs are assigned to a client today?
+SELECT c.CompanyName, rm.Name, cra.StartDate
+FROM Customer c
+JOIN CustomerRMAssignment cra ON c.CustomerId = cra.CustomerId
+JOIN RelationshipManager rm ON cra.RMId = rm.RMId
+WHERE c.CustomerId = 5001 AND cra.EndDate IS NULL;</code></pre><h3>How relationships map to SQL</h3><table>
+<tr><th>Concept</th><th>SQL object</th><th>PNC example</th></tr>
+<tr><td>Identify row</td><td>PRIMARY KEY</td><td><code>CustomerId</code>, <code>AccountId</code></td></tr>
+<tr><td>Link tables</td><td>FOREIGN KEY</td><td><code>Account.CustomerId → Customer</code></td></tr>
+<tr><td>Enforce 1:1</td><td>UNIQUE on FK</td><td><code>CustomerKYCProfile.CustomerId UNIQUE</code></td></tr>
+<tr><td>Resolve M:N</td><td>Junction table</td><td><code>CustomerRMAssignment</code></td></tr>
+</table><h3>Interview Answer</h3><p>At a bank like PNC, one-to-one splits core customer from KYC profile. One-to-many is Customer to Accounts or Branch to Employees with the FK on the many side. Many-to-many uses a junction table—Customer to Relationship Manager via CustomerRMAssignment. I enforce all of these with foreign keys and appropriate delete rules so data stays consistent across channels (branch, mobile, online).</p></div>
 <div class="answer-pane" id="q_10"><h2>Primary Key vs Unique Constraint</h2><p>Both enforce uniqueness, but a primary key identifies each row and cannot be NULL. A table has one primary key but can have multiple unique constraints. Unique allows one NULL in SQL Server.</p><p>Use a surrogate PK for identity and UNIQUE constraints for alternate business keys like email or product codes.</p><table>
 <tr><th>Primary Key</th><th>Unique</th></tr>
 <tr><td>One per table</td><td>Multiple allowed</td></tr>
