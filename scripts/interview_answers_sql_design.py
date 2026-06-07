@@ -29,86 +29,122 @@ db.orders.aggregate([
 <p>SQL is relational and ACID-focused with strict schemas; MongoDB is document-based and schema-flexible, better for scale-out and evolving data shapes. I pick based on consistency needs, query patterns, and team expertise—not hype.</p>""",
 
 "q_5": """<h2>Database Normalization &amp; Its Forms (1NF, 2NF, 3NF)</h2>
-<p><strong>Normalization</strong> is the process of organizing relational tables to <strong>reduce redundancy</strong> and prevent <strong>data anomalies</strong>. Each normal form adds a rule that removes a specific kind of bad dependency.</p>
-<h3>Why normalize?</h3>
-<p>Without normalization, the same fact is stored in multiple rows. That causes:</p>
+<blockquote>
+<p>“Normalization is the process of organizing data in a database to reduce redundancy and improve data integrity.</p>
+<p>The main goal is:</p>
+<ul>
+<li>avoiding duplicate data,</li>
+<li>preventing update/delete anomalies,</li>
+<li>and making the database more maintainable and efficient.</li>
+</ul>
+<p>In real-world systems like banking applications at <strong>PNC</strong>, normalization is very important because customer and transaction data are huge and frequently updated.”</p>
+</blockquote>
+<h3>PNC banking example — the problem</h3>
+<p>“Suppose we have a banking table like this:”</p>
 <table>
-<tr><th>Anomaly</th><th>Problem</th><th>Example</th></tr>
-<tr><td><strong>Insert</strong></td><td>Cannot add data without unrelated data</td><td>Cannot add a new product until someone orders it</td></tr>
-<tr><td><strong>Update</strong></td><td>Same fact updated in many places</td><td>Customer city changed in 50 order rows—some missed → inconsistent data</td></tr>
-<tr><td><strong>Delete</strong></td><td>Removing one row loses unrelated data</td><td>Deleting last order removes customer address entirely</td></tr>
+<tr><th>CustomerID</th><th>CustomerName</th><th>AccountNumber</th><th>BranchName</th></tr>
+<tr><td>101</td><td>John</td><td>9001</td><td>New York</td></tr>
+<tr><td>101</td><td>John</td><td>9002</td><td>New York</td></tr>
 </table>
+<p>Customer and branch information are <strong>repeated</strong>. This causes:</p>
+<ul>
+<li>storage wastage</li>
+<li>inconsistency</li>
+<li>update anomalies — if branch name changes, we must update multiple rows</li>
+</ul>
+<h3>How you normalize it</h3>
+<p>“Instead of keeping everything in one table, we divide it into separate entities.”</p>
+<pre><code>Customers
+-----------
+CustomerID
+CustomerName
+
+Accounts
+-----------
+AccountNumber
+CustomerID      -- FK → Customers
+BranchID        -- FK → Branches
+
+Branches
+-----------
+BranchID
+BranchName</code></pre>
+<p>Now customer data is stored <strong>once</strong>, branch data is stored <strong>once</strong>, and relationships are maintained using <strong>foreign keys</strong>.</p>
+<h3>Normal forms — step by step (same PNC example)</h3>
+<p>Walk through <strong>1NF → 2NF → 3NF</strong> on the same banking data so the story stays consistent on a Teams call.</p>
+<h4>1NF — First Normal Form</h4>
+<p>“First Normal Form ensures <strong>atomic values</strong> and removes repeating groups.”</p>
+<p><strong>Before 1NF</strong> — multiple account numbers in one cell (repeating group):</p>
+<table>
+<tr><th>CustomerID</th><th>CustomerName</th><th>AccountNumbers</th><th>BranchName</th></tr>
+<tr><td>101</td><td>John</td><td>9001, 9002</td><td>New York</td></tr>
+</table>
+<p><strong>After 1NF</strong> — one value per column; one row per account:</p>
+<table>
+<tr><th>CustomerID</th><th>CustomerName</th><th>AccountNumber</th><th>BranchName</th></tr>
+<tr><td>101</td><td>John</td><td>9001</td><td>New York</td></tr>
+<tr><td>101</td><td>John</td><td>9002</td><td>New York</td></tr>
+</table>
+<pre><code>-- Or split into an Accounts table (still 1NF):
+Customers(CustomerID, CustomerName)
+Accounts(AccountNumber, CustomerID, BranchName)</code></pre>
+<h4>2NF — Second Normal Form</h4>
+<p>“Second Normal Form removes <strong>partial dependency</strong>. If we have a composite key, every non-key column must depend on the <strong>whole</strong> key—not just part of it.”</p>
+<p><strong>Before 2NF</strong> — composite PK <code>(CustomerID, AccountNumber)</code> but <code>CustomerName</code> depends only on <code>CustomerID</code>:</p>
+<pre><code>AccountRegister(CustomerID, AccountNumber, CustomerName, BranchName)
+PK = (CustomerID, AccountNumber)
+-- CustomerName → CustomerID only  (partial dependency)</code></pre>
+<p><strong>After 2NF</strong> — move customer name to its own table:</p>
+<pre><code>Customers(CustomerID PK, CustomerName)
+Accounts(AccountNumber PK, CustomerID FK, BranchName)
+-- CustomerName stored once; no partial dependency on composite key</code></pre>
+<h4>3NF — Third Normal Form</h4>
+<p>“Third Normal Form removes <strong>transitive dependency</strong>. A non-key column must not depend on another non-key column.”</p>
+<p><strong>Before 3NF</strong> — <code>BranchName</code> depends on branch, not on <code>AccountNumber</code>, but is stored on every account row:</p>
+<pre><code>Accounts(AccountNumber PK, CustomerID FK, BranchName)
+-- AccountNumber → BranchName is transitive (branch is its own entity)</code></pre>
+<p><strong>After 3NF</strong> — branch facts live in <code>Branches</code>; accounts reference <code>BranchID</code>:</p>
+<pre><code>Customers(CustomerID PK, CustomerName)
+Branches(BranchID PK, BranchName, City, State)
+Accounts(AccountNumber PK, CustomerID FK, BranchID FK)
+
+-- Final result: customer once, branch once, FKs link accounts</code></pre>
 <h3>Quick reference</h3>
 <table>
-<tr><th>Form</th><th>Rule (simple)</th><th>Fixes</th></tr>
-<tr><td><strong>1NF</strong></td><td>Atomic values; no repeating groups</td><td>Multi-valued columns, nested lists in one cell</td></tr>
-<tr><td><strong>2NF</strong></td><td>1NF + no partial dependency on a composite key</td><td>Non-key column depends on only part of the key</td></tr>
-<tr><td><strong>3NF</strong></td><td>2NF + no transitive dependency</td><td>Non-key column depends on another non-key column</td></tr>
+<tr><th>Form</th><th>Rule</th><th>Fixes</th></tr>
+<tr><td><strong>1NF</strong></td><td>Atomic values; no repeating groups</td><td>Multi-valued columns</td></tr>
+<tr><td><strong>2NF</strong></td><td>1NF + no partial dependency on composite key</td><td>Non-key depends on part of key only</td></tr>
+<tr><td><strong>3NF</strong></td><td>2NF + no transitive dependency</td><td>Non-key depends on another non-key</td></tr>
 </table>
-<h3>1NF — First Normal Form</h3>
-<p><strong>Rule:</strong> Each column holds a <strong>single atomic value</strong>; each row is unique; no repeating groups (arrays/lists in one column).</p>
-<p><strong>Violates 1NF:</strong></p>
-<pre><code>StudentCourses
---------------
-StudentId | Name  | Courses
-1         | Alice | Math, Physics, Chemistry   -- multiple values in one cell</code></pre>
-<p><strong>In 1NF:</strong> one course per row (or separate Courses table).</p>
-<pre><code>StudentCourses
---------------
-StudentId | Name  | Course
-1         | Alice | Math
-1         | Alice | Physics
-1         | Alice | Chemistry</code></pre>
-<h3>2NF — Second Normal Form</h3>
-<p><strong>Rule:</strong> Table is in 1NF, and every non-key column depends on the <strong>whole</strong> primary key—not just part of it.</p>
-<p>Only applies when the primary key is <strong>composite</strong> (multiple columns).</p>
-<p><strong>Partial dependency example:</strong></p>
-<pre><code>OrderLine(OrderId, ProductId, ProductName, Qty, UnitPrice)
-PK = (OrderId, ProductId)
-
-ProductName depends only on ProductId  -- partial dependency (not on full PK)
-Qty depends on full PK (OrderId + ProductId) -- OK</code></pre>
-<p><strong>Fix (2NF):</strong> move ProductName to Products table.</p>
-<pre><code>Products(ProductId, ProductName)
-OrderLine(OrderId, ProductId, Qty, UnitPrice)</code></pre>
-<h3>3NF — Third Normal Form</h3>
-<p><strong>Rule:</strong> Table is in 2NF, and no non-key column depends on <strong>another non-key column</strong> (transitive dependency).</p>
-<p><strong>Transitive dependency example:</strong></p>
-<pre><code>Orders(OrderId, CustomerId, CustomerName, CustomerCity, OrderDate)
-PK = OrderId
-
-CustomerId → CustomerName, CustomerCity   -- non-key depends on non-key</code></pre>
-<p>If you know CustomerId, you know Name and City—those belong in Customers, not repeated on every order.</p>
-<p><strong>Fix (3NF):</strong></p>
-<pre><code>Customers(CustomerId, CustomerName, CustomerCity)
-Products(ProductId, ProductName)
-Orders(OrderId, CustomerId, ProductId, Qty, OrderDate)</code></pre>
-<h3>Walking through 1NF → 3NF (one example)</h3>
-<pre><code>-- UNNORMALIZED (violates 1NF, 2NF, 3NF):
-Orders(OrderId, CustomerName, CustomerCity, Product, Qty)
-
-Problems:
-- CustomerName/City repeat on every order (update/delete anomalies)
-- Product name mixed with order facts (partial/transitive issues if composite keys exist)
-
--- AFTER 3NF:
-Customers(CustomerId, Name, City)
-Products(ProductId, Name)
-Orders(OrderId, CustomerId, ProductId, Qty)</code></pre>
-<h3>Functional dependency (interview vocabulary)</h3>
+<h3>Anomalies normalization prevents</h3>
+<table>
+<tr><th>Anomaly</th><th>PNC example</th></tr>
+<tr><td><strong>Insert</strong></td><td>Cannot add a branch until a customer opens an account there</td></tr>
+<tr><td><strong>Update</strong></td><td>Branch renamed “New York Downtown”—must update every account row</td></tr>
+<tr><td><strong>Delete</strong></td><td>Closing last account loses customer name stored only in that row</td></tr>
+</table>
+<h3>Practical tradeoff (sounds experienced)</h3>
+<blockquote>
+<p>“In highly transactional systems like banking, we generally <strong>normalize OLTP databases</strong> for consistency. However, sometimes <strong>partial denormalization</strong> is also used in reporting systems for faster reads.”</p>
+</blockquote>
+<p>Reporting/data warehouse layers often use star schemas; denormalize only after measuring—keep the core banking OLTP normalized.</p>
+<h3>Short version (if interviewer wants a quick answer)</h3>
+<blockquote>
+<p>“Normalization is organizing database tables to reduce redundancy and maintain data integrity. We achieve this by splitting large tables into related smaller tables using primary and foreign keys. Common normal forms are 1NF, 2NF, and 3NF. For example, in a banking system, customer, account, and branch data are stored separately instead of duplicating them in one table.”</p>
+</blockquote>
+<h3>Tips for Teams call delivery</h3>
 <ul>
-<li><strong>X → Y</strong> means: if you know X, Y is uniquely determined.</li>
-<li><strong>2NF</strong> removes partial dependencies: non-key attribute → part of composite key only.</li>
-<li><strong>3NF</strong> removes transitive dependencies: non-key → non-key.</li>
+<li><strong>Speak slowly</strong> — don’t rush definitions</li>
+<li><strong>Draw structure verbally</strong> — “Imagine we have one table…” keeps the interviewer engaged</li>
+<li><strong>Use business examples</strong> — banking (PNC) sounds stronger than generic student/course</li>
+<li><strong>Problem + solution</strong> — always explain what issue exists and how normalization fixes it</li>
 </ul>
-<h3>When not to over-normalize</h3>
-<ul>
-<li>Many joins on hot read paths can hurt performance.</li>
-<li>Reporting/data warehouse layers often denormalize intentionally (star schema).</li>
-<li>Denormalize only after measuring—keep OLTP core normalized.</li>
-</ul>
+<h3>Golden closing line</h3>
+<blockquote>
+<p>“So normalization helps in creating scalable, maintainable, and consistent database systems, especially in enterprise applications like banking.”</p>
+</blockquote>
 <h3>Interview Answer</h3>
-<p>Normalization removes redundancy and insert/update/delete anomalies by splitting tables into normal forms. 1NF ensures atomic values and no repeating groups. 2NF removes partial dependencies on composite keys. 3NF removes transitive dependencies where a non-key column depends on another non-key column. In OLTP I design to 3NF, then denormalize selectively only when profiling shows a real read bottleneck.</p>""",
+<p>Normalization organizes data to cut redundancy and protect integrity—critical at PNC-scale banking where customers and transactions change constantly. I walk through a bad single-table design, split into Customers, Accounts, and Branches with FKs, then explain 1NF/2NF/3NF. I close by noting OLTP stays normalized while reporting may denormalize for read performance.</p>""",
 
 "q_6": """<h2>Boyce-Codd Normal Form (BCNF)</h2>
 <p>BCNF is a stricter form of 3NF: every determinant must be a candidate key. A table is in BCNF when for every functional dependency X → Y, X is a superkey. It eliminates anomalies 3NF might still allow when multiple overlapping candidate keys exist.</p>
