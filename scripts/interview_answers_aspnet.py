@@ -10,6 +10,15 @@ ANSWERS = {
 <pre><code>app.UseAuthentication();   // first — identify the user
 app.UseAuthorization();    // second — enforce access rules</code></pre>
 <p><strong>401 Unauthorized</strong> = not authenticated. <strong>403 Forbidden</strong> = authenticated but not allowed.</p>
+<h3>JWT vs server-side session (common follow-up)</h3>
+<table>
+<tr><th></th><th>JWT</th><th>Server session</th></tr>
+<tr><td><strong>State</strong></td><td>Token carries claims; stateless by default</td><td>Session ID in cookie; data on server</td></tr>
+<tr><td><strong>Best for</strong></td><td>REST APIs, SPAs, mobile</td><td>MVC/Razor traditional web apps</td></tr>
+<tr><td><strong>Scale-out</strong></td><td>Any server validates token</td><td>Needs Redis/SQL shared session store</td></tr>
+<tr><td><strong>Revocation</strong></td><td>Harder — short TTL or blocklist</td><td>Easy — delete session server-side</td></tr>
+</table>
+<p><strong>Related:</strong> Section 2 item 34 — Sessions in .NET Core; Section 6 item 2 — Generate JWT in Web API.</p>
 <h3>Authentication mechanisms (typical .NET projects)</h3>
 <table>
 <tr><th>Mechanism</th><th>Best for</th><th>How it works</th></tr>
@@ -423,4 +432,79 @@ public async Task&lt;IActionResult&gt; Search([FromQuery] string q, int take = 2
 </ul>
 <h3>Interview Answer</h3>
 <p>For large dropdowns I avoid loading full tables on every page — I cache small lookup lists, project only id and display text, and use autocomplete or server-side search for big datasets. Cascading dropdowns load child options on demand via AJAX rather than rendering everything upfront.</p>""",
+
+"q_aspnet_q02": """<h2>Create a Web API Project &amp; What "Starting an App" Means</h2>
+<h3>Create project</h3>
+<pre><code>dotnet new webapi -n MyApi
+cd MyApi
+dotnet run</code></pre>
+<p>Visual Studio: Create New Project → ASP.NET Core Web API → choose .NET version → enable OpenAPI if needed.</p>
+<h3>What does "starting an app" mean?</h3>
+<p>Launching the host process so it loads configuration, builds DI, configures middleware, and listens for requests (or runs background workers).</p>
+<ol>
+<li><code>WebApplication.CreateBuilder(args)</code> — load config, create service collection</li>
+<li><code>builder.Services.Add...</code> — register DbContext, controllers, JWT, etc.</li>
+<li><code>builder.Build()</code> — build the app and pipeline</li>
+<li><code>app.Use...</code> / <code>app.MapControllers()</code> — middleware and endpoints</li>
+<li><code>app.Run()</code> — start Kestrel and accept HTTP requests</li>
+</ol>
+<p><strong>Related:</strong> Section 2 item 4 — Program.cs vs Startup.cs (.NET 6+).</p>
+<h3>Interview Answer</h3>
+<p>I create APIs with dotnet new webapi. Starting the app means bootstrapping the host — config, DI, middleware, then Run() so Kestrel listens for requests.</p>""",
+
+"q_di_scoped_in_singleton": """<h2>Why Is DbContext Scoped? Can Scoped Be Injected into Singleton?</h2>
+<h3>Why DbContext is scoped (not singleton)</h3>
+<ul>
+<li><strong>One unit of work per request</strong> — tracks entities for that request only</li>
+<li><strong>Not thread-safe</strong> — concurrent requests must not share one DbContext</li>
+<li><strong>Dispose after request</strong> — connections and change tracker released properly</li>
+<li><strong>Wrong data / memory leaks</strong> if a singleton captured one context forever</li>
+</ul>
+<pre><code>services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
+    options.UseSqlServer(connectionString)); // scoped by default</code></pre>
+<h3>Can you inject scoped into singleton?</h3>
+<p><strong>Not directly.</strong> ASP.NET Core DI blocks captive dependencies (scoped inside singleton) when detected.</p>
+<h3>Correct pattern — create a scope</h3>
+<pre><code>public class CacheWarmupService : IHostedService
+{
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    public CacheWarmupService(IServiceScopeFactory scopeFactory)
+        =&gt; _scopeFactory = scopeFactory;
+
+    public async Task StartAsync(CancellationToken ct)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();
+        await db.Products.CountAsync(ct);
+    }
+}</code></pre>
+<p><strong>Related:</strong> Section 2 item 29 — Transient, Scoped, Singleton; Section 2 item 39 — BackgroundService.</p>
+<h3>Interview Answer</h3>
+<p>DbContext is scoped because it represents one unit of work per request and is not thread-safe. You cannot inject scoped services into a singleton directly — use IServiceScopeFactory to create a short-lived scope in background services or singletons.</p>""",
+
+"q_aspnet_q12": """<h2>.NET 6 vs Previous Versions &amp; Program.cs vs Startup.cs</h2>
+<h3>.NET 6 vs earlier (.NET Core 3.1 / .NET 5 / Framework)</h3>
+<table>
+<tr><th>Area</th><th>Previous</th><th>.NET 6+</th></tr>
+<tr><td>Hosting</td><td>Program + Startup classes</td><td>Minimal hosting — usually one Program.cs</td></tr>
+<tr><td>Platform</td><td>.NET Framework Windows-only vs .NET Core</td><td>Unified cross-platform .NET</td></tr>
+<tr><td>APIs</td><td>Controllers common</td><td>Minimal APIs + controllers</td></tr>
+<tr><td>Performance</td><td>Good</td><td>Improved runtime, faster startup</td></tr>
+</table>
+<h3>Startup.cs (.NET Core 3.1 and earlier)</h3>
+<ul>
+<li><code>ConfigureServices</code> — register DI</li>
+<li><code>Configure</code> — middleware pipeline</li>
+</ul>
+<h3>Program.cs (.NET 6+ minimal hosting)</h3>
+<pre><code>var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
+var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();</code></pre>
+<h3>Interview Answer</h3>
+<p>.NET 6 unified the platform with minimal Program.cs hosting instead of separate Startup. Same responsibilities — register services, configure middleware, map endpoints — with less boilerplate and better performance than .NET Core 3.1.</p>""",
 }

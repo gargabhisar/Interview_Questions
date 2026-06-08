@@ -362,6 +362,21 @@ foreach (var u in activeUsers) { /* executes here */ }</code></pre>
 <tr><td>HashSet&lt;T&gt;</td><td>Unique items, set operations</td></tr>
 <tr><td>Queue/Stack</td><td>Processing pipelines</td></tr>
 </table>
+<h3>Queue vs Stack</h3>
+<table>
+<tr><th></th><th>Queue</th><th>Stack</th></tr>
+<tr><td><strong>Order</strong></td><td><strong>FIFO</strong> — First In, First Out</td><td><strong>LIFO</strong> — Last In, First Out</td></tr>
+<tr><td><strong>Operations</strong></td><td>Enqueue (rear), Dequeue (front)</td><td>Push (top), Pop (top)</td></tr>
+<tr><td><strong>Analogy</strong></td><td>Line at a ticket counter</td><td>Stack of plates</td></tr>
+<tr><td><strong>C# type</strong></td><td><code>Queue&lt;T&gt;</code></td><td><code>Stack&lt;T&gt;</code></td></tr>
+</table>
+<pre><code>var queue = new Queue&lt;int&gt;();
+queue.Enqueue(1); queue.Enqueue(2);
+queue.Dequeue(); // returns 1
+
+var stack = new Stack&lt;int&gt;();
+stack.Push(1); stack.Push(2);
+stack.Pop(); // returns 2</code></pre>
 <pre><code>var cache = new Dictionary&lt;string, User&gt;();
 cache["u-1"] = new User { Id = 1 };</code></pre>
 <h3>Key Points</h3>
@@ -585,7 +600,14 @@ services.AddTransient&lt;IEmailSender, SmtpEmailSender&gt;();</code></pre>
 <li>Singleton services must be thread-safe.</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>Transient gives a new instance per injection, scoped shares one instance per request, and singleton lives for the app lifetime. I register DbContext as scoped and caches as singleton, being careful not to capture scoped dependencies in singletons.</p>""",
+<p>Transient gives a new instance per injection, scoped shares one instance per request, and singleton lives for the app lifetime. I register DbContext as scoped and caches as singleton, being careful not to capture scoped dependencies in singletons.</p>
+<h3>What does "singleton" mean in interviews?</h3>
+<p>Clarify which meaning is asked:</p>
+<ul>
+<li><strong>DI singleton lifetime</strong> — one instance for the whole app via <code>AddSingleton</code></li>
+<li><strong>Singleton design pattern</strong> — class ensures only one instance (often replaced by DI in modern .NET)</li>
+</ul>
+<p><strong>Related:</strong> Section 5 — Singleton Pattern; Section 2 — Scoped into Singleton?</p>""",
 
 "q_59": """<h2>IServiceProvider in .NET</h2>
 <p><code>IServiceProvider</code> is the service locator abstraction that resolves registered dependencies from the DI container. In ASP.NET Core, the built-in provider is created from <code>ServiceCollection</code> during host building.</p>
@@ -798,11 +820,18 @@ public class MailService
 <p>Register with <code>AddHostedService&lt;T&gt;()</code>. Use <code>CancellationToken</code> from <code>ExecuteAsync</code> to respect shutdown signals.</p>
 <pre><code>public class SyncWorker : BackgroundService
 {
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    public SyncWorker(IServiceScopeFactory scopeFactory)
+        =&gt; _scopeFactory = scopeFactory;
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await DoWorkAsync(stoppingToken);
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();
+            await DoWorkAsync(db, stoppingToken);
             await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
         }
     }
@@ -814,7 +843,7 @@ public class MailService
 <li>Respect cancellation for clean shutdown.</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>Hosted services are background tasks managed by the ASP.NET Core host via IHostedService or BackgroundService. I use them for periodic sync or queue polling inside the app process, always honoring CancellationToken so shutdown is graceful.</p>""",
+<p>Hosted services are background tasks managed by the ASP.NET Core host via IHostedService or BackgroundService. I use them for periodic sync or queue polling inside the app process, always honoring CancellationToken so shutdown is graceful. I use <code>IServiceScopeFactory</code> inside the worker when I need scoped services like DbContext.</p>""",
 
 "q_70": """<h2>Background Jobs in .NET</h2>
 <p>Background jobs process work asynchronously outside the HTTP request path—emails, reports, imports. In-process options include <code>BackgroundService</code> and <code>Task.Run</code> (limited). Production systems often use Hangfire, Azure Functions, or message queues for reliability and retries.</p>

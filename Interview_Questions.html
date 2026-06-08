@@ -786,6 +786,8 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_angular_token_refresh')">8. Token refresh interceptor (401)</div>
 <div class="question-item" onclick="showAnswer('q_angular_singleton_service')">9. Singleton service (UserService)</div>
 <div class="question-item" onclick="showAnswer('q_angular_injectable')">10. @Injectable &amp; providedIn: 'root'</div>
+<div class="question-item" onclick="showAnswer('q_angular_lazy_loading')">11. Lazy Loading in Angular</div>
+<div class="question-item" onclick="showAnswer('q_angular_http_client')">12. How to Call APIs (HttpClient)</div>
 </div>
 <h3 class="topic-header">9. Cloud Services (Azure)</h3>
 <div class="question-group">
@@ -894,6 +896,12 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_ssis_performance_optimization')">2. SSIS Performance Optimization</div>
 <div class="question-item" onclick="showAnswer('q_ssis_email_alerts')">3. Email Alerts on ETL/SSIS Failure</div>
 <div class="question-item" onclick="showAnswer('q_ssis_control_data_flow')">4. Control Flow vs Data Flow in SSIS</div>
+</div>
+<h3 class="topic-header">14. Common Interview Q&amp;A</h3>
+<div class="question-group">
+<div class="question-item" onclick="showAnswer('q_quick_highest_in_array')">1. Highest Integer in an Array</div>
+<div class="question-item" onclick="showAnswer('q_quick_pagination_alternatives')">2. Pagination Beyond Skip/Take</div>
+<div class="question-item" onclick="showAnswer('q_quick_dotnet_vs_angular_preference')">3. .NET vs Angular — Which Project?</div>
 </div></div>
 <div class="content">
 <button aria-label="Back to question list" class="back-btn" onclick="backToQuestions(event)" type="button">â† Back to questions</button>
@@ -1691,7 +1699,10 @@ services.AddTransient&lt;IEmailSender, SmtpEmailSender&gt;();</code></pre><h3>Ke
 <li>Never inject scoped into singleton without a factory.</li>
 <li>DbContext should almost always be scoped.</li>
 <li>Singleton services must be thread-safe.</li>
-</ul><h3>Interview Answer</h3><p>Transient gives a new instance per injection, scoped shares one instance per request, and singleton lives for the app lifetime. I register DbContext as scoped and caches as singleton, being careful not to capture scoped dependencies in singletons.</p></div>
+</ul><h3>Interview Answer</h3><p>Transient gives a new instance per injection, scoped shares one instance per request, and singleton lives for the app lifetime. I register DbContext as scoped and caches as singleton, being careful not to capture scoped dependencies in singletons.</p><h3>What does "singleton" mean in interviews?</h3><p>Clarify which meaning is asked:</p><ul>
+<li><strong>DI singleton lifetime</strong> — one instance for the whole app via <code>AddSingleton</code></li>
+<li><strong>Singleton design pattern</strong> — class ensures only one instance (often replaced by DI in modern .NET)</li>
+</ul><p><strong>Related:</strong> Section 5 — Singleton Pattern; Section 2 — Scoped into Singleton?</p></div>
 <div class="answer-pane" id="q_41"><h2>JWT Authentication in ASP.NET Core</h2><p>JSON Web Tokens (JWT) are compact, signed tokens carrying claims about a user or client. In ASP.NET Core, JWT bearer authentication validates the token signature and expiration, then builds a <code>ClaimsPrincipal</code> for authorization.</p><p>Typical flow: user authenticates, server issues JWT; client sends <code>Authorization: Bearer &lt;token&gt;</code> on API calls. Stateless APIs scale well, but token revocation and refresh strategies must be designed explicitly.</p><pre><code>builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =&gt;
     {
@@ -1768,7 +1779,13 @@ builder.Services.AddAuthorization(options =&gt;
 <tr><td><strong>Authentication</strong></td><td><em>Who are you?</em></td><td>Validates credentials or token; sets <code>HttpContext.User</code></td></tr>
 <tr><td><strong>Authorization</strong></td><td><em>What may you do?</em></td><td>Checks roles, policies, or claims after authentication</td></tr>
 </table><p>In ASP.NET Core they are <strong>separate middleware</strong> — order matters:</p><pre><code>app.UseAuthentication();   // first — identify the user
-app.UseAuthorization();    // second — enforce access rules</code></pre><p><strong>401 Unauthorized</strong> = not authenticated. <strong>403 Forbidden</strong> = authenticated but not allowed.</p><h3>Authentication mechanisms (typical .NET projects)</h3><table>
+app.UseAuthorization();    // second — enforce access rules</code></pre><p><strong>401 Unauthorized</strong> = not authenticated. <strong>403 Forbidden</strong> = authenticated but not allowed.</p><h3>JWT vs server-side session (common follow-up)</h3><table>
+<tr><th></th><th>JWT</th><th>Server session</th></tr>
+<tr><td><strong>State</strong></td><td>Token carries claims; stateless by default</td><td>Session ID in cookie; data on server</td></tr>
+<tr><td><strong>Best for</strong></td><td>REST APIs, SPAs, mobile</td><td>MVC/Razor traditional web apps</td></tr>
+<tr><td><strong>Scale-out</strong></td><td>Any server validates token</td><td>Needs Redis/SQL shared session store</td></tr>
+<tr><td><strong>Revocation</strong></td><td>Harder — short TTL or blocklist</td><td>Easy — delete session server-side</td></tr>
+</table><p><strong>Related:</strong> Section 2 item 34 — Sessions in .NET Core; Section 6 item 2 — Generate JWT in Web API.</p><h3>Authentication mechanisms (typical .NET projects)</h3><table>
 <tr><th>Mechanism</th><th>Best for</th><th>How it works</th></tr>
 <tr><td><strong>JWT Bearer</strong></td><td>REST APIs, SPAs, mobile</td><td>Client sends <code>Authorization: Bearer &lt;token&gt;</code>; stateless</td></tr>
 <tr><td><strong>Cookie authentication</strong></td><td>MVC, Razor Pages</td><td>Encrypted cookie after login form; server session</td></tr>
@@ -1993,7 +2010,19 @@ var users = await Task.WhenAll(tasks);</code></pre><h3>How It Works</h3><ul>
 <tr><td>Dictionary&lt;K,V&gt;</td><td>Fast key-value lookup</td></tr>
 <tr><td>HashSet&lt;T&gt;</td><td>Unique items, set operations</td></tr>
 <tr><td>Queue/Stack</td><td>Processing pipelines</td></tr>
-</table><pre><code>var cache = new Dictionary&lt;string, User&gt;();
+</table><h3>Queue vs Stack</h3><table>
+<tr><th></th><th>Queue</th><th>Stack</th></tr>
+<tr><td><strong>Order</strong></td><td><strong>FIFO</strong> — First In, First Out</td><td><strong>LIFO</strong> — Last In, First Out</td></tr>
+<tr><td><strong>Operations</strong></td><td>Enqueue (rear), Dequeue (front)</td><td>Push (top), Pop (top)</td></tr>
+<tr><td><strong>Analogy</strong></td><td>Line at a ticket counter</td><td>Stack of plates</td></tr>
+<tr><td><strong>C# type</strong></td><td><code>Queue&lt;T&gt;</code></td><td><code>Stack&lt;T&gt;</code></td></tr>
+</table><pre><code>var queue = new Queue&lt;int&gt;();
+queue.Enqueue(1); queue.Enqueue(2);
+queue.Dequeue(); // returns 1
+
+var stack = new Stack&lt;int&gt;();
+stack.Push(1); stack.Push(2);
+stack.Pop(); // returns 2</code></pre><pre><code>var cache = new Dictionary&lt;string, User&gt;();
 cache["u-1"] = new User { Id = 1 };</code></pre><h3>Key Points</h3><ul>
 <li>Prefer generic collections over non-generic types.</li>
 <li>Pick structure based on lookup and ordering needs.</li>
@@ -2327,11 +2356,18 @@ public class MailService
 </ul><h3>Interview Answer</h3><p>The options pattern maps configuration to typed settings classes injected through IOptions. It centralizes config access, enables validation, and with IOptionsMonitor I can react to configuration changes cleanly instead of magic strings throughout the codebase.</p></div>
 <div class="answer-pane" id="q_69"><h2>Hosted Services in ASP.NET Core</h2><p><code>IHostedService</code> and <code>BackgroundService</code> run long-running tasks inside the generic host alongside Kestrel—timers, queue consumers, or startup initialization. The host starts them on application boot and stops them gracefully on shutdown.</p><p>Register with <code>AddHostedService&lt;T&gt;()</code>. Use <code>CancellationToken</code> from <code>ExecuteAsync</code> to respect shutdown signals.</p><pre><code>public class SyncWorker : BackgroundService
 {
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    public SyncWorker(IServiceScopeFactory scopeFactory)
+        =&gt; _scopeFactory = scopeFactory;
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await DoWorkAsync(stoppingToken);
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();
+            await DoWorkAsync(db, stoppingToken);
             await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
         }
     }
@@ -2339,7 +2375,7 @@ public class MailService
 <li>Runs inside same process as the web app.</li>
 <li>BackgroundService simplifies loop-based workers.</li>
 <li>Respect cancellation for clean shutdown.</li>
-</ul><h3>Interview Answer</h3><p>Hosted services are background tasks managed by the ASP.NET Core host via IHostedService or BackgroundService. I use them for periodic sync or queue polling inside the app process, always honoring CancellationToken so shutdown is graceful.</p></div>
+</ul><h3>Interview Answer</h3><p>Hosted services are background tasks managed by the ASP.NET Core host via IHostedService or BackgroundService. I use them for periodic sync or queue polling inside the app process, always honoring CancellationToken so shutdown is graceful. I use <code>IServiceScopeFactory</code> inside the worker when I need scoped services like DbContext.</p></div>
 <div class="answer-pane" id="q_70"><h2>Background Jobs in .NET</h2><p>Background jobs process work asynchronously outside the HTTP request path—emails, reports, imports. In-process options include <code>BackgroundService</code> and <code>Task.Run</code> (limited). Production systems often use Hangfire, Azure Functions, or message queues for reliability and retries.</p><p>Fire-and-forget inside requests risks lost work if the process crashes. Durable queues with idempotent handlers scale better.</p><table>
 <tr><th>Approach</th><th>Pros</th><th>Cons</th></tr>
 <tr><td>BackgroundService</td><td>Simple, in-process</td><td>Dies with app</td></tr>
@@ -2819,6 +2855,36 @@ Server: PROD-ETL-01</code></pre><h3>4. Logging + monitoring table (enterprise)</
 <li><strong>OLE DB Destination</strong> — valid rows → <code>stg.AccountDaily</code> (Fast Load)</li>
 <li><strong>OLE DB Destination (error path)</strong> — rejected rows → <code>stg.AccountDaily_Reject</code></li>
 </ul><p>Control Flow decides <strong>when</strong> each step runs and handles failure/retry. Data Flow handles <strong>how</strong> millions of account rows are cleansed and loaded efficiently.</p><h3>Common interview follow-ups</h3><p><strong>Q: Can you put a SQL query in Control Flow?</strong></p><p>Yes — Execute SQL Task runs T-SQL (truncate, merge, audit). It does not pipe result rows into transformations; use Execute SQL Task + result set into variable + Foreach Loop, or move row processing into Data Flow.</p><p><strong>Q: What happens if a Data Flow Task fails?</strong></p><p>The Data Flow Task fails in Control Flow. Precedence constraints route to failure path (logging, email, checkpoint restart). Rows already committed to destination depend on transaction/batch settings; uncommitted batches may roll back.</p><p><strong>Q: Why use staging tables?</strong></p><p>Separate Control Flow (bulk load to staging via Data Flow) from Control Flow (set-based merge in SQL). Easier restart, reconciliation, and performance tuning.</p><p><strong>Q: Sync vs async transforms?</strong></p><p>Synchronous transforms (Derived Column, Copy Column) are cheaper — they modify the current buffer. Asynchronous transforms (Sort, Aggregate, Lookup with partial cache issues, Merge Join) may block and use extra memory; they are common performance bottlenecks.</p><h3>One-line strong interview answer</h3><p>Control Flow orchestrates package workflow — tasks, loops, precedence, and error handling — while Data Flow is the row-level ETL pipeline inside a Data Flow Task with sources, transforms, destinations, and error outputs. In a banking nightly load, Control Flow loops files, truncates staging, runs the Data Flow, reconciles counts, and merges to the warehouse; Data Flow handles extract, cleanse, lookup, and split valid vs rejected account rows.</p></div>
+<div class="answer-pane" id="q_quick_highest_in_array"><h2>How to Find the Highest Integer in an Array?</h2><p>Common coding and C# fundamentals interview question.</p><h3>Loop approach — O(n)</h3><pre><code>int FindMax(int[] numbers)
+{
+    if (numbers.Length == 0)
+        throw new ArgumentException("Array is empty");
+
+    int max = numbers[0];
+    for (int i = 1; i &lt; numbers.Length; i++)
+    {
+        if (numbers[i] &gt; max)
+            max = numbers[i];
+    }
+    return max;
+}</code></pre><h3>LINQ</h3><pre><code>int max = numbers.Max();</code></pre><h3>Interview Answer</h3><p>I scan the array once keeping track of the current maximum — O(n) time. In C# I can also use <code>numbers.Max()</code> for clarity on in-memory collections.</p></div>
+<div class="answer-pane" id="q_quick_pagination_alternatives"><h2>Is Skip/Take (OFFSET) the Only Way to Paginate?</h2><p><strong>No.</strong> OFFSET pagination is the most common approach, but not the only one — and not always the best for very large tables.</p><h3>1. OFFSET / FETCH (Skip / Take)</h3><pre><code>SELECT * FROM Orders
+ORDER BY OrderId
+OFFSET @Skip ROWS FETCH NEXT @PageSize ROWS ONLY;</code></pre><p><strong>Pros:</strong> simple, supports jumping to page N.<br/>
+<strong>Cons:</strong> deep pages slow down (database still scans skipped rows).</p><h3>2. Keyset / cursor pagination</h3><pre><code>SELECT * FROM Orders
+WHERE OrderId &gt; @LastSeenOrderId
+ORDER BY OrderId
+FETCH NEXT @PageSize ROWS ONLY;</code></pre><p><strong>Pros:</strong> stable performance for "next page" / infinite scroll.<br/>
+<strong>Cons:</strong> harder to jump to arbitrary page numbers.</p><h3>3. API patterns</h3><ul>
+<li>Page number + size → maps to OFFSET</li>
+<li>Cursor token from previous response → keyset pagination</li>
+</ul><p><strong>Related:</strong> See also REST API and EF Core topics — filter at database level before paging.</p><h3>Interview Answer</h3><p>Skip/Take is the simplest pagination but not the only option. For large datasets I prefer keyset pagination using the last seen ID. I choose based on whether the UI needs random page jumps or infinite scroll.</p></div>
+<div class="answer-pane" id="q_quick_dotnet_vs_angular_preference"><h2>If There Are .NET and Angular Projects, Which Would You Prefer?</h2><p>Behavioral interview question — answer honestly, then show flexibility.</p><h3>Strong answer structure</h3><ol>
+<li>State your core strength (.NET API, SQL, auth, deployment — or Angular UI)</li>
+<li>Show full-stack awareness (DTOs, JWT flow, HttpClient, CORS)</li>
+<li>Align with the role — prefer the project that matches job focus</li>
+<li>Offer to support both when the team needs it</li>
+</ol><div class="interview-tip"><p>"I'd prefer the <strong>.NET API project</strong> because that's where I deliver most value — REST design, EF Core, security, and deployment. I still work with Angular teams on API contracts and integration, and I can take UI tasks when needed."</p></div><h3>Interview Answer</h3><p>I lead with my strongest stack, explain I understand both sides of the integration, and say I'd prefer the project where I can deliver the most impact while still supporting the other when needed.</p></div>
 <div class="answer-pane" id="q_cicd_pipeline"><h2>CI/CD Pipeline</h2><p>A <strong>CI/CD pipeline</strong> is an automated workflow used in software development to <strong>build</strong>, <strong>test</strong>, and <strong>deploy</strong> code changes quickly and reliably.</p><h3>CI = Continuous Integration</h3><p>Developers frequently merge code into a shared repository. Whenever new code is pushed:</p><ol>
 <li>Code is compiled / built</li>
 <li>Automated tests run</li>
@@ -3554,9 +3620,15 @@ app.Run();</code></pre><h3>appsettings.json</h3><pre><code>{
 <tr><td>Middleware</td><td>Traffic manager</td></tr>
 <tr><td>Controller</td><td>Business logic</td></tr>
 </table><h3>Interview Answer</h3><p>Kestrel is ASP.NET Core's default cross-platform web server that listens for HTTP/HTTPS/WebSocket traffic and hands requests to the middleware pipeline. In development it runs directly; in production it usually sits behind IIS, Nginx, or Apache as a reverse proxy for SSL, security, and load balancing while Kestrel hosts the application process.</p></div></div>
-<div class="answer-pane" id="q_aspnet_q02"><h2>Create a New Web API Project in .NET Core</h2><p><strong>CLI:</strong></p><pre><code>dotnet new webapi -n MyApi
+<div class="answer-pane" id="q_aspnet_q02"><h2>Create a Web API Project &amp; What "Starting an App" Means</h2><h3>Create project</h3><pre><code>dotnet new webapi -n MyApi
 cd MyApi
-dotnet run</code></pre><p><strong>Visual Studio:</strong> Create New Project â†’ ASP.NET Core Web API â†’ choose .NET version â†’ enable OpenAPI/Swagger if needed.</p><h3>Interview Answer</h3><p>I use <code>dotnet new webapi</code> for quick setup or Visual Studio for solution structure. Then configure services and middleware in <code>Program.cs</code> and run with <code>dotnet run</code>.</p></div>
+dotnet run</code></pre><p>Visual Studio: Create New Project → ASP.NET Core Web API → choose .NET version → enable OpenAPI if needed.</p><h3>What does "starting an app" mean?</h3><p>Launching the host process so it loads configuration, builds DI, configures middleware, and listens for requests (or runs background workers).</p><ol>
+<li><code>WebApplication.CreateBuilder(args)</code> — load config, create service collection</li>
+<li><code>builder.Services.Add...</code> — register DbContext, controllers, JWT, etc.</li>
+<li><code>builder.Build()</code> — build the app and pipeline</li>
+<li><code>app.Use...</code> / <code>app.MapControllers()</code> — middleware and endpoints</li>
+<li><code>app.Run()</code> — start Kestrel and accept HTTP requests</li>
+</ol><p><strong>Related:</strong> Section 2 item 4 — Program.cs vs Startup.cs (.NET 6+).</p><h3>Interview Answer</h3><p>I create APIs with dotnet new webapi. Starting the app means bootstrapping the host — config, DI, middleware, then Run() so Kestrel listens for requests.</p></div>
 <div class="answer-pane" id="q_aspnet_q05"><h2>Saving Configuration Settings in ASP.NET Core</h2><p>ASP.NET Core uses a unified <strong>configuration system</strong> (<code>IConfiguration</code>) that merges multiple sources. Later sources override earlier ones.</p><h3>Common configuration sources (techniques)</h3><table>
 <tr><th>Technique</th><th>Use</th></tr>
 <tr><td><code>appsettings.json</code></td><td>Default settings for all environments</td></tr>
@@ -3867,45 +3939,22 @@ throw new NotFoundException("User not found");</code></pre><h3>Real-World Error 
 <tr><td>Consistent API responses</td><td>Inconsistent handling</td></tr>
 <tr><td>Global handling</td><td>Local only</td></tr>
 </table><div class="interview-tip"><h3>Interview One-Liner</h3><p>In ASP.NET Core APIs, exception handling is commonly implemented using global middleware that catches unhandled exceptions, logs them, and returns standardized HTTP error responses with correct status codes—without exposing sensitive details in production.</p></div></div>
-<div class="answer-pane" id="q_aspnet_q12"><h2>Program.cs vs Startup.cs in ASP.NET Core</h2><h3>Startup.cs (.NET Core 3.1 and earlier)</h3><p>Two-class pattern:</p><ul>
-<li><code>Program.cs</code> — builds and runs the host.</li>
-<li><code>Startup.cs</code> — <code>ConfigureServices(IServiceCollection)</code> registers DI; <code>Configure(IApplicationBuilder)</code> sets up middleware pipeline.</li>
-</ul><pre><code>public class Startup
-{
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddControllers();
-        services.AddDbContext&lt;AppDbContext&gt;(...);
-    }
-
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        app.UseRouting();
-        app.UseAuthentication();
-        app.UseAuthorization();
-        app.UseEndpoints(endpoints =&gt; endpoints.MapControllers());
-    }
-}</code></pre><h3>Program.cs (.NET 6+ minimal hosting)</h3><p><code>Startup.cs</code> was merged into a single <code>Program.cs</code> using top-level statements and <code>WebApplication</code>:</p><pre><code>var builder = WebApplication.CreateBuilder(args);
-
-// Was ConfigureServices
+<div class="answer-pane" id="q_aspnet_q12"><h2>.NET 6 vs Previous Versions &amp; Program.cs vs Startup.cs</h2><h3>.NET 6 vs earlier (.NET Core 3.1 / .NET 5 / Framework)</h3><table>
+<tr><th>Area</th><th>Previous</th><th>.NET 6+</th></tr>
+<tr><td>Hosting</td><td>Program + Startup classes</td><td>Minimal hosting — usually one Program.cs</td></tr>
+<tr><td>Platform</td><td>.NET Framework Windows-only vs .NET Core</td><td>Unified cross-platform .NET</td></tr>
+<tr><td>APIs</td><td>Controllers common</td><td>Minimal APIs + controllers</td></tr>
+<tr><td>Performance</td><td>Good</td><td>Improved runtime, faster startup</td></tr>
+</table><h3>Startup.cs (.NET Core 3.1 and earlier)</h3><ul>
+<li><code>ConfigureServices</code> — register DI</li>
+<li><code>Configure</code> — middleware pipeline</li>
+</ul><h3>Program.cs (.NET 6+ minimal hosting)</h3><pre><code>var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddDbContext&lt;AppDbContext&gt;(...);
-
 var app = builder.Build();
-
-// Was Configure
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-app.Run();</code></pre><h3>Comparison</h3><table>
-<tr><th></th><th>Startup.cs era</th><th>Program.cs (.NET 6+)</th></tr>
-<tr><td>Files</td><td>Program + Startup</td><td>Usually Program only</td></tr>
-<tr><td>Service registration</td><td><code>ConfigureServices</code></td><td><code>builder.Services</code></td></tr>
-<tr><td>Middleware pipeline</td><td><code>Configure</code></td><td><code>app.Use...</code> after <code>Build()</code></td></tr>
-<tr><td>Boilerplate</td><td>More ceremony</td><td>Less, clearer flow</td></tr>
-</table><p>You can still use a <code>Startup</code> class in .NET 6+ if needed, but the default template uses unified <code>Program.cs</code>.</p><h3>Interview Answer</h3><p>Older ASP.NET Core split host bootstrapping (Program) from app setup (Startup with ConfigureServices and Configure). From .NET 6 onward, minimal hosting combines both in Program.cs: register services on the builder, build the app, configure middleware, map endpoints, and run. Same responsibilities, simpler structure.</p></div>
+app.Run();</code></pre><h3>Interview Answer</h3><p>.NET 6 unified the platform with minimal Program.cs hosting instead of separate Startup. Same responsibilities — register services, configure middleware, map endpoints — with less boilerplate and better performance than .NET Core 3.1.</p></div>
 <div class="answer-pane" id="q_aspnet_q15"><h2>Health Checks in .NET Core</h2><pre><code>builder.Services.AddHealthChecks()
     .AddSqlServer(connectionString)
     .AddRedis(redisConnection);
@@ -4322,14 +4371,13 @@ public class Square : Rectangle
 }</code></pre><p>Code that sets width and height independently fails when given a <code>Square</code>.</p><h3>Good example</h3><pre><code>public interface IShape { int Area(); }
 public class Rectangle : IShape { /* width, height */ }
 public class Square : IShape { /* side */ }</code></pre><p>Or use small interfaces (<code>IFlyingBird</code>, <code>IBird</code>) so substitutable types honor the same contract.</p><h3>Interview Answer</h3><p>LSP means any derived class should work wherever the base is used without surprising behavior. I avoid forcing subclasses to override methods they cannot support; I prefer composition or segregated interfaces instead of brittle inheritance.</p></div>
-<div class="answer-pane" id="q_di_scoped_in_singleton"><h2>Can We Inject a Scoped Service into a Singleton?</h2><p><strong>Not directly.</strong> A singleton lives for the entire application lifetime, but a scoped service (e.g. <code>DbContext</code>) exists only for one request. Holding a scoped instance inside a singleton causes:</p><ul>
-<li><strong>Stale data</strong> — same DbContext reused across users/requests</li>
-<li><strong>Memory leaks</strong> — disposed context still referenced</li>
-<li><strong>Thread-safety issues</strong> — concurrent requests share one context</li>
-</ul><p>ASP.NET Core DI throws at startup if it detects captive dependency (scoped → singleton).</p><h3>Wrong</h3><pre><code>public class CacheWarmupService  // Singleton
-{
-    public CacheWarmupService(AppDbContext db) { } // INVALID: scoped in singleton
-}</code></pre><h3>Correct: resolve scoped inside a scope</h3><pre><code>public class CacheWarmupService : IHostedService
+<div class="answer-pane" id="q_di_scoped_in_singleton"><h2>Why Is DbContext Scoped? Can Scoped Be Injected into Singleton?</h2><h3>Why DbContext is scoped (not singleton)</h3><ul>
+<li><strong>One unit of work per request</strong> — tracks entities for that request only</li>
+<li><strong>Not thread-safe</strong> — concurrent requests must not share one DbContext</li>
+<li><strong>Dispose after request</strong> — connections and change tracker released properly</li>
+<li><strong>Wrong data / memory leaks</strong> if a singleton captured one context forever</li>
+</ul><pre><code>services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
+    options.UseSqlServer(connectionString)); // scoped by default</code></pre><h3>Can you inject scoped into singleton?</h3><p><strong>Not directly.</strong> ASP.NET Core DI blocks captive dependencies (scoped inside singleton) when detected.</p><h3>Correct pattern — create a scope</h3><pre><code>public class CacheWarmupService : IHostedService
 {
     private readonly IServiceScopeFactory _scopeFactory;
 
@@ -4342,7 +4390,7 @@ public class Square : IShape { /* side */ }</code></pre><p>Or use small interfac
         var db = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();
         await db.Products.CountAsync(ct);
     }
-}</code></pre><p>Use <code>IServiceScopeFactory</code> (or <code>IServiceProvider.CreateScope()</code>) to create a short-lived scope, resolve scoped services, then dispose the scope.</p><h3>Interview Answer</h3><p>No—you should not inject scoped into singleton directly. The singleton would capture one request’s scoped instance forever. Use <code>IServiceScopeFactory</code> to create a scope when you need scoped work from a singleton or background service.</p></div>
+}</code></pre><p><strong>Related:</strong> Section 2 item 29 — Transient, Scoped, Singleton; Section 2 item 39 — BackgroundService.</p><h3>Interview Answer</h3><p>DbContext is scoped because it represents one unit of work per request and is not thread-safe. You cannot inject scoped services into a singleton directly — use IServiceScopeFactory to create a short-lived scope in background services or singletons.</p></div>
 <div class="answer-pane" id="q_scenario_mall_billing"><h2>Scenario: Mall Billing with Multiple Payment Options</h2><p><strong>Problem:</strong> Customer buys items and pays at billing. Today: Credit Card, Debit Card, Voucher. Tomorrow: Cash, Coupons. Design so <strong>adding a payment type does not change existing code</strong> (Open/Closed + Strategy + DIP).</p><h3>Recommended design (minimal change for new payments)</h3><table>
 <tr><th>Type</th><th>Name</th><th>Role</th></tr>
 <tr><td>Interface</td><td><code>IPaymentMethod</code></td><td>Contract: <code>bool CanHandle(PaymentType type)</code>, <code>PaymentResult Pay(Bill bill)</code></td></tr>
@@ -5494,7 +5542,42 @@ export class UserListComponent { }
 <li><strong>Server-side rendering (SSR)</strong> / prerender for faster first paint when needed.</li>
 <li><strong>Http caching</strong> and pagination instead of loading huge datasets.</li>
 </ul><h3>Interview Answer</h3><p>I profile with Chrome DevTools and Angular DevTools, then apply OnPush, trackBy, lazy routes, and smaller bundles. I move expensive logic out of templates, paginate API data, and use virtual scroll for large lists.</p></div>
-<div class="answer-pane" id="q_angular_observable_vs_promise"><h2>Observable vs Promise</h2><table>
+<div class="answer-pane" id="q_angular_lazy_loading"><h2>What Is Lazy Loading in Angular?</h2><p>In Angular, <strong>lazy loading</strong> means loading a feature module or component <strong>only when the user navigates to that route</strong> — not in the initial bundle.</p><h3>Why use it?</h3><ul>
+<li>Smaller first download — faster initial load</li>
+<li>Admin or reporting features load only when needed</li>
+<li>Better performance on slow networks</li>
+</ul><h3>Route lazy loading (NgModule)</h3><pre><code>const routes: Routes = [
+  {
+    path: 'admin',
+    loadChildren: () =&gt; import('./admin/admin.module').then(m =&gt; m.AdminModule)
+  }
+];</code></pre><h3>Standalone components (modern Angular)</h3><pre><code>{
+  path: 'reports',
+  loadComponent: () =&gt; import('./reports/reports.component')
+    .then(c =&gt; c.ReportsComponent)
+}</code></pre><p><strong>Note:</strong> This is route/code lazy loading — not EF Core lazy loading. See also <strong>Angular performance</strong> (Section 8) for OnPush, trackBy, and bundle tips.</p><h3>Interview Answer</h3><p>Lazy loading defers loading a feature until its route is visited, reducing initial bundle size. I use loadChildren or loadComponent in routing so heavy modules like admin aren't downloaded upfront.</p></div><div class="answer-pane" id="q_angular_http_client"><h2>How Do You Call APIs in Angular?</h2><p>Use <strong>HttpClient</strong> from <code>@angular/common/http</code>. It returns <strong>Observables</strong>, supports typed responses, interceptors, and error handling.</p><h3>Setup</h3><pre><code>import { provideHttpClient } from '@angular/common/http';
+
+providers: [provideHttpClient()]</code></pre><h3>Service</h3><pre><code>@Injectable({ providedIn: 'root' })
+export class CustomerService {
+  constructor(private http: HttpClient) {}
+
+  getCustomers(): Observable&lt;Customer[]&gt; {
+    return this.http.get&lt;Customer[]&gt;('/api/customers');
+  }
+
+  createCustomer(customer: Customer): Observable&lt;Customer&gt; {
+    return this.http.post&lt;Customer&gt;('/api/customers', customer);
+  }
+}</code></pre><h3>Component</h3><pre><code>this.customerService.getCustomers().subscribe({
+  next: data =&gt; this.customers = data,
+  error: err =&gt; this.handleError(err)
+});
+
+// Or in template: customers$ | async</code></pre><h3>Best practices</h3><ul>
+<li>HTTP interceptor for JWT Bearer token and 401 refresh</li>
+<li><code>environment.apiUrl</code> for base URL</li>
+<li>Async pipe to avoid subscribe leaks</li>
+</ul><p><strong>Related:</strong> Section 8 — HTTP Interceptor, JWT storage, Observable vs Promise.</p><h3>Interview Answer</h3><p>I inject HttpClient in a service, call get/post with typed Observables, and use subscribe or async pipe in the component. I add an interceptor to attach JWT tokens and handle errors globally.</p></div><div class="answer-pane" id="q_angular_observable_vs_promise"><h2>Observable vs Promise</h2><table>
 <tr><th></th><th>Promise</th><th>Observable</th></tr>
 <tr><td><strong>Values</strong></td><td>Single value</td><td>Zero to many over time</td></tr>
 <tr><td><strong>Eager/Lazy</strong></td><td>Eager (runs immediately)</td><td>Lazy (runs on subscribe)</td></tr>
@@ -6422,6 +6505,10 @@ string apiKey = secret.Value.Value;</code></pre><h3>Key Points</h3><ul>
 <li><code>DefaultAzureCredential</code> works locally (Visual Studio / Azure CLI) and in Azure.</li>
 <li>Never commit Key Vault URLs with secrets; reference vault name in App Service settings.</li>
 <li>Rotate secrets in Key Vault; apps pick up changes on restart or with reload config.</li>
+</ul><h3>Do you fetch Key Vault secrets on every request?</h3><p><strong>No.</strong> Secrets load into <strong>IConfiguration at startup</strong> via <code>AddAzureKeyVault</code>. The app reads them through <code>IConfiguration</code> or <code>IOptions</code> from memory — not a Key Vault HTTP call per API request.</p><ul>
+<li><strong>Startup load</strong> — merged into configuration once</li>
+<li><strong>IOptionsMonitor</strong> — optional reload on rotation</li>
+<li><strong>Direct SDK</strong> — only for special cases; cache the result</li>
 </ul><h3>Interview Answer</h3><p>I store connection strings and API keys in Azure Key Vault, enable managed identity on the App Service, and add AddAzureKeyVault in Program.cs with DefaultAzureCredential. Configuration binds secrets like normal appsettings so services use IOptions without hard-coded credentials.</p></div>
 <div class="answer-pane" id="q_azure_api_troubleshooting"><h2>Handling API Issues from the Cloud — Analysis Steps</h2><p>When a cloud-hosted API fails or slows down, troubleshoot <strong>layer by layer</strong> with evidence — logs, metrics, and traces — not guesses.</p><h3>Step-by-step analysis</h3><ol>
 <li><strong>Reproduce &amp; scope</strong> — Which endpoint, environment (dev/staging/prod), error code, time window, affected users?</li>

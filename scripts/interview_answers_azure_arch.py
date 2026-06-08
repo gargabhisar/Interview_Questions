@@ -88,6 +88,13 @@ string apiKey = secret.Value.Value;</code></pre>
 <li>Never commit Key Vault URLs with secrets; reference vault name in App Service settings.</li>
 <li>Rotate secrets in Key Vault; apps pick up changes on restart or with reload config.</li>
 </ul>
+<h3>Do you fetch Key Vault secrets on every request?</h3>
+<p><strong>No.</strong> Secrets load into <strong>IConfiguration at startup</strong> via <code>AddAzureKeyVault</code>. The app reads them through <code>IConfiguration</code> or <code>IOptions</code> from memory — not a Key Vault HTTP call per API request.</p>
+<ul>
+<li><strong>Startup load</strong> — merged into configuration once</li>
+<li><strong>IOptionsMonitor</strong> — optional reload on rotation</li>
+<li><strong>Direct SDK</strong> — only for special cases; cache the result</li>
+</ul>
 <h3>Interview Answer</h3>
 <p>I store connection strings and API keys in Azure Key Vault, enable managed identity on the App Service, and add AddAzureKeyVault in Program.cs with DefaultAzureCredential. Configuration binds secrets like normal appsettings so services use IOptions without hard-coded credentials.</p>""",
 

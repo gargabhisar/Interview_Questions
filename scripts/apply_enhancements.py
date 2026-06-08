@@ -23,6 +23,8 @@ from interview_answers_azure_arch import ANSWERS as AZURE_ARCH
 from interview_answers_sql_server import ANSWERS as SQL_SERVER
 from interview_answers_devops import ANSWERS as DEVOPS
 from interview_answers_ssis import ANSWERS as SSIS
+from interview_answers_quick import ANSWERS as QUICK
+from interview_answers_angular import ANSWERS as ANGULAR
 
 HTML_PATH = REPO_ROOT / "Interview_Questions.html"
 
@@ -37,6 +39,8 @@ ANSWERS.update(AZURE_ARCH)
 ANSWERS.update(SQL_SERVER)
 ANSWERS.update(DEVOPS)
 ANSWERS.update(SSIS)
+ANSWERS.update(QUICK)
+ANSWERS.update(ANGULAR)
 
 EXTRA_CSS = """
 .interview-tip {
