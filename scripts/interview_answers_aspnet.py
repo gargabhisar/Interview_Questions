@@ -507,4 +507,106 @@ app.MapControllers();
 app.Run();</code></pre>
 <h3>Interview Answer</h3>
 <p>.NET 6 unified the platform with minimal Program.cs hosting instead of separate Startup. Same responsibilities — register services, configure middleware, map endpoints — with less boilerplate and better performance than .NET Core 3.1.</p>""",
+
+"q_aspnet_q18": """<h2>Minimal APIs vs Controllers</h2>
+<p>In .NET, a <strong>Minimal API</strong> is a lightweight way to build APIs with very little setup and boilerplate code, introduced in <strong>.NET 6</strong>.</p>
+<p>Instead of creating controllers, <code>Startup.cs</code>, and separate routing classes, you define APIs directly in <code>Program.cs</code>.</p>
+<h3>Basic example</h3>
+<pre><code>var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.MapGet("/", () =&gt; "Hello World!");
+
+app.MapGet("/user/{id}", (int id) =&gt;
+{
+    return new { Id = id, Name = "Abhisar" };
+});
+
+app.Run();</code></pre>
+<h3>Features of Minimal API</h3>
+<ul>
+<li>Less code</li>
+<li>Faster development</li>
+<li>Better performance</li>
+<li>Easy for microservices and small APIs</li>
+<li>Supports dependency injection</li>
+<li>Supports middleware</li>
+<li>Supports authentication &amp; authorization</li>
+</ul>
+<h3>HTTP methods example</h3>
+<p><strong>GET</strong></p>
+<pre><code>app.MapGet("/products", () =&gt;
+{
+    return products;
+});</code></pre>
+<p><strong>POST</strong></p>
+<pre><code>app.MapPost("/products", (Product product) =&gt;
+{
+    products.Add(product);
+    return Results.Created($"/products/{product.Id}", product);
+});</code></pre>
+<p><strong>PUT</strong></p>
+<pre><code>app.MapPut("/products/{id}", (int id, Product updatedProduct) =&gt;
+{
+    var product = products.FirstOrDefault(x =&gt; x.Id == id);
+
+    if (product == null)
+        return Results.NotFound();
+
+    product.Name = updatedProduct.Name;
+
+    return Results.Ok(product);
+});</code></pre>
+<p><strong>DELETE</strong></p>
+<pre><code>app.MapDelete("/products/{id}", (int id) =&gt;
+{
+    var product = products.FirstOrDefault(x =&gt; x.Id == id);
+
+    if (product == null)
+        return Results.NotFound();
+
+    products.Remove(product);
+
+    return Results.Ok();
+});</code></pre>
+<h3>Dependency injection example</h3>
+<pre><code>app.MapGet("/employees", (IEmployeeService service) =&gt;
+{
+    return service.GetEmployees();
+});</code></pre>
+<h3>Minimal API vs Controller API</h3>
+<table>
+<tr><th>Minimal API</th><th>Controller API</th></tr>
+<tr><td>Less boilerplate</td><td>More structured</td></tr>
+<tr><td>Faster for small apps</td><td>Better for large enterprise apps</td></tr>
+<tr><td>Easy to learn</td><td>Better separation of concerns</td></tr>
+<tr><td>High performance</td><td>Rich MVC features (filters, versioning)</td></tr>
+</table>
+<h3>When to use</h3>
+<p><strong>Use Minimal APIs for:</strong></p>
+<ul>
+<li>Microservices</li>
+<li>Lightweight APIs</li>
+<li>Small projects</li>
+<li>Fast prototyping</li>
+</ul>
+<p><strong>Avoid for:</strong></p>
+<ul>
+<li>Very large enterprise applications</li>
+<li>Complex business logic with many controllers and teams</li>
+</ul>
+<h3>Interview comparison — Minimal API vs Traditional Web API</h3>
+<table>
+<tr><th>Minimal API</th><th>Traditional API</th></tr>
+<tr><td>Routes in Program.cs</td><td>Routes in Controllers</td></tr>
+<tr><td>Minimal code</td><td>More files</td></tr>
+<tr><td>Faster startup</td><td>More structured</td></tr>
+<tr><td>Best for lightweight services</td><td>Best for enterprise apps</td></tr>
+</table>
+<h3>How to create</h3>
+<pre><code>dotnet new web
+dotnet run
+# Test: https://localhost:5001/</code></pre>
+<h3>Interview Answer</h3>
+<p>Minimal APIs (.NET 6+) let me define routes inline in Program.cs with MapGet/MapPost and DI-injected services — great for microservices and small APIs with less boilerplate. Controllers are better for large enterprise APIs that need filters, versioning, and clear separation across many endpoints. I pick based on project size and team structure.</p>""",
 }

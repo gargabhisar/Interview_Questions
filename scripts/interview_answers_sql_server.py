@@ -679,40 +679,93 @@ WHERE OrderDate &gt;= '2024-01-01' AND OrderDate &lt; '2025-01-01';</code></pre>
 
 "q_sql_joins_self_join": """<h2>What Are Joins? What Is a Self Join?</h2>
 <p>A <strong>JOIN</strong> combines rows from two or more tables based on a related column (usually primary key = foreign key).</p>
-<h3>Types of joins</h3>
+<h3>Quick reference</h3>
 <table>
 <tr><th>Join</th><th>Result</th></tr>
 <tr><td><strong>INNER JOIN</strong></td><td>Only matching rows from both tables</td></tr>
-<tr><td><strong>LEFT JOIN</strong> (LEFT OUTER)</td><td>All rows from left table + matches from right (NULL if no match)</td></tr>
+<tr><td><strong>LEFT JOIN</strong></td><td>All rows from left table + matches from right (NULL if no match)</td></tr>
 <tr><td><strong>RIGHT JOIN</strong></td><td>All rows from right + matches from left</td></tr>
 <tr><td><strong>FULL OUTER JOIN</strong></td><td>All rows from both; NULL where no match</td></tr>
 <tr><td><strong>CROSS JOIN</strong></td><td>Cartesian product — every row paired with every row</td></tr>
+<tr><td><strong>SELF JOIN</strong></td><td>Same table joined to itself using aliases</td></tr>
 </table>
-<pre><code>-- INNER JOIN — employees with department names
-SELECT e.Name, d.DeptName
-FROM Employees e
-INNER JOIN Departments d ON e.DeptId = d.DeptId;
+<h3>Sample tables (retail banking)</h3>
+<pre><code>Customer(CustomerId, Name, BranchId)
+Account(AccountId, CustomerId, AccountNumber, Balance)
+Branch(BranchId, BranchName, City)
+Employee(EmployeeId, Name, ManagerId, BranchId)</code></pre>
+<h3>1. INNER JOIN</h3>
+<p><strong>Meaning:</strong> Returns rows only when a match exists in <strong>both</strong> tables.</p>
+<pre><code>-- Customers who have at least one account
+SELECT c.Name, a.AccountNumber, a.Balance
+FROM Customer c
+INNER JOIN Account a ON c.CustomerId = a.CustomerId;</code></pre>
+<p><strong>Real-time scenario:</strong> Monthly statement job — fetch only customers with active accounts to generate PDF statements. Prospects with no account are excluded.</p>
+<h3>2. LEFT JOIN (LEFT OUTER JOIN)</h3>
+<p><strong>Meaning:</strong> Returns <strong>all rows from the left table</strong>, plus matching rows from the right (NULL if no match).</p>
+<pre><code>-- All customers, including those with no account yet
+SELECT c.Name, a.AccountNumber, a.Balance
+FROM Customer c
+LEFT JOIN Account a ON c.CustomerId = a.CustomerId;
 
--- LEFT JOIN — all employees, even without department
-SELECT e.Name, d.DeptName
-FROM Employees e
-LEFT JOIN Departments d ON e.DeptId = d.DeptId;</code></pre>
-<h3>Self join</h3>
-<p>A <strong>self join</strong> joins a table <strong>to itself</strong> — useful for hierarchies (employee → manager) or comparing rows in the same table.</p>
-<pre><code>-- Employee and their manager name (same table, two aliases)
+-- Branches with zero customers (see departments with 0 employees pattern)
+SELECT b.BranchName, c.Name AS CustomerName
+FROM Branch b
+LEFT JOIN Customer c ON c.BranchId = b.BranchId;</code></pre>
+<p><strong>Real-time scenario:</strong> CRM dashboard showing every registered customer and their accounts — if a new customer has not opened an account, account columns show NULL so sales can follow up.</p>
+<h3>3. RIGHT JOIN (RIGHT OUTER JOIN)</h3>
+<p><strong>Meaning:</strong> Returns <strong>all rows from the right table</strong>, plus matches from the left (NULL if no match). Same as LEFT JOIN with tables swapped — LEFT JOIN is used more often.</p>
+<pre><code>-- All accounts, even if customer record is missing (data quality check)
+SELECT c.Name, a.AccountNumber, a.Balance
+FROM Customer c
+RIGHT JOIN Account a ON c.CustomerId = a.CustomerId;</code></pre>
+<p><strong>Real-time scenario:</strong> Data reconciliation after ETL — find accounts in the core system whose customer master row is missing (orphan accounts for investigation).</p>
+<h3>4. FULL OUTER JOIN</h3>
+<p><strong>Meaning:</strong> Returns all rows from <strong>both</strong> tables — matched rows once, unmatched rows with NULL on the missing side.</p>
+<pre><code>-- Compare customers in CRM vs core banking
+SELECT
+    crm.CustomerId AS CrmId,
+    core.CustomerId AS CoreId,
+    COALESCE(crm.Name, core.Name) AS Name
+FROM CrmCustomer crm
+FULL OUTER JOIN CoreCustomer core
+    ON crm.CustomerId = core.CustomerId
+WHERE crm.CustomerId IS NULL OR core.CustomerId IS NULL;</code></pre>
+<p><strong>Real-time scenario:</strong> Nightly sync between marketing CRM and core banking — identify customers present in only one system so ops can merge or fix duplicates.</p>
+<h3>5. CROSS JOIN</h3>
+<p><strong>Meaning:</strong> Every row from table A paired with <strong>every</strong> row from table B (no ON clause). Row count = A × B.</p>
+<pre><code>-- All combinations of account type and branch region (small reference tables only)
+SELECT p.ProductName, b.BranchName
+FROM AccountProduct p
+CROSS JOIN Branch b;</code></pre>
+<p><strong>Real-time scenario:</strong> Generate a product eligibility matrix for a report (every loan product × every branch region). Use only on small tables — accidental CROSS JOIN on large tables causes performance disasters.</p>
+<h3>6. SELF JOIN</h3>
+<p><strong>Meaning:</strong> Joins a table <strong>to itself</strong> using two aliases — common for hierarchies or comparing rows in the same table.</p>
+<pre><code>-- Bank employee and their manager (same Employee table)
 SELECT
     e.Name AS Employee,
     m.Name AS Manager
-FROM Employees e
-LEFT JOIN Employees m ON e.ManagerId = m.EmployeeId;
+FROM Employee e
+LEFT JOIN Employee m ON e.ManagerId = m.EmployeeId;
 
--- Pairs in same department (excluding self)
-SELECT a.Name, b.Name
-FROM Employees a
-INNER JOIN Employees b
-    ON a.DeptId = b.DeptId AND a.EmployeeId &lt; b.EmployeeId;</code></pre>
+-- Find duplicate account numbers entered twice (intra-table comparison)
+SELECT a1.AccountNumber, a1.AccountId, a2.AccountId AS DuplicateId
+FROM Account a1
+INNER JOIN Account a2
+    ON a1.AccountNumber = a2.AccountNumber
+   AND a1.AccountId &lt; a2.AccountId;</code></pre>
+<p><strong>Real-time scenario:</strong> HR org chart report (employee → manager chain) or fraud check finding duplicate account numbers created on the same day in the same branch.</p>
+<h3>Which join to pick?</h3>
+<table>
+<tr><th>Need</th><th>Use</th></tr>
+<tr><td>Only matched records</td><td>INNER JOIN</td></tr>
+<tr><td>All from main table + optional detail</td><td>LEFT JOIN</td></tr>
+<tr><td>Find rows missing on either side</td><td>FULL OUTER JOIN</td></tr>
+<tr><td>Hierarchy or same-table compare</td><td>SELF JOIN</td></tr>
+<tr><td>All combinations (small sets)</td><td>CROSS JOIN</td></tr>
+</table>
 <h3>Interview Answer</h3>
-<p>Joins combine tables on related keys — INNER for matches only, LEFT when you need all rows from the driving table. A self join uses two aliases on the same table, commonly for manager-employee hierarchy or intra-table comparisons.</p>""",
+<p>Joins combine tables on related keys. INNER returns matches only — e.g. customers with accounts. LEFT keeps all customers even without accounts. RIGHT/FULL help reconciliation when data may exist on one side only. CROSS JOIN builds combinations on small reference data. Self join uses two aliases on one table for manager hierarchy or duplicate detection. In banking I use LEFT JOIN for CRM dashboards, INNER for statements, and FULL OUTER for CRM vs core sync.</p>""",
 
 "q_sql_index_when_to_use": """<h2>Use of Clustered and Non-Clustered Indexes</h2>
 <p>Indexes speed up <strong>reads</strong> (SELECT, JOIN, WHERE, ORDER BY) at the cost of slower <strong>writes</strong> (INSERT/UPDATE/DELETE) and extra storage.</p>
