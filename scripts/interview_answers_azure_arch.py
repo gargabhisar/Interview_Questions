@@ -226,4 +226,129 @@ if (!_cache.TryGetValue(key, out Product? p))
 </ul>
 <h3>Interview Answer</h3>
 <p>I cache to cut latency and database load on hot reads using cache-aside with TTLs. IMemoryCache is fine for a single server; when the API scales to multiple instances I use Redis via IDistributedCache so all nodes share the same cache. I invalidate or update cache entries when underlying data changes.</p>""",
+
+"q_arch_large_scale_design": """<h2>Designing a Large-Scale Application for Scalability &amp; Reliability</h2>
+<p>When interviewers ask how you design a large-scale system, a strong answer is structured in <strong>layers</strong> — not random bullet points. I usually organize my response around these pillars:</p>
+<ol>
+<li>Scalability</li>
+<li>Reliability &amp; high availability</li>
+<li>Database design &amp; performance</li>
+<li>Caching strategy</li>
+<li>Asynchronous processing</li>
+<li>Performance optimization</li>
+<li>Security</li>
+<li>Monitoring &amp; logging</li>
+<li>Disaster recovery &amp; backup</li>
+<li>CI/CD &amp; deployment</li>
+</ol>
+<h3>1. Scalability</h3>
+<p>Scalability means the system handles increasing users, traffic, and data <strong>without degrading performance</strong>.</p>
+<h3>Horizontal scaling</h3>
+<p>Instead of making one server bigger (vertical scaling), I prefer <strong>horizontal scaling</strong> — add more application servers behind a load balancer and scale out based on CPU, memory, or request rate.</p>
+<pre><code>Client → Load Balancer → App Server 1
+                      → App Server 2
+                      → App Server N → Database / Cache</code></pre>
+<p><strong>Benefits:</strong> better traffic distribution, no single server bottleneck, easier failover when one node dies.</p>
+<h3>Stateless APIs</h3>
+<p>I design APIs as <strong>stateless</strong> whenever possible. Session data should not live only in one server’s memory — use distributed cache (Redis) or token-based auth (JWT) so <strong>any request can hit any server</strong>.</p>
+<h3>Microservices (when needed)</h3>
+<p>For very large domains, split into independently deployable services — e.g. Customer Service, Account Service, Payment Service, Notification Service. Each can scale and deploy independently with better fault isolation.</p>
+<p><strong>Mature interview point:</strong> for smaller systems, microservices add unnecessary complexity — a <strong>modular monolith</strong> is often the better starting point until boundaries are clear.</p>
+<h3>2. Reliability &amp; high availability</h3>
+<p>A scalable system must also <strong>survive failures</strong>.</p>
+<ul>
+<li><strong>Load balancer</strong> — if one app server fails, traffic routes to healthy nodes</li>
+<li><strong>Retry mechanism</strong> — transient API/DB failures retried with backoff (Polly in .NET)</li>
+<li><strong>Circuit breaker</strong> — stop hammering a failing downstream service; prevent cascading failures</li>
+<li><strong>Failover</strong> — database replication, multiple availability zones, warm standby servers</li>
+</ul>
+<h3>3. Database design &amp; performance</h3>
+<p>The database is often the <strong>biggest bottleneck</strong> in large systems.</p>
+<h3>Normalization &amp; denormalization</h3>
+<p>Start with <strong>proper normalization</strong> to avoid redundancy and update anomalies. For heavy read/reporting workloads, apply <strong>selective denormalization</strong> (summary tables, materialized views) where reads dominate writes.</p>
+<h3>Indexing</h3>
+<p>I focus heavily on indexing — clustered index on primary key, non-clustered indexes on frequently filtered/joined columns.</p>
+<pre><code>CREATE NONCLUSTERED INDEX IX_Account_CustomerId
+ON dbo.Account (CustomerId)
+INCLUDE (AccountNumber, Status);</code></pre>
+<p>Without indexes, queries on millions of rows fall back to <strong>full table scans</strong> and become slow under load.</p>
+<h3>Query optimization</h3>
+<p>I avoid <code>SELECT *</code>, nested cursors, and unnecessary joins. I use execution plans, parameterization, proper joins, and pagination:</p>
+<pre><code>SELECT AccountId, AccountNumber, Balance
+FROM dbo.Account
+WHERE CustomerId = @CustomerId
+ORDER BY AccountId
+OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;</code></pre>
+<h3>Database scaling</h3>
+<ul>
+<li><strong>Read replicas</strong> — offload reporting and dashboards from the primary OLTP database</li>
+<li><strong>Partitioning / sharding</strong> — split very large tables by date or region</li>
+<li><strong>Caching</strong> — hot reference data and session state in Redis</li>
+</ul>
+<h3>4. Caching strategy</h3>
+<p>Caching dramatically improves response time and reduces database pressure.</p>
+<ul>
+<li><strong>Application cache</strong> — Redis or IMemoryCache (single node only)</li>
+<li><strong>Cache-aside pattern</strong> — read cache first; on miss, load from DB and store with TTL</li>
+<li><strong>What to cache</strong> — product/catalog data, configuration, branch/lookup tables, user session claims (with invalidation on write)</li>
+</ul>
+<p><strong>Benefits:</strong> fewer DB round-trips, faster API responses, better headroom under peak traffic.</p>
+<h3>5. Asynchronous processing</h3>
+<p>Heavy work should not block the user’s HTTP request.</p>
+<p><strong>Examples:</strong> email alerts, report generation, payment notifications, ETL staging.</p>
+<pre><code>API → Queue (RabbitMQ / Azure Service Bus / Kafka) → Background Worker</code></pre>
+<p><strong>Benefits:</strong> faster API response, independent scaling of workers, natural retry and dead-letter handling.</p>
+<h3>6. Performance optimization</h3>
+<ul>
+<li><strong>CDN</strong> — serve static assets (images, CSS, JS) from edge locations</li>
+<li><strong>Compression</strong> — Gzip/Brotli on API and static responses</li>
+<li><strong>Pagination</strong> — never return unbounded datasets to the client</li>
+<li><strong>Connection pooling</strong> — reuse DB connections; tune pool size under load</li>
+</ul>
+<h3>7. Security</h3>
+<p>Large systems must be secure by design:</p>
+<ul>
+<li>JWT authentication and role-based authorization</li>
+<li>HTTPS everywhere; secrets in Key Vault, not config files</li>
+<li>API rate limiting and input validation</li>
+<li>Parameterized SQL / EF Core — prevent SQL injection</li>
+<li>Encryption at rest and in transit for PII and financial data</li>
+</ul>
+<h3>8. Monitoring &amp; logging</h3>
+<p>You cannot operate what you cannot see.</p>
+<ul>
+<li>Centralized logging (Application Insights, ELK, Splunk)</li>
+<li>Track API response times, error rates, CPU/memory, slow queries</li>
+<li>Alerts on SLO breaches — not just “server is down”</li>
+<li>Distributed tracing with correlation IDs across services</li>
+</ul>
+<h3>9. Disaster recovery &amp; backup</h3>
+<ul>
+<li>Automated database backups with point-in-time recovery</li>
+<li>Geo-redundant storage or multi-region deployment for critical workloads</li>
+<li>Documented RTO/RPO targets and tested restore drills</li>
+</ul>
+<h3>10. CI/CD &amp; deployment</h3>
+<p>For enterprise systems, automated pipelines are essential:</p>
+<ul>
+<li>Build, test, and deploy on every merge</li>
+<li><strong>Blue-green</strong> or <strong>rolling</strong> deployment for zero-downtime releases</li>
+<li>Fast rollback when a release fails health checks</li>
+</ul>
+<h3>Real-world example — PNC retail banking platform</h3>
+<p>When describing this in an interview, I tie the pillars to a concrete domain:</p>
+<ul>
+<li><strong>Stateless APIs</strong> behind Azure Application Gateway / load balancer — account inquiry hits any app node</li>
+<li><strong>Redis</strong> caches branch list, product codes, and session tokens across scaled-out API instances</li>
+<li><strong>SQL Server</strong> with indexes on <code>CustomerId</code>, <code>AccountNumber</code> for fast account lookup; read replica for regulatory reporting dashboards</li>
+<li><strong>Azure Service Bus / RabbitMQ</strong> for async alerts — transaction confirmation SMS/email does not block the transfer API</li>
+<li><strong>Polly</strong> retry + circuit breaker on external payment-network and fraud-check calls</li>
+<li><strong>Application Insights</strong> monitors failed transfers, latency spikes, and dependency timeouts</li>
+<li><strong>Automated backups</strong> and geo-redundant SQL for disaster recovery</li>
+<li><strong>CI/CD pipeline</strong> with staged deploy (DEV → UAT → PROD) and rollback on failed smoke tests</li>
+</ul>
+<h3>Strong closing statement</h3>
+<div class="interview-tip"><p>While designing large-scale systems, I focus on removing bottlenecks, avoiding single points of failure, improving response time, and ensuring the system can scale horizontally while remaining secure and highly available. I start with a modular monolith when appropriate, add microservices and async processing only where the domain justifies the complexity, and always pair scaling with monitoring, backups, and tested recovery.</p></div>
+<h3>Interview Answer</h3>
+<p>I structure large-scale design around scalability, reliability, database performance, caching, async processing, security, monitoring, DR, and CI/CD. I scale APIs horizontally with stateless design and Redis, optimize SQL with indexes and read replicas, offload heavy work to queues, use Polly for resilience on external calls, and enforce observability and automated deployment. In banking, that means fast account lookup under load, async notifications, protected payment integrations, and zero-downtime releases — without over-engineering small systems into microservices too early.</p>""",
 }

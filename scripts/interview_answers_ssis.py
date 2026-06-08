@@ -288,4 +288,82 @@ Server: PROD-ETL-01</code></pre>
 </ul>
 <h3>One-line strong interview answer</h3>
 <p>We implemented automated ETL failure notifications using SQL Server Agent alerts, SSIS OnError event handlers, centralized logging tables, and dynamic email alerts through Database Mail to ensure proactive monitoring and faster issue resolution.</p>""",
+
+"q_ssis_control_data_flow": """<h2>Control Flow vs Data Flow in SSIS</h2>
+<p>Every SSIS package has two distinct layers. Interviewers expect you to explain <strong>what each layer does</strong>, <strong>how they interact</strong>, and <strong>when to use which</strong>.</p>
+<h3>Quick comparison</h3>
+<table>
+<tr><th>Aspect</th><th>Control Flow</th><th>Data Flow</th></tr>
+<tr><td><strong>Purpose</strong></td><td>Orchestrate <strong>when</strong> and <strong>in what order</strong> work runs</td><td>Move and transform <strong>rows</strong> of data</td></tr>
+<tr><td><strong>Unit of work</strong></td><td>Tasks (Execute SQL, File System, Send Mail, etc.)</td><td>Sources, transforms, destinations in a pipeline</td></tr>
+<tr><td><strong>Execution model</strong></td><td>Workflow / precedence constraints</td><td>In-memory buffers, row-by-row or batch processing</td></tr>
+<tr><td><strong>Containers</strong></td><td>Sequence, For Loop, Foreach Loop</td><td>Data Flow Task wraps one pipeline</td></tr>
+<tr><td><strong>Typical use</strong></td><td>Truncate staging, run stored proc, send alert, loop files</td><td>Extract CSV → cleanse → lookup → load warehouse</td></tr>
+</table>
+<h3>Control Flow — orchestration layer</h3>
+<p><strong>Control Flow</strong> defines the <strong>workflow</strong> of the package: which tasks run, in what order, and under what conditions. It does <strong>not</strong> move data rows itself (except indirectly by calling a Data Flow Task).</p>
+<p><strong>Key elements:</strong></p>
+<ul>
+<li><strong>Tasks</strong> — Execute SQL Task, File System Task, Script Task, Send Mail Task, Execute Package Task, Data Flow Task, etc.</li>
+<li><strong>Precedence constraints</strong> — success (green), failure (red), completion (blue); can add expressions for conditional branching</li>
+<li><strong>Containers</strong> — Sequence Container (group tasks), For Loop (counter), Foreach Loop (files, ADO recordset, items in collection)</li>
+<li><strong>Checkpoints</strong> — restart package from last successful task after failure (Control Flow only; Data Flow restarts from beginning of that task)</li>
+<li><strong>Variables &amp; expressions</strong> — drive dynamic file paths, connection strings, loop counters</li>
+<li><strong>Event handlers</strong> — OnError, OnWarning, OnPreExecute at package or task level</li>
+</ul>
+<p><strong>Think of Control Flow as:</strong> the project manager — "truncate staging, then run the load, then call the reconciliation proc, then email ops if anything failed."</p>
+<h3>Data Flow — ETL pipeline layer</h3>
+<p><strong>Data Flow</strong> lives <strong>inside</strong> a Data Flow Task. It is the pipeline that reads rows from a source, applies transformations, and writes to a destination.</p>
+<p><strong>Key elements:</strong></p>
+<ul>
+<li><strong>Sources</strong> — OLE DB Source, Flat File Source, Excel Source, ODBC Source</li>
+<li><strong>Transformations</strong> — Derived Column, Lookup, Conditional Split, Merge Join, Aggregate, Data Conversion, Sort</li>
+<li><strong>Destinations</strong> — OLE DB Destination, Flat File Destination, SQL Server PDW, etc.</li>
+<li><strong>Paths</strong> — connect components; metadata flows left to right</li>
+<li><strong>Buffers</strong> — SSIS loads rows into memory buffers for high-throughput processing (tuned via DefaultBufferSize / DefaultBufferMaxRows)</li>
+<li><strong>Error outputs</strong> — redirect bad rows to a separate path (error column + error code) instead of failing the whole pipeline</li>
+<li><strong>Synchronous vs asynchronous transforms</strong> — sync transforms (Derived Column) modify rows in place; async transforms (Sort, Aggregate, Merge Join) may require new buffers and block downstream until complete</li>
+</ul>
+<p><strong>Think of Data Flow as:</strong> the assembly line — "take account rows, standardize dates, lookup branch code, split valid vs invalid, load warehouse and dead-letter table."</p>
+<h3>How they work together</h3>
+<ol>
+<li>Control Flow runs an <strong>Execute SQL Task</strong> to truncate <code>stg.AccountDaily</code></li>
+<li>Control Flow runs a <strong>Data Flow Task</strong> that extracts, transforms, and loads account rows</li>
+<li>Control Flow runs another <strong>Execute SQL Task</strong> to execute <code>usp_LoadAccountFact</code></li>
+<li>On failure, Control Flow <strong>Event Handler</strong> sends email via Send Mail Task</li>
+</ol>
+<p>The Data Flow Task is just <strong>one task</strong> in Control Flow. Multiple Data Flow Tasks can run in sequence or in parallel (separate precedence branches).</p>
+<h3>PNC Bank ETL example</h3>
+<p><strong>Scenario:</strong> Nightly load of retail account balances from core banking extract into the data warehouse for regulatory and customer reporting.</p>
+<p><strong>Control Flow (orchestration):</strong></p>
+<ul>
+<li>Foreach Loop Container — iterate over daily CSV files dropped by the core system</li>
+<li>Execute SQL Task — log file name and start time to <code>ETL.AuditLog</code></li>
+<li>Data Flow Task — load and transform rows (see below)</li>
+<li>Execute SQL Task — run <code>usp_ReconcileAccountCounts</code> (source count vs loaded count)</li>
+<li>Execute SQL Task — merge staging into <code>dw.AccountBalanceFact</code></li>
+<li>Send Mail Task (OnError handler) — alert ETL ops if reconciliation fails</li>
+</ul>
+<p><strong>Data Flow (inside the Data Flow Task):</strong></p>
+<ul>
+<li><strong>Flat File Source</strong> — read <code>AccountBalance_YYYYMMDD.csv</code></li>
+<li><strong>Data Conversion</strong> — fix decimal and date formats</li>
+<li><strong>Derived Column</strong> — compute <code>LoadDate</code>, normalize account type codes</li>
+<li><strong>Lookup</strong> — match <code>BranchId</code> against <code>dim.Branch</code> (Full Cache for small reference table)</li>
+<li><strong>Conditional Split</strong> — valid rows vs rows with missing branch or invalid balance</li>
+<li><strong>OLE DB Destination</strong> — valid rows → <code>stg.AccountDaily</code> (Fast Load)</li>
+<li><strong>OLE DB Destination (error path)</strong> — rejected rows → <code>stg.AccountDaily_Reject</code></li>
+</ul>
+<p>Control Flow decides <strong>when</strong> each step runs and handles failure/retry. Data Flow handles <strong>how</strong> millions of account rows are cleansed and loaded efficiently.</p>
+<h3>Common interview follow-ups</h3>
+<p><strong>Q: Can you put a SQL query in Control Flow?</strong></p>
+<p>Yes — Execute SQL Task runs T-SQL (truncate, merge, audit). It does not pipe result rows into transformations; use Execute SQL Task + result set into variable + Foreach Loop, or move row processing into Data Flow.</p>
+<p><strong>Q: What happens if a Data Flow Task fails?</strong></p>
+<p>The Data Flow Task fails in Control Flow. Precedence constraints route to failure path (logging, email, checkpoint restart). Rows already committed to destination depend on transaction/batch settings; uncommitted batches may roll back.</p>
+<p><strong>Q: Why use staging tables?</strong></p>
+<p>Separate Control Flow (bulk load to staging via Data Flow) from Control Flow (set-based merge in SQL). Easier restart, reconciliation, and performance tuning.</p>
+<p><strong>Q: Sync vs async transforms?</strong></p>
+<p>Synchronous transforms (Derived Column, Copy Column) are cheaper — they modify the current buffer. Asynchronous transforms (Sort, Aggregate, Lookup with partial cache issues, Merge Join) may block and use extra memory; they are common performance bottlenecks.</p>
+<h3>One-line strong interview answer</h3>
+<p>Control Flow orchestrates package workflow — tasks, loops, precedence, and error handling — while Data Flow is the row-level ETL pipeline inside a Data Flow Task with sources, transforms, destinations, and error outputs. In a banking nightly load, Control Flow loops files, truncates staging, runs the Data Flow, reconciles counts, and merges to the warehouse; Data Flow handles extract, cleanse, lookup, and split valid vs rejected account rows.</p>""",
 }

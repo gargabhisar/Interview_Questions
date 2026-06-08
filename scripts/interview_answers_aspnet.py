@@ -1,4 +1,104 @@
 ANSWERS = {
+"q_auth_mechanisms": """<h2>Authentication and Authorization in .NET Core APIs</h2>
+<h3>Authentication vs authorization</h3>
+<table>
+<tr><th></th><th>Question</th><th>When it runs</th></tr>
+<tr><td><strong>Authentication</strong></td><td><em>Who are you?</em></td><td>Validates credentials or token; sets <code>HttpContext.User</code></td></tr>
+<tr><td><strong>Authorization</strong></td><td><em>What may you do?</em></td><td>Checks roles, policies, or claims after authentication</td></tr>
+</table>
+<p>In ASP.NET Core they are <strong>separate middleware</strong> — order matters:</p>
+<pre><code>app.UseAuthentication();   // first — identify the user
+app.UseAuthorization();    // second — enforce access rules</code></pre>
+<p><strong>401 Unauthorized</strong> = not authenticated. <strong>403 Forbidden</strong> = authenticated but not allowed.</p>
+<h3>Authentication mechanisms (typical .NET projects)</h3>
+<table>
+<tr><th>Mechanism</th><th>Best for</th><th>How it works</th></tr>
+<tr><td><strong>JWT Bearer</strong></td><td>REST APIs, SPAs, mobile</td><td>Client sends <code>Authorization: Bearer &lt;token&gt;</code>; stateless</td></tr>
+<tr><td><strong>Cookie authentication</strong></td><td>MVC, Razor Pages</td><td>Encrypted cookie after login form; server session</td></tr>
+<tr><td><strong>ASP.NET Core Identity</strong></td><td>Apps with SQL user store</td><td>Password hash, lockout, roles, 2FA, token providers</td></tr>
+<tr><td><strong>Azure AD / Entra ID</strong></td><td>Enterprise SSO</td><td>OAuth2 / OpenID Connect; trust tokens from IdP</td></tr>
+<tr><td><strong>API key / custom header</strong></td><td>Service-to-service, webhooks</td><td>Validate key in middleware or handler</td></tr>
+<tr><td><strong>OAuth2 / OpenID Connect</strong></td><td>Multi-app SSO</td><td>IdentityServer, OpenIddict, Azure AD issue tokens</td></tr>
+</table>
+<h3>Configure JWT Bearer (most common in API interviews)</h3>
+<pre><code>// Program.cs
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =&gt;
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+    });
+
+builder.Services.AddAuthorization(options =&gt;
+{
+    options.AddPolicy("CanManageOrders", policy =&gt;
+        policy.RequireRole("Admin", "Manager"));
+
+    options.AddPolicy("MinimumAge18", policy =&gt;
+        policy.RequireClaim("age", "18", "19", "20")); // example custom claim
+});
+
+app.UseAuthentication();
+app.UseAuthorization();</code></pre>
+<h3>Protect endpoints</h3>
+<pre><code>// Controller — role and policy
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
+public class OrdersController : ControllerBase
+{
+    [HttpGet]
+    public IActionResult GetAll() =&gt; Ok();
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id) =&gt; NoContent();
+
+    [Authorize(Policy = "CanManageOrders")]
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, OrderDto dto) =&gt; Ok();
+}
+
+// Minimal API
+app.MapGet("/admin/reports", () =&gt; Results.Ok())
+   .RequireAuthorization("CanManageOrders");</code></pre>
+<h3>Authorization approaches</h3>
+<ul>
+<li><strong>Role-based</strong> — <code>[Authorize(Roles = "Admin")]</code>; simple RBAC</li>
+<li><strong>Policy-based</strong> — <code>RequireRole</code>, <code>RequireClaim</code>, custom <code>IAuthorizationHandler</code></li>
+<li><strong>Resource-based</strong> — user may edit only their own record (<code>IAuthorizationService</code> + resource id)</li>
+</ul>
+<h3>Typical API login flow</h3>
+<ol>
+<li>Client <code>POST /api/auth/login</code> with credentials</li>
+<li>Server validates user (Identity, database, Azure AD)</li>
+<li>Server issues signed JWT with claims (sub, email, role, exp)</li>
+<li>Client stores token; sends Bearer header on each request</li>
+<li><code>JwtBearer</code> middleware validates token → <code>[Authorize]</code> checks access</li>
+</ol>
+<h3>Best practices</h3>
+<ul>
+<li>Store signing keys in Key Vault / user secrets — not in source control</li>
+<li>Short-lived access tokens; use refresh tokens for long sessions</li>
+<li>Use <strong>HTTPS</strong> only; never send tokens over plain HTTP</li>
+<li>Prefer <strong>policies</strong> over hard-coded roles when rules grow</li>
+<li>Do not put passwords or secrets in JWT payload (it is signed, not encrypted)</li>
+<li>For public APIs, combine auth with rate limiting and audit logging</li>
+</ul>
+<h3>Real-time answer template</h3>
+<p>“In my .NET Core Web APIs I use <strong>JWT bearer authentication</strong>: login returns a signed token, and each request validates issuer, audience, and expiry in middleware. I protect controllers with <code>[Authorize]</code> and enforce business rules with <strong>role and policy authorization</strong>. For enterprise apps I integrate <strong>Azure AD</strong> via OpenID Connect; for internal services I sometimes validate <strong>API keys</strong> in custom middleware.”</p>
+<h3>Interview Answer</h3>
+<p>Authentication identifies the caller; authorization decides access. I register JwtBearer in Program.cs, call UseAuthentication then UseAuthorization, and protect endpoints with Authorize attributes or policies. I separate 401 (not logged in) from 403 (logged in but denied), use policies for flexible rules, and keep tokens short-lived with secrets stored outside the codebase.</p>""",
+
 "q_aspnet_jwt_details": """<h2>JWT — How It Works, Expiry &amp; Content</h2>
 <p>A <strong>JSON Web Token (JWT)</strong> is a compact, signed string with three Base64URL-encoded parts: <strong>header.payload.signature</strong>. The API trusts the payload only if the signature matches and claims like <code>exp</code> are valid.</p>
 <h3>How JWT works (flow)</h3>

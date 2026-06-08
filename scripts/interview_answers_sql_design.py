@@ -1038,30 +1038,311 @@ SELECT o.* FROM Orders o JOIN VIP v ON o.CustId = v.Id;</code></pre>
 <h3>Interview Answer</h3>
 <p>JOINs merge tables; subqueries embed logic for filters or scalars; CTEs organize complex SQL. I prioritize readable intent, then tune with plans—often they're equivalent under the hood.</p>""",
 
-"q_solid_detailed": """<h2>SOLID Principles with Examples</h2>
-<p>SOLID guides maintainable OOP design: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.</p>
-<p>Each principle reduces coupling and improves testability—apply pragmatically, not as dogma on every class.</p>
-<pre><code>// S: OrderService only handles orders—not email
-class OrderService { void PlaceOrder(Order o) { ... } }
-
-// O: extend via IDiscountStrategy, don't modify Checkout
-interface IDiscountStrategy { decimal Apply(decimal total); }
-
-// L: subtypes must honor base contracts
-
-// I: split IPrinter into IPrint and IScan
-
-// D: depend on IEmailSender, not SmtpClient
-class Notifier(IEmailSender sender) { ... }</code></pre>
-<h3>Key Points</h3>
+"q_solid_detailed": """<h2>SOLID Principles</h2>
+<p>The <strong>SOLID principles</strong> are five important design principles in Object-Oriented Programming (OOP) that help developers write:</p>
 <ul>
-<li>S: one reason to change per class.</li>
-<li>O: open for extension, closed for modification.</li>
-<li>L: subtypes must be substitutable without breaking callers.</li>
-<li>I: small focused interfaces; D: depend on abstractions.</li>
+<li>Clean code</li>
+<li>Maintainable code</li>
+<li>Scalable applications</li>
+<li>Easily testable systems</li>
 </ul>
+<p>These principles are heavily used in C#, Java, .NET backend development, system design, and interviews.</p>
+<h3>SOLID at a glance</h3>
+<table>
+<tr><th>Letter</th><th>Principle</th><th>Meaning</th></tr>
+<tr><td><strong>S</strong></td><td>Single Responsibility Principle</td><td>One class should have only one reason to change</td></tr>
+<tr><td><strong>O</strong></td><td>Open/Closed Principle</td><td>Open for extension, closed for modification</td></tr>
+<tr><td><strong>L</strong></td><td>Liskov Substitution Principle</td><td>Child class should replace parent class without breaking behavior</td></tr>
+<tr><td><strong>I</strong></td><td>Interface Segregation Principle</td><td>Don't force classes to implement unused methods</td></tr>
+<tr><td><strong>D</strong></td><td>Dependency Inversion Principle</td><td>Depend on abstractions, not concrete classes</td></tr>
+</table>
+<h3>1. Single Responsibility Principle (SRP)</h3>
+<p><strong>Definition:</strong> A class should have <strong>only one responsibility</strong> or one reason to change.</p>
+<h3>Bad example</h3>
+<pre><code>public class Employee
+{
+    public void CalculateSalary()
+    {
+        Console.WriteLine("Calculating salary");
+    }
+
+    public void SaveToDatabase()
+    {
+        Console.WriteLine("Saving employee to DB");
+    }
+
+    public void GenerateReport()
+    {
+        Console.WriteLine("Generating report");
+    }
+}</code></pre>
+<p><strong>Problem:</strong> This class has multiple responsibilities — salary calculation, database operations, and report generation. If any one changes, the class changes.</p>
+<h3>Good example</h3>
+<pre><code>public class Employee
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+
+public class SalaryCalculator
+{
+    public void CalculateSalary(Employee emp)
+    {
+        Console.WriteLine("Calculating salary");
+    }
+}
+
+public class EmployeeRepository
+{
+    public void Save(Employee emp)
+    {
+        Console.WriteLine("Saving to DB");
+    }
+}
+
+public class ReportGenerator
+{
+    public void Generate(Employee emp)
+    {
+        Console.WriteLine("Generating report");
+    }
+}</code></pre>
+<p><strong>Benefit:</strong> Easier maintenance, better testing, low coupling.</p>
+<h3>2. Open/Closed Principle (OCP)</h3>
+<p><strong>Definition:</strong> Software entities should be <strong>open for extension</strong> and <strong>closed for modification</strong>. You should add new functionality without changing existing code.</p>
+<h3>Bad example</h3>
+<pre><code>public class PaymentProcessor
+{
+    public void ProcessPayment(string paymentType)
+    {
+        if (paymentType == "CreditCard")
+        {
+            Console.WriteLine("Processing credit card");
+        }
+        else if (paymentType == "PayPal")
+        {
+            Console.WriteLine("Processing PayPal");
+        }
+    }
+}</code></pre>
+<p><strong>Problem:</strong> Every new payment type requires modifying existing code.</p>
+<h3>Good example</h3>
+<pre><code>public interface IPayment
+{
+    void Pay();
+}
+
+public class CreditCardPayment : IPayment
+{
+    public void Pay()
+    {
+        Console.WriteLine("Credit Card Payment");
+    }
+}
+
+public class PaypalPayment : IPayment
+{
+    public void Pay()
+    {
+        Console.WriteLine("Paypal Payment");
+    }
+}
+
+public class PaymentProcessor
+{
+    public void ProcessPayment(IPayment payment)
+    {
+        payment.Pay();
+    }
+}</code></pre>
+<p><strong>Benefit:</strong> New payment methods can be added without changing old code.</p>
+<h3>3. Liskov Substitution Principle (LSP)</h3>
+<p><strong>Definition:</strong> A derived class should be replaceable for its base class without affecting correctness.</p>
+<h3>Bad example — classic Bird example</h3>
+<pre><code>public class Bird
+{
+    public virtual void Fly()
+    {
+        Console.WriteLine("Flying");
+    }
+}
+
+public class Ostrich : Bird
+{
+    public override void Fly()
+    {
+        throw new Exception("Ostrich can't fly");
+    }
+}</code></pre>
+<p><strong>Problem:</strong> <code>Ostrich</code> breaks expected behavior.</p>
+<h3>Good example</h3>
+<pre><code>public interface IBird
+{
+    void Eat();
+}
+
+public interface IFlyingBird
+{
+    void Fly();
+}
+
+public class Sparrow : IBird, IFlyingBird
+{
+    public void Eat()
+    {
+        Console.WriteLine("Eating");
+    }
+
+    public void Fly()
+    {
+        Console.WriteLine("Flying");
+    }
+}
+
+public class Ostrich : IBird
+{
+    public void Eat()
+    {
+        Console.WriteLine("Eating");
+    }
+}</code></pre>
+<p><strong>Benefit:</strong> No unexpected behavior.</p>
+<h3>4. Interface Segregation Principle (ISP)</h3>
+<p><strong>Definition:</strong> Clients should not be forced to implement methods they don't use.</p>
+<h3>Bad example</h3>
+<pre><code>public interface IWorker
+{
+    void Work();
+    void Eat();
+}
+
+public class Robot : IWorker
+{
+    public void Work()
+    {
+        Console.WriteLine("Working");
+    }
+
+    public void Eat()
+    {
+        throw new Exception("Robot doesn't eat");
+    }
+}</code></pre>
+<p><strong>Problem:</strong> Robot is forced to implement an unnecessary method.</p>
+<h3>Good example</h3>
+<pre><code>public interface IWorkable
+{
+    void Work();
+}
+
+public interface IEatable
+{
+    void Eat();
+}
+
+public class Human : IWorkable, IEatable
+{
+    public void Work()
+    {
+        Console.WriteLine("Working");
+    }
+
+    public void Eat()
+    {
+        Console.WriteLine("Eating");
+    }
+}
+
+public class Robot : IWorkable
+{
+    public void Work()
+    {
+        Console.WriteLine("Robot working");
+    }
+}</code></pre>
+<p><strong>Benefit:</strong> Smaller, focused interfaces.</p>
+<h3>5. Dependency Inversion Principle (DIP)</h3>
+<p><strong>Definition:</strong> High-level modules should not depend on low-level modules. Both should depend on abstractions.</p>
+<h3>Bad example</h3>
+<pre><code>public class SqlServerDatabase
+{
+    public void Save()
+    {
+        Console.WriteLine("Saved to SQL Server");
+    }
+}
+
+public class EmployeeService
+{
+    private SqlServerDatabase db = new SqlServerDatabase();
+
+    public void SaveEmployee()
+    {
+        db.Save();
+    }
+}</code></pre>
+<p><strong>Problem:</strong> <code>EmployeeService</code> is tightly coupled with SQL Server.</p>
+<h3>Good example</h3>
+<pre><code>public interface IDatabase
+{
+    void Save();
+}
+
+public class SqlServerDatabase : IDatabase
+{
+    public void Save()
+    {
+        Console.WriteLine("Saved to SQL Server");
+    }
+}
+
+public class MongoDatabase : IDatabase
+{
+    public void Save()
+    {
+        Console.WriteLine("Saved to MongoDB");
+    }
+}
+
+public class EmployeeService
+{
+    private readonly IDatabase _database;
+
+    public EmployeeService(IDatabase database)
+    {
+        _database = database;
+    }
+
+    public void SaveEmployee()
+    {
+        _database.Save();
+    }
+}</code></pre>
+<p><strong>Benefit:</strong> Loose coupling, easier testing, supports Dependency Injection (DI).</p>
+<h3>Real-world example in .NET</h3>
+<p>SOLID principles are widely used in:</p>
+<ul>
+<li>ASP.NET Core</li>
+<li>Dependency Injection</li>
+<li>Repository Pattern</li>
+<li>Clean Architecture</li>
+<li>Microservices</li>
+<li>Unit Testing</li>
+</ul>
+<p><strong>Example:</strong> Controllers depend on interfaces; services are separated; repositories handle DB logic; the DI container injects dependencies.</p>
+<h3>Interview quick summary</h3>
+<table>
+<tr><th>Principle</th><th>Interview one-liner</th></tr>
+<tr><td><strong>SRP</strong></td><td>One class → one responsibility</td></tr>
+<tr><td><strong>OCP</strong></td><td>Extend behavior without modifying existing code</td></tr>
+<tr><td><strong>LSP</strong></td><td>Child class should behave like parent</td></tr>
+<tr><td><strong>ISP</strong></td><td>Small specific interfaces are better</td></tr>
+<tr><td><strong>DIP</strong></td><td>Depend on abstraction, not implementation</td></tr>
+</table>
+<h3>Easy mnemonic</h3>
+<div class="interview-tip"><p>Think: <strong>“SOLD” architecture becomes “SOLID”</strong></p><p>Or: <strong>“Single Objects Love Interface Driven design”</strong></p></div>
 <h3>Interview Answer</h3>
-<p>SOLID reduces coupling and improves testability. I apply S for focused classes, O via strategy/plugins, L by avoiding brittle inheritance, I with lean interfaces, and D through DI containers and abstractions.</p>""",
+<p>SOLID is five OOP principles for clean, maintainable, testable code. SRP gives each class one job. OCP adds features via new classes, not edits to old ones. LSP ensures subclasses don't break parent contracts. ISP splits fat interfaces into focused ones. DIP depends on abstractions with DI, not concrete classes. In .NET I apply these through separated services, repository interfaces, and constructor injection in ASP.NET Core.</p>""",
 
 "q_design_pattern_types": """<h2>Types of Design Patterns</h2>
 <p>GoF patterns divide into Creational (object creation), Structural (composition), and Behavioral (communication/responsibility). Modern catalogs add concurrency and architectural patterns.</p>
