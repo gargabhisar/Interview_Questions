@@ -559,6 +559,42 @@ function openQuestionInNewTab(id) {
     window.open(getQuestionUrl(id), '_blank', 'noopener,noreferrer');
 }
 
+function scrollSelectedQuestionIntoView(id, options) {
+    options = options || {};
+    var sidebarNav = document.querySelector('.sidebar-nav');
+    if (!sidebarNav || !id) {
+        return;
+    }
+
+    function doScroll() {
+        var item = Array.from(sidebarNav.querySelectorAll('.question-item')).find(function(el) {
+            return el.dataset.answerId === id;
+        });
+        if (!item || item.style.display === 'none') {
+            return;
+        }
+
+        var navRect = sidebarNav.getBoundingClientRect();
+        var itemRect = item.getBoundingClientRect();
+        var padding = 8;
+
+        if (itemRect.top < navRect.top + padding) {
+            sidebarNav.scrollTop -= (navRect.top + padding - itemRect.top);
+        } else if (itemRect.bottom > navRect.bottom - padding) {
+            sidebarNav.scrollTop += (itemRect.bottom - navRect.bottom + padding);
+        }
+    }
+
+    if (options.immediate) {
+        doScroll();
+        return;
+    }
+
+    requestAnimationFrame(function() {
+        requestAnimationFrame(doScroll);
+    });
+}
+
 function showAnswer(id, options) {
     options = options || {};
     let answers = document.querySelectorAll('.answer-pane');
@@ -593,6 +629,10 @@ function showAnswer(id, options) {
 
     if (!options.skipHashUpdate) {
         history.replaceState(null, '', '#' + encodeURIComponent(id));
+    }
+
+    if (options.scrollSidebar !== false) {
+        scrollSelectedQuestionIntoView(id, { immediate: options.immediateSidebarScroll });
     }
 }
 
@@ -639,7 +679,7 @@ function initContentToolbar() {
 function loadAnswerFromHash() {
     var id = decodeURIComponent(window.location.hash.slice(1));
     if (id && document.getElementById(id)) {
-        showAnswer(id, { skipHashUpdate: true });
+        showAnswer(id, { skipHashUpdate: true, immediateSidebarScroll: false });
         return id;
     }
     return null;
@@ -845,6 +885,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var hashId = loadAnswerFromHash();
 
+    if (hashId) {
+        window.addEventListener('load', function() {
+            scrollSelectedQuestionIntoView(hashId, { immediate: true });
+        }, { once: true });
+    }
+
     if (isMobileLayout()) {
         if (!hashId) {
             document.querySelectorAll('.answer-pane').forEach(function(a) {
@@ -852,11 +898,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             document.body.classList.remove('show-answer');
         }
-    } else if (hashId) {
-        document.querySelectorAll('.question-item').forEach(function(item) {
-            item.classList.toggle('selected', item.dataset.answerId === hashId);
-        });
-    } else {
+    } else if (!hashId) {
         var defaultPane = document.querySelector('.answer-pane.active');
         if (defaultPane) {
             history.replaceState(null, '', '#' + encodeURIComponent(defaultPane.id));
