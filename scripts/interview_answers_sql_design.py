@@ -164,52 +164,86 @@ Enrollment(Student, Course, Teacher)</code></pre>
 <h3>Interview Answer</h3>
 <p>BCNF requires every determinant to be a candidate key. If Teacher determines Room but Teacher isn't a key, I decompose into separate tables to remove the anomaly while keeping joins lossless.</p>""",
 
-"q_7": """<h2>Database Indexes</h2>
+"q_7": """<h2>SQL Server Indexes</h2>
 <p>Indexes are auxiliary data structures (typically B-trees) that speed up data retrieval by avoiding full table scans. They trade faster reads for extra storage and slower writes due to index maintenance.</p>
-<p>Design indexes around real query patterns—filters, joins, ORDER BY, and GROUP BY—and validate with execution plans rather than indexing every column.</p>
-<pre><code>-- Clustered index on primary key (default in SQL Server)
-CREATE CLUSTERED INDEX IX_Emp_Id ON Employees(EmployeeId);
-
--- Nonclustered index for frequent filter
-CREATE NONCLUSTERED INDEX IX_Emp_Dept
-ON Employees(DepartmentId) INCLUDE (LastName, Salary);</code></pre>
+<p>Design indexes around real query patterns — filters, joins, ORDER BY, and GROUP BY — and validate with execution plans rather than indexing every column.</p>
 <table>
 <tr><th>Pros</th><th>Cons</th></tr>
-<tr><td>Faster SELECT/WHERE/JOIN</td><td>Slower INSERT/UPDATE/DELETE</td></tr>
+<tr><td>Faster SELECT / WHERE / JOIN</td><td>Slower INSERT / UPDATE / DELETE</td></tr>
 <tr><td>Enforces uniqueness (unique index)</td><td>Extra disk and memory</td></tr>
 </table>
-<h3>Key Points</h3>
-<ul>
-<li>Index columns used in WHERE, JOIN, ORDER BY, and GROUP BY.</li>
-<li>Too many indexes hurt write-heavy workloads.</li>
-<li>Use covering indexes (INCLUDE) to avoid key lookups.</li>
-</ul>
-<h3>Interview Answer</h3>
-<p>Indexes accelerate lookups like a book index but slow writes. I index selective, frequently queried columns, verify with execution plans, and avoid over-indexing OLTP tables.</p>""",
-
-"q_8": """<h2>Clustered vs Non-Clustered Indexes</h2>
-<p>A clustered index defines the physical sort order of table rows—there can be only one per table. A non-clustered index is a separate structure with pointers (or row locators) back to the data.</p>
-<p>Range scans on the clustered key are very efficient; non-clustered indexes may require key lookups when columns aren't covered.</p>
+<h3>Clustered vs non-clustered</h3>
+<p>A <strong>clustered index</strong> defines the physical sort order of table rows — there can be <strong>only one</strong> per table. A <strong>non-clustered index</strong> is a separate structure with pointers (row locators) back to the data.</p>
 <table>
-<tr><th>Clustered</th><th>Non-Clustered</th></tr>
-<tr><td>One per table</td><td>Many allowed</td></tr>
-<tr><td>Data stored in index order</td><td>Separate structure + lookup</td></tr>
-<tr><td>Default on PRIMARY KEY</td><td>Leaf points to clustered key or RID</td></tr>
+<tr><th>Clustered</th><th>Non-clustered</th></tr>
+<tr><td>One per table (or heap if none)</td><td>Many allowed</td></tr>
+<tr><td>Leaf level = data pages</td><td>Separate structure + key lookup</td></tr>
+<tr><td>Default on PRIMARY KEY</td><td>Leaf points to clustered key or RID (heap)</td></tr>
+<tr><td>Efficient range scans on key</td><td>May need key lookup if not covering</td></tr>
 </table>
 <pre><code>CREATE TABLE Employees (
-  EmployeeId INT PRIMARY KEY,  -- clustered by default
-  DeptId INT,
-  Name NVARCHAR(100)
+    EmployeeId INT PRIMARY KEY CLUSTERED,  -- one clustered index
+    DeptId INT,
+    Name NVARCHAR(100)
 );
-CREATE NONCLUSTERED INDEX IX_Dept ON Employees(DeptId);</code></pre>
-<h3>Key Points</h3>
+
+CREATE NONCLUSTERED INDEX IX_Emp_Dept ON Employees(DeptId);
+CREATE NONCLUSTERED INDEX IX_Emp_Name ON Employees(Name);</code></pre>
+<h3>How many clustered indexes per table?</h3>
 <ul>
-<li>Range scans on clustered key are very efficient.</li>
-<li>Non-clustered indexes may require key lookups (bookmark/RID).</li>
-<li>Choose clustered key on narrow, ever-increasing column (e.g., identity).</li>
+<li><strong>0 clustered</strong> — table is a <strong>heap</strong> (unordered storage).</li>
+<li><strong>1 clustered</strong> — normal case; often on PRIMARY KEY.</li>
+<li><strong>2+ clustered</strong> — <strong>not allowed</strong> on one table.</li>
 </ul>
+<p>You can have many non-clustered indexes in practice. Non-clustered leaf nodes point to the clustered key or RID on a heap.</p>
+<h3>Types of indexes in SQL Server</h3>
+<p>Most OLTP work uses <strong>clustered</strong> and <strong>non-clustered</strong> B-tree indexes. SQL Server also supports specialized types:</p>
+<table>
+<tr><th>Type</th><th>Use case</th></tr>
+<tr><td><strong>Clustered / Nonclustered</strong> (B-tree)</td><td>Everyday relational tables — OLTP lookups and joins</td></tr>
+<tr><td><strong>Columnstore</strong> (clustered or nonclustered)</td><td>Data warehousing, analytics, large scans</td></tr>
+<tr><td><strong>Hash</strong></td><td>Memory-optimized (In-Memory OLTP) tables — point lookups</td></tr>
+<tr><td><strong>XML index</strong></td><td>XML columns (primary + PATH / VALUE / PROPERTY)</td></tr>
+<tr><td><strong>Spatial index</strong></td><td>Geometry / geography columns</td></tr>
+<tr><td><strong>Full-text index</strong></td><td>Word / phrase search (separate engine)</td></tr>
+</table>
+<p><strong>Variations:</strong> unique index, <strong>filtered (partial)</strong> index with a <code>WHERE</code> predicate, <strong>indexed view</strong> (clustered index on a view).</p>
+<pre><code>-- Nonclustered + filtered + include (covering subset)
+CREATE NONCLUSTERED INDEX IX_User_Active
+ON dbo.[User](UserName) INCLUDE (Email)
+WHERE IsActive = 1;
+
+-- Columnstore (reporting / analytics)
+CREATE CLUSTERED COLUMNSTORE INDEX CCI_Orders ON dbo.Orders;</code></pre>
+<h3>When to use clustered vs non-clustered</h3>
+<p><strong>Clustered index — use when:</strong></p>
+<ul>
+<li>Column drives most <strong>range scans</strong> and sorting — often <code>PRIMARY KEY</code> (identity).</li>
+<li>Good for: <code>WHERE OrderDate BETWEEN ...</code>, <code>ORDER BY OrderId</code>, sequential inserts on ID.</li>
+<li>Avoid wide, random clustered keys (e.g. GUID) — causes page splits and fragmentation.</li>
+</ul>
+<p><strong>Non-clustered index — use when:</strong></p>
+<ul>
+<li>Columns appear in <strong>WHERE</strong>, <strong>JOIN</strong>, or <strong>ORDER BY</strong> but are not the clustered key.</li>
+<li>Foreign keys and selective filters (Status, Email, CustomerId).</li>
+<li><strong>Covering index</strong> — INCLUDE extra columns so the query avoids key lookup (see Section 10 item 13).</li>
+<li>Many allowed per table — do not over-index; hurts write-heavy OLTP.</li>
+</ul>
+<table>
+<tr><th>Scenario</th><th>Index choice</th></tr>
+<tr><td>Primary key, sequential ID</td><td>Clustered on PK</td></tr>
+<tr><td>Search by email</td><td>Nonclustered on Email (often UNIQUE)</td></tr>
+<tr><td>Report filter + few returned columns</td><td>Nonclustered with INCLUDE</td></tr>
+<tr><td>Heap table (no clustered)</td><td>Nonclustered leaf points to RID</td></tr>
+</table>
+<pre><code>CREATE CLUSTERED INDEX IX_Order_Date ON Orders(OrderDate);
+
+CREATE NONCLUSTERED INDEX IX_Order_Customer
+ON Orders(CustomerId)
+INCLUDE (OrderDate, Total);</code></pre>
+<p><strong>Related in this section:</strong> Views vs Indexes (item 11), Missing Index (item 12), Covering Index (item 13), Index Design Strategy (item 14).</p>
 <h3>Interview Answer</h3>
-<p>Clustered index sorts the table physically—one per table. Non-clustered indexes are separate lookup structures. I put the clustered index on the most common range-scan column, usually the PK.</p>""",
+<p>Indexes speed up reads but slow writes. In SQL Server the clustered index defines physical row order — only one per table, usually on the PK. Non-clustered indexes are separate structures for filter and join columns; I add covering indexes with INCLUDE when plans show expensive key lookups. I also know columnstore for analytics and filtered indexes for subsets. I validate with execution plans, avoid over-indexing OLTP tables, and keep the clustered key narrow and sequential.</p>""",
 
 "q_9": """<h2>SQL Execution Plans</h2>
 <p>An execution plan shows how the optimizer retrieves data: scan vs seek, join algorithms, sort/hash operations, and estimated vs actual row counts. Reading plans is essential for performance tuning.</p>

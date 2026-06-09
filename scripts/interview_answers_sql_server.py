@@ -269,34 +269,6 @@ END CATCH;</code></pre>
 <h3>Interview Answer</h3>
 <p>COMMIT persists everything since BEGIN TRAN; ROLLBACK reverses it. I wrap related DML in TRY/CATCH, check @@TRANCOUNT, and ROLLBACK on failure so the database never ends up half-updated. SAVE TRANSACTION allows rolling back to a savepoint without aborting the whole batch.</p>""",
 
-"q_sql_clustered_one_per_table": """<h2>How Many Clustered Indexes per Table?</h2>
-<p>In SQL Server, a table can have <strong>at most one clustered index</strong>. The clustered index defines the <strong>physical sort order</strong> of the data rows (or is the table itself).</p>
-<h3>Rules</h3>
-<ul>
-<li><strong>0 clustered indexes</strong> — table is a <strong>heap</strong> (unordered storage).</li>
-<li><strong>1 clustered index</strong> — normal case; often on PRIMARY KEY.</li>
-<li><strong>2+ clustered indexes</strong> — <strong>not allowed</strong> on one table.</li>
-</ul>
-<pre><code>-- One clustered index (typical)
-CREATE TABLE Employees (
-    EmployeeId INT PRIMARY KEY CLUSTERED,  -- clustered index on PK
-    Name NVARCHAR(100),
-    DeptId INT
-);
-
--- Many NON-clustered indexes allowed
-CREATE NONCLUSTERED INDEX IX_Emp_Dept ON Employees(DeptId);
-CREATE NONCLUSTERED INDEX IX_Emp_Name ON Employees(Name);</code></pre>
-<h3>Heap vs clustered</h3>
-<table>
-<tr><th>Storage</th><th>Clustered index</th></tr>
-<tr><td>Heap</td><td>No clustered index — rows stored in insertion order</td></tr>
-<tr><td>Clustered table</td><td>One clustered index — leaf level = data pages</td></tr>
-</table>
-<p>You can have <strong>many non-clustered indexes</strong> (up to 999 on older versions, 999 nonclustered + 1 clustered in practice). Non-clustered leaf nodes point to the clustered key or RID (heap).</p>
-<h3>Interview Answer</h3>
-<p>Only one clustered index per table because it controls physical row order. You can have zero (heap) or one (usually on the primary key). Non-clustered indexes are unlimited in practice and are separate structures that reference the clustered key or row identifier.</p>""",
-
 "q_sql_window_functions": """<h2>Window Functions in SQL Server</h2>
 <p><strong>Window functions</strong> perform calculations across a set of rows <strong>related to the current row</strong> without collapsing rows into groups (unlike <code>GROUP BY</code>). They use <code>OVER (PARTITION BY ... ORDER BY ...)</code>.</p>
 <h3>Common window functions</h3>
@@ -766,37 +738,6 @@ INNER JOIN Account a2
 </table>
 <h3>Interview Answer</h3>
 <p>Joins combine tables on related keys. INNER returns matches only — e.g. customers with accounts. LEFT keeps all customers even without accounts. RIGHT/FULL help reconciliation when data may exist on one side only. CROSS JOIN builds combinations on small reference data. Self join uses two aliases on one table for manager hierarchy or duplicate detection. In banking I use LEFT JOIN for CRM dashboards, INNER for statements, and FULL OUTER for CRM vs core sync.</p>""",
-
-"q_sql_index_when_to_use": """<h2>Use of Clustered and Non-Clustered Indexes</h2>
-<p>Indexes speed up <strong>reads</strong> (SELECT, JOIN, WHERE, ORDER BY) at the cost of slower <strong>writes</strong> (INSERT/UPDATE/DELETE) and extra storage.</p>
-<h3>Clustered index — when to use</h3>
-<ul>
-<li><strong>One per table</strong> — defines physical row order.</li>
-<li>Put on the column used most for <strong>range scans</strong> and sorting — often <code>PRIMARY KEY</code> (identity).</li>
-<li>Good for: <code>WHERE OrderDate BETWEEN ...</code>, <code>ORDER BY OrderId</code>, sequential inserts on ID.</li>
-<li>Avoid wide, random clustered keys (e.g. GUID) — causes page splits and fragmentation.</li>
-</ul>
-<h3>Non-clustered index — when to use</h3>
-<ul>
-<li>Add on columns in <strong>WHERE</strong>, <strong>JOIN</strong>, and <strong>ORDER BY</strong> that are not the clustered key.</li>
-<li><strong>Covering index</strong> — INCLUDE extra columns so the query is satisfied from the index alone (no key lookup).</li>
-<li>Foreign keys and highly selective filters (Status, Email, CustomerId).</li>
-<li>Many allowed per table; do not over-index every column — hurts insert/update throughput.</li>
-</ul>
-<table>
-<tr><th>Scenario</th><th>Index choice</th></tr>
-<tr><td>Primary key, sequential ID</td><td>Clustered on PK</td></tr>
-<tr><td>Search by email</td><td>Nonclustered on Email (often UNIQUE)</td></tr>
-<tr><td>Report filter + return few columns</td><td>Nonclustered with INCLUDE</td></tr>
-<tr><td>Heap table (no clustered)</td><td>Nonclustered leaf points to RID</td></tr>
-</table>
-<pre><code>CREATE CLUSTERED INDEX IX_Order_Date ON Orders(OrderDate);
-
-CREATE NONCLUSTERED INDEX IX_Order_Customer
-ON Orders(CustomerId)
-INCLUDE (OrderDate, Total);  -- covering for common query</code></pre>
-<h3>Interview Answer</h3>
-<p>I use the clustered index for the main access path—usually the PK—for physical ordering. I add nonclustered indexes on filter and join columns and covering indexes when plans show expensive key lookups. I balance read speed with write overhead and validate with execution plans.</p>""",
 
 "q_sql_profiling": """<h2>SQL Profiling — How to See It &amp; Interview Experience</h2>
 <p><strong>SQL profiling</strong> means capturing what SQL Server is executing — queries, duration, reads, waits — to find slow or expensive statements.</p>

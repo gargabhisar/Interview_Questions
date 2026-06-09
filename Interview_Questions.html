@@ -95,6 +95,67 @@ body {
     border: 1px solid #d9d9d9;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.question-item-label {
+    flex: 1;
+    min-width: 0;
+}
+
+.question-open-tab {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    color: #555;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1;
+    opacity: 0.55;
+    transition: opacity 0.2s, background 0.2s, color 0.2s;
+}
+
+.question-open-tab:hover,
+.question-open-tab:focus {
+    opacity: 1;
+    background: #e8e8e8;
+    color: #0066cc;
+    outline: none;
+}
+
+.content-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.open-answer-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: #0066cc;
+    text-decoration: none;
+    border: 1px solid #b3d4f5;
+    border-radius: 6px;
+    background: #f0f7ff;
+    white-space: nowrap;
+}
+
+.open-answer-tab:hover,
+.open-answer-tab:focus {
+    background: #dbeafe;
+    outline: none;
 }
 
 .question-item:hover {
@@ -338,8 +399,10 @@ code {
         position: sticky;
         top: 0;
         z-index: 10;
-        width: 100%;
-        margin: 0 0 16px;
+        flex: 1;
+        min-width: 0;
+        width: auto;
+        margin: 0;
         padding: 14px 16px;
         font-size: 15px;
         font-family: inherit;
@@ -353,6 +416,21 @@ code {
 
     .back-btn:active {
         background: #eaeaea;
+    }
+
+    .content-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        margin: 0 0 16px;
+        padding-bottom: 4px;
+        background: #ffffff;
+    }
+
+    .open-answer-tab {
+        flex-shrink: 0;
+        padding: 12px 14px;
+        font-size: 14px;
     }
 
     .answer-pane {
@@ -403,7 +481,28 @@ function isMobileLayout() {
     return window.matchMedia('(max-width: 768px)').matches;
 }
 
-function showAnswer(id) {
+function getQuestionUrl(id) {
+    var url = new URL(window.location.href);
+    url.hash = id;
+    return url.href;
+}
+
+function updateOpenTabLink(id) {
+    var link = document.getElementById('openAnswerNewTab');
+    if (!link) {
+        return;
+    }
+    if (id && document.getElementById(id)) {
+        link.href = getQuestionUrl(id);
+        link.hidden = false;
+    } else {
+        link.href = '#';
+        link.hidden = true;
+    }
+}
+
+function showAnswer(id, options) {
+    options = options || {};
     let answers = document.querySelectorAll('.answer-pane');
     answers.forEach(a => a.classList.remove('active'));
 
@@ -433,6 +532,11 @@ function showAnswer(id) {
     document.querySelectorAll('.question-item').forEach(function(item) {
         item.classList.toggle('selected', item.dataset.answerId === id);
     });
+
+    if (!options.skipHashUpdate) {
+        history.replaceState(null, '', '#' + encodeURIComponent(id));
+    }
+    updateOpenTabLink(id);
 }
 
 var TAP_MOVE_THRESHOLD = 12;
@@ -459,6 +563,41 @@ function backToQuestions(event) {
 
 }
 
+function initContentToolbar() {
+    var content = document.querySelector('.content');
+    if (!content) {
+        return;
+    }
+    var backBtn = content.querySelector('.back-btn');
+    if (!backBtn || document.getElementById('openAnswerNewTab')) {
+        return;
+    }
+
+    var toolbar = document.createElement('div');
+    toolbar.className = 'content-toolbar';
+
+    var openTabLink = document.createElement('a');
+    openTabLink.id = 'openAnswerNewTab';
+    openTabLink.className = 'open-answer-tab';
+    openTabLink.target = '_blank';
+    openTabLink.rel = 'noopener noreferrer';
+    openTabLink.textContent = 'Open in new tab';
+    openTabLink.setAttribute('aria-label', 'Open this answer in a new tab');
+
+    backBtn.parentNode.insertBefore(toolbar, backBtn);
+    toolbar.appendChild(backBtn);
+    toolbar.appendChild(openTabLink);
+}
+
+function loadAnswerFromHash() {
+    var id = decodeURIComponent(window.location.hash.slice(1));
+    if (id && document.getElementById(id)) {
+        showAnswer(id, { skipHashUpdate: true });
+        return id;
+    }
+    return null;
+}
+
 function initQuestionNavigation() {
     document.querySelectorAll('.question-item').forEach(function(item) {
         var onclick = item.getAttribute('onclick');
@@ -472,6 +611,27 @@ function initQuestionNavigation() {
         if (item.dataset.answerId) {
             item.setAttribute('role', 'button');
             item.setAttribute('tabindex', '0');
+
+            if (!item.querySelector('.question-item-label')) {
+                var label = document.createElement('span');
+                label.className = 'question-item-label';
+                label.textContent = item.textContent.trim();
+                item.textContent = '';
+                item.appendChild(label);
+
+                var openTab = document.createElement('a');
+                openTab.className = 'question-open-tab';
+                openTab.href = getQuestionUrl(item.dataset.answerId);
+                openTab.target = '_blank';
+                openTab.rel = 'noopener noreferrer';
+                openTab.title = 'Open in new tab';
+                openTab.setAttribute('aria-label', 'Open in new tab');
+                openTab.textContent = '\u2197';
+                openTab.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                item.appendChild(openTab);
+            }
         }
     });
 
@@ -524,6 +684,9 @@ function initQuestionNavigation() {
         touchTracking.targetItem = null;
 
         if (!moved && item && item.dataset.answerId) {
+            if (e.target.closest('.question-open-tab')) {
+                return;
+            }
             e.preventDefault();
             openQuestionFromItem(item);
         }
@@ -536,6 +699,9 @@ function initQuestionNavigation() {
     }, {passive: true, capture: true});
 
     sidebar.addEventListener('click', function(e) {
+        if (e.target.closest('.question-open-tab')) {
+            return;
+        }
         var item = e.target.closest('.question-item');
         if (!item || !item.dataset.answerId) {
             return;
@@ -565,8 +731,9 @@ function filterQuestions() {
     const headers = document.querySelectorAll('.topic-header');
 
     items.forEach(function(item) {
-        const text = item.innerText.toLowerCase();
-        item.style.display = text.includes(input) ? 'block' : 'none';
+        var label = item.querySelector('.question-item-label');
+        const text = (label ? label.textContent : item.innerText).toLowerCase();
+        item.style.display = text.includes(input) ? 'flex' : 'none';
     });
 
     headers.forEach(function(header) {
@@ -593,6 +760,7 @@ function clearSearch() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    initContentToolbar();
     initQuestionNavigation();
 
     const searchBox = document.getElementById('searchBox');
@@ -603,12 +771,31 @@ document.addEventListener('DOMContentLoaded', function() {
         filterQuestions();
     });
 
+    var hashId = loadAnswerFromHash();
+
     if (isMobileLayout()) {
-        document.querySelectorAll('.answer-pane').forEach(function(a) {
-            a.classList.remove('active');
+        if (!hashId) {
+            document.querySelectorAll('.answer-pane').forEach(function(a) {
+                a.classList.remove('active');
+            });
+            document.body.classList.remove('show-answer');
+            updateOpenTabLink(null);
+        }
+    } else if (hashId) {
+        document.querySelectorAll('.question-item').forEach(function(item) {
+            item.classList.toggle('selected', item.dataset.answerId === hashId);
         });
-        document.body.classList.remove('show-answer');
+    } else {
+        var defaultPane = document.querySelector('.answer-pane.active');
+        if (defaultPane) {
+            updateOpenTabLink(defaultPane.id);
+            history.replaceState(null, '', '#' + encodeURIComponent(defaultPane.id));
+        }
     }
+
+    window.addEventListener('hashchange', function() {
+        loadAnswerFromHash();
+    });
 
     window.addEventListener('resize', function() {
         if (!isMobileLayout()) {
@@ -616,7 +803,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!document.querySelector('.answer-pane.active')) {
                 var defaultPane = document.getElementById('q_2');
                 if (defaultPane) {
-                    defaultPane.classList.add('active');
+                    showAnswer(defaultPane.id);
+                }
+            } else {
+                var activePane = document.querySelector('.answer-pane.active');
+                if (activePane) {
+                    updateOpenTabLink(activePane.id);
                 }
             }
         } else if (document.querySelector('.answer-pane.active')) {
@@ -849,75 +1041,71 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_sql_relationships')">7. Database Relationships (1:1, 1:N, M:N)</div>
 <div class="question-item" onclick="showAnswer('q_10')">8. Primary vs Unique Key</div>
 <div class="question-item" onclick="showAnswer('q_sql_types_of_keys')">9. Types of Keys in SQL</div>
-<div class="question-item" onclick="showAnswer('q_7')">10. Indexes in SQL</div>
-<div class="question-item" onclick="showAnswer('q_8')">11. Clustered vs Non-Clustered Index</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_types')">12. Types of Indexes in SQL Server</div>
-<div class="question-item" onclick="showAnswer('q_sql_clustered_one_per_table')">13. How Many Clustered Indexes per Table?</div>
-<div class="question-item" onclick="showAnswer('q_sql_views_vs_indexes')">14. Views vs Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_when_to_use')">15. Use of Clustered &amp; Non-Clustered Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_missing_index')">16. How to Identify Missing Index</div>
-<div class="question-item" onclick="showAnswer('q_sql_covering_index')">17. Covering Index</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_design_strategy')">18. Index Design Strategy (Wide Table)</div>
-<div class="question-item" onclick="showAnswer('q_9')">19. Execution Plan</div>
-<div class="question-item" onclick="showAnswer('q_sql_profiling')">20. SQL Profiling &amp; Performance Tools</div>
-<div class="question-item" onclick="showAnswer('q_sql_profiler')">21. SQL Profiler — Interview Q&amp;A</div>
-<div class="question-item" onclick="showAnswer('q_sql_opt_techniques_list')">22. SQL Optimization Techniques (5–7 Ways)</div>
-<div class="question-item" onclick="showAnswer('q_112')">23. Improve Query Performance (SQL Server)</div>
-<div class="question-item" onclick="showAnswer('q_11')">24. UNION vs UNION ALL</div>
-<div class="question-item" onclick="showAnswer('q_12')">25. ISNULL vs COALESCE</div>
-<div class="question-item" onclick="showAnswer('q_sql_where_having')">26. WHERE vs HAVING</div>
-<div class="question-item" onclick="showAnswer('q_14')">27. Table vs Views</div>
-<div class="question-item" onclick="showAnswer('q_sql_joins_self_join')">28. Joins &amp; Self Join</div>
-<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">29. Types of Joins</div>
-<div class="question-item" onclick="showAnswer('q_113')">30. JOIN, CTE &amp; Subquery</div>
-<div class="question-item" onclick="showAnswer('q_sql_cte_used')">31. CTE — What &amp; Have You Used It?</div>
-<div class="question-item" onclick="showAnswer('q_124')">32. CTE vs Temp Table</div>
-<div class="question-item" onclick="showAnswer('q_18')">33. #temp Table vs @table Variable</div>
-<div class="question-item" onclick="showAnswer('q_19')">34. Subquery vs CTE</div>
-<div class="question-item" onclick="showAnswer('q_sql_cte_vs_global_temp')">35. CTE vs ##temp (1M+ Rows in SP)</div>
-<div class="question-item" onclick="showAnswer('q_15')">36. Stored Procedure vs Function</div>
-<div class="question-item" onclick="showAnswer('q_sql_what_is_sp')">37. What is Stored Procedure?</div>
-<div class="question-item" onclick="showAnswer('q_123')">38. Benefits of Stored Procedures</div>
-<div class="question-item" onclick="showAnswer('q_sql_function_return_types')">39. Functions — Multiple Return Types?</div>
-<div class="question-item" onclick="showAnswer('q_30')">40. Unlimited SP Parameters</div>
-<div class="question-item" onclick="showAnswer('q_125')">41. TRUNCATE vs DELETE</div>
-<div class="question-item" onclick="showAnswer('q_29')">42. MERGE Statement</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_implement')">43. Transaction — What &amp; How to Implement</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_what')">44. Transaction in SQL (not “Transition”)</div>
-<div class="question-item" onclick="showAnswer('q_sql_acid')">45. ACID Properties</div>
-<div class="question-item" onclick="showAnswer('q_28')">46. Transactions</div>
-<div class="question-item" onclick="showAnswer('q_sql_commit_rollback')">47. COMMIT and ROLLBACK</div>
-<div class="question-item" onclick="showAnswer('q_27')">48. Isolation Levels</div>
-<div class="question-item" onclick="showAnswer('q_25')">49. Deadlock</div>
-<div class="question-item" onclick="showAnswer('q_26')">50. WITH(NOLOCK)</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_scenario')">51. Transaction Scenario (500 Records)</div>
-<div class="question-item" onclick="showAnswer('q_21')">52. Triggers in SQL — Purpose</div>
-<div class="question-item" onclick="showAnswer('q_sql_inserted_deleted')">53. INSERTED vs DELETED</div>
-<div class="question-item" onclick="showAnswer('q_24')">54. Magic Tables in Triggers</div>
-<div class="question-item" onclick="showAnswer('q_sql_window_functions')">55. Window Functions</div>
-<div class="question-item" onclick="showAnswer('q_22')">56. ROW_NUMBER()</div>
-<div class="question-item" onclick="showAnswer('q_23')">57. RANK vs DENSE_RANK</div>
-<div class="question-item" onclick="showAnswer('q_sql_5th_rank_cte')">58. 5th Highest Rank — RANK &amp; CTE</div>
-<div class="question-item" onclick="showAnswer('q_35')">59. Nth Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_5th_highest_salary')">60. Get 5th Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_2nd_salary')">61. 2nd Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_second_highest_dept')">62. Second Highest Salary (Dept-wise)</div>
-<div class="question-item" onclick="showAnswer('q_36')">63. Students — Same Score (Find Names)</div>
-<div class="question-item" onclick="showAnswer('q_sql_commission_null')">64. Commission NULL → 0</div>
-<div class="question-item" onclick="showAnswer('q_sql_dept_zero_employees')">65. Department with 0 Employees</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_tanker')">66. 3rd Highest Tanker Level &amp; Duplicate Names</div>
-<div class="question-item" onclick="showAnswer('q_sql_remove_duplicates_cte')">67. Delete Duplicate Records (CTE + PARTITION BY)</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_pagination')">68. Pagination in SQL</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_gender_codes')">69. Gender Codes — M / F / O (INSERT)</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_default_age')">70. UserDetails — Default Age = 18</div>
-<div class="question-item" onclick="showAnswer('q_sql_select_into_where')">71. SELECT * INTO — WHERE 1=0 vs 1=1</div>
-<div class="question-item" onclick="showAnswer('q_sql_last_inserted')">72. Last Inserted Record</div>
-<div class="question-item" onclick="showAnswer('q_20')">73. SQL Injection Prevention</div>
-<div class="question-item" onclick="showAnswer('q_sql_concurrent_update_conflict')">74. Two Users Update Same Row</div>
-<div class="question-item" onclick="showAnswer('q_sql_optimistic_concurrency')">75. Optimistic Concurrency</div>
-<div class="question-item" onclick="showAnswer('q_32')">76. NoSQL Partitioning</div>
-<div class="question-item" onclick="showAnswer('q_33')">77. PK and Secondary Index (NoSQL)</div>
-<div class="question-item" onclick="showAnswer('q_34')">78. SQL Server Internal Communication</div>
+<div class="question-item" onclick="showAnswer('q_7')">10. SQL Server Indexes</div>
+<div class="question-item" onclick="showAnswer('q_sql_views_vs_indexes')">11. Views vs Indexes</div>
+<div class="question-item" onclick="showAnswer('q_sql_missing_index')">12. How to Identify Missing Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_covering_index')">13. Covering Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_index_design_strategy')">14. Index Design Strategy (Wide Table)</div>
+<div class="question-item" onclick="showAnswer('q_9')">15. Execution Plan</div>
+<div class="question-item" onclick="showAnswer('q_sql_profiling')">16. SQL Profiling &amp; Performance Tools</div>
+<div class="question-item" onclick="showAnswer('q_sql_profiler')">17. SQL Profiler — Interview Q&amp;A</div>
+<div class="question-item" onclick="showAnswer('q_sql_opt_techniques_list')">18. SQL Optimization Techniques (5–7 Ways)</div>
+<div class="question-item" onclick="showAnswer('q_112')">19. Improve Query Performance (SQL Server)</div>
+<div class="question-item" onclick="showAnswer('q_11')">20. UNION vs UNION ALL</div>
+<div class="question-item" onclick="showAnswer('q_12')">21. ISNULL vs COALESCE</div>
+<div class="question-item" onclick="showAnswer('q_sql_where_having')">22. WHERE vs HAVING</div>
+<div class="question-item" onclick="showAnswer('q_14')">23. Table vs Views</div>
+<div class="question-item" onclick="showAnswer('q_sql_joins_self_join')">24. Joins &amp; Self Join</div>
+<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">25. Types of Joins</div>
+<div class="question-item" onclick="showAnswer('q_113')">26. JOIN, CTE &amp; Subquery</div>
+<div class="question-item" onclick="showAnswer('q_sql_cte_used')">27. CTE — What &amp; Have You Used It?</div>
+<div class="question-item" onclick="showAnswer('q_124')">28. CTE vs Temp Table</div>
+<div class="question-item" onclick="showAnswer('q_18')">29. #temp Table vs @table Variable</div>
+<div class="question-item" onclick="showAnswer('q_19')">30. Subquery vs CTE</div>
+<div class="question-item" onclick="showAnswer('q_sql_cte_vs_global_temp')">31. CTE vs ##temp (1M+ Rows in SP)</div>
+<div class="question-item" onclick="showAnswer('q_15')">32. Stored Procedure vs Function</div>
+<div class="question-item" onclick="showAnswer('q_sql_what_is_sp')">33. What is Stored Procedure?</div>
+<div class="question-item" onclick="showAnswer('q_123')">34. Benefits of Stored Procedures</div>
+<div class="question-item" onclick="showAnswer('q_sql_function_return_types')">35. Functions — Multiple Return Types?</div>
+<div class="question-item" onclick="showAnswer('q_30')">36. Unlimited SP Parameters</div>
+<div class="question-item" onclick="showAnswer('q_125')">37. TRUNCATE vs DELETE</div>
+<div class="question-item" onclick="showAnswer('q_29')">38. MERGE Statement</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_implement')">39. Transaction — What &amp; How to Implement</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_what')">40. Transaction in SQL (not “Transition”)</div>
+<div class="question-item" onclick="showAnswer('q_sql_acid')">41. ACID Properties</div>
+<div class="question-item" onclick="showAnswer('q_28')">42. Transactions</div>
+<div class="question-item" onclick="showAnswer('q_sql_commit_rollback')">43. COMMIT and ROLLBACK</div>
+<div class="question-item" onclick="showAnswer('q_27')">44. Isolation Levels</div>
+<div class="question-item" onclick="showAnswer('q_25')">45. Deadlock</div>
+<div class="question-item" onclick="showAnswer('q_26')">46. WITH(NOLOCK)</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_scenario')">47. Transaction Scenario (500 Records)</div>
+<div class="question-item" onclick="showAnswer('q_21')">48. Triggers in SQL — Purpose</div>
+<div class="question-item" onclick="showAnswer('q_sql_inserted_deleted')">49. INSERTED vs DELETED</div>
+<div class="question-item" onclick="showAnswer('q_24')">50. Magic Tables in Triggers</div>
+<div class="question-item" onclick="showAnswer('q_sql_window_functions')">51. Window Functions</div>
+<div class="question-item" onclick="showAnswer('q_22')">52. ROW_NUMBER()</div>
+<div class="question-item" onclick="showAnswer('q_23')">53. RANK vs DENSE_RANK</div>
+<div class="question-item" onclick="showAnswer('q_sql_5th_rank_cte')">54. 5th Highest Rank — RANK &amp; CTE</div>
+<div class="question-item" onclick="showAnswer('q_35')">55. Nth Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_5th_highest_salary')">56. Get 5th Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_2nd_salary')">57. 2nd Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_second_highest_dept')">58. Second Highest Salary (Dept-wise)</div>
+<div class="question-item" onclick="showAnswer('q_36')">59. Students — Same Score (Find Names)</div>
+<div class="question-item" onclick="showAnswer('q_sql_commission_null')">60. Commission NULL → 0</div>
+<div class="question-item" onclick="showAnswer('q_sql_dept_zero_employees')">61. Department with 0 Employees</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_tanker')">62. 3rd Highest Tanker Level &amp; Duplicate Names</div>
+<div class="question-item" onclick="showAnswer('q_sql_remove_duplicates_cte')">63. Delete Duplicate Records (CTE + PARTITION BY)</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_pagination')">64. Pagination in SQL</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_gender_codes')">65. Gender Codes — M / F / O (INSERT)</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_default_age')">66. UserDetails — Default Age = 18</div>
+<div class="question-item" onclick="showAnswer('q_sql_select_into_where')">67. SELECT * INTO — WHERE 1=0 vs 1=1</div>
+<div class="question-item" onclick="showAnswer('q_sql_last_inserted')">68. Last Inserted Record</div>
+<div class="question-item" onclick="showAnswer('q_20')">69. SQL Injection Prevention</div>
+<div class="question-item" onclick="showAnswer('q_sql_concurrent_update_conflict')">70. Two Users Update Same Row</div>
+<div class="question-item" onclick="showAnswer('q_sql_optimistic_concurrency')">71. Optimistic Concurrency</div>
+<div class="question-item" onclick="showAnswer('q_32')">72. NoSQL Partitioning</div>
+<div class="question-item" onclick="showAnswer('q_33')">73. PK and Secondary Index (NoSQL)</div>
+<div class="question-item" onclick="showAnswer('q_34')">74. SQL Server Internal Communication</div>
 </div>
 <h3 class="topic-header">11. Production &amp; Troubleshooting</h3>
 <div class="question-group">
@@ -1207,35 +1395,62 @@ Enrollment(Student, Course, Teacher)</code></pre><h3>Key Points</h3><ul>
 <li>Violations occur when non-key attributes determine other non-key attributes.</li>
 <li>Decomposition must be lossless and preserve dependencies where possible.</li>
 </ul><h3>Interview Answer</h3><p>BCNF requires every determinant to be a candidate key. If Teacher determines Room but Teacher isn't a key, I decompose into separate tables to remove the anomaly while keeping joins lossless.</p></div>
-<div class="answer-pane" id="q_7"><h2>Database Indexes</h2><p>Indexes are auxiliary data structures (typically B-trees) that speed up data retrieval by avoiding full table scans. They trade faster reads for extra storage and slower writes due to index maintenance.</p><p>Design indexes around real query patterns—filters, joins, ORDER BY, and GROUP BY—and validate with execution plans rather than indexing every column.</p><pre><code>-- Clustered index on primary key (default in SQL Server)
-CREATE CLUSTERED INDEX IX_Emp_Id ON Employees(EmployeeId);
-
--- Nonclustered index for frequent filter
-CREATE NONCLUSTERED INDEX IX_Emp_Dept
-ON Employees(DepartmentId) INCLUDE (LastName, Salary);</code></pre><table>
+<div class="answer-pane" id="q_7"><h2>SQL Server Indexes</h2><p>Indexes are auxiliary data structures (typically B-trees) that speed up data retrieval by avoiding full table scans. They trade faster reads for extra storage and slower writes due to index maintenance.</p><p>Design indexes around real query patterns — filters, joins, ORDER BY, and GROUP BY — and validate with execution plans rather than indexing every column.</p><table>
 <tr><th>Pros</th><th>Cons</th></tr>
-<tr><td>Faster SELECT/WHERE/JOIN</td><td>Slower INSERT/UPDATE/DELETE</td></tr>
+<tr><td>Faster SELECT / WHERE / JOIN</td><td>Slower INSERT / UPDATE / DELETE</td></tr>
 <tr><td>Enforces uniqueness (unique index)</td><td>Extra disk and memory</td></tr>
-</table><h3>Key Points</h3><ul>
-<li>Index columns used in WHERE, JOIN, ORDER BY, and GROUP BY.</li>
-<li>Too many indexes hurt write-heavy workloads.</li>
-<li>Use covering indexes (INCLUDE) to avoid key lookups.</li>
-</ul><h3>Interview Answer</h3><p>Indexes accelerate lookups like a book index but slow writes. I index selective, frequently queried columns, verify with execution plans, and avoid over-indexing OLTP tables.</p></div>
-<div class="answer-pane" id="q_8"><h2>Clustered vs Non-Clustered Indexes</h2><p>A clustered index defines the physical sort order of table rows—there can be only one per table. A non-clustered index is a separate structure with pointers (or row locators) back to the data.</p><p>Range scans on the clustered key are very efficient; non-clustered indexes may require key lookups when columns aren't covered.</p><table>
-<tr><th>Clustered</th><th>Non-Clustered</th></tr>
-<tr><td>One per table</td><td>Many allowed</td></tr>
-<tr><td>Data stored in index order</td><td>Separate structure + lookup</td></tr>
-<tr><td>Default on PRIMARY KEY</td><td>Leaf points to clustered key or RID</td></tr>
+</table><h3>Clustered vs non-clustered</h3><p>A <strong>clustered index</strong> defines the physical sort order of table rows — there can be <strong>only one</strong> per table. A <strong>non-clustered index</strong> is a separate structure with pointers (row locators) back to the data.</p><table>
+<tr><th>Clustered</th><th>Non-clustered</th></tr>
+<tr><td>One per table (or heap if none)</td><td>Many allowed</td></tr>
+<tr><td>Leaf level = data pages</td><td>Separate structure + key lookup</td></tr>
+<tr><td>Default on PRIMARY KEY</td><td>Leaf points to clustered key or RID (heap)</td></tr>
+<tr><td>Efficient range scans on key</td><td>May need key lookup if not covering</td></tr>
 </table><pre><code>CREATE TABLE Employees (
-  EmployeeId INT PRIMARY KEY,  -- clustered by default
-  DeptId INT,
-  Name NVARCHAR(100)
+    EmployeeId INT PRIMARY KEY CLUSTERED,  -- one clustered index
+    DeptId INT,
+    Name NVARCHAR(100)
 );
-CREATE NONCLUSTERED INDEX IX_Dept ON Employees(DeptId);</code></pre><h3>Key Points</h3><ul>
-<li>Range scans on clustered key are very efficient.</li>
-<li>Non-clustered indexes may require key lookups (bookmark/RID).</li>
-<li>Choose clustered key on narrow, ever-increasing column (e.g., identity).</li>
-</ul><h3>Interview Answer</h3><p>Clustered index sorts the table physically—one per table. Non-clustered indexes are separate lookup structures. I put the clustered index on the most common range-scan column, usually the PK.</p></div>
+
+CREATE NONCLUSTERED INDEX IX_Emp_Dept ON Employees(DeptId);
+CREATE NONCLUSTERED INDEX IX_Emp_Name ON Employees(Name);</code></pre><h3>How many clustered indexes per table?</h3><ul>
+<li><strong>0 clustered</strong> — table is a <strong>heap</strong> (unordered storage).</li>
+<li><strong>1 clustered</strong> — normal case; often on PRIMARY KEY.</li>
+<li><strong>2+ clustered</strong> — <strong>not allowed</strong> on one table.</li>
+</ul><p>You can have many non-clustered indexes in practice. Non-clustered leaf nodes point to the clustered key or RID on a heap.</p><h3>Types of indexes in SQL Server</h3><p>Most OLTP work uses <strong>clustered</strong> and <strong>non-clustered</strong> B-tree indexes. SQL Server also supports specialized types:</p><table>
+<tr><th>Type</th><th>Use case</th></tr>
+<tr><td><strong>Clustered / Nonclustered</strong> (B-tree)</td><td>Everyday relational tables — OLTP lookups and joins</td></tr>
+<tr><td><strong>Columnstore</strong> (clustered or nonclustered)</td><td>Data warehousing, analytics, large scans</td></tr>
+<tr><td><strong>Hash</strong></td><td>Memory-optimized (In-Memory OLTP) tables — point lookups</td></tr>
+<tr><td><strong>XML index</strong></td><td>XML columns (primary + PATH / VALUE / PROPERTY)</td></tr>
+<tr><td><strong>Spatial index</strong></td><td>Geometry / geography columns</td></tr>
+<tr><td><strong>Full-text index</strong></td><td>Word / phrase search (separate engine)</td></tr>
+</table><p><strong>Variations:</strong> unique index, <strong>filtered (partial)</strong> index with a <code>WHERE</code> predicate, <strong>indexed view</strong> (clustered index on a view).</p><pre><code>-- Nonclustered + filtered + include (covering subset)
+CREATE NONCLUSTERED INDEX IX_User_Active
+ON dbo.[User](UserName) INCLUDE (Email)
+WHERE IsActive = 1;
+
+-- Columnstore (reporting / analytics)
+CREATE CLUSTERED COLUMNSTORE INDEX CCI_Orders ON dbo.Orders;</code></pre><h3>When to use clustered vs non-clustered</h3><p><strong>Clustered index — use when:</strong></p><ul>
+<li>Column drives most <strong>range scans</strong> and sorting — often <code>PRIMARY KEY</code> (identity).</li>
+<li>Good for: <code>WHERE OrderDate BETWEEN ...</code>, <code>ORDER BY OrderId</code>, sequential inserts on ID.</li>
+<li>Avoid wide, random clustered keys (e.g. GUID) — causes page splits and fragmentation.</li>
+</ul><p><strong>Non-clustered index — use when:</strong></p><ul>
+<li>Columns appear in <strong>WHERE</strong>, <strong>JOIN</strong>, or <strong>ORDER BY</strong> but are not the clustered key.</li>
+<li>Foreign keys and selective filters (Status, Email, CustomerId).</li>
+<li><strong>Covering index</strong> — INCLUDE extra columns so the query avoids key lookup (see Section 10 item 13).</li>
+<li>Many allowed per table — do not over-index; hurts write-heavy OLTP.</li>
+</ul><table>
+<tr><th>Scenario</th><th>Index choice</th></tr>
+<tr><td>Primary key, sequential ID</td><td>Clustered on PK</td></tr>
+<tr><td>Search by email</td><td>Nonclustered on Email (often UNIQUE)</td></tr>
+<tr><td>Report filter + few returned columns</td><td>Nonclustered with INCLUDE</td></tr>
+<tr><td>Heap table (no clustered)</td><td>Nonclustered leaf points to RID</td></tr>
+</table><pre><code>CREATE CLUSTERED INDEX IX_Order_Date ON Orders(OrderDate);
+
+CREATE NONCLUSTERED INDEX IX_Order_Customer
+ON Orders(CustomerId)
+INCLUDE (OrderDate, Total);</code></pre><p><strong>Related in this section:</strong> Views vs Indexes (item 11), Missing Index (item 12), Covering Index (item 13), Index Design Strategy (item 14).</p><h3>Interview Answer</h3><p>Indexes speed up reads but slow writes. In SQL Server the clustered index defines physical row order — only one per table, usually on the PK. Non-clustered indexes are separate structures for filter and join columns; I add covering indexes with INCLUDE when plans show expensive key lookups. I also know columnstore for analytics and filtered indexes for subsets. I validate with execution plans, avoid over-indexing OLTP tables, and keep the clustered key narrow and sequential.</p></div>
+
 <div class="answer-pane" id="q_9"><h2>SQL Execution Plans</h2><p>An execution plan shows how the optimizer retrieves data: scan vs seek, join algorithms, sort/hash operations, and estimated vs actual row counts. Reading plans is essential for performance tuning.</p><p>Compare estimated vs actual rows; large gaps often mean stale statistics or parameter sniffing issues.</p><pre><code>SET STATISTICS IO ON;
 SET STATISTICS TIME ON;
 
@@ -4837,42 +5052,7 @@ FROM dbo.[User];
 <li>SQL Server allows <code>DELETE</code> from a CTE built on a single base table with window function.</li>
 <li>Always preview with <code>SELECT</code> before <code>DELETE</code>; backup or use a transaction.</li>
 </ul><h3>Interview Answer</h3><p>I use a CTE with <code>ROW_NUMBER() OVER (PARTITION BY Email ORDER BY UserID)</code>, delete where <code>rn &gt; 1</code>, and confirm the partition matches the business duplicate rule. I preview rows first and mention that identical rows with no distinguishing column need a different strategy.</p></div>
-<div class="answer-pane" id="q_sql_index_types"><h2>How Many Types of Indexes Are Available in SQL Server?</h2><p>SQL Server has <strong>two main B-tree index types</strong> used in most OLTP workloads, plus <strong>specialized</strong> indexes for analytics, XML, spatial, and in-memory tables.</p><h3>Core index types (most common in interviews)</h3><table>
-<tr><th>Type</th><th>Count per table</th><th>Purpose</th></tr>
-<tr><td><strong>Clustered index</strong></td><td>One (or heap if none)</td><td>Defines physical row order; often on PK</td></tr>
-<tr><td><strong>Nonclustered index</strong></td><td>Many</td><td>Separate structure; key lookup to clustered/heap</td></tr>
-</table><h3>Extended / specialized types</h3><table>
-<tr><th>Type</th><th>Use case</th></tr>
-<tr><td><strong>Columnstore index</strong> (clustered or nonclustered)</td><td>Data warehousing, analytics, large scans/aggregations</td></tr>
-<tr><td><strong>Hash index</strong></td><td>Memory-optimized (In-Memory OLTP) tables; point lookups</td></tr>
-<tr><td><strong>XML index</strong> (primary + secondary PATH/VALUE/PROPERTY)</td><td>XML columns</td></tr>
-<tr><td><strong>Spatial index</strong></td><td>Geometry / geography columns</td></tr>
-<tr><td><strong>Full-text index</strong></td><td>Word/phrase search (separate engine, not B-tree row seek)</td></tr>
-</table><h3>Variations (not separate “types” but important)</h3><ul>
-<li><strong>Unique</strong> index — enforces uniqueness (clustered or nonclustered).</li>
-<li><strong>Filtered (partial)</strong> index — nonclustered with <code>WHERE</code> predicate (subset of rows).</li>
-<li><strong>Indexed view</strong> — clustered index on a view (materialized aggregation).</li>
-<li><strong>Columnstore with B-tree</strong> — hybrid in some SQL Server versions for OLTP + analytics.</li>
-</ul><h3>Quick count answer</h3><p>Often answered as: <strong>Clustered, Nonclustered, Columnstore, XML, Spatial, Hash (memory-optimized), Full-text</strong> — with clustered/nonclustered being the ones you use daily on relational tables.</p><pre><code>-- Clustered (table order)
-CREATE CLUSTERED INDEX IX_User_Email ON dbo.[User](Email);
 
--- Nonclustered + filtered + include (covering)
-CREATE NONCLUSTERED INDEX IX_User_Active
-ON dbo.[User](UserName) INCLUDE (Email)
-WHERE IsActive = 1;
-
--- Columnstore (reporting)
-CREATE CLUSTERED COLUMNSTORE INDEX CCI_Orders ON dbo.Orders;</code></pre><h3>Related topics on this site</h3>
-<p>Other index topics in <strong>Section 10. SQL &amp; Database</strong>:</p>
-<ul>
-<li><a href="#" onclick="showAnswer('q_7'); return false;">Indexes in SQL</a></li>
-<li><a href="#" onclick="showAnswer('q_8'); return false;">Clustered vs Non-Clustered Index</a></li>
-<li><a href="#" onclick="showAnswer('q_sql_clustered_one_per_table'); return false;">How Many Clustered Indexes per Table?</a></li>
-<li><a href="#" onclick="showAnswer('q_sql_index_when_to_use'); return false;">Use of Clustered &amp; Non-Clustered Indexes</a></li>
-<li><a href="#" onclick="showAnswer('q_sql_missing_index'); return false;">How to Identify Missing Index</a></li>
-<li><a href="#" onclick="showAnswer('q_sql_covering_index'); return false;">Covering Index</a></li>
-<li><a href="#" onclick="showAnswer('q_sql_index_design_strategy'); return false;">Index Design Strategy (Wide Table)</a></li>
-</ul><h3>Interview Answer</h3><p>The main SQL Server index types are clustered and nonclustered B-tree indexes. I also know columnstore for analytics, hash for memory-optimized tables, and XML/spatial/full-text for specialized data. In practice I design clustered plus selective nonclustered indexes, and use filtered or covering indexes when plans show scans or key lookups.</p></div>
 <div class="answer-pane" id="q_113"><h2>JOIN vs CTE vs Subquery</h2><p>JOINs combine tables horizontally. Subqueries nest queries for filtering or scalar values. CTEs name subqueries for readability and recursion. The optimizer often produces similar plans—choose for clarity and maintainability.</p><p>JOIN when combining related tables; EXISTS for semi-join existence checks; CTE when the same subquery is referenced multiple times.</p><pre><code>-- JOIN: combine entities
 SELECT o.Id, c.Name FROM Orders o JOIN Customers c ON o.CustId = c.Id;
 
@@ -7057,24 +7237,7 @@ END CATCH;</code></pre><h3>Key Points</h3><ul>
 <li>Uncommitted changes are visible only within the session (depending on isolation).</li>
 <li><code>XACT_ABORT ON</code> auto-rolls back on runtime errors.</li>
 </ul><h3>Interview Answer</h3><p>COMMIT persists everything since BEGIN TRAN; ROLLBACK reverses it. I wrap related DML in TRY/CATCH, check @@TRANCOUNT, and ROLLBACK on failure so the database never ends up half-updated. SAVE TRANSACTION allows rolling back to a savepoint without aborting the whole batch.</p></div>
-<div class="answer-pane" id="q_sql_clustered_one_per_table"><h2>How Many Clustered Indexes per Table?</h2><p>In SQL Server, a table can have <strong>at most one clustered index</strong>. The clustered index defines the <strong>physical sort order</strong> of the data rows (or is the table itself).</p><h3>Rules</h3><ul>
-<li><strong>0 clustered indexes</strong> — table is a <strong>heap</strong> (unordered storage).</li>
-<li><strong>1 clustered index</strong> — normal case; often on PRIMARY KEY.</li>
-<li><strong>2+ clustered indexes</strong> — <strong>not allowed</strong> on one table.</li>
-</ul><pre><code>-- One clustered index (typical)
-CREATE TABLE Employees (
-    EmployeeId INT PRIMARY KEY CLUSTERED,  -- clustered index on PK
-    Name NVARCHAR(100),
-    DeptId INT
-);
 
--- Many NON-clustered indexes allowed
-CREATE NONCLUSTERED INDEX IX_Emp_Dept ON Employees(DeptId);
-CREATE NONCLUSTERED INDEX IX_Emp_Name ON Employees(Name);</code></pre><h3>Heap vs clustered</h3><table>
-<tr><th>Storage</th><th>Clustered index</th></tr>
-<tr><td>Heap</td><td>No clustered index — rows stored in insertion order</td></tr>
-<tr><td>Clustered table</td><td>One clustered index — leaf level = data pages</td></tr>
-</table><p>You can have <strong>many non-clustered indexes</strong> (up to 999 on older versions, 999 nonclustered + 1 clustered in practice). Non-clustered leaf nodes point to the clustered key or RID (heap).</p><h3>Interview Answer</h3><p>Only one clustered index per table because it controls physical row order. You can have zero (heap) or one (usually on the primary key). Non-clustered indexes are unlimited in practice and are separate structures that reference the clustered key or row identifier.</p></div>
 <div class="answer-pane" id="q_sql_window_functions"><h2>Window Functions in SQL Server</h2><p><strong>Window functions</strong> perform calculations across a set of rows <strong>related to the current row</strong> without collapsing rows into groups (unlike <code>GROUP BY</code>). They use <code>OVER (PARTITION BY ... ORDER BY ...)</code>.</p><h3>Common window functions</h3><table>
 <tr><th>Function</th><th>Purpose</th></tr>
 <tr><td><code>ROW_NUMBER()</code></td><td>Unique sequential number per partition (ties get different numbers)</td></tr>
@@ -7389,27 +7552,7 @@ INNER JOIN Account a2
 <tr><td>Hierarchy or same-table compare</td><td>SELF JOIN</td></tr>
 <tr><td>All combinations (small sets)</td><td>CROSS JOIN</td></tr>
 </table><h3>Interview Answer</h3><p>Joins combine tables on related keys. INNER returns matches only — e.g. customers with accounts. LEFT keeps all customers even without accounts. RIGHT/FULL help reconciliation when data may exist on one side only. CROSS JOIN builds combinations on small reference data. Self join uses two aliases on one table for manager hierarchy or duplicate detection. In banking I use LEFT JOIN for CRM dashboards, INNER for statements, and FULL OUTER for CRM vs core sync.</p></div>
-<div class="answer-pane" id="q_sql_index_when_to_use"><h2>Use of Clustered and Non-Clustered Indexes</h2><p>Indexes speed up <strong>reads</strong> (SELECT, JOIN, WHERE, ORDER BY) at the cost of slower <strong>writes</strong> (INSERT/UPDATE/DELETE) and extra storage.</p><h3>Clustered index — when to use</h3><ul>
-<li><strong>One per table</strong> — defines physical row order.</li>
-<li>Put on the column used most for <strong>range scans</strong> and sorting — often <code>PRIMARY KEY</code> (identity).</li>
-<li>Good for: <code>WHERE OrderDate BETWEEN ...</code>, <code>ORDER BY OrderId</code>, sequential inserts on ID.</li>
-<li>Avoid wide, random clustered keys (e.g. GUID) — causes page splits and fragmentation.</li>
-</ul><h3>Non-clustered index — when to use</h3><ul>
-<li>Add on columns in <strong>WHERE</strong>, <strong>JOIN</strong>, and <strong>ORDER BY</strong> that are not the clustered key.</li>
-<li><strong>Covering index</strong> — INCLUDE extra columns so the query is satisfied from the index alone (no key lookup).</li>
-<li>Foreign keys and highly selective filters (Status, Email, CustomerId).</li>
-<li>Many allowed per table; do not over-index every column — hurts insert/update throughput.</li>
-</ul><table>
-<tr><th>Scenario</th><th>Index choice</th></tr>
-<tr><td>Primary key, sequential ID</td><td>Clustered on PK</td></tr>
-<tr><td>Search by email</td><td>Nonclustered on Email (often UNIQUE)</td></tr>
-<tr><td>Report filter + return few columns</td><td>Nonclustered with INCLUDE</td></tr>
-<tr><td>Heap table (no clustered)</td><td>Nonclustered leaf points to RID</td></tr>
-</table><pre><code>CREATE CLUSTERED INDEX IX_Order_Date ON Orders(OrderDate);
 
-CREATE NONCLUSTERED INDEX IX_Order_Customer
-ON Orders(CustomerId)
-INCLUDE (OrderDate, Total);  -- covering for common query</code></pre><h3>Interview Answer</h3><p>I use the clustered index for the main access path—usually the PK—for physical ordering. I add nonclustered indexes on filter and join columns and covering indexes when plans show expensive key lookups. I balance read speed with write overhead and validate with execution plans.</p></div>
 <div class="answer-pane" id="q_sql_profiling"><h2>SQL Profiling — How to See It &amp; Interview Experience</h2><p><strong>SQL profiling</strong> means capturing what SQL Server is executing — queries, duration, reads, waits — to find slow or expensive statements.</p><h3>Tools in SQL Server</h3><table>
 <tr><th>Tool</th><th>Use</th></tr>
 <tr><td><strong>Actual Execution Plan</strong> (SSMS)</td><td>Per-query plan, operators, cost, missing index hints (Ctrl+M)</td></tr>
