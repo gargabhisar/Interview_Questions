@@ -366,4 +366,148 @@ Server: PROD-ETL-01</code></pre>
 <p>Synchronous transforms (Derived Column, Copy Column) are cheaper — they modify the current buffer. Asynchronous transforms (Sort, Aggregate, Lookup with partial cache issues, Merge Join) may block and use extra memory; they are common performance bottlenecks.</p>
 <h3>One-line strong interview answer</h3>
 <p>Control Flow orchestrates package workflow — tasks, loops, precedence, and error handling — while Data Flow is the row-level ETL pipeline inside a Data Flow Task with sources, transforms, destinations, and error outputs. In a banking nightly load, Control Flow loops files, truncates staging, runs the Data Flow, reconciles counts, and merges to the warehouse; Data Flow handles extract, cleanse, lookup, and split valid vs rejected account rows.</p>""",
+
+"q_ssis_flat_file_etl": """<h2>End-to-End Flat File ETL / SSIS Approach</h2>
+<p>Structured real-world flow for a common SSIS interview scenario: a daily flat file arrives in a shared location and must be loaded into a destination database.</p>
+<h3>Scenario</h3>
+<p>We receive a flat file daily in a shared location and need to load it into a destination database.</p>
+<h3>1. Source file arrival</h3>
+<p>A flat file (CSV/TXT) is dropped daily into a shared folder:</p>
+<pre><code>\\\\SharedDrive\\DailyFiles\\</code></pre>
+<p>Example file name:</p>
+<pre><code>Customer_20260608.csv</code></pre>
+<h3>2. File validation</h3>
+<p>Before loading, validate:</p>
+<ul>
+<li>File exists</li>
+<li>Naming convention is correct</li>
+<li>File extension is valid (.csv / .txt)</li>
+<li>File is not empty</li>
+<li>Column count and format match the expected layout</li>
+<li>File has not already been processed (duplicate check)</li>
+</ul>
+<p>Implement with:</p>
+<ul>
+<li>SSIS Script Task</li>
+<li>File System Task</li>
+<li>Execute SQL Task (check audit table for prior load)</li>
+</ul>
+<h3>3. Archive old files</h3>
+<p>After successful processing, move files to archive:</p>
+<pre><code>\\\\SharedDrive\\Archive\\</code></pre>
+<p>Failed files go to reject folder:</p>
+<pre><code>\\\\SharedDrive\\Reject\\</code></pre>
+<h3>4. SSIS package design — Control Flow</h3>
+<pre><code>File System Task
+      ↓
+Data Flow Task
+      ↓
+Execute SQL Task
+      ↓
+Send Mail Task</code></pre>
+<h3>5. Data Flow Task</h3>
+<pre><code>Flat File Source
+      ↓
+Data Conversion / Derived Column
+      ↓
+Lookup Transformation
+      ↓
+Conditional Split
+      ↓
+OLE DB Destination</code></pre>
+<h3>6. Flat File Source</h3>
+<p>Read CSV/TXT using a <strong>Flat File Connection Manager</strong>.</p>
+<p>Example columns:</p>
+<pre><code>CustomerID
+CustomerName
+City
+CreatedDate</code></pre>
+<h3>7. Transformations</h3>
+<p><strong>Data Conversion</strong> — convert data types:</p>
+<ul>
+<li>string → int</li>
+<li>string → datetime</li>
+</ul>
+<p>Example:</p>
+<pre><code>CustomerID : DT_STR → DT_I4</code></pre>
+<p><strong>Derived Column</strong> — add metadata columns:</p>
+<ul>
+<li><code>LoadDate</code> — e.g. <code>GETDATE()</code></li>
+<li><code>FileName</code></li>
+<li><code>CreatedBy</code> — e.g. <code>"SSIS_DailyLoad"</code></li>
+</ul>
+<p><strong>Lookup Transformation</strong> — check whether record already exists in destination:</p>
+<ul>
+<li>Existing customer → Update path</li>
+<li>New customer → Insert path</li>
+</ul>
+<p><strong>Conditional Split</strong> — separate valid vs invalid records. Invalid rows go to error table or reject file.</p>
+<h3>8. Load into destination</h3>
+<p>Use <strong>OLE DB Destination</strong> with Fast Load where appropriate.</p>
+<p><strong>Best practice — staging first:</strong></p>
+<pre><code>Flat File → Staging Table → Final Production Table</code></pre>
+<p>Load into <code>stg.CustomerDaily</code>, then merge to <code>dbo.Customer</code> via stored procedure.</p>
+<h3>9. Stored procedure execution</h3>
+<p>After staging load, run set-based SQL via <strong>Execute SQL Task</strong>:</p>
+<ul>
+<li>Merge data (INSERT/UPDATE)</li>
+<li>Apply business rules</li>
+<li>Deduplicate</li>
+<li>Update audit table</li>
+</ul>
+<h3>10. Logging &amp; auditing</h3>
+<p>Maintain an audit table:</p>
+<table>
+<tr><th>FileName</th><th>TotalRows</th><th>SuccessRows</th><th>FailedRows</th><th>LoadDate</th></tr>
+<tr><td>Customer_20260608.csv</td><td>10000</td><td>9980</td><td>20</td><td>2026-06-08</td></tr>
+</table>
+<p>Enable:</p>
+<ul>
+<li>SSIS logging (SSISDB / text / SQL Server log provider)</li>
+<li>Custom SQL audit table</li>
+<li>Error output logging from Data Flow</li>
+</ul>
+<h3>11. Error handling</h3>
+<p>If the package fails:</p>
+<ul>
+<li>Capture error message into log table</li>
+<li>Move bad file to Reject folder</li>
+<li>Send failure email notification</li>
+<li>Use precedence constraints on failure path (Event Handlers optional)</li>
+</ul>
+<p><strong>Related:</strong> Section 13 item 3 — Email Alerts on ETL/SSIS Failure.</p>
+<h3>12. Email notification</h3>
+<p>Use <strong>Send Mail Task</strong> or SQL Server Agent notification.</p>
+<pre><code>Subject: Daily Customer File Load Successful
+
+Body:
+Total Rows: 10000
+Loaded: 9980
+Failed: 20</code></pre>
+<h3>13. Scheduling</h3>
+<ul>
+<li>Deploy package to <strong>SSIS Catalog (SSISDB)</strong></li>
+<li>Schedule with <strong>SQL Server Agent Job</strong></li>
+<li>Run daily at a fixed time (e.g. 2:00 AM after file drop)</li>
+</ul>
+<h3>Performance improvements (important for interview)</h3>
+<p><strong>Fast Load</strong> on OLE DB Destination:</p>
+<ul>
+<li>Enable Table Lock</li>
+<li>Use Fast Load / TABLOCK</li>
+</ul>
+<p><strong>Batch processing:</strong></p>
+<pre><code>Maximum Insert Commit Size = 10000</code></pre>
+<p><strong>Index handling:</strong></p>
+<ul>
+<li>Disable nonclustered indexes before huge load (if approved)</li>
+<li>Rebuild indexes after load</li>
+</ul>
+<p><strong>Parallel execution:</strong></p>
+<ul>
+<li>Multiple Data Flow Tasks or parallel file processing for very large volumes</li>
+</ul>
+<p><strong>Related:</strong> Section 13 item 2 — SSIS Performance Optimization; Section 13 item 4 — Control Flow vs Data Flow.</p>
+<h3>Interview Answer</h3>
+<p>In our ETL process, we first validate the incoming flat file, load data into staging tables through SSIS transformations, handle errors separately, execute stored procedures for business logic, maintain audit logging, and schedule the package through SQL Server Agent with email notifications for monitoring.</p>""",
 }

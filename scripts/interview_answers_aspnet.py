@@ -609,4 +609,166 @@ dotnet run
 # Test: https://localhost:5001/</code></pre>
 <h3>Interview Answer</h3>
 <p>Minimal APIs (.NET 6+) let me define routes inline in Program.cs with MapGet/MapPost and DI-injected services — great for microservices and small APIs with less boilerplate. Controllers are better for large enterprise APIs that need filters, versioning, and clear separation across many endpoints. I pick based on project size and team structure.</p>""",
+
+"q_aspnet_nunit": """<h2>NUnit in C# (.NET)</h2>
+<p><strong>NUnit</strong> is a unit testing framework for .NET applications. It lets you write and run automated test cases to validate code behavior, catch bugs early, support regression testing, and integrate with CI/CD pipelines.</p>
+<h3>Why NUnit is used</h3>
+<ul>
+<li>Unit testing</li>
+<li>Automated testing</li>
+<li>Test-Driven Development (TDD)</li>
+<li>Regression testing</li>
+<li>Continuous integration</li>
+</ul>
+<h3>Install NUnit packages (NuGet)</h3>
+<pre><code>Install-Package NUnit
+Install-Package NUnit3TestAdapter
+Install-Package Microsoft.NET.Test.Sdk</code></pre>
+<p>Or with .NET CLI:</p>
+<pre><code>dotnet add package NUnit
+dotnet add package NUnit3TestAdapter
+dotnet add package Microsoft.NET.Test.Sdk</code></pre>
+<h3>Basic NUnit structure</h3>
+<pre><code>using NUnit.Framework;
+
+namespace CalculatorTests
+{
+    public class Tests
+    {
+        [Test]
+        public void Add_Test()
+        {
+            int result = 5 + 3;
+            Assert.AreEqual(8, result);
+        }
+    }
+}</code></pre>
+<h3>Common NUnit attributes</h3>
+<table>
+<tr><th>Attribute</th><th>Purpose</th></tr>
+<tr><td><code>[Test]</code></td><td>Marks a test method</td></tr>
+<tr><td><code>[TestFixture]</code></td><td>Marks a test class</td></tr>
+<tr><td><code>[SetUp]</code></td><td>Runs before every test</td></tr>
+<tr><td><code>[TearDown]</code></td><td>Runs after every test</td></tr>
+<tr><td><code>[OneTimeSetUp]</code></td><td>Runs once before all tests</td></tr>
+<tr><td><code>[OneTimeTearDown]</code></td><td>Runs once after all tests</td></tr>
+<tr><td><code>[Ignore]</code></td><td>Skip a test</td></tr>
+<tr><td><code>[TestCase]</code></td><td>Parameterized testing</td></tr>
+</table>
+<h3>Example with SetUp &amp; TearDown</h3>
+<pre><code>using NUnit.Framework;
+
+[TestFixture]
+public class EmployeeTests
+{
+    [SetUp]
+    public void Setup()
+    {
+        Console.WriteLine("Before every test");
+    }
+
+    [Test]
+    public void Salary_Test()
+    {
+        Assert.AreEqual(5000, 5000);
+    }
+
+    [TearDown]
+    public void Cleanup()
+    {
+        Console.WriteLine("After every test");
+    }
+}</code></pre>
+<h3>Parameterized test</h3>
+<pre><code>[TestCase(2, 3, 5)]
+[TestCase(10, 20, 30)]
+[TestCase(5, 5, 10)]
+public void Add_Test(int a, int b, int expected)
+{
+    int result = a + b;
+    Assert.AreEqual(expected, result);
+}</code></pre>
+<h3>Important assertions</h3>
+<table>
+<tr><th>Assertion</th><th>Meaning</th></tr>
+<tr><td><code>Assert.AreEqual()</code></td><td>Compare values</td></tr>
+<tr><td><code>Assert.IsTrue()</code></td><td>Check true</td></tr>
+<tr><td><code>Assert.IsFalse()</code></td><td>Check false</td></tr>
+<tr><td><code>Assert.IsNull()</code></td><td>Check null</td></tr>
+<tr><td><code>Assert.IsNotNull()</code></td><td>Check not null</td></tr>
+<tr><td><code>Assert.Throws()</code></td><td>Check exception</td></tr>
+</table>
+<h3>Exception testing example</h3>
+<pre><code>[Test]
+public void Divide_By_Zero_Test()
+{
+    Assert.Throws&lt;DivideByZeroException&gt;(() =&gt;
+    {
+        int x = 10 / 0;
+    });
+}</code></pre>
+<h3>Real-time example</h3>
+<p>Production code:</p>
+<pre><code>public class Calculator
+{
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+}</code></pre>
+<p>NUnit test:</p>
+<pre><code>[Test]
+public void Add_Should_Return_Correct_Result()
+{
+    Calculator calc = new Calculator();
+    int result = calc.Add(5, 10);
+    Assert.AreEqual(15, result);
+}</code></pre>
+<h3>NUnit lifecycle</h3>
+<pre><code>OneTimeSetUp
+    ↓
+SetUp
+    ↓
+Test
+    ↓
+TearDown
+    ↓
+(repeats for every test)
+    ↓
+OneTimeTearDown</code></pre>
+<h3>NUnit vs xUnit vs MSTest</h3>
+<table>
+<tr><th>Feature</th><th>NUnit</th><th>xUnit</th><th>MSTest</th></tr>
+<tr><td>Popularity</td><td>Very popular</td><td>Modern popular</td><td>Microsoft official</td></tr>
+<tr><td>Attributes</td><td>Rich</td><td>Simple</td><td>Moderate</td></tr>
+<tr><td>Parameterized tests</td><td>Excellent (<code>[TestCase]</code>)</td><td>Good (<code>[Theory]</code>)</td><td>Good (<code>[DataRow]</code>)</td></tr>
+<tr><td>Learning curve</td><td>Easy</td><td>Moderate</td><td>Easy</td></tr>
+</table>
+<h3>Interview questions</h3>
+<p><strong>What is NUnit?</strong></p>
+<p>NUnit is an open-source unit testing framework for .NET used to automate and validate application functionality.</p>
+<p><strong>Difference between NUnit and manual testing?</strong></p>
+<table>
+<tr><th>NUnit</th><th>Manual Testing</th></tr>
+<tr><td>Automated</td><td>Human executed</td></tr>
+<tr><td>Faster</td><td>Slower</td></tr>
+<tr><td>Repeatable</td><td>Time consuming</td></tr>
+<tr><td>CI/CD support</td><td>No</td></tr>
+</table>
+<p><strong>What is Assert?</strong></p>
+<p>Assert verifies expected vs actual results in a test case.</p>
+<pre><code>Assert.AreEqual(expected, actual);</code></pre>
+<h3>Run tests</h3>
+<pre><code>dotnet test</code></pre>
+<h3>Best practices</h3>
+<ul>
+<li>One assertion per behavior (or one logical outcome per test)</li>
+<li>Keep tests independent</li>
+<li>Use meaningful test names</li>
+<li>Mock external dependencies</li>
+<li>Avoid real database calls in unit tests</li>
+</ul>
+<p><strong>Related:</strong> Section 11 item 2 — CI/CD Pipeline (<code>dotnet test</code> in build pipeline).</p>
+<h3>Interview Answer</h3>
+<p>NUnit is a unit testing framework in .NET used to automate testing and validate application functionality using attributes like [Test] and [TestCase] and assertions such as Assert.AreEqual. I use it with dotnet test in CI pipelines to catch regressions early and keep tests independent with mocks for external dependencies.</p>""",
 }
