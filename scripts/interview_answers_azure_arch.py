@@ -358,4 +358,54 @@ OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;</code></pre>
 <div class="interview-tip"><p>While designing large-scale systems, I focus on removing bottlenecks, avoiding single points of failure, improving response time, and ensuring the system can scale horizontally while remaining secure and highly available. I start with a modular monolith when appropriate, add microservices and async processing only where the domain justifies the complexity, and always pair scaling with monitoring, backups, and tested recovery.</p></div>
 <h3>Interview Answer</h3>
 <p>I structure large-scale design around scalability, reliability, database performance, caching, async processing, security, monitoring, DR, and CI/CD. I scale APIs horizontally with stateless design and Redis, optimize SQL with indexes and read replicas, offload heavy work to queues, use Polly for resilience on external calls, and enforce observability and automated deployment. In banking, that means fast account lookup under load, async notifications, protected payment integrations, and zero-downtime releases — without over-engineering small systems into microservices too early.</p>""",
+
+"q_arch_microservices_comm": """<h2>How Microservices Communicate With Each Other</h2>
+<p>Two fundamental styles: <strong>synchronous</strong> (caller waits for a response) and <strong>asynchronous</strong> (message sent, caller moves on). Most real systems use <strong>both</strong> — sync for queries the user is waiting on, async for events and side effects.</p>
+<h3>1. Synchronous communication</h3>
+<table>
+<tr><th>Mechanism</th><th>Details</th><th>When</th></tr>
+<tr><td><strong>REST / HTTP + JSON</strong></td><td>Simple, universal; via <code>HttpClient</code> / <code>IHttpClientFactory</code> in .NET</td><td>Default for request/response between services</td></tr>
+<tr><td><strong>gRPC</strong></td><td>HTTP/2, binary Protobuf — much faster, strongly-typed contracts, streaming</td><td>High-throughput internal service-to-service calls</td></tr>
+</table>
+<pre><code>// Typed client via IHttpClientFactory (with Polly resilience)
+builder.Services.AddHttpClient&lt;IInventoryClient, InventoryClient&gt;(c =&gt;
+        c.BaseAddress = new Uri("https://inventory-svc"))
+    .AddStandardResilienceHandler();   // .NET 8: retry + circuit breaker + timeout</code></pre>
+<p><strong>Risk of sync chains:</strong> A → B → C means A's latency and availability depend on the whole chain (cascading failures). Keep chains short; protect with timeouts, retries, circuit breakers.</p>
+<h3>2. Asynchronous communication (messaging)</h3>
+<table>
+<tr><th>Pattern</th><th>How</th><th>Example</th></tr>
+<tr><td><strong>Queue (point-to-point)</strong></td><td>One producer → one consumer; load leveling</td><td>Azure Service Bus queue, RabbitMQ — "process this payment"</td></tr>
+<tr><td><strong>Publish/Subscribe (events)</strong></td><td>Publisher emits event; <strong>many</strong> subscribers react independently</td><td>Service Bus topics, Kafka, RabbitMQ exchanges — "OrderPlaced"</td></tr>
+</table>
+<pre><code>OrderService ── publishes ──&gt; "OrderPlaced" event
+                                  ├─&gt; InventoryService  (reserve stock)
+                                  ├─&gt; EmailService      (confirmation mail)
+                                  └─&gt; AnalyticsService  (update dashboard)
+// Order service doesn't know or care who listens — loose coupling</code></pre>
+<p><strong>Benefits:</strong> services stay decoupled, survive consumer downtime (messages wait in the broker), natural retry, scale consumers independently. <strong>Cost:</strong> eventual consistency — data is correct "soon", not instantly.</p>
+<h3>3. Supporting pieces</h3>
+<ul>
+<li><strong>API Gateway</strong> (Azure API Management, Ocelot, YARP) — single entry point for clients; routing, auth, rate limiting. Clients never call services directly.</li>
+<li><strong>Service discovery</strong> — how services find each other: Kubernetes DNS, Consul, or platform-provided.</li>
+<li><strong>Outbox pattern</strong> — save DB change + event in one transaction, publish reliably afterward (no lost events).</li>
+<li><strong>Saga pattern</strong> — distributed transactions as a sequence of local transactions with compensating actions (cancel payment if stock reservation fails).</li>
+<li><strong>Correlation IDs</strong> — pass a request ID through every hop for end-to-end tracing (Application Insights / OpenTelemetry).</li>
+</ul>
+<h3>Choosing sync vs async</h3>
+<table>
+<tr><th>Use synchronous</th><th>Use asynchronous</th></tr>
+<tr><td>User is waiting for the answer (get price, check stock)</td><td>Side effects (emails, notifications, analytics)</td></tr>
+<tr><td>Simple query with low fan-out</td><td>Multiple services must react to one event</td></tr>
+<tr><td>Strong consistency needed right now</td><td>Spiky load — queue levels it out</td></tr>
+</table>
+<h3>Key Points</h3>
+<ul>
+<li>Sync: REST (universal) or gRPC (fast, typed) — protect with timeouts, retries, circuit breakers.</li>
+<li>Async: queues for work distribution, pub/sub events for fan-out — loose coupling, eventual consistency.</li>
+<li>API Gateway for client entry; outbox for reliable event publishing; saga for distributed workflows.</li>
+<li>Real systems mix both: query synchronously, propagate changes as events.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>Microservices communicate synchronously or asynchronously. Synchronous is REST over HttpClient or gRPC for fast internal calls — I always add timeouts, retries, and circuit breakers via Polly or .NET 8's standard resilience handler, because sync chains cascade failures. Asynchronous uses a message broker like Azure Service Bus or RabbitMQ — queues for distributing work and pub/sub topics for events, so when OrderService publishes OrderPlaced, inventory, email, and analytics each react independently. That gives loose coupling and resilience at the price of eventual consistency. Around that I'd put an API gateway for client traffic, the outbox pattern so events aren't lost, sagas for multi-service transactions, and correlation IDs for tracing across services.</p>""",
 }

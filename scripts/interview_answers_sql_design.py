@@ -622,26 +622,49 @@ JOIN Departments d ON t.DeptId = d.DeptId;</code></pre>
 <h3>Interview Answer</h3>
 <p>A CTE is a named subquery using WITH that makes complex SQL readable and supports recursion. It's scoped to one statement and doesn't persist like a temp table unless the optimizer materializes it.</p>""",
 
-"q_124": """<h2>CTE vs Temp Table</h2>
-<p>CTEs exist only for the duration of one statement and are ideal for readability and recursion. Temp tables (#table) persist for the session, support indexes/statistics, and suit multi-step ETL or large intermediate results.</p>
-<p>Table variables (@t) are a third option for small in-memory staging sets.</p>
+"q_124": """<h2>CTE vs Temp Table vs Table Variable</h2>
+<p>All three hold intermediate results, but they differ in <strong>scope, indexing, statistics, and ideal data size</strong>.</p>
 <table>
-<tr><th>CTE</th><th>Temp Table</th></tr>
-<tr><td>Single statement scope</td><td>Session scope</td></tr>
-<tr><td>No indexes (generally)</td><td>Indexes and stats possible</td></tr>
-<tr><td>Recursive support</td><td>Better for large datasets</td></tr>
+<tr><th></th><th>CTE</th><th>#Temp Table</th><th>@Table Variable</th></tr>
+<tr><td><strong>Syntax</strong></td><td><code>WITH cte AS (...)</code></td><td><code>CREATE TABLE #t / SELECT INTO #t</code></td><td><code>DECLARE @t TABLE (...)</code></td></tr>
+<tr><td><strong>Scope</strong></td><td><strong>One statement only</strong></td><td>Session (or nested procs)</td><td>Batch / procedure that declared it</td></tr>
+<tr><td><strong>Stored in</strong></td><td>Not materialized — inlined into the query plan</td><td>tempdb</td><td>tempdb too (not "memory only" — common myth)</td></tr>
+<tr><td><strong>Indexes</strong></td><td>No (uses base table indexes)</td><td>Yes — clustered/nonclustered, added anytime</td><td>Only PK/UNIQUE inline (+ inline indexes 2014+)</td></tr>
+<tr><td><strong>Statistics</strong></td><td>n/a</td><td><strong>Yes</strong> — optimizer estimates well</td><td><strong>No</strong> — poor estimates (improved a bit in 2019)</td></tr>
+<tr><td><strong>Recursion</strong></td><td><strong>Yes</strong> — recursive CTEs</td><td>No</td><td>No</td></tr>
+<tr><td><strong>Transactions</strong></td><td>n/a</td><td>Fully logged, rolls back</td><td>Mostly unaffected by rollback</td></tr>
+<tr><td><strong>Best size</strong></td><td>Any (it's just syntax)</td><td>Large intermediate sets</td><td>Small sets (&lt; ~1000 rows)</td></tr>
 </table>
-<pre><code>SELECT * INTO #TopSales FROM Sales WHERE Year = 2024;
-CREATE INDEX IX_Region ON #TopSales(Region);
--- reuse across batches</code></pre>
+<h3>When to choose each</h3>
+<ul>
+<li><strong>CTE</strong> — readability: breaking a complex query into named steps, window-function filtering (<code>WHERE rnk = 1</code>), and <strong>recursion</strong> (org charts, BOM trees). Remember: referenced twice = potentially executed twice — it's not cached.</li>
+<li><strong>#Temp table</strong> — large intermediate results <strong>reused across multiple statements</strong>, need indexes or accurate statistics, multi-step transformations in SPs and ETL.</li>
+<li><strong>@Table variable</strong> — small lookup/staging sets, table-valued parameters (TVPs) into procs, cases where you don't want the data affected by transaction rollback.</li>
+</ul>
+<pre><code>-- CTE: one-statement readability + recursion
+WITH TopSales AS (
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY Region ORDER BY Amount DESC) rn
+    FROM Sales
+)
+SELECT * FROM TopSales WHERE rn = 1;
+
+-- Temp table: big set, reused, indexed
+SELECT * INTO #Sales2024 FROM Sales WHERE Year = 2024;
+CREATE INDEX IX_Region ON #Sales2024(Region);
+-- ...several statements reuse #Sales2024...
+
+-- Table variable: small set / TVP
+DECLARE @Ids TABLE (Id INT PRIMARY KEY);
+INSERT INTO @Ids VALUES (1), (2), (3);</code></pre>
 <h3>Key Points</h3>
 <ul>
-<li>Use CTE for clarity; temp table when data is reused or needs indexing.</li>
-<li>Temp tables live in tempdb; watch contention at scale.</li>
-<li>Table variables (@t) are a third option for small sets.</li>
+<li>CTE = inline syntax for one statement; not materialized, supports recursion.</li>
+<li>#Temp = tempdb + indexes + statistics → best for large reused sets.</li>
+<li>@Table variable = small sets; no statistics → optimizer guesses (1 row pre-2019).</li>
+<li>Both #temp and @table live in tempdb — the "memory only" claim is a myth.</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>CTEs are inline, single-statement helpers; temp tables persist in tempdb with indexes for heavier multi-step work. I choose based on reuse, size, and whether I need statistics for the optimizer.</p>""",
+<p>A CTE is just named query syntax scoped to one statement — great for readability, window-function filtering, and recursion, but it isn't materialized. A temp table is materialized in tempdb with indexes and real statistics, so I use it for large intermediate results reused across multiple steps in a procedure. A table variable also lives in tempdb but has no statistics, so the optimizer estimates poorly — I keep it for small sets and table-valued parameters. Rule of thumb: CTE for clarity, temp table for big reused data, table variable for tiny sets.</p>""",
 
 "q_18": """<h2>Temp Table vs Table Variable</h2>
 <p>Temp tables (#name) store data in tempdb with full statistics (after enough rows). Table variables (@name) historically had poor cardinality estimates; SQL Server 2019+ improved this with table variable deferred compilation.</p>
@@ -1892,4 +1915,84 @@ MyApp.API            ← controllers / minimal endpoints, DI wiring</code></pre>
 </ul>
 <h3>Interview Answer</h3>
 <p>DDD means designing the system around the business domain. Strategically, I start with the ubiquitous language and bounded contexts — for example, "Customer" in Sales and Billing are different models, and those boundaries often become microservice boundaries. Tactically, I model entities with identity, immutable value objects like Money, and aggregates that enforce invariants — an Order aggregate won't allow adding lines after submission, so it can never be in an invalid state. I keep one repository per aggregate root and raise domain events for side effects. In .NET I combine this with Clean Architecture — the Domain project has no dependencies — and CQRS, where commands go through the aggregate and queries project straight to DTOs. I'd use full DDD for complex rule-heavy domains, and deliberately skip it for simple CRUD.</p>""",
+
+"q_pattern_payment_design": """<h2>Design: Payment System Where New Methods Can Be Added Without Modifying Existing Code</h2>
+<p>This is a classic <strong>Open/Closed Principle</strong> design question. The answer combines three things: <strong>Strategy pattern</strong> (interchangeable payment behaviors), <strong>Factory / DI resolution</strong> (choosing the right one), and <strong>keyed DI services in .NET 8</strong> as the modern shortcut.</p>
+<h3>Step 1 — Abstraction (the contract)</h3>
+<pre><code>public interface IPaymentMethod
+{
+    string Name { get; }                       // "Card", "UPI", "PayPal"
+    Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest request);
+}</code></pre>
+<h3>Step 2 — One class per payment method (Strategy)</h3>
+<pre><code>public class CardPayment : IPaymentMethod
+{
+    public string Name =&gt; "Card";
+    public async Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest r)
+    {
+        // call card gateway
+        return PaymentResult.Success(r.Amount);
+    }
+}
+
+public class UpiPayment : IPaymentMethod
+{
+    public string Name =&gt; "UPI";
+    public async Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest r)
+    {
+        // call UPI provider
+        return PaymentResult.Success(r.Amount);
+    }
+}</code></pre>
+<h3>Step 3 — Resolver instead of switch/if-else</h3>
+<pre><code>// Register ALL implementations
+builder.Services.AddScoped&lt;IPaymentMethod, CardPayment&gt;();
+builder.Services.AddScoped&lt;IPaymentMethod, UpiPayment&gt;();
+
+// Resolver picks by name — no switch statement anywhere
+public class PaymentProcessor
+{
+    private readonly IEnumerable&lt;IPaymentMethod&gt; _methods;
+    public PaymentProcessor(IEnumerable&lt;IPaymentMethod&gt; methods)
+        =&gt; _methods = methods;   // DI injects every registered implementation
+
+    public Task&lt;PaymentResult&gt; PayAsync(string method, PaymentRequest r)
+    {
+        var handler = _methods.FirstOrDefault(
+            m =&gt; m.Name.Equals(method, StringComparison.OrdinalIgnoreCase))
+            ?? throw new NotSupportedException($"Payment method: {method}");
+        return handler.ProcessAsync(r);
+    }
+}</code></pre>
+<h3>.NET 8 alternative — keyed services</h3>
+<pre><code>builder.Services.AddKeyedScoped&lt;IPaymentMethod, CardPayment&gt;("card");
+builder.Services.AddKeyedScoped&lt;IPaymentMethod, UpiPayment&gt;("upi");
+
+// Resolve by key
+public PaymentProcessor(IServiceProvider sp)
+{
+    var handler = sp.GetRequiredKeyedService&lt;IPaymentMethod&gt;("upi");
+}</code></pre>
+<h3>Adding PayPal tomorrow</h3>
+<pre><code>1. Create PayPalPayment : IPaymentMethod      // NEW file
+2. Register it in DI                          // ONE line
+// PaymentProcessor, controllers, all existing methods: UNTOUCHED</code></pre>
+<p>That's the Open/Closed Principle: <strong>open for extension, closed for modification</strong>.</p>
+<h3>Production extras worth mentioning</h3>
+<ul>
+<li><strong>Validation per method</strong> — each strategy validates its own request shape.</li>
+<li><strong>Idempotency keys</strong> — retries must not double-charge.</li>
+<li><strong>Webhooks/callbacks</strong> — async confirmation from gateways updates payment status.</li>
+<li><strong>Outbox + events</strong> — <code>PaymentCompleted</code> event drives order fulfillment without coupling.</li>
+<li>Config-driven enable/disable per method (feature flags).</li>
+</ul>
+<h3>Key Points</h3>
+<ul>
+<li>Interface + one class per payment method = Strategy pattern.</li>
+<li>DI injects all implementations (<code>IEnumerable&lt;IPaymentMethod&gt;</code>) or .NET 8 keyed services — no switch statements.</li>
+<li>New method = new class + one registration; zero changes to existing code (OCP).</li>
+<li>Mention idempotency and webhook confirmation for real payment systems.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>I'd define an IPaymentMethod interface and implement one class per method — Card, UPI, PayPal — which is the Strategy pattern. Instead of a switch statement, I register all implementations in DI and inject IEnumerable&lt;IPaymentMethod&gt; into a resolver that picks by name, or in .NET 8 use keyed services. Adding a new payment method then means writing one new class and one DI registration — no existing code changes, which is exactly the Open/Closed Principle. In a real payment system I'd also add idempotency keys so retries can't double-charge, and webhook handling for asynchronous gateway confirmations.</p>""",
 }

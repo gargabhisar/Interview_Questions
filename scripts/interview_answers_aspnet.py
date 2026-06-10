@@ -765,6 +765,62 @@ Response Returned</code></pre>
 <h3>Interview Answer</h3>
 <p>In ASP.NET Core, execution starts from Program.cs where services are registered into the dependency injection container and the middleware pipeline is configured. When a request comes to the Kestrel server, it passes through middleware components like authentication, authorization, and routing. Then the matched controller executes business logic and database operations, generates a response, and sends it back to the client. ASP.NET Core also supports service lifetimes — Transient, Scoped, and Singleton — through built-in dependency injection.</p>""",
 
+"q_scenario_third_party_api": """<h2>Scenario: Third-Party API Failing Intermittently</h2>
+<p>A favorite production-thinking question. Structure the answer: <strong>protect your app first, then diagnose, then harden long-term</strong>.</p>
+<h3>Step 1 — Protect your application (immediate)</h3>
+<table>
+<tr><th>Defense</th><th>What it does</th></tr>
+<tr><td><strong>Timeout</strong></td><td>Never wait forever — fail fast instead of hanging request threads</td></tr>
+<tr><td><strong>Retry with exponential backoff + jitter</strong></td><td>Transient blips (network, 502/503) often succeed on retry seconds later</td></tr>
+<tr><td><strong>Circuit breaker</strong></td><td>After repeated failures, stop calling for a cool-down — protects both sides</td></tr>
+<tr><td><strong>Fallback</strong></td><td>Serve cached/stale data or a degraded response instead of an error</td></tr>
+</table>
+<pre><code>// .NET 8 — one line adds retry + circuit breaker + timeout
+builder.Services.AddHttpClient&lt;IRatesClient, RatesClient&gt;()
+    .AddStandardResilienceHandler();
+
+// Or explicit Polly policy:
+.AddResilienceHandler("rates", b =&gt;
+{
+    b.AddTimeout(TimeSpan.FromSeconds(3));
+    b.AddRetry(new() {
+        MaxRetryAttempts = 3,
+        BackoffType = DelayBackoffType.Exponential,
+        UseJitter = true,
+        ShouldHandle = args =&gt; ValueTask.FromResult(
+            args.Outcome.Result?.StatusCode &gt;= HttpStatusCode.InternalServerError)
+    });
+    b.AddCircuitBreaker(new() { FailureRatio = 0.5, BreakDuration = TimeSpan.FromSeconds(30) });
+});</code></pre>
+<p><strong>Retry rule:</strong> only retry <strong>transient</strong> errors (timeouts, 5xx, 429) and only <strong>idempotent</strong> operations — never blind-retry a payment POST without an idempotency key.</p>
+<h3>Step 2 — Decouple if the operation allows it</h3>
+<ul>
+<li>If the user doesn't need the result immediately → <strong>queue it</strong> (Service Bus/RabbitMQ) and process with retries in a background worker. The API responds instantly; the flaky dependency stops affecting user requests.</li>
+<li><strong>Cache</strong> last-known-good responses for read APIs (exchange rates, catalogs) and serve them while the provider is down.</li>
+</ul>
+<h3>Step 3 — Diagnose and engage the provider</h3>
+<ul>
+<li>Log every call: latency, status code, correlation ID; chart the failure pattern (specific hours? specific endpoints? rate-limit 429s?).</li>
+<li>Check their status page / SLA; raise a ticket with evidence (timestamps, request IDs).</li>
+<li>Verify it's really them: DNS, TLS, proxy/firewall on your side, connection pool exhaustion (HttpClient misuse).</li>
+</ul>
+<h3>Step 4 — Harden long term</h3>
+<ul>
+<li><strong>Health checks + alerts</strong> on the dependency (failure-rate threshold, not single failures).</li>
+<li><strong>Idempotency keys</strong> for write operations so retries are safe.</li>
+<li>Consider a <strong>second provider / fallback vendor</strong> for business-critical paths.</li>
+<li>Document degraded-mode behavior — what users see when the provider is down.</li>
+</ul>
+<h3>Key Points</h3>
+<ul>
+<li>Timeout + retry with backoff/jitter + circuit breaker + fallback — Polly or .NET 8 <code>AddStandardResilienceHandler</code>.</li>
+<li>Retry only transient errors and idempotent operations.</li>
+<li>Queue non-urgent calls; cache last-known-good data for reads.</li>
+<li>Measure and escalate with evidence; alert on failure rate; plan degraded mode.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>First I make sure the failure can't hurt my app: a strict timeout, retries with exponential backoff and jitter for transient errors only, and a circuit breaker so we stop hammering a failing provider — in .NET 8 that's one AddStandardResilienceHandler call on the HttpClient. For writes I add idempotency keys so a retry can't duplicate a payment. If the operation isn't time-critical I move it behind a queue so users never feel the flakiness, and for reads I serve cached last-known-good data as a fallback. In parallel I diagnose: structured logs with correlation IDs to see the failure pattern, check their status page, and escalate to the vendor with evidence. Long term — health checks with failure-rate alerts and, for critical flows, a fallback provider.</p>""",
+
 "q_automapper": """<h2>AutoMapper</h2>
 <p><strong>AutoMapper</strong> is a library that maps objects of one type to another <strong>by convention</strong> — typically <strong>entities ↔ DTOs</strong> — so you don't hand-write repetitive property-copy code.</p>
 <h3>The problem it solves</h3>

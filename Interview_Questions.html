@@ -1078,6 +1078,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_arch_caching_why')">10. Caching — Why, Memory vs Redis</div>
 <div class="question-item" onclick="showAnswer('q_2')">11. Microservices Architecture</div>
 <div class="question-item" onclick="showAnswer('q_arch_large_scale_design')">12. Large-Scale App — Scalability &amp; Reliability</div>
+<div class="question-item" onclick="showAnswer('q_arch_microservices_comm')">13. How Microservices Communicate</div>
 </div>
 <h3 class="topic-header">5. Design Patterns</h3>
 <div class="question-group">
@@ -1090,6 +1091,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_88')">7. Repository Pattern</div>
 <div class="question-item" onclick="showAnswer('q_89')">8. CQRS Pattern</div>
 <div class="question-item" onclick="showAnswer('q_arch_ddd')">9. Domain-Driven Design (DDD)</div>
+<div class="question-item" onclick="showAnswer('q_pattern_payment_design')">10. Design: Extensible Payment System (OCP)</div>
 </div>
 <h3 class="topic-header">6. Security &amp; Authentication</h3>
 <div class="question-group">
@@ -1159,76 +1161,79 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_10')">9. Primary vs Unique Key</div>
 <div class="question-item" onclick="showAnswer('q_sql_types_of_keys')">10. Types of Keys in SQL</div>
 <div class="question-item" onclick="showAnswer('q_7')">11. SQL Server Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_views_vs_indexes')">12. Views vs Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_missing_index')">13. How to Identify Missing Index</div>
-<div class="question-item" onclick="showAnswer('q_sql_covering_index')">14. Covering Index</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_design_strategy')">15. Index Design Strategy (Wide Table)</div>
-<div class="question-item" onclick="showAnswer('q_9')">16. Execution Plan</div>
-<div class="question-item" onclick="showAnswer('q_sql_profiling')">17. SQL Profiling &amp; Performance Tools</div>
-<div class="question-item" onclick="showAnswer('q_sql_profiler')">18. SQL Profiler — Interview Q&amp;A</div>
-<div class="question-item" onclick="showAnswer('q_sql_opt_techniques_list')">19. SQL Optimization Techniques (5–7 Ways)</div>
-<div class="question-item" onclick="showAnswer('q_112')">20. Improve Query Performance (SQL Server)</div>
-<div class="question-item" onclick="showAnswer('q_11')">21. UNION vs UNION ALL</div>
-<div class="question-item" onclick="showAnswer('q_12')">22. ISNULL vs COALESCE</div>
-<div class="question-item" onclick="showAnswer('q_sql_where_having')">23. WHERE vs HAVING</div>
-<div class="question-item" onclick="showAnswer('q_14')">24. Table vs Views</div>
-<div class="question-item" onclick="showAnswer('q_sql_joins_self_join')">25. Joins &amp; Self Join</div>
-<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">26. Types of Joins</div>
-<div class="question-item" onclick="showAnswer('q_113')">27. JOIN, CTE &amp; Subquery</div>
-<div class="question-item" onclick="showAnswer('q_sql_cte_used')">28. CTE — What &amp; Have You Used It?</div>
-<div class="question-item" onclick="showAnswer('q_124')">29. CTE vs Temp Table</div>
-<div class="question-item" onclick="showAnswer('q_18')">30. #temp Table vs @table Variable</div>
-<div class="question-item" onclick="showAnswer('q_19')">31. Subquery vs CTE</div>
-<div class="question-item" onclick="showAnswer('q_sql_cte_vs_global_temp')">32. CTE vs ##temp (1M+ Rows in SP)</div>
-<div class="question-item" onclick="showAnswer('q_15')">33. Stored Procedure vs Function</div>
-<div class="question-item" onclick="showAnswer('q_sql_what_is_sp')">34. What is Stored Procedure?</div>
-<div class="question-item" onclick="showAnswer('q_123')">35. Benefits of Stored Procedures</div>
-<div class="question-item" onclick="showAnswer('q_sql_cursor')">36. Cursors in SQL</div>
-<div class="question-item" onclick="showAnswer('q_sql_function_return_types')">37. Functions — Multiple Return Types?</div>
-<div class="question-item" onclick="showAnswer('q_30')">38. Unlimited SP Parameters</div>
-<div class="question-item" onclick="showAnswer('q_125')">39. TRUNCATE vs DELETE</div>
-<div class="question-item" onclick="showAnswer('q_29')">40. MERGE Statement</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_implement')">41. Transaction — What &amp; How to Implement</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_what')">42. Transaction in SQL (not “Transition”)</div>
-<div class="question-item" onclick="showAnswer('q_sql_acid')">43. ACID Properties</div>
-<div class="question-item" onclick="showAnswer('q_28')">44. Transactions</div>
-<div class="question-item" onclick="showAnswer('q_sql_commit_rollback')">45. COMMIT and ROLLBACK</div>
-<div class="question-item" onclick="showAnswer('q_27')">46. Isolation Levels</div>
-<div class="question-item" onclick="showAnswer('q_25')">47. Deadlock</div>
-<div class="question-item" onclick="showAnswer('q_26')">48. WITH(NOLOCK)</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_scenario')">49. Transaction Scenario (500 Records)</div>
-<div class="question-item" onclick="showAnswer('q_21')">50. Triggers in SQL — Purpose</div>
-<div class="question-item" onclick="showAnswer('q_sql_inserted_deleted')">51. INSERTED vs DELETED</div>
-<div class="question-item" onclick="showAnswer('q_24')">52. Magic Tables in Triggers</div>
-<div class="question-item" onclick="showAnswer('q_sql_window_functions')">53. Window Functions</div>
-<div class="question-item" onclick="showAnswer('q_22')">54. ROW_NUMBER()</div>
-<div class="question-item" onclick="showAnswer('q_23')">55. RANK vs DENSE_RANK</div>
-<div class="question-item" onclick="showAnswer('q_sql_5th_rank_cte')">56. Nth Highest Salary — RANK &amp; CTE (4th/5th)</div>
-<div class="question-item" onclick="showAnswer('q_35')">57. Nth Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_5th_highest_salary')">58. Get 5th Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_2nd_salary')">59. 2nd Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_second_highest_dept')">60. Second Highest Salary (Dept-wise)</div>
-<div class="question-item" onclick="showAnswer('q_36')">61. Students — Same Score (Find Names)</div>
-<div class="question-item" onclick="showAnswer('q_sql_commission_null')">62. Commission NULL → 0</div>
-<div class="question-item" onclick="showAnswer('q_sql_dept_zero_employees')">63. Department with 0 Employees</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_tanker')">64. 3rd Highest Tanker Level &amp; Duplicate Names</div>
-<div class="question-item" onclick="showAnswer('q_sql_remove_duplicates_cte')">65. Delete Duplicate Records (CTE + PARTITION BY)</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_pagination')">66. Pagination in SQL</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_gender_codes')">67. Gender Codes — M / F / O (INSERT)</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_default_age')">68. UserDetails — Default Age = 18</div>
-<div class="question-item" onclick="showAnswer('q_sql_select_into_where')">69. SELECT * INTO — WHERE 1=0 vs 1=1</div>
-<div class="question-item" onclick="showAnswer('q_sql_last_inserted')">70. Last Inserted Record</div>
-<div class="question-item" onclick="showAnswer('q_20')">71. SQL Injection Prevention</div>
-<div class="question-item" onclick="showAnswer('q_sql_concurrent_update_conflict')">72. Two Users Update Same Row</div>
-<div class="question-item" onclick="showAnswer('q_sql_optimistic_concurrency')">73. Optimistic Concurrency</div>
-<div class="question-item" onclick="showAnswer('q_32')">74. NoSQL Partitioning</div>
-<div class="question-item" onclick="showAnswer('q_33')">75. PK and Secondary Index (NoSQL)</div>
-<div class="question-item" onclick="showAnswer('q_34')">76. SQL Server Internal Communication</div>
+<div class="question-item" onclick="showAnswer('q_sql_index_seek_scan')">12. Index Seek vs Index Scan</div>
+<div class="question-item" onclick="showAnswer('q_sql_views_vs_indexes')">13. Views vs Indexes</div>
+<div class="question-item" onclick="showAnswer('q_sql_missing_index')">14. How to Identify Missing Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_covering_index')">15. Covering Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_index_design_strategy')">16. Index Design Strategy (Wide Table)</div>
+<div class="question-item" onclick="showAnswer('q_9')">17. Execution Plan</div>
+<div class="question-item" onclick="showAnswer('q_sql_profiling')">18. SQL Profiling &amp; Performance Tools</div>
+<div class="question-item" onclick="showAnswer('q_sql_profiler')">19. SQL Profiler — Interview Q&amp;A</div>
+<div class="question-item" onclick="showAnswer('q_sql_opt_techniques_list')">20. SQL Optimization Techniques (5–7 Ways)</div>
+<div class="question-item" onclick="showAnswer('q_112')">21. Improve Query Performance (SQL Server)</div>
+<div class="question-item" onclick="showAnswer('q_sql_slow_sp')">22. Slow Stored Procedure (30s+) — How to Optimize</div>
+<div class="question-item" onclick="showAnswer('q_11')">23. UNION vs UNION ALL</div>
+<div class="question-item" onclick="showAnswer('q_12')">24. ISNULL vs COALESCE</div>
+<div class="question-item" onclick="showAnswer('q_sql_where_having')">25. WHERE vs HAVING</div>
+<div class="question-item" onclick="showAnswer('q_14')">26. Table vs Views</div>
+<div class="question-item" onclick="showAnswer('q_sql_joins_self_join')">27. Joins &amp; Self Join</div>
+<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">28. Types of Joins</div>
+<div class="question-item" onclick="showAnswer('q_113')">29. JOIN, CTE &amp; Subquery</div>
+<div class="question-item" onclick="showAnswer('q_sql_cte_used')">30. CTE — What &amp; Have You Used It?</div>
+<div class="question-item" onclick="showAnswer('q_124')">31. CTE vs Temp Table vs Table Variable</div>
+<div class="question-item" onclick="showAnswer('q_18')">32. #temp Table vs @table Variable</div>
+<div class="question-item" onclick="showAnswer('q_19')">33. Subquery vs CTE</div>
+<div class="question-item" onclick="showAnswer('q_sql_cte_vs_global_temp')">34. CTE vs ##temp (1M+ Rows in SP)</div>
+<div class="question-item" onclick="showAnswer('q_15')">35. Stored Procedure vs Function</div>
+<div class="question-item" onclick="showAnswer('q_sql_what_is_sp')">36. What is Stored Procedure?</div>
+<div class="question-item" onclick="showAnswer('q_123')">37. Benefits of Stored Procedures</div>
+<div class="question-item" onclick="showAnswer('q_sql_cursor')">38. Cursors in SQL</div>
+<div class="question-item" onclick="showAnswer('q_sql_function_return_types')">39. Functions — Multiple Return Types?</div>
+<div class="question-item" onclick="showAnswer('q_30')">40. Unlimited SP Parameters</div>
+<div class="question-item" onclick="showAnswer('q_125')">41. TRUNCATE vs DELETE</div>
+<div class="question-item" onclick="showAnswer('q_29')">42. MERGE Statement</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_implement')">43. Transaction — What &amp; How to Implement</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_what')">44. Transaction in SQL (not “Transition”)</div>
+<div class="question-item" onclick="showAnswer('q_sql_acid')">45. ACID Properties</div>
+<div class="question-item" onclick="showAnswer('q_28')">46. Transactions</div>
+<div class="question-item" onclick="showAnswer('q_sql_commit_rollback')">47. COMMIT and ROLLBACK</div>
+<div class="question-item" onclick="showAnswer('q_27')">48. Isolation Levels</div>
+<div class="question-item" onclick="showAnswer('q_25')">49. Deadlock</div>
+<div class="question-item" onclick="showAnswer('q_26')">50. WITH(NOLOCK)</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_scenario')">51. Transaction Scenario (500 Records)</div>
+<div class="question-item" onclick="showAnswer('q_21')">52. Triggers in SQL — Purpose</div>
+<div class="question-item" onclick="showAnswer('q_sql_inserted_deleted')">53. INSERTED vs DELETED</div>
+<div class="question-item" onclick="showAnswer('q_24')">54. Magic Tables in Triggers</div>
+<div class="question-item" onclick="showAnswer('q_sql_window_functions')">55. Window Functions</div>
+<div class="question-item" onclick="showAnswer('q_22')">56. ROW_NUMBER()</div>
+<div class="question-item" onclick="showAnswer('q_23')">57. RANK vs DENSE_RANK</div>
+<div class="question-item" onclick="showAnswer('q_sql_5th_rank_cte')">58. Nth Highest Salary — RANK &amp; CTE (4th/5th)</div>
+<div class="question-item" onclick="showAnswer('q_35')">59. Nth Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_5th_highest_salary')">60. Get 5th Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_2nd_salary')">61. 2nd Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_second_highest_dept')">62. Second Highest Salary (Dept-wise)</div>
+<div class="question-item" onclick="showAnswer('q_36')">63. Students — Same Score (Find Names)</div>
+<div class="question-item" onclick="showAnswer('q_sql_commission_null')">64. Commission NULL → 0</div>
+<div class="question-item" onclick="showAnswer('q_sql_dept_zero_employees')">65. Department with 0 Employees</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_tanker')">66. 3rd Highest Tanker Level &amp; Duplicate Names</div>
+<div class="question-item" onclick="showAnswer('q_sql_remove_duplicates_cte')">67. Delete Duplicate Records (CTE + PARTITION BY)</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_pagination')">68. Pagination in SQL</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_gender_codes')">69. Gender Codes — M / F / O (INSERT)</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_default_age')">70. UserDetails — Default Age = 18</div>
+<div class="question-item" onclick="showAnswer('q_sql_select_into_where')">71. SELECT * INTO — WHERE 1=0 vs 1=1</div>
+<div class="question-item" onclick="showAnswer('q_sql_last_inserted')">72. Last Inserted Record</div>
+<div class="question-item" onclick="showAnswer('q_20')">73. SQL Injection Prevention</div>
+<div class="question-item" onclick="showAnswer('q_sql_concurrent_update_conflict')">74. Two Users Update Same Row</div>
+<div class="question-item" onclick="showAnswer('q_sql_optimistic_concurrency')">75. Optimistic Concurrency</div>
+<div class="question-item" onclick="showAnswer('q_32')">76. NoSQL Partitioning</div>
+<div class="question-item" onclick="showAnswer('q_33')">77. PK and Secondary Index (NoSQL)</div>
+<div class="question-item" onclick="showAnswer('q_34')">78. SQL Server Internal Communication</div>
 </div>
 <h3 class="topic-header">11. Production &amp; Troubleshooting</h3>
 <div class="question-group">
 <div class="question-item" onclick="showAnswer('q_86')">1. Production RCA steps</div>
 <div class="question-item" onclick="showAnswer('q_cicd_pipeline')">2. CI/CD Pipeline</div>
+<div class="question-item" onclick="showAnswer('q_scenario_third_party_api')">3. Third-Party API Failing Intermittently</div>
 </div>
 <h3 class="topic-header">12. Capital Market</h3>
 <div class="question-group">
@@ -3810,12 +3815,43 @@ users.Add(new User { Id = 1 }); // compile-time type safety</code></pre><h3>Key 
 <li>Constraints (<code>where T : ...</code>) limit allowed type arguments.</li>
 <li>Avoids boxing for value types in generic collections.</li>
 </ul><h3>Interview Answer</h3><p>Generics allow reusable, strongly typed APIs like <code>List&lt;int&gt;</code> or <code>Repository&lt;Order&gt;</code> without sacrificing performance or safety. The compiler checks types at compile time, so I get IntelliSense and fewer <code>InvalidCastException</code> issues at runtime.</p></div>
-<div class="answer-pane" id="q_96"><h2>Why DbContext Is Scoped</h2><p><code>DbContext</code> is not thread-safe and tracks entity changes for a unit of work. Registering it as <strong>scoped</strong> gives each HTTP request its own context instance, aligning with one logical transaction per request and preventing cross-request state leakage.</p><p>A singleton DbContext would be shared across concurrent requests, causing race conditions and stale tracked entities. Transient DbContext per injection would multiply connections and break change tracking coherence within a request.</p><pre><code>builder.Services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
-    options.UseSqlServer(connectionString)); // scoped by default</code></pre><h3>Key Points</h3><ul>
-<li>DbContext tracks entities per unit of work.</li>
-<li>Scoped = one context per request scope.</li>
-<li>Do not share DbContext across threads.</li>
-</ul><h3>Interview Answer</h3><p>EF Core DbContext is scoped because it is not thread-safe and represents a single unit of work per request. One instance per HTTP request ensures consistent change tracking and avoids concurrency bugs that would occur with a singleton context shared by all users.</p></div>
+<div class="answer-pane" id="q_96"><h2>Why DbContext Is Scoped (Not Singleton)</h2><p><code>DbContext</code> is registered as <strong>Scoped</strong> — one instance per HTTP request. <code>AddDbContext</code> does this by default. The reasons map directly to what DbContext <em>is</em>: a <strong>non-thread-safe unit of work with a change tracker</strong>.</p><pre><code>builder.Services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
+    options.UseSqlServer(connectionString)); // Scoped by default</code></pre><h3>Why Singleton would break — 4 concrete failures</h3><table>
+<tr><th>#</th><th>Problem</th><th>What happens in production</th></tr>
+<tr><td>1</td><td><strong>Not thread-safe</strong></td><td>Two concurrent requests share one context → <code>InvalidOperationException: A second operation was started on this context</code>, corrupted internal state, random crashes under load</td></tr>
+<tr><td>2</td><td><strong>Memory leak</strong></td><td>The change tracker keeps a reference to <em>every entity ever loaded</em>. A singleton context never resets → memory grows for the app's lifetime (classic .NET memory leak)</td></tr>
+<tr><td>3</td><td><strong>Stale data</strong></td><td>Tracked entities are cached. If a row changes in the DB, the singleton keeps serving the old tracked copy — users see outdated data forever</td></tr>
+<tr><td>4</td><td><strong>Cross-request leakage</strong></td><td>Request A's uncommitted changes sit in the tracker; Request B's <code>SaveChanges()</code> accidentally commits them — one user's data saved by another user's request</td></tr>
+</table><h3>Why not Transient either?</h3><ul>
+<li>A request often touches several services/repositories — Transient gives <strong>each one its own context</strong>, so they can't share a transaction or see each other's tracked changes.</li>
+<li><code>SaveChanges()</code> in one repo wouldn't include changes made through another — the <strong>unit of work per request</strong> breaks.</li>
+<li>More contexts = more connection churn for no benefit.</li>
+</ul><h3>Why Scoped is exactly right</h3><ul>
+<li>One request = one unit of work = one DbContext = one transaction boundary — a natural fit.</li>
+<li>All services within the request share the same tracked entities and can commit atomically.</li>
+<li>Disposed automatically at request end — change tracker memory released, connection returned to the pool.</li>
+<li>Each request starts fresh — no stale data, no cross-request leaks.</li>
+</ul><h3>Related cases worth knowing</h3><ul>
+<li><strong>Need DbContext in a Singleton/BackgroundService?</strong> Inject <code>IServiceScopeFactory</code> and create a scope per operation (see Section 2 — "Scoped into Singleton?").</li>
+<li><strong>High-perf / multi-threaded scenarios:</strong> <code>AddDbContextFactory&lt;T&gt;</code> — create short-lived contexts on demand (Blazor Server uses this).</li>
+</ul><pre><code>// In a BackgroundService — never inject DbContext directly
+public class CleanupService : BackgroundService
+{
+    private readonly IServiceScopeFactory _scopeFactory;
+    public CleanupService(IServiceScopeFactory scopeFactory) =&gt; _scopeFactory = scopeFactory;
+
+    protected override async Task ExecuteAsync(CancellationToken ct)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();
+        // safe: fresh context, disposed with the scope
+    }
+}</code></pre><h3>Key Points</h3><ul>
+<li>Singleton fails 4 ways: thread-unsafety, change-tracker memory leak, stale cached entities, cross-request data leakage.</li>
+<li>Transient breaks the shared unit of work within a request.</li>
+<li>Scoped = one context, one request, one transaction boundary, auto-disposed.</li>
+<li>For singletons/background jobs: <code>IServiceScopeFactory</code> or <code>AddDbContextFactory</code>.</li>
+</ul><h3>Interview Answer</h3><p>DbContext is scoped because it's a non-thread-safe unit of work with a change tracker. As a singleton, concurrent requests would hit it simultaneously and throw "second operation started on this context"; the change tracker would hold every entity ever loaded — a memory leak — and serve stale tracked data; and one request's uncommitted changes could be saved by another's SaveChanges. Transient is wrong the other way: services in the same request would get different contexts and lose the shared transaction. Scoped gives exactly one context per request — consistent tracking, atomic commit, disposed at request end. When I do need data access inside a singleton or background service, I create a scope via IServiceScopeFactory or use AddDbContextFactory.</p></div>
 <div class="answer-pane" id="q_99"><h2>Overloading vs Overriding</h2><p><strong>Method overloading</strong> defines multiple methods with the same name but different parameter lists in the same class. Resolution happens at compile time (static polymorphism). <strong>Method overriding</strong> replaces a base class virtual/abstract method in a derived class; resolution happens at runtime (dynamic polymorphism).</p><p>Overloading improves API ergonomics (<code>Send(string)</code>, <code>Send(string, bool)</code>). Overriding enables specialized behavior in inheritance hierarchies while keeping a common contract.</p><table>
 <tr><th></th><th>Overloading</th><th>Overriding</th></tr>
 <tr><td>Scope</td><td>Same class</td><td>Base + derived class</td></tr>
@@ -4288,6 +4324,200 @@ app.Run();</code></pre><div class="interview-tip"><h3>Easy Way to Remember</h3><
 <tr><td><code>Run()</code></td><td>Stop here</td></tr>
 <tr><td><code>Map()</code></td><td>Take another route</td></tr>
 </table><h3>Interview Answer</h3><p><code>Use()</code> chains middleware and calls <code>next()</code> for before/after logic. <code>Run()</code> is terminalâ€”it handles the response and stops the pipeline. <code>Map()</code> branches the pipeline by path so only matching URLs run that sub-pipeline. Order matters, and skipping <code>next()</code> short-circuits like <code>Run()</code>.</p></div></div>
+<div class="answer-pane" id="q_sql_index_seek_scan"><h2>Index Seek vs Index Scan</h2><p>Both appear in execution plans, but they mean very different things for performance:</p><table>
+<tr><th></th><th>Index Seek</th><th>Index Scan</th></tr>
+<tr><td>What happens</td><td>Navigates the B-tree <strong>directly to matching rows</strong></td><td>Reads <strong>every page of the index</strong> (or table for a table scan)</td></tr>
+<tr><td>Cost</td><td>Proportional to rows returned</td><td>Proportional to table/index size</td></tr>
+<tr><td>Analogy</td><td>Opening a book at the right page via the index</td><td>Flipping through every page</td></tr>
+<tr><td>Usually</td><td>Good — what you want for selective queries</td><td>Bad for selective queries; fine when you really need most rows</td></tr>
+</table><h3>How to check which one SQL Server is using</h3><ul>
+<li><strong>Actual Execution Plan</strong> (Ctrl+M in SSMS, then run) — look for the operator: <em>Index Seek</em>, <em>Index Scan</em>, <em>Clustered Index Scan</em>, or <em>Table Scan</em>.</li>
+<li><code>SET STATISTICS IO ON</code> — high <code>logical reads</code> vs rows returned hints a scan.</li>
+<li>Query Store / sys.dm_exec_query_stats for production plans.</li>
+</ul><h3>Common reasons a seek becomes a scan</h3><pre><code>-- 1. Function on the indexed column (non-SARGable)
+WHERE YEAR(OrderDate) = 2024            -- SCAN
+WHERE OrderDate &gt;= '2024-01-01'
+  AND OrderDate &lt;  '2025-01-01'         -- SEEK
+
+-- 2. Leading wildcard
+WHERE Name LIKE '%kumar'                -- SCAN
+WHERE Name LIKE 'kumar%'                -- SEEK
+
+-- 3. Implicit conversion (NVARCHAR param vs VARCHAR column)
+WHERE AccountNo = @nvarcharParam        -- SCAN + CONVERT_IMPLICIT warning
+
+-- 4. Column not the leading key of the index
+-- Index on (LastName, FirstName); WHERE FirstName = 'X' → SCAN
+
+-- 5. Low selectivity — optimizer chooses scan because
+--    most rows match anyway (that's correct behavior)</code></pre><h3>Key Points</h3><ul>
+<li>Seek = targeted B-tree navigation; Scan = read everything.</li>
+<li>Check via Actual Execution Plan operators and STATISTICS IO logical reads.</li>
+<li>Scans are usually caused by non-SARGable predicates: functions on columns, leading wildcards, implicit conversions, wrong key order.</li>
+<li>A scan isn't always bad — returning 90% of a table scans by design.</li>
+</ul><h3>Interview Answer</h3><p>An index seek navigates the B-tree directly to the matching rows, so cost follows rows returned; a scan reads the whole index or table. I check the actual execution plan in SSMS for Seek vs Scan operators, and STATISTICS IO — logical reads far above rows returned means scanning. When I find an unexpected scan, the usual causes are non-SARGable predicates: a function wrapped around the indexed column, a leading-wildcard LIKE, an implicit type conversion, or filtering on a non-leading index column. I rewrite the predicate to be SARGable or adjust the index, and verify the plan switches to a seek.</p></div>
+<div class="answer-pane" id="q_sql_slow_sp"><h2>Slow Stored Procedure (30+ Seconds) — How to Optimize</h2><p>A systematic answer impresses more than listing random tips. Structure it: <strong>measure → find the bottleneck → fix → verify</strong>.</p><h3>Step 1 — Measure: find where the time goes</h3><pre><code>SET STATISTICS IO, TIME ON;   -- logical reads + CPU/elapsed per statement
+EXEC dbo.MySlowProc @Param = 1;
+
+-- Or: Actual Execution Plan (Ctrl+M), Query Store,
+-- sys.dm_exec_procedure_stats for production timings</code></pre><p>In a multi-statement SP, usually <strong>one or two statements cause 90% of the time</strong> — find them first.</p><h3>Step 2 — Check the execution plan for classic culprits</h3><table>
+<tr><th>Symptom in plan</th><th>Fix</th></tr>
+<tr><td>Table/Index <strong>Scan</strong> on a big table</td><td>Add/adjust index; make predicate SARGable (no functions on columns)</td></tr>
+<tr><td><strong>Key Lookup</strong> with high cost</td><td>Covering index (INCLUDE the selected columns)</td></tr>
+<tr><td><strong>Missing index hint</strong></td><td>Evaluate it (don't blindly create — check overlap)</td></tr>
+<tr><td>Huge difference between <strong>estimated vs actual rows</strong></td><td>Update statistics; check parameter sniffing</td></tr>
+<tr><td><strong>Implicit conversion</strong> warnings</td><td>Match parameter/column data types</td></tr>
+<tr><td><strong>Spills to tempdb</strong> (sort/hash warnings)</td><td>Reduce intermediate sets, indexes for ORDER BY/JOIN</td></tr>
+</table><h3>Step 3 — Common SP-specific issues</h3><ul>
+<li><strong>Parameter sniffing</strong> — plan compiled for unrepresentative first parameter. Fixes: <code>OPTION (RECOMPILE)</code> on the problem statement, <code>OPTIMIZE FOR</code>, or local variable copy.</li>
+<li><strong>Cursors / WHILE loops</strong> — rewrite row-by-row logic as set-based UPDATE/INSERT with joins or window functions.</li>
+<li><strong>SELECT *</strong> and wide intermediate sets — select only needed columns.</li>
+<li><strong>Functions in WHERE / scalar UDFs per row</strong> — inline the logic (or .NET 2019+ scalar UDF inlining).</li>
+<li><strong>One giant query</strong> — break into steps with indexed #temp tables when the optimizer struggles.</li>
+<li><strong>Stale statistics</strong> — <code>UPDATE STATISTICS ... WITH FULLSCAN</code> on big changed tables.</li>
+<li><strong>Blocking</strong> — it may not be slow, it may be <em>waiting</em>: check <code>sys.dm_exec_requests</code> wait types during execution.</li>
+<li><strong>Nested views / repeated CTE evaluation</strong> — materialize once into #temp.</li>
+</ul><h3>Step 4 — Verify</h3><pre><code>-- Compare before/after: logical reads, CPU, elapsed
+SET STATISTICS IO, TIME ON;
+-- and confirm the new plan (seeks, no spills, sane row estimates)</code></pre><h3>Key Points</h3><ul>
+<li>Measure first — STATISTICS IO/TIME, actual plan, Query Store; find the heavy statement.</li>
+<li>Plan culprits: scans, key lookups, estimate skew, implicit conversions, spills.</li>
+<li>SP classics: parameter sniffing (OPTION RECOMPILE), cursors → set-based, scalar UDFs, stale stats.</li>
+<li>Also check blocking — slow may mean waiting, not working.</li>
+</ul><h3>Interview Answer</h3><p>First I measure instead of guessing — SET STATISTICS IO and TIME plus the actual execution plan, or Query Store in production, to find which statement inside the procedure eats the time. Then I look for the classic plan problems: scans where I expect seeks, key lookups fixed by covering indexes, big estimated-vs-actual row gaps pointing to stale statistics or parameter sniffing, and implicit conversions. For SP-specific issues I check parameter sniffing — fixable with OPTION RECOMPILE or OPTIMIZE FOR — and rewrite any cursors or scalar functions into set-based logic. Sometimes the proc isn't slow but blocked, so I check wait stats too. After each change I re-measure logical reads and elapsed time to prove the improvement.</p></div>
+<div class="answer-pane" id="q_arch_microservices_comm"><h2>How Microservices Communicate With Each Other</h2><p>Two fundamental styles: <strong>synchronous</strong> (caller waits for a response) and <strong>asynchronous</strong> (message sent, caller moves on). Most real systems use <strong>both</strong> — sync for queries the user is waiting on, async for events and side effects.</p><h3>1. Synchronous communication</h3><table>
+<tr><th>Mechanism</th><th>Details</th><th>When</th></tr>
+<tr><td><strong>REST / HTTP + JSON</strong></td><td>Simple, universal; via <code>HttpClient</code> / <code>IHttpClientFactory</code> in .NET</td><td>Default for request/response between services</td></tr>
+<tr><td><strong>gRPC</strong></td><td>HTTP/2, binary Protobuf — much faster, strongly-typed contracts, streaming</td><td>High-throughput internal service-to-service calls</td></tr>
+</table><pre><code>// Typed client via IHttpClientFactory (with Polly resilience)
+builder.Services.AddHttpClient&lt;IInventoryClient, InventoryClient&gt;(c =&gt;
+        c.BaseAddress = new Uri("https://inventory-svc"))
+    .AddStandardResilienceHandler();   // .NET 8: retry + circuit breaker + timeout</code></pre><p><strong>Risk of sync chains:</strong> A → B → C means A's latency and availability depend on the whole chain (cascading failures). Keep chains short; protect with timeouts, retries, circuit breakers.</p><h3>2. Asynchronous communication (messaging)</h3><table>
+<tr><th>Pattern</th><th>How</th><th>Example</th></tr>
+<tr><td><strong>Queue (point-to-point)</strong></td><td>One producer → one consumer; load leveling</td><td>Azure Service Bus queue, RabbitMQ — "process this payment"</td></tr>
+<tr><td><strong>Publish/Subscribe (events)</strong></td><td>Publisher emits event; <strong>many</strong> subscribers react independently</td><td>Service Bus topics, Kafka, RabbitMQ exchanges — "OrderPlaced"</td></tr>
+</table><pre><code>OrderService ── publishes ──&gt; "OrderPlaced" event
+                                  ├─&gt; InventoryService  (reserve stock)
+                                  ├─&gt; EmailService      (confirmation mail)
+                                  └─&gt; AnalyticsService  (update dashboard)
+// Order service doesn't know or care who listens — loose coupling</code></pre><p><strong>Benefits:</strong> services stay decoupled, survive consumer downtime (messages wait in the broker), natural retry, scale consumers independently. <strong>Cost:</strong> eventual consistency — data is correct "soon", not instantly.</p><h3>3. Supporting pieces</h3><ul>
+<li><strong>API Gateway</strong> (Azure API Management, Ocelot, YARP) — single entry point for clients; routing, auth, rate limiting. Clients never call services directly.</li>
+<li><strong>Service discovery</strong> — how services find each other: Kubernetes DNS, Consul, or platform-provided.</li>
+<li><strong>Outbox pattern</strong> — save DB change + event in one transaction, publish reliably afterward (no lost events).</li>
+<li><strong>Saga pattern</strong> — distributed transactions as a sequence of local transactions with compensating actions (cancel payment if stock reservation fails).</li>
+<li><strong>Correlation IDs</strong> — pass a request ID through every hop for end-to-end tracing (Application Insights / OpenTelemetry).</li>
+</ul><h3>Choosing sync vs async</h3><table>
+<tr><th>Use synchronous</th><th>Use asynchronous</th></tr>
+<tr><td>User is waiting for the answer (get price, check stock)</td><td>Side effects (emails, notifications, analytics)</td></tr>
+<tr><td>Simple query with low fan-out</td><td>Multiple services must react to one event</td></tr>
+<tr><td>Strong consistency needed right now</td><td>Spiky load — queue levels it out</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>Sync: REST (universal) or gRPC (fast, typed) — protect with timeouts, retries, circuit breakers.</li>
+<li>Async: queues for work distribution, pub/sub events for fan-out — loose coupling, eventual consistency.</li>
+<li>API Gateway for client entry; outbox for reliable event publishing; saga for distributed workflows.</li>
+<li>Real systems mix both: query synchronously, propagate changes as events.</li>
+</ul><h3>Interview Answer</h3><p>Microservices communicate synchronously or asynchronously. Synchronous is REST over HttpClient or gRPC for fast internal calls — I always add timeouts, retries, and circuit breakers via Polly or .NET 8's standard resilience handler, because sync chains cascade failures. Asynchronous uses a message broker like Azure Service Bus or RabbitMQ — queues for distributing work and pub/sub topics for events, so when OrderService publishes OrderPlaced, inventory, email, and analytics each react independently. That gives loose coupling and resilience at the price of eventual consistency. Around that I'd put an API gateway for client traffic, the outbox pattern so events aren't lost, sagas for multi-service transactions, and correlation IDs for tracing across services.</p></div>
+<div class="answer-pane" id="q_pattern_payment_design"><h2>Design: Payment System Where New Methods Can Be Added Without Modifying Existing Code</h2><p>This is a classic <strong>Open/Closed Principle</strong> design question. The answer combines three things: <strong>Strategy pattern</strong> (interchangeable payment behaviors), <strong>Factory / DI resolution</strong> (choosing the right one), and <strong>keyed DI services in .NET 8</strong> as the modern shortcut.</p><h3>Step 1 — Abstraction (the contract)</h3><pre><code>public interface IPaymentMethod
+{
+    string Name { get; }                       // "Card", "UPI", "PayPal"
+    Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest request);
+}</code></pre><h3>Step 2 — One class per payment method (Strategy)</h3><pre><code>public class CardPayment : IPaymentMethod
+{
+    public string Name =&gt; "Card";
+    public async Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest r)
+    {
+        // call card gateway
+        return PaymentResult.Success(r.Amount);
+    }
+}
+
+public class UpiPayment : IPaymentMethod
+{
+    public string Name =&gt; "UPI";
+    public async Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest r)
+    {
+        // call UPI provider
+        return PaymentResult.Success(r.Amount);
+    }
+}</code></pre><h3>Step 3 — Resolver instead of switch/if-else</h3><pre><code>// Register ALL implementations
+builder.Services.AddScoped&lt;IPaymentMethod, CardPayment&gt;();
+builder.Services.AddScoped&lt;IPaymentMethod, UpiPayment&gt;();
+
+// Resolver picks by name — no switch statement anywhere
+public class PaymentProcessor
+{
+    private readonly IEnumerable&lt;IPaymentMethod&gt; _methods;
+    public PaymentProcessor(IEnumerable&lt;IPaymentMethod&gt; methods)
+        =&gt; _methods = methods;   // DI injects every registered implementation
+
+    public Task&lt;PaymentResult&gt; PayAsync(string method, PaymentRequest r)
+    {
+        var handler = _methods.FirstOrDefault(
+            m =&gt; m.Name.Equals(method, StringComparison.OrdinalIgnoreCase))
+            ?? throw new NotSupportedException($"Payment method: {method}");
+        return handler.ProcessAsync(r);
+    }
+}</code></pre><h3>.NET 8 alternative — keyed services</h3><pre><code>builder.Services.AddKeyedScoped&lt;IPaymentMethod, CardPayment&gt;("card");
+builder.Services.AddKeyedScoped&lt;IPaymentMethod, UpiPayment&gt;("upi");
+
+// Resolve by key
+public PaymentProcessor(IServiceProvider sp)
+{
+    var handler = sp.GetRequiredKeyedService&lt;IPaymentMethod&gt;("upi");
+}</code></pre><h3>Adding PayPal tomorrow</h3><pre><code>1. Create PayPalPayment : IPaymentMethod      // NEW file
+2. Register it in DI                          // ONE line
+// PaymentProcessor, controllers, all existing methods: UNTOUCHED</code></pre><p>That's the Open/Closed Principle: <strong>open for extension, closed for modification</strong>.</p><h3>Production extras worth mentioning</h3><ul>
+<li><strong>Validation per method</strong> — each strategy validates its own request shape.</li>
+<li><strong>Idempotency keys</strong> — retries must not double-charge.</li>
+<li><strong>Webhooks/callbacks</strong> — async confirmation from gateways updates payment status.</li>
+<li><strong>Outbox + events</strong> — <code>PaymentCompleted</code> event drives order fulfillment without coupling.</li>
+<li>Config-driven enable/disable per method (feature flags).</li>
+</ul><h3>Key Points</h3><ul>
+<li>Interface + one class per payment method = Strategy pattern.</li>
+<li>DI injects all implementations (<code>IEnumerable&lt;IPaymentMethod&gt;</code>) or .NET 8 keyed services — no switch statements.</li>
+<li>New method = new class + one registration; zero changes to existing code (OCP).</li>
+<li>Mention idempotency and webhook confirmation for real payment systems.</li>
+</ul><h3>Interview Answer</h3><p>I'd define an IPaymentMethod interface and implement one class per method — Card, UPI, PayPal — which is the Strategy pattern. Instead of a switch statement, I register all implementations in DI and inject IEnumerable&lt;IPaymentMethod&gt; into a resolver that picks by name, or in .NET 8 use keyed services. Adding a new payment method then means writing one new class and one DI registration — no existing code changes, which is exactly the Open/Closed Principle. In a real payment system I'd also add idempotency keys so retries can't double-charge, and webhook handling for asynchronous gateway confirmations.</p></div>
+<div class="answer-pane" id="q_scenario_third_party_api"><h2>Scenario: Third-Party API Failing Intermittently</h2><p>A favorite production-thinking question. Structure the answer: <strong>protect your app first, then diagnose, then harden long-term</strong>.</p><h3>Step 1 — Protect your application (immediate)</h3><table>
+<tr><th>Defense</th><th>What it does</th></tr>
+<tr><td><strong>Timeout</strong></td><td>Never wait forever — fail fast instead of hanging request threads</td></tr>
+<tr><td><strong>Retry with exponential backoff + jitter</strong></td><td>Transient blips (network, 502/503) often succeed on retry seconds later</td></tr>
+<tr><td><strong>Circuit breaker</strong></td><td>After repeated failures, stop calling for a cool-down — protects both sides</td></tr>
+<tr><td><strong>Fallback</strong></td><td>Serve cached/stale data or a degraded response instead of an error</td></tr>
+</table><pre><code>// .NET 8 — one line adds retry + circuit breaker + timeout
+builder.Services.AddHttpClient&lt;IRatesClient, RatesClient&gt;()
+    .AddStandardResilienceHandler();
+
+// Or explicit Polly policy:
+.AddResilienceHandler("rates", b =&gt;
+{
+    b.AddTimeout(TimeSpan.FromSeconds(3));
+    b.AddRetry(new() {
+        MaxRetryAttempts = 3,
+        BackoffType = DelayBackoffType.Exponential,
+        UseJitter = true,
+        ShouldHandle = args =&gt; ValueTask.FromResult(
+            args.Outcome.Result?.StatusCode &gt;= HttpStatusCode.InternalServerError)
+    });
+    b.AddCircuitBreaker(new() { FailureRatio = 0.5, BreakDuration = TimeSpan.FromSeconds(30) });
+});</code></pre><p><strong>Retry rule:</strong> only retry <strong>transient</strong> errors (timeouts, 5xx, 429) and only <strong>idempotent</strong> operations — never blind-retry a payment POST without an idempotency key.</p><h3>Step 2 — Decouple if the operation allows it</h3><ul>
+<li>If the user doesn't need the result immediately → <strong>queue it</strong> (Service Bus/RabbitMQ) and process with retries in a background worker. The API responds instantly; the flaky dependency stops affecting user requests.</li>
+<li><strong>Cache</strong> last-known-good responses for read APIs (exchange rates, catalogs) and serve them while the provider is down.</li>
+</ul><h3>Step 3 — Diagnose and engage the provider</h3><ul>
+<li>Log every call: latency, status code, correlation ID; chart the failure pattern (specific hours? specific endpoints? rate-limit 429s?).</li>
+<li>Check their status page / SLA; raise a ticket with evidence (timestamps, request IDs).</li>
+<li>Verify it's really them: DNS, TLS, proxy/firewall on your side, connection pool exhaustion (HttpClient misuse).</li>
+</ul><h3>Step 4 — Harden long term</h3><ul>
+<li><strong>Health checks + alerts</strong> on the dependency (failure-rate threshold, not single failures).</li>
+<li><strong>Idempotency keys</strong> for write operations so retries are safe.</li>
+<li>Consider a <strong>second provider / fallback vendor</strong> for business-critical paths.</li>
+<li>Document degraded-mode behavior — what users see when the provider is down.</li>
+</ul><h3>Key Points</h3><ul>
+<li>Timeout + retry with backoff/jitter + circuit breaker + fallback — Polly or .NET 8 <code>AddStandardResilienceHandler</code>.</li>
+<li>Retry only transient errors and idempotent operations.</li>
+<li>Queue non-urgent calls; cache last-known-good data for reads.</li>
+<li>Measure and escalate with evidence; alert on failure rate; plan degraded mode.</li>
+</ul><h3>Interview Answer</h3><p>First I make sure the failure can't hurt my app: a strict timeout, retries with exponential backoff and jitter for transient errors only, and a circuit breaker so we stop hammering a failing provider — in .NET 8 that's one AddStandardResilienceHandler call on the HttpClient. For writes I add idempotency keys so a retry can't duplicate a payment. If the operation isn't time-critical I move it behind a queue so users never feel the flakiness, and for reads I serve cached last-known-good data as a fallback. In parallel I diagnose: structured logs with correlation IDs to see the failure pattern, check their status page, and escalate to the vendor with evidence. Long term — health checks with failure-rate alerts and, for critical flows, a fallback provider.</p></div>
 <div class="answer-pane" id="q_angular_directives"><h2>Directives in Angular</h2><p>A <strong>directive</strong> is a class that adds <strong>behavior to elements</strong> in the DOM — it can change appearance, structure, or behavior of elements. Angular has <strong>three types</strong>:</p><table>
 <tr><th>Type</th><th>What it does</th><th>Examples</th></tr>
 <tr><td><strong>1. Component</strong></td><td>Directive <em>with a template</em> — technically every component is a directive</td><td><code>@Component</code></td></tr>
@@ -6172,18 +6402,40 @@ COMMIT;</code></pre><h3>Key Points</h3><ul>
 <li>Security: grant EXEC without exposing base tables.</li>
 <li>Maintainability: single place to change business rules.</li>
 </ul><h3>Interview Answer</h3><p>Stored procedures improve performance via plan reuse, boost security through EXEC grants, centralize business rules, and cut network round trips. I use them for complex transactional logic close to the data.</p></div>
-<div class="answer-pane" id="q_124"><h2>CTE vs Temp Table</h2><p>CTEs exist only for the duration of one statement and are ideal for readability and recursion. Temp tables (#table) persist for the session, support indexes/statistics, and suit multi-step ETL or large intermediate results.</p><p>Table variables (@t) are a third option for small in-memory staging sets.</p><table>
-<tr><th>CTE</th><th>Temp Table</th></tr>
-<tr><td>Single statement scope</td><td>Session scope</td></tr>
-<tr><td>No indexes (generally)</td><td>Indexes and stats possible</td></tr>
-<tr><td>Recursive support</td><td>Better for large datasets</td></tr>
-</table><pre><code>SELECT * INTO #TopSales FROM Sales WHERE Year = 2024;
-CREATE INDEX IX_Region ON #TopSales(Region);
--- reuse across batches</code></pre><h3>Key Points</h3><ul>
-<li>Use CTE for clarity; temp table when data is reused or needs indexing.</li>
-<li>Temp tables live in tempdb; watch contention at scale.</li>
-<li>Table variables (@t) are a third option for small sets.</li>
-</ul><h3>Interview Answer</h3><p>CTEs are inline, single-statement helpers; temp tables persist in tempdb with indexes for heavier multi-step work. I choose based on reuse, size, and whether I need statistics for the optimizer.</p></div>
+<div class="answer-pane" id="q_124"><h2>CTE vs Temp Table vs Table Variable</h2><p>All three hold intermediate results, but they differ in <strong>scope, indexing, statistics, and ideal data size</strong>.</p><table>
+<tr><th></th><th>CTE</th><th>#Temp Table</th><th>@Table Variable</th></tr>
+<tr><td><strong>Syntax</strong></td><td><code>WITH cte AS (...)</code></td><td><code>CREATE TABLE #t / SELECT INTO #t</code></td><td><code>DECLARE @t TABLE (...)</code></td></tr>
+<tr><td><strong>Scope</strong></td><td><strong>One statement only</strong></td><td>Session (or nested procs)</td><td>Batch / procedure that declared it</td></tr>
+<tr><td><strong>Stored in</strong></td><td>Not materialized — inlined into the query plan</td><td>tempdb</td><td>tempdb too (not "memory only" — common myth)</td></tr>
+<tr><td><strong>Indexes</strong></td><td>No (uses base table indexes)</td><td>Yes — clustered/nonclustered, added anytime</td><td>Only PK/UNIQUE inline (+ inline indexes 2014+)</td></tr>
+<tr><td><strong>Statistics</strong></td><td>n/a</td><td><strong>Yes</strong> — optimizer estimates well</td><td><strong>No</strong> — poor estimates (improved a bit in 2019)</td></tr>
+<tr><td><strong>Recursion</strong></td><td><strong>Yes</strong> — recursive CTEs</td><td>No</td><td>No</td></tr>
+<tr><td><strong>Transactions</strong></td><td>n/a</td><td>Fully logged, rolls back</td><td>Mostly unaffected by rollback</td></tr>
+<tr><td><strong>Best size</strong></td><td>Any (it's just syntax)</td><td>Large intermediate sets</td><td>Small sets (&lt; ~1000 rows)</td></tr>
+</table><h3>When to choose each</h3><ul>
+<li><strong>CTE</strong> — readability: breaking a complex query into named steps, window-function filtering (<code>WHERE rnk = 1</code>), and <strong>recursion</strong> (org charts, BOM trees). Remember: referenced twice = potentially executed twice — it's not cached.</li>
+<li><strong>#Temp table</strong> — large intermediate results <strong>reused across multiple statements</strong>, need indexes or accurate statistics, multi-step transformations in SPs and ETL.</li>
+<li><strong>@Table variable</strong> — small lookup/staging sets, table-valued parameters (TVPs) into procs, cases where you don't want the data affected by transaction rollback.</li>
+</ul><pre><code>-- CTE: one-statement readability + recursion
+WITH TopSales AS (
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY Region ORDER BY Amount DESC) rn
+    FROM Sales
+)
+SELECT * FROM TopSales WHERE rn = 1;
+
+-- Temp table: big set, reused, indexed
+SELECT * INTO #Sales2024 FROM Sales WHERE Year = 2024;
+CREATE INDEX IX_Region ON #Sales2024(Region);
+-- ...several statements reuse #Sales2024...
+
+-- Table variable: small set / TVP
+DECLARE @Ids TABLE (Id INT PRIMARY KEY);
+INSERT INTO @Ids VALUES (1), (2), (3);</code></pre><h3>Key Points</h3><ul>
+<li>CTE = inline syntax for one statement; not materialized, supports recursion.</li>
+<li>#Temp = tempdb + indexes + statistics → best for large reused sets.</li>
+<li>@Table variable = small sets; no statistics → optimizer guesses (1 row pre-2019).</li>
+<li>Both #temp and @table live in tempdb — the "memory only" claim is a myth.</li>
+</ul><h3>Interview Answer</h3><p>A CTE is just named query syntax scoped to one statement — great for readability, window-function filtering, and recursion, but it isn't materialized. A temp table is materialized in tempdb with indexes and real statistics, so I use it for large intermediate results reused across multiple steps in a procedure. A table variable also lives in tempdb but has no statistics, so the optimizer estimates poorly — I keep it for small sets and table-valued parameters. Rule of thumb: CTE for clarity, temp table for big reused data, table variable for tiny sets.</p></div>
 <div class="answer-pane" id="q_125"><h2>TRUNCATE vs DELETE</h2><p>DELETE removes rows one at a time (or in batches), can use WHERE, fires triggers, and is fully logged per row. TRUNCATE deallocates data pages for the whole table, is faster, resets identity seeds, and cannot use WHERE.</p><p>TRUNCATE fails when foreign keys reference the table unless constraints are handled; use DELETE for selective removal and auditing.</p><table>
 <tr><th>DELETE</th><th>TRUNCATE</th></tr>
 <tr><td>Row-level DML</td><td>Page deallocation</td></tr>

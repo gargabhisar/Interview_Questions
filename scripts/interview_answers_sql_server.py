@@ -892,6 +892,93 @@ Duration &gt; 5000</code></pre>
 <h3>Interview Answer</h3>
 <p>I list indexing, current statistics, query rewrites, plan analysis, shorter transactions, data archiving, and server tuning as my main levers. I pick based on what the plan and IO stats show—not by adding indexes everywhere.</p>""",
 
+"q_sql_index_seek_scan": """<h2>Index Seek vs Index Scan</h2>
+<p>Both appear in execution plans, but they mean very different things for performance:</p>
+<table>
+<tr><th></th><th>Index Seek</th><th>Index Scan</th></tr>
+<tr><td>What happens</td><td>Navigates the B-tree <strong>directly to matching rows</strong></td><td>Reads <strong>every page of the index</strong> (or table for a table scan)</td></tr>
+<tr><td>Cost</td><td>Proportional to rows returned</td><td>Proportional to table/index size</td></tr>
+<tr><td>Analogy</td><td>Opening a book at the right page via the index</td><td>Flipping through every page</td></tr>
+<tr><td>Usually</td><td>Good — what you want for selective queries</td><td>Bad for selective queries; fine when you really need most rows</td></tr>
+</table>
+<h3>How to check which one SQL Server is using</h3>
+<ul>
+<li><strong>Actual Execution Plan</strong> (Ctrl+M in SSMS, then run) — look for the operator: <em>Index Seek</em>, <em>Index Scan</em>, <em>Clustered Index Scan</em>, or <em>Table Scan</em>.</li>
+<li><code>SET STATISTICS IO ON</code> — high <code>logical reads</code> vs rows returned hints a scan.</li>
+<li>Query Store / sys.dm_exec_query_stats for production plans.</li>
+</ul>
+<h3>Common reasons a seek becomes a scan</h3>
+<pre><code>-- 1. Function on the indexed column (non-SARGable)
+WHERE YEAR(OrderDate) = 2024            -- SCAN
+WHERE OrderDate &gt;= '2024-01-01'
+  AND OrderDate &lt;  '2025-01-01'         -- SEEK
+
+-- 2. Leading wildcard
+WHERE Name LIKE '%kumar'                -- SCAN
+WHERE Name LIKE 'kumar%'                -- SEEK
+
+-- 3. Implicit conversion (NVARCHAR param vs VARCHAR column)
+WHERE AccountNo = @nvarcharParam        -- SCAN + CONVERT_IMPLICIT warning
+
+-- 4. Column not the leading key of the index
+-- Index on (LastName, FirstName); WHERE FirstName = 'X' → SCAN
+
+-- 5. Low selectivity — optimizer chooses scan because
+--    most rows match anyway (that's correct behavior)</code></pre>
+<h3>Key Points</h3>
+<ul>
+<li>Seek = targeted B-tree navigation; Scan = read everything.</li>
+<li>Check via Actual Execution Plan operators and STATISTICS IO logical reads.</li>
+<li>Scans are usually caused by non-SARGable predicates: functions on columns, leading wildcards, implicit conversions, wrong key order.</li>
+<li>A scan isn't always bad — returning 90% of a table scans by design.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>An index seek navigates the B-tree directly to the matching rows, so cost follows rows returned; a scan reads the whole index or table. I check the actual execution plan in SSMS for Seek vs Scan operators, and STATISTICS IO — logical reads far above rows returned means scanning. When I find an unexpected scan, the usual causes are non-SARGable predicates: a function wrapped around the indexed column, a leading-wildcard LIKE, an implicit type conversion, or filtering on a non-leading index column. I rewrite the predicate to be SARGable or adjust the index, and verify the plan switches to a seek.</p>""",
+
+"q_sql_slow_sp": """<h2>Slow Stored Procedure (30+ Seconds) — How to Optimize</h2>
+<p>A systematic answer impresses more than listing random tips. Structure it: <strong>measure → find the bottleneck → fix → verify</strong>.</p>
+<h3>Step 1 — Measure: find where the time goes</h3>
+<pre><code>SET STATISTICS IO, TIME ON;   -- logical reads + CPU/elapsed per statement
+EXEC dbo.MySlowProc @Param = 1;
+
+-- Or: Actual Execution Plan (Ctrl+M), Query Store,
+-- sys.dm_exec_procedure_stats for production timings</code></pre>
+<p>In a multi-statement SP, usually <strong>one or two statements cause 90% of the time</strong> — find them first.</p>
+<h3>Step 2 — Check the execution plan for classic culprits</h3>
+<table>
+<tr><th>Symptom in plan</th><th>Fix</th></tr>
+<tr><td>Table/Index <strong>Scan</strong> on a big table</td><td>Add/adjust index; make predicate SARGable (no functions on columns)</td></tr>
+<tr><td><strong>Key Lookup</strong> with high cost</td><td>Covering index (INCLUDE the selected columns)</td></tr>
+<tr><td><strong>Missing index hint</strong></td><td>Evaluate it (don't blindly create — check overlap)</td></tr>
+<tr><td>Huge difference between <strong>estimated vs actual rows</strong></td><td>Update statistics; check parameter sniffing</td></tr>
+<tr><td><strong>Implicit conversion</strong> warnings</td><td>Match parameter/column data types</td></tr>
+<tr><td><strong>Spills to tempdb</strong> (sort/hash warnings)</td><td>Reduce intermediate sets, indexes for ORDER BY/JOIN</td></tr>
+</table>
+<h3>Step 3 — Common SP-specific issues</h3>
+<ul>
+<li><strong>Parameter sniffing</strong> — plan compiled for unrepresentative first parameter. Fixes: <code>OPTION (RECOMPILE)</code> on the problem statement, <code>OPTIMIZE FOR</code>, or local variable copy.</li>
+<li><strong>Cursors / WHILE loops</strong> — rewrite row-by-row logic as set-based UPDATE/INSERT with joins or window functions.</li>
+<li><strong>SELECT *</strong> and wide intermediate sets — select only needed columns.</li>
+<li><strong>Functions in WHERE / scalar UDFs per row</strong> — inline the logic (or .NET 2019+ scalar UDF inlining).</li>
+<li><strong>One giant query</strong> — break into steps with indexed #temp tables when the optimizer struggles.</li>
+<li><strong>Stale statistics</strong> — <code>UPDATE STATISTICS ... WITH FULLSCAN</code> on big changed tables.</li>
+<li><strong>Blocking</strong> — it may not be slow, it may be <em>waiting</em>: check <code>sys.dm_exec_requests</code> wait types during execution.</li>
+<li><strong>Nested views / repeated CTE evaluation</strong> — materialize once into #temp.</li>
+</ul>
+<h3>Step 4 — Verify</h3>
+<pre><code>-- Compare before/after: logical reads, CPU, elapsed
+SET STATISTICS IO, TIME ON;
+-- and confirm the new plan (seeks, no spills, sane row estimates)</code></pre>
+<h3>Key Points</h3>
+<ul>
+<li>Measure first — STATISTICS IO/TIME, actual plan, Query Store; find the heavy statement.</li>
+<li>Plan culprits: scans, key lookups, estimate skew, implicit conversions, spills.</li>
+<li>SP classics: parameter sniffing (OPTION RECOMPILE), cursors → set-based, scalar UDFs, stale stats.</li>
+<li>Also check blocking — slow may mean waiting, not working.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>First I measure instead of guessing — SET STATISTICS IO and TIME plus the actual execution plan, or Query Store in production, to find which statement inside the procedure eats the time. Then I look for the classic plan problems: scans where I expect seeks, key lookups fixed by covering indexes, big estimated-vs-actual row gaps pointing to stale statistics or parameter sniffing, and implicit conversions. For SP-specific issues I check parameter sniffing — fixable with OPTION RECOMPILE or OPTIMIZE FOR — and rewrite any cursors or scalar functions into set-based logic. Sometimes the proc isn't slow but blocked, so I check wait stats too. After each change I re-measure logical reads and elapsed time to prove the improvement.</p>""",
+
 "q_sql_what_is": """<h2>What is SQL?</h2>
 <p><strong>SQL (Structured Query Language)</strong> is the standard language for working with <strong>relational databases</strong> — defining tables, inserting/updating data, querying it, and controlling access. SQL Server, MySQL, PostgreSQL, and Oracle all implement it (with small dialect differences; SQL Server's dialect is <strong>T-SQL</strong>).</p>
 <h3>SQL is declarative</h3>

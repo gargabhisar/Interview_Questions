@@ -695,19 +695,58 @@ public async Task&lt;IActionResult&gt; Notify(
 <h3>Interview Answer</h3>
 <p>Method injection resolves services into action parameters using [FromServices], which keeps controllers lean when a dependency is used by only one endpoint. For shared core dependencies I still prefer constructor injection because it makes requirements obvious and eases testing.</p>""",
 
-"q_96": """<h2>Why DbContext Is Scoped</h2>
-<p><code>DbContext</code> is not thread-safe and tracks entity changes for a unit of work. Registering it as <strong>scoped</strong> gives each HTTP request its own context instance, aligning with one logical transaction per request and preventing cross-request state leakage.</p>
-<p>A singleton DbContext would be shared across concurrent requests, causing race conditions and stale tracked entities. Transient DbContext per injection would multiply connections and break change tracking coherence within a request.</p>
+"q_96": """<h2>Why DbContext Is Scoped (Not Singleton)</h2>
+<p><code>DbContext</code> is registered as <strong>Scoped</strong> — one instance per HTTP request. <code>AddDbContext</code> does this by default. The reasons map directly to what DbContext <em>is</em>: a <strong>non-thread-safe unit of work with a change tracker</strong>.</p>
 <pre><code>builder.Services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
-    options.UseSqlServer(connectionString)); // scoped by default</code></pre>
+    options.UseSqlServer(connectionString)); // Scoped by default</code></pre>
+<h3>Why Singleton would break — 4 concrete failures</h3>
+<table>
+<tr><th>#</th><th>Problem</th><th>What happens in production</th></tr>
+<tr><td>1</td><td><strong>Not thread-safe</strong></td><td>Two concurrent requests share one context → <code>InvalidOperationException: A second operation was started on this context</code>, corrupted internal state, random crashes under load</td></tr>
+<tr><td>2</td><td><strong>Memory leak</strong></td><td>The change tracker keeps a reference to <em>every entity ever loaded</em>. A singleton context never resets → memory grows for the app's lifetime (classic .NET memory leak)</td></tr>
+<tr><td>3</td><td><strong>Stale data</strong></td><td>Tracked entities are cached. If a row changes in the DB, the singleton keeps serving the old tracked copy — users see outdated data forever</td></tr>
+<tr><td>4</td><td><strong>Cross-request leakage</strong></td><td>Request A's uncommitted changes sit in the tracker; Request B's <code>SaveChanges()</code> accidentally commits them — one user's data saved by another user's request</td></tr>
+</table>
+<h3>Why not Transient either?</h3>
+<ul>
+<li>A request often touches several services/repositories — Transient gives <strong>each one its own context</strong>, so they can't share a transaction or see each other's tracked changes.</li>
+<li><code>SaveChanges()</code> in one repo wouldn't include changes made through another — the <strong>unit of work per request</strong> breaks.</li>
+<li>More contexts = more connection churn for no benefit.</li>
+</ul>
+<h3>Why Scoped is exactly right</h3>
+<ul>
+<li>One request = one unit of work = one DbContext = one transaction boundary — a natural fit.</li>
+<li>All services within the request share the same tracked entities and can commit atomically.</li>
+<li>Disposed automatically at request end — change tracker memory released, connection returned to the pool.</li>
+<li>Each request starts fresh — no stale data, no cross-request leaks.</li>
+</ul>
+<h3>Related cases worth knowing</h3>
+<ul>
+<li><strong>Need DbContext in a Singleton/BackgroundService?</strong> Inject <code>IServiceScopeFactory</code> and create a scope per operation (see Section 2 — "Scoped into Singleton?").</li>
+<li><strong>High-perf / multi-threaded scenarios:</strong> <code>AddDbContextFactory&lt;T&gt;</code> — create short-lived contexts on demand (Blazor Server uses this).</li>
+</ul>
+<pre><code>// In a BackgroundService — never inject DbContext directly
+public class CleanupService : BackgroundService
+{
+    private readonly IServiceScopeFactory _scopeFactory;
+    public CleanupService(IServiceScopeFactory scopeFactory) =&gt; _scopeFactory = scopeFactory;
+
+    protected override async Task ExecuteAsync(CancellationToken ct)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();
+        // safe: fresh context, disposed with the scope
+    }
+}</code></pre>
 <h3>Key Points</h3>
 <ul>
-<li>DbContext tracks entities per unit of work.</li>
-<li>Scoped = one context per request scope.</li>
-<li>Do not share DbContext across threads.</li>
+<li>Singleton fails 4 ways: thread-unsafety, change-tracker memory leak, stale cached entities, cross-request data leakage.</li>
+<li>Transient breaks the shared unit of work within a request.</li>
+<li>Scoped = one context, one request, one transaction boundary, auto-disposed.</li>
+<li>For singletons/background jobs: <code>IServiceScopeFactory</code> or <code>AddDbContextFactory</code>.</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>EF Core DbContext is scoped because it is not thread-safe and represents a single unit of work per request. One instance per HTTP request ensures consistent change tracking and avoids concurrency bugs that would occur with a singleton context shared by all users.</p>""",
+<p>DbContext is scoped because it's a non-thread-safe unit of work with a change tracker. As a singleton, concurrent requests would hit it simultaneously and throw "second operation started on this context"; the change tracker would hold every entity ever loaded — a memory leak — and serve stale tracked data; and one request's uncommitted changes could be saved by another's SaveChanges. Transient is wrong the other way: services in the same request would get different contexts and lose the shared transaction. Scoped gives exactly one context per request — consistent tracking, atomic commit, disposed at request end. When I do need data access inside a singleton or background service, I create a scope via IServiceScopeFactory or use AddDbContextFactory.</p>""",
 
 "q_41": """<h2>JWT Authentication in ASP.NET Core</h2>
 <p>JSON Web Tokens (JWT) are compact, signed tokens carrying claims about a user or client. In ASP.NET Core, JWT bearer authentication validates the token signature and expiration, then builds a <code>ClaimsPrincipal</code> for authorization.</p>
