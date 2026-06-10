@@ -975,6 +975,9 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_csharp_hashtable_hashset')">39. Hashtable vs Dictionary / HashSet vs Dictionary</div>
 <div class="question-item" onclick="showAnswer('q_37')">40. .NET Framework vs .NET Core vs .NET 8</div>
 <div class="question-item" onclick="showAnswer('q_45')">41. Async &amp; Await</div>
+<div class="question-item" onclick="showAnswer('q_dotnet_what_is')">42. What is .NET?</div>
+<div class="question-item" onclick="showAnswer('q_class_vs_object')">43. Class vs Object (Instance)</div>
+<div class="question-item" onclick="showAnswer('q_span_t')">44. Span&lt;T&gt;</div>
 </div>
 <h3 class="topic-header">2. ASP.NET Core &amp; Web API</h3>
 <div class="question-group">
@@ -1040,6 +1043,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_aspnet_shared_views')">60. Multiple Views / Shared View</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_dropdown_performance')">61. DropDown Performance</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_nunit')">62. NUnit in C# (.NET)</div>
+<div class="question-item" onclick="showAnswer('q_automapper')">63. AutoMapper</div>
 </div>
 <h3 class="topic-header">3. LINQ &amp; Entity Framework Core</h3>
 <div class="question-group">
@@ -1094,6 +1098,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_41')">3. What is JWT? (validate in API)</div>
 <div class="question-item" onclick="showAnswer('q_jwt_claims')">4. How JWT claims work</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q23')">5. JWT &amp; IdentityServer</div>
+<div class="question-item" onclick="showAnswer('q_api_security')">6. How to Secure a Web API</div>
 </div>
 <h3 class="topic-header">7. Multithreading &amp; Async</h3>
 <div class="question-group">
@@ -1126,7 +1131,9 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_angular_injectable')">10. @Injectable &amp; providedIn: 'root'</div>
 <div class="question-item" onclick="showAnswer('q_angular_lazy_loading')">11. Lazy Loading in Angular</div>
 <div class="question-item" onclick="showAnswer('q_angular_http_client')">12. How to Call APIs (HttpClient)</div>
-<div class="question-item" onclick="showAnswer('q_angular_components')">13. Components — Basics, Communication &amp; Lifecycle</div>
+<div class="question-item" onclick="showAnswer('q_angular_components')">13. Components — Basics, Types, Communication &amp; Lifecycle</div>
+<div class="question-item" onclick="showAnswer('q_angular_directives')">14. Directives</div>
+<div class="question-item" onclick="showAnswer('q_angular_spa')">15. SPA — How Angular Works</div>
 </div>
 <h3 class="topic-header">9. Cloud Services (Azure)</h3>
 <div class="question-group">
@@ -1141,80 +1148,82 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <h3 class="topic-header">10. SQL &amp; Database</h3>
 <div class="question-group">
-<div class="question-item" onclick="showAnswer('q_31')">1. SQL vs NoSQL</div>
-<div class="question-item" onclick="showAnswer('q_1')">2. MongoDB vs SQL (MDOP)</div>
-<div class="question-item" onclick="showAnswer('q_mongodb_csharp')">3. MongoDB queries (C# Driver)</div>
-<div class="question-item" onclick="showAnswer('q_5')">4. Normalization &amp; Its Forms (1NF, 2NF, 3NF)</div>
-<div class="question-item" onclick="showAnswer('q_6')">5. Boyce-Codd Normal Form (BCNF)</div>
-<div class="question-item" onclick="showAnswer('q_sql_constraints')">6. Constraints in SQL</div>
-<div class="question-item" onclick="showAnswer('q_sql_relationships')">7. Database Relationships (1:1, 1:N, M:N)</div>
-<div class="question-item" onclick="showAnswer('q_10')">8. Primary vs Unique Key</div>
-<div class="question-item" onclick="showAnswer('q_sql_types_of_keys')">9. Types of Keys in SQL</div>
-<div class="question-item" onclick="showAnswer('q_7')">10. SQL Server Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_views_vs_indexes')">11. Views vs Indexes</div>
-<div class="question-item" onclick="showAnswer('q_sql_missing_index')">12. How to Identify Missing Index</div>
-<div class="question-item" onclick="showAnswer('q_sql_covering_index')">13. Covering Index</div>
-<div class="question-item" onclick="showAnswer('q_sql_index_design_strategy')">14. Index Design Strategy (Wide Table)</div>
-<div class="question-item" onclick="showAnswer('q_9')">15. Execution Plan</div>
-<div class="question-item" onclick="showAnswer('q_sql_profiling')">16. SQL Profiling &amp; Performance Tools</div>
-<div class="question-item" onclick="showAnswer('q_sql_profiler')">17. SQL Profiler — Interview Q&amp;A</div>
-<div class="question-item" onclick="showAnswer('q_sql_opt_techniques_list')">18. SQL Optimization Techniques (5–7 Ways)</div>
-<div class="question-item" onclick="showAnswer('q_112')">19. Improve Query Performance (SQL Server)</div>
-<div class="question-item" onclick="showAnswer('q_11')">20. UNION vs UNION ALL</div>
-<div class="question-item" onclick="showAnswer('q_12')">21. ISNULL vs COALESCE</div>
-<div class="question-item" onclick="showAnswer('q_sql_where_having')">22. WHERE vs HAVING</div>
-<div class="question-item" onclick="showAnswer('q_14')">23. Table vs Views</div>
-<div class="question-item" onclick="showAnswer('q_sql_joins_self_join')">24. Joins &amp; Self Join</div>
-<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">25. Types of Joins</div>
-<div class="question-item" onclick="showAnswer('q_113')">26. JOIN, CTE &amp; Subquery</div>
-<div class="question-item" onclick="showAnswer('q_sql_cte_used')">27. CTE — What &amp; Have You Used It?</div>
-<div class="question-item" onclick="showAnswer('q_124')">28. CTE vs Temp Table</div>
-<div class="question-item" onclick="showAnswer('q_18')">29. #temp Table vs @table Variable</div>
-<div class="question-item" onclick="showAnswer('q_19')">30. Subquery vs CTE</div>
-<div class="question-item" onclick="showAnswer('q_sql_cte_vs_global_temp')">31. CTE vs ##temp (1M+ Rows in SP)</div>
-<div class="question-item" onclick="showAnswer('q_15')">32. Stored Procedure vs Function</div>
-<div class="question-item" onclick="showAnswer('q_sql_what_is_sp')">33. What is Stored Procedure?</div>
-<div class="question-item" onclick="showAnswer('q_123')">34. Benefits of Stored Procedures</div>
-<div class="question-item" onclick="showAnswer('q_sql_function_return_types')">35. Functions — Multiple Return Types?</div>
-<div class="question-item" onclick="showAnswer('q_30')">36. Unlimited SP Parameters</div>
-<div class="question-item" onclick="showAnswer('q_125')">37. TRUNCATE vs DELETE</div>
-<div class="question-item" onclick="showAnswer('q_29')">38. MERGE Statement</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_implement')">39. Transaction — What &amp; How to Implement</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_what')">40. Transaction in SQL (not “Transition”)</div>
-<div class="question-item" onclick="showAnswer('q_sql_acid')">41. ACID Properties</div>
-<div class="question-item" onclick="showAnswer('q_28')">42. Transactions</div>
-<div class="question-item" onclick="showAnswer('q_sql_commit_rollback')">43. COMMIT and ROLLBACK</div>
-<div class="question-item" onclick="showAnswer('q_27')">44. Isolation Levels</div>
-<div class="question-item" onclick="showAnswer('q_25')">45. Deadlock</div>
-<div class="question-item" onclick="showAnswer('q_26')">46. WITH(NOLOCK)</div>
-<div class="question-item" onclick="showAnswer('q_sql_transaction_scenario')">47. Transaction Scenario (500 Records)</div>
-<div class="question-item" onclick="showAnswer('q_21')">48. Triggers in SQL — Purpose</div>
-<div class="question-item" onclick="showAnswer('q_sql_inserted_deleted')">49. INSERTED vs DELETED</div>
-<div class="question-item" onclick="showAnswer('q_24')">50. Magic Tables in Triggers</div>
-<div class="question-item" onclick="showAnswer('q_sql_window_functions')">51. Window Functions</div>
-<div class="question-item" onclick="showAnswer('q_22')">52. ROW_NUMBER()</div>
-<div class="question-item" onclick="showAnswer('q_23')">53. RANK vs DENSE_RANK</div>
-<div class="question-item" onclick="showAnswer('q_sql_5th_rank_cte')">54. 5th Highest Rank — RANK &amp; CTE</div>
-<div class="question-item" onclick="showAnswer('q_35')">55. Nth Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_5th_highest_salary')">56. Get 5th Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_2nd_salary')">57. 2nd Highest Salary</div>
-<div class="question-item" onclick="showAnswer('q_sql_second_highest_dept')">58. Second Highest Salary (Dept-wise)</div>
-<div class="question-item" onclick="showAnswer('q_36')">59. Students — Same Score (Find Names)</div>
-<div class="question-item" onclick="showAnswer('q_sql_commission_null')">60. Commission NULL → 0</div>
-<div class="question-item" onclick="showAnswer('q_sql_dept_zero_employees')">61. Department with 0 Employees</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_tanker')">62. 3rd Highest Tanker Level &amp; Duplicate Names</div>
-<div class="question-item" onclick="showAnswer('q_sql_remove_duplicates_cte')">63. Delete Duplicate Records (CTE + PARTITION BY)</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_pagination')">64. Pagination in SQL</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_gender_codes')">65. Gender Codes — M / F / O (INSERT)</div>
-<div class="question-item" onclick="showAnswer('q_sql_scenario_default_age')">66. UserDetails — Default Age = 18</div>
-<div class="question-item" onclick="showAnswer('q_sql_select_into_where')">67. SELECT * INTO — WHERE 1=0 vs 1=1</div>
-<div class="question-item" onclick="showAnswer('q_sql_last_inserted')">68. Last Inserted Record</div>
-<div class="question-item" onclick="showAnswer('q_20')">69. SQL Injection Prevention</div>
-<div class="question-item" onclick="showAnswer('q_sql_concurrent_update_conflict')">70. Two Users Update Same Row</div>
-<div class="question-item" onclick="showAnswer('q_sql_optimistic_concurrency')">71. Optimistic Concurrency</div>
-<div class="question-item" onclick="showAnswer('q_32')">72. NoSQL Partitioning</div>
-<div class="question-item" onclick="showAnswer('q_33')">73. PK and Secondary Index (NoSQL)</div>
-<div class="question-item" onclick="showAnswer('q_34')">74. SQL Server Internal Communication</div>
+<div class="question-item" onclick="showAnswer('q_sql_what_is')">1. What is SQL?</div>
+<div class="question-item" onclick="showAnswer('q_31')">2. SQL vs NoSQL</div>
+<div class="question-item" onclick="showAnswer('q_1')">3. MongoDB vs SQL (MDOP)</div>
+<div class="question-item" onclick="showAnswer('q_mongodb_csharp')">4. MongoDB queries (C# Driver)</div>
+<div class="question-item" onclick="showAnswer('q_5')">5. Normalization &amp; Its Forms (1NF, 2NF, 3NF)</div>
+<div class="question-item" onclick="showAnswer('q_6')">6. Boyce-Codd Normal Form (BCNF)</div>
+<div class="question-item" onclick="showAnswer('q_sql_constraints')">7. Constraints in SQL</div>
+<div class="question-item" onclick="showAnswer('q_sql_relationships')">8. Database Relationships (1:1, 1:N, M:N)</div>
+<div class="question-item" onclick="showAnswer('q_10')">9. Primary vs Unique Key</div>
+<div class="question-item" onclick="showAnswer('q_sql_types_of_keys')">10. Types of Keys in SQL</div>
+<div class="question-item" onclick="showAnswer('q_7')">11. SQL Server Indexes</div>
+<div class="question-item" onclick="showAnswer('q_sql_views_vs_indexes')">12. Views vs Indexes</div>
+<div class="question-item" onclick="showAnswer('q_sql_missing_index')">13. How to Identify Missing Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_covering_index')">14. Covering Index</div>
+<div class="question-item" onclick="showAnswer('q_sql_index_design_strategy')">15. Index Design Strategy (Wide Table)</div>
+<div class="question-item" onclick="showAnswer('q_9')">16. Execution Plan</div>
+<div class="question-item" onclick="showAnswer('q_sql_profiling')">17. SQL Profiling &amp; Performance Tools</div>
+<div class="question-item" onclick="showAnswer('q_sql_profiler')">18. SQL Profiler — Interview Q&amp;A</div>
+<div class="question-item" onclick="showAnswer('q_sql_opt_techniques_list')">19. SQL Optimization Techniques (5–7 Ways)</div>
+<div class="question-item" onclick="showAnswer('q_112')">20. Improve Query Performance (SQL Server)</div>
+<div class="question-item" onclick="showAnswer('q_11')">21. UNION vs UNION ALL</div>
+<div class="question-item" onclick="showAnswer('q_12')">22. ISNULL vs COALESCE</div>
+<div class="question-item" onclick="showAnswer('q_sql_where_having')">23. WHERE vs HAVING</div>
+<div class="question-item" onclick="showAnswer('q_14')">24. Table vs Views</div>
+<div class="question-item" onclick="showAnswer('q_sql_joins_self_join')">25. Joins &amp; Self Join</div>
+<div class="question-item" onclick="showAnswer('q_sql_interview_pack')">26. Types of Joins</div>
+<div class="question-item" onclick="showAnswer('q_113')">27. JOIN, CTE &amp; Subquery</div>
+<div class="question-item" onclick="showAnswer('q_sql_cte_used')">28. CTE — What &amp; Have You Used It?</div>
+<div class="question-item" onclick="showAnswer('q_124')">29. CTE vs Temp Table</div>
+<div class="question-item" onclick="showAnswer('q_18')">30. #temp Table vs @table Variable</div>
+<div class="question-item" onclick="showAnswer('q_19')">31. Subquery vs CTE</div>
+<div class="question-item" onclick="showAnswer('q_sql_cte_vs_global_temp')">32. CTE vs ##temp (1M+ Rows in SP)</div>
+<div class="question-item" onclick="showAnswer('q_15')">33. Stored Procedure vs Function</div>
+<div class="question-item" onclick="showAnswer('q_sql_what_is_sp')">34. What is Stored Procedure?</div>
+<div class="question-item" onclick="showAnswer('q_123')">35. Benefits of Stored Procedures</div>
+<div class="question-item" onclick="showAnswer('q_sql_cursor')">36. Cursors in SQL</div>
+<div class="question-item" onclick="showAnswer('q_sql_function_return_types')">37. Functions — Multiple Return Types?</div>
+<div class="question-item" onclick="showAnswer('q_30')">38. Unlimited SP Parameters</div>
+<div class="question-item" onclick="showAnswer('q_125')">39. TRUNCATE vs DELETE</div>
+<div class="question-item" onclick="showAnswer('q_29')">40. MERGE Statement</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_implement')">41. Transaction — What &amp; How to Implement</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_what')">42. Transaction in SQL (not “Transition”)</div>
+<div class="question-item" onclick="showAnswer('q_sql_acid')">43. ACID Properties</div>
+<div class="question-item" onclick="showAnswer('q_28')">44. Transactions</div>
+<div class="question-item" onclick="showAnswer('q_sql_commit_rollback')">45. COMMIT and ROLLBACK</div>
+<div class="question-item" onclick="showAnswer('q_27')">46. Isolation Levels</div>
+<div class="question-item" onclick="showAnswer('q_25')">47. Deadlock</div>
+<div class="question-item" onclick="showAnswer('q_26')">48. WITH(NOLOCK)</div>
+<div class="question-item" onclick="showAnswer('q_sql_transaction_scenario')">49. Transaction Scenario (500 Records)</div>
+<div class="question-item" onclick="showAnswer('q_21')">50. Triggers in SQL — Purpose</div>
+<div class="question-item" onclick="showAnswer('q_sql_inserted_deleted')">51. INSERTED vs DELETED</div>
+<div class="question-item" onclick="showAnswer('q_24')">52. Magic Tables in Triggers</div>
+<div class="question-item" onclick="showAnswer('q_sql_window_functions')">53. Window Functions</div>
+<div class="question-item" onclick="showAnswer('q_22')">54. ROW_NUMBER()</div>
+<div class="question-item" onclick="showAnswer('q_23')">55. RANK vs DENSE_RANK</div>
+<div class="question-item" onclick="showAnswer('q_sql_5th_rank_cte')">56. Nth Highest Salary — RANK &amp; CTE (4th/5th)</div>
+<div class="question-item" onclick="showAnswer('q_35')">57. Nth Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_5th_highest_salary')">58. Get 5th Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_2nd_salary')">59. 2nd Highest Salary</div>
+<div class="question-item" onclick="showAnswer('q_sql_second_highest_dept')">60. Second Highest Salary (Dept-wise)</div>
+<div class="question-item" onclick="showAnswer('q_36')">61. Students — Same Score (Find Names)</div>
+<div class="question-item" onclick="showAnswer('q_sql_commission_null')">62. Commission NULL → 0</div>
+<div class="question-item" onclick="showAnswer('q_sql_dept_zero_employees')">63. Department with 0 Employees</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_tanker')">64. 3rd Highest Tanker Level &amp; Duplicate Names</div>
+<div class="question-item" onclick="showAnswer('q_sql_remove_duplicates_cte')">65. Delete Duplicate Records (CTE + PARTITION BY)</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_pagination')">66. Pagination in SQL</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_gender_codes')">67. Gender Codes — M / F / O (INSERT)</div>
+<div class="question-item" onclick="showAnswer('q_sql_scenario_default_age')">68. UserDetails — Default Age = 18</div>
+<div class="question-item" onclick="showAnswer('q_sql_select_into_where')">69. SELECT * INTO — WHERE 1=0 vs 1=1</div>
+<div class="question-item" onclick="showAnswer('q_sql_last_inserted')">70. Last Inserted Record</div>
+<div class="question-item" onclick="showAnswer('q_20')">71. SQL Injection Prevention</div>
+<div class="question-item" onclick="showAnswer('q_sql_concurrent_update_conflict')">72. Two Users Update Same Row</div>
+<div class="question-item" onclick="showAnswer('q_sql_optimistic_concurrency')">73. Optimistic Concurrency</div>
+<div class="question-item" onclick="showAnswer('q_32')">74. NoSQL Partitioning</div>
+<div class="question-item" onclick="showAnswer('q_33')">75. PK and Secondary Index (NoSQL)</div>
+<div class="question-item" onclick="showAnswer('q_34')">76. SQL Server Internal Communication</div>
 </div>
 <h3 class="topic-header">11. Production &amp; Troubleshooting</h3>
 <div class="question-group">
@@ -4279,6 +4288,354 @@ app.Run();</code></pre><div class="interview-tip"><h3>Easy Way to Remember</h3><
 <tr><td><code>Run()</code></td><td>Stop here</td></tr>
 <tr><td><code>Map()</code></td><td>Take another route</td></tr>
 </table><h3>Interview Answer</h3><p><code>Use()</code> chains middleware and calls <code>next()</code> for before/after logic. <code>Run()</code> is terminalâ€”it handles the response and stops the pipeline. <code>Map()</code> branches the pipeline by path so only matching URLs run that sub-pipeline. Order matters, and skipping <code>next()</code> short-circuits like <code>Run()</code>.</p></div></div>
+<div class="answer-pane" id="q_angular_directives"><h2>Directives in Angular</h2><p>A <strong>directive</strong> is a class that adds <strong>behavior to elements</strong> in the DOM — it can change appearance, structure, or behavior of elements. Angular has <strong>three types</strong>:</p><table>
+<tr><th>Type</th><th>What it does</th><th>Examples</th></tr>
+<tr><td><strong>1. Component</strong></td><td>Directive <em>with a template</em> — technically every component is a directive</td><td><code>@Component</code></td></tr>
+<tr><td><strong>2. Structural</strong></td><td><strong>Changes the DOM layout</strong> — adds/removes elements</td><td><code>*ngIf</code>, <code>*ngFor</code>, <code>*ngSwitch</code></td></tr>
+<tr><td><strong>3. Attribute</strong></td><td><strong>Changes appearance/behavior</strong> of an existing element</td><td><code>ngClass</code>, <code>ngStyle</code>, <code>ngModel</code></td></tr>
+</table><h3>Structural directives (note the *)</h3><pre><code>&lt;!-- *ngIf — add/remove element from DOM (not just hide) --&gt;
+&lt;div *ngIf="isLoggedIn"&gt;Welcome back!&lt;/div&gt;
+&lt;div *ngIf="user; else loading"&gt;{{ user.name }}&lt;/div&gt;
+&lt;ng-template #loading&gt;Loading...&lt;/ng-template&gt;
+
+&lt;!-- *ngFor — repeat element per item --&gt;
+&lt;li *ngFor="let order of orders; let i = index; trackBy: trackById"&gt;
+  {{ i + 1 }}. {{ order.product }}
+&lt;/li&gt;
+
+&lt;!-- *ngSwitch --&gt;
+&lt;div [ngSwitch]="status"&gt;
+  &lt;p *ngSwitchCase="'active'"&gt;Active&lt;/p&gt;
+  &lt;p *ngSwitchDefault&gt;Unknown&lt;/p&gt;
+&lt;/div&gt;</code></pre><p>The <code>*</code> is syntactic sugar — Angular wraps the element in an <code>&lt;ng-template&gt;</code> and the directive decides whether/how many times to stamp it out.</p><h3>New control flow (Angular 17+)</h3><pre><code>@if (isLoggedIn) {
+  &lt;div&gt;Welcome back!&lt;/div&gt;
+} @else {
+  &lt;div&gt;Please log in&lt;/div&gt;
+}
+
+@for (order of orders; track order.id) {
+  &lt;li&gt;{{ order.product }}&lt;/li&gt;
+} @empty {
+  &lt;li&gt;No orders&lt;/li&gt;
+}</code></pre><p>Built-in template syntax replacing <code>*ngIf/*ngFor</code> — faster, no imports needed, with built-in <code>@empty</code>. The old directives still work.</p><h3>Attribute directives</h3><pre><code>&lt;!-- ngClass — conditional CSS classes --&gt;
+&lt;div [ngClass]="{ 'active': isActive, 'error': hasError }"&gt;...&lt;/div&gt;
+
+&lt;!-- ngStyle — conditional inline styles --&gt;
+&lt;div [ngStyle]="{ 'color': isError ? 'red' : 'green' }"&gt;...&lt;/div&gt;
+
+&lt;!-- ngModel — two-way binding (FormsModule) --&gt;
+&lt;input [(ngModel)]="username" /&gt;</code></pre><h3>Custom attribute directive</h3><pre><code>import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]',
+  standalone: true
+})
+export class HighlightDirective {
+  @Input() appHighlight = 'yellow';
+
+  constructor(private el: ElementRef) {}
+
+  @HostListener('mouseenter')
+  onEnter() { this.el.nativeElement.style.background = this.appHighlight; }
+
+  @HostListener('mouseleave')
+  onLeave() { this.el.nativeElement.style.background = ''; }
+}
+
+// Usage
+&lt;p [appHighlight]="'lightblue'"&gt;Hover me&lt;/p&gt;</code></pre><h3>Directive vs Component</h3><ul>
+<li>Component = directive <strong>with a template</strong>; creates its own view.</li>
+<li>Directive = attaches behavior to an <strong>existing</strong> element; no template of its own.</li>
+<li>Multiple directives can sit on one element; only one component per element.</li>
+</ul><h3>Key Points</h3><ul>
+<li>Three types: Component (template), Structural (changes DOM — <code>*</code> prefix), Attribute (changes behavior/appearance).</li>
+<li><code>*ngIf</code> removes from DOM; CSS <code>hidden</code> only hides — different for performance and lifecycle.</li>
+<li>Always use <code>trackBy</code>/<code>track</code> with loops for rendering performance.</li>
+<li>Angular 17+ <code>@if/@for</code> control flow replaces structural directives in new code.</li>
+<li>Custom directives: <code>@Directive</code> + <code>ElementRef</code> + <code>@HostListener</code>.</li>
+</ul><h3>Interview Answer</h3><p>Directives add behavior to DOM elements. There are three types: components, which are directives with templates; structural directives like *ngIf and *ngFor that add or remove elements from the DOM; and attribute directives like ngClass and ngStyle that change an element's appearance or behavior. I've written custom attribute directives using @Directive with ElementRef and HostListener — for example a highlight-on-hover or permission-based show/hide directive. In Angular 17+ the new @if/@for control flow syntax replaces structural directives with faster built-in blocks.</p></div>
+<div class="answer-pane" id="q_angular_spa"><h2>SPA — How Angular Works as a Single Page Application</h2><p>Angular applications are <strong>SPAs (Single Page Applications)</strong>: the browser loads <strong>one HTML page once</strong> (<code>index.html</code>), and from then on Angular <strong>swaps views in JavaScript</strong> — navigation never triggers a full page reload.</p><h3>Traditional website vs SPA</h3><table>
+<tr><th></th><th>Traditional (MPA)</th><th>SPA (Angular)</th></tr>
+<tr><td>Navigation</td><td>Every click → server returns a <strong>new full HTML page</strong></td><td>One page loaded once; views swapped <strong>client-side</strong></td></tr>
+<tr><td>Server returns</td><td>HTML</td><td>JSON (REST APIs) — UI is rendered by the browser</td></tr>
+<tr><td>Page reload</td><td>Yes, every navigation</td><td>No — instant view changes</td></tr>
+<tr><td>State</td><td>Lost between pages</td><td>Kept in memory (services, stores)</td></tr>
+</table><h3>How Angular implements the SPA</h3><pre><code>1. Browser requests the site → server returns index.html + JS bundles
+2. main.ts bootstraps the root component (&lt;app-root&gt;)
+3. Angular Router watches the URL
+4. URL changes → Router swaps components inside &lt;router-outlet&gt;
+5. Data comes from Web APIs via HttpClient (JSON) — no page reloads</code></pre><pre><code>// app.routes.ts — Router maps URLs to components
+export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'orders', component: OrdersComponent },
+  { path: 'orders/:id', component: OrderDetailComponent },
+  // lazy loading — module/component loaded only when visited
+  { path: 'admin', loadChildren: () =&gt;
+      import('./admin/admin.routes').then(m =&gt; m.ADMIN_ROUTES) },
+];</code></pre><pre><code>&lt;!-- app.component.html — views swap here, page never reloads --&gt;
+&lt;app-navbar&gt;&lt;/app-navbar&gt;
+&lt;router-outlet&gt;&lt;/router-outlet&gt;</code></pre><p>Navigation uses <code>routerLink</code> (not <code>href</code> — href would cause a full reload):</p><pre><code>&lt;a [routerLink]="['/orders', order.id]"&gt;View order&lt;/a&gt;</code></pre><h3>Benefits</h3><ul>
+<li><strong>Fast navigation</strong> — no full page round-trips after first load.</li>
+<li><strong>App-like UX</strong> — smooth transitions, state preserved in memory.</li>
+<li><strong>Clean separation</strong> — Angular front end + .NET Web API backend over JSON.</li>
+<li><strong>Less server load</strong> — server serves static files + APIs only.</li>
+</ul><h3>Challenges (and Angular's answers)</h3><table>
+<tr><th>Challenge</th><th>Solution</th></tr>
+<tr><td>Slow first load (big JS bundle)</td><td><strong>Lazy loading</strong>, AOT compilation, tree shaking</td></tr>
+<tr><td>SEO — crawlers may not run JS</td><td><strong>Angular SSR</strong> (server-side rendering / hydration)</td></tr>
+<tr><td>Browser back/forward</td><td>Router integrates with browser history API</td></tr>
+<tr><td>Deep links (refresh on /orders/5)</td><td>Server rewrite rule → always serve index.html (e.g. IIS URL Rewrite)</td></tr>
+</table><h3>Key Points</h3><ul>
+<li>SPA = one index.html; Angular Router swaps components in <code>&lt;router-outlet&gt;</code> — no reloads.</li>
+<li>Data flows through HttpClient → REST APIs (JSON), not server-rendered HTML.</li>
+<li>routerLink instead of href; lazy loading for bundle size; SSR for SEO.</li>
+<li>Deployment needs a URL-rewrite rule so deep links serve index.html.</li>
+</ul><h3>Interview Answer</h3><p>Angular apps are single page applications — the browser loads index.html and the JS bundles once, then the Angular Router takes over navigation, swapping components inside router-outlet as the URL changes, with no full page reloads. Data comes from REST APIs as JSON via HttpClient, so in my projects the .NET Web API serves data and Angular renders everything client-side. To handle SPA challenges I use lazy loading to keep the initial bundle small, and on the server a rewrite rule sends deep links back to index.html; if SEO matters, Angular SSR with hydration renders pages on the server first.</p></div>
+<div class="answer-pane" id="q_sql_what_is"><h2>What is SQL?</h2><p><strong>SQL (Structured Query Language)</strong> is the standard language for working with <strong>relational databases</strong> — defining tables, inserting/updating data, querying it, and controlling access. SQL Server, MySQL, PostgreSQL, and Oracle all implement it (with small dialect differences; SQL Server's dialect is <strong>T-SQL</strong>).</p><h3>SQL is declarative</h3><p>You describe <strong>what</strong> you want, not <strong>how</strong> to get it — the database's query optimizer decides the execution plan (which index to use, how to join).</p><pre><code>SELECT Name, Salary
+FROM Employees
+WHERE DepartmentId = 10
+ORDER BY Salary DESC;   -- no loops, no algorithm — just intent</code></pre><h3>Categories of SQL commands</h3><table>
+<tr><th>Category</th><th>Purpose</th><th>Commands</th></tr>
+<tr><td><strong>DDL</strong> — Data Definition</td><td>Define structure</td><td><code>CREATE, ALTER, DROP, TRUNCATE</code></td></tr>
+<tr><td><strong>DML</strong> — Data Manipulation</td><td>Work with rows</td><td><code>SELECT, INSERT, UPDATE, DELETE</code></td></tr>
+<tr><td><strong>DCL</strong> — Data Control</td><td>Permissions</td><td><code>GRANT, REVOKE</code></td></tr>
+<tr><td><strong>TCL</strong> — Transaction Control</td><td>Atomic units of work</td><td><code>BEGIN TRAN, COMMIT, ROLLBACK</code></td></tr>
+</table><p><em>(Some classifications put SELECT in its own category: DQL.)</em></p><h3>Key concepts that follow from SQL</h3><ul>
+<li><strong>Tables, rows, columns</strong> — data organized relationally, linked by keys (Section 8 items 9–10).</li>
+<li><strong>Joins</strong> — combine data across tables.</li>
+<li><strong>Constraints</strong> — PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK enforce integrity (item 7).</li>
+<li><strong>Transactions + ACID</strong> — Atomicity, Consistency, Isolation, Durability.</li>
+<li><strong>Set-based</strong> — SQL operates on whole sets of rows at once, not row-by-row loops (which is why cursors are a last resort — item 36).</li>
+</ul><h3>Key Points</h3><ul>
+<li>Standard declarative language for relational databases; T-SQL is SQL Server's dialect.</li>
+<li>Four command families: DDL (structure), DML (data), DCL (permissions), TCL (transactions).</li>
+<li>Set-based and optimizer-driven — you state what, the engine decides how.</li>
+</ul><h3>Interview Answer</h3><p>SQL is the standard declarative language for relational databases — I describe what data I want and the query optimizer figures out the execution plan. Commands fall into DDL for structure, DML for data, DCL for permissions, and TCL for transactions. In SQL Server I work with its T-SQL dialect, which adds procedural features like stored procedures, variables, and error handling on top of standard SQL.</p></div>
+<div class="answer-pane" id="q_sql_cursor"><h2>Cursors in SQL</h2><p>A <strong>cursor</strong> is a database object that lets you process a result set <strong>row by row</strong>, instead of as a single set-based operation. You declare it over a SELECT, then fetch one row at a time and act on it.</p><h3>Cursor lifecycle (5 steps)</h3><pre><code>DECLARE @EmpId INT, @Salary DECIMAL(10,2);
+
+-- 1. DECLARE — define cursor over a query
+DECLARE emp_cursor CURSOR FOR
+    SELECT EmployeeId, Salary FROM Employees WHERE IsActive = 1;
+
+-- 2. OPEN — execute the query, populate the cursor
+OPEN emp_cursor;
+
+-- 3. FETCH — get the first row
+FETCH NEXT FROM emp_cursor INTO @EmpId, @Salary;
+
+WHILE @@FETCH_STATUS = 0   -- 0 = row fetched successfully
+BEGIN
+    -- row-by-row logic here
+    UPDATE Employees SET Salary = @Salary * 1.10
+    WHERE EmployeeId = @EmpId;
+
+    FETCH NEXT FROM emp_cursor INTO @EmpId, @Salary;
+END
+
+-- 4. CLOSE — release the result set
+CLOSE emp_cursor;
+-- 5. DEALLOCATE — remove the cursor definition
+DEALLOCATE emp_cursor;</code></pre><h3>Why cursors are usually avoided</h3><table>
+<tr><th>Problem</th><th>Why</th></tr>
+<tr><td><strong>Slow</strong></td><td>Row-by-row ("RBAR" — row by agonizing row) vs set-based operations the engine optimizes</td></tr>
+<tr><td><strong>Locking/blocking</strong></td><td>Holds resources longer than a single set-based statement</td></tr>
+<tr><td><strong>Memory</strong></td><td>Result set materialized for the cursor's lifetime</td></tr>
+</table><pre><code>-- The cursor above is just this — one statement, far faster:
+UPDATE Employees SET Salary = Salary * 1.10 WHERE IsActive = 1;</code></pre><h3>When a cursor IS appropriate</h3><ul>
+<li>Calling a <strong>stored procedure per row</strong> (no set-based equivalent).</li>
+<li>Administrative scripts — e.g., rebuild indexes per table, process per database.</li>
+<li>Complex sequential logic where each row's processing depends on the previous row's outcome (though window functions cover many of these now).</li>
+<li>Batched maintenance where you intentionally throttle (top N per loop is often better).</li>
+</ul><h3>Cursor options worth knowing</h3><ul>
+<li><code>FAST_FORWARD</code> — read-only, forward-only; the cheapest cursor. Default cursors are heavier (scrollable, updatable).</li>
+<li><code>STATIC</code> — snapshot copy in tempdb; <code>DYNAMIC</code> — sees live changes.</li>
+<li><code>LOCAL</code> vs <code>GLOBAL</code> scope.</li>
+</ul><h3>Key Points</h3><ul>
+<li>Cursor = row-by-row processing: DECLARE → OPEN → FETCH (loop on <code>@@FETCH_STATUS</code>) → CLOSE → DEALLOCATE.</li>
+<li>Prefer set-based SQL — it's usually 10–100x faster.</li>
+<li>Legitimate uses: per-row SP calls, admin scripts, sequential logic.</li>
+<li>If you must use one: <code>FAST_FORWARD</code>, and always CLOSE + DEALLOCATE.</li>
+</ul><h3>Interview Answer</h3><p>A cursor processes a result set row by row — declare it over a SELECT, open it, fetch in a loop while @@FETCH_STATUS is 0, then close and deallocate. I avoid cursors where possible because set-based operations are dramatically faster and hold fewer locks; most cursor logic can be rewritten as a single UPDATE with a join or a window function. I'd still use one for things like executing a stored procedure per row or admin maintenance scripts, and then I'd declare it FAST_FORWARD to keep it cheap.</p></div>
+<div class="answer-pane" id="q_dotnet_what_is"><h2>What is .NET?</h2><p><strong>.NET</strong> is a free, open-source, cross-platform <strong>developer platform</strong> from Microsoft for building many kinds of applications — web APIs, websites, desktop, mobile, cloud, games, and IoT — primarily using <strong>C#</strong> (also F# and VB).</p><h3>What makes up .NET</h3><table>
+<tr><th>Component</th><th>What it does</th></tr>
+<tr><td><strong>Runtime (CLR)</strong></td><td>Common Language Runtime — executes code, manages memory (GC), type safety, JIT compilation</td></tr>
+<tr><td><strong>BCL / Class Library</strong></td><td>Thousands of built-in APIs — collections, file I/O, networking, LINQ, JSON</td></tr>
+<tr><td><strong>Languages</strong></td><td>C#, F#, VB — all compile to IL (Intermediate Language)</td></tr>
+<tr><td><strong>SDK &amp; CLI</strong></td><td><code>dotnet new / build / run / test / publish</code> — tooling for the full dev cycle</td></tr>
+<tr><td><strong>App frameworks</strong></td><td>ASP.NET Core (web), MAUI (mobile/desktop), WPF/WinForms (Windows), Blazor (web UI in C#)</td></tr>
+</table><h3>How code runs (compilation model)</h3><pre><code>C# source code
+    ↓  (csc compiler)
+IL (Intermediate Language) in a .dll
+    ↓  (CLR — JIT compiler at runtime)
+Native machine code
+
+// .NET 8 can also compile Ahead-Of-Time (Native AOT) — no JIT at runtime</code></pre><h3>Key runtime services (CLR)</h3><ul>
+<li><strong>Garbage Collection</strong> — automatic memory management.</li>
+<li><strong>Type safety</strong> — common type system (CTS) across languages.</li>
+<li><strong>JIT compilation</strong> — IL compiled to machine code on first call, optimized for the actual CPU.</li>
+<li><strong>Exception handling, reflection, interop</strong> with native code.</li>
+</ul><h3>The .NET family (naming)</h3><ul>
+<li><strong>.NET Framework</strong> (2002–4.8) — original, Windows-only, maintenance mode.</li>
+<li><strong>.NET Core</strong> (2016–3.1) — cross-platform rewrite, now end of life.</li>
+<li><strong>.NET 5/6/7/8</strong> — the unified modern platform; .NET 8 is the current LTS. (Details: Section 1 item 40.)</li>
+</ul><h3>Key Points</h3><ul>
+<li>.NET = runtime (CLR) + class library (BCL) + languages (C#) + SDK/tooling + app frameworks.</li>
+<li>Code compiles to IL, then JIT-compiled to native at runtime (or AOT in .NET 8).</li>
+<li>Cross-platform: Windows, Linux, macOS — containers and cloud friendly.</li>
+<li>One platform for web (ASP.NET Core), desktop, mobile (MAUI), and services.</li>
+</ul><h3>Interview Answer</h3><p>.NET is Microsoft's open-source, cross-platform development platform. It consists of the CLR runtime that handles memory management and JIT compilation, the base class library, languages like C#, and app frameworks such as ASP.NET Core. C# code compiles to Intermediate Language, and the CLR JIT-compiles that to native code at runtime — .NET 8 also supports Native AOT. I use it mainly for building ASP.NET Core Web APIs that run on both Windows and Linux containers.</p></div>
+<div class="answer-pane" id="q_class_vs_object"><h2>Class vs Object (Instance)</h2><p>A <strong>class</strong> is a <strong>blueprint/template</strong> — it defines what data (fields, properties) and behavior (methods) something has. An <strong>object</strong> (also called an <strong>instance</strong>) is a <strong>concrete thing created from that blueprint</strong>, living in memory with its own data.</p><p><strong>Analogy:</strong> a class is the house blueprint; objects are the actual houses built from it. One blueprint, many houses — each with its own paint color.</p><pre><code>// CLASS — blueprint (no memory for data yet, just a definition)
+public class Car
+{
+    public string Color { get; set; }
+    public int Speed { get; private set; }
+
+    public void Accelerate() =&gt; Speed += 10;
+}
+
+// OBJECTS — instances created with 'new', each with its own state
+Car car1 = new Car { Color = "Red" };
+Car car2 = new Car { Color = "Blue" };
+
+car1.Accelerate();
+Console.WriteLine(car1.Speed);  // 10
+Console.WriteLine(car2.Speed);  // 0  ← independent state</code></pre><h3>Differences</h3><table>
+<tr><th></th><th>Class</th><th>Object / Instance</th></tr>
+<tr><td>What</td><td>Blueprint, type definition</td><td>Concrete occurrence of the class</td></tr>
+<tr><td>Memory</td><td>No data memory (just type metadata)</td><td>Allocated on the heap when created with <code>new</code></td></tr>
+<tr><td>When</td><td>Written at design time</td><td>Created at runtime</td></tr>
+<tr><td>Count</td><td>Defined once</td><td>Many instances, each with independent state</td></tr>
+</table><h3>Related details interviewers probe</h3><ul>
+<li><strong>"Object" vs "instance"</strong> — same thing in practice; "instance of class X" emphasizes which class it came from.</li>
+<li><strong>Static members</strong> belong to the <em>class itself</em>, not to instances — one copy shared by all (<code>Car.TotalCarsCreated</code>).</li>
+<li><strong>Static class</strong> — cannot be instantiated at all; only static members (e.g., <code>Math</code>).</li>
+<li>Reference variables hold a <em>reference</em> to the object on the heap — two variables can point to the same instance.</li>
+</ul><h3>Key Points</h3><ul>
+<li>Class = compile-time blueprint; object = runtime instance with its own state.</li>
+<li>Created with <code>new</code> (or DI container / factories in real apps).</li>
+<li>Static members belong to the class, instance members to each object.</li>
+</ul><h3>Interview Answer</h3><p>A class is the blueprint that defines properties and methods; an object is an instance of that class created at runtime with its own state in memory. From one Car class I can create many Car objects, each with independent property values. Static members are the exception — they belong to the class itself and are shared across all instances.</p></div>
+<div class="answer-pane" id="q_span_t"><h2>Span&lt;T&gt; in C#</h2><p><strong>Span&lt;T&gt;</strong> is a stack-only type (<code>ref struct</code>) that provides a <strong>view over a contiguous block of memory</strong> — an array, a string, stack-allocated memory, or native memory — <strong>without copying it</strong>. It's the key building block behind modern .NET's performance gains.</p><h3>The problem it solves</h3><p>Classic string/array APIs <strong>allocate copies</strong>: every <code>Substring</code>, every <code>array.Skip().Take().ToArray()</code> creates a new object on the heap → GC pressure in hot paths.</p><pre><code>// OLD — allocates a new string on the heap
+string dateStr = "2026-06-10";
+string year = dateStr.Substring(0, 4);          // new allocation
+
+// SPAN — zero allocation, just a window over the same memory
+ReadOnlySpan&lt;char&gt; span = dateStr.AsSpan();
+ReadOnlySpan&lt;char&gt; yearSpan = span.Slice(0, 4); // no copy, no GC
+int year = int.Parse(yearSpan);                  // parse APIs accept spans</code></pre><h3>What it can wrap</h3><pre><code>Span&lt;int&gt; fromArray  = new int[10];              // array
+Span&lt;byte&gt; fromStack = stackalloc byte[256];     // stack memory — no heap at all
+ReadOnlySpan&lt;char&gt; fromString = "hello".AsSpan(); // string (read-only)
+
+// Slicing — views, not copies
+Span&lt;int&gt; firstHalf = fromArray.Slice(0, 5);
+firstHalf[0] = 42;   // writes through to the original array</code></pre><h3>Span&lt;T&gt; vs Memory&lt;T&gt;</h3><table>
+<tr><th></th><th>Span&lt;T&gt;</th><th>Memory&lt;T&gt;</th></tr>
+<tr><td>Type</td><td><code>ref struct</code> — stack only</td><td>Regular struct — can live on heap</td></tr>
+<tr><td>Can be used in</td><td>Synchronous code only</td><td>Async methods, class fields, lambdas</td></tr>
+<tr><td>Usage</td><td>Hot-path parsing/slicing</td><td>Store a buffer reference; call <code>.Span</code> when working on it</td></tr>
+</table><h3>Restrictions (because it's a ref struct)</h3><ul>
+<li>Cannot be a field of a class, boxed, or captured in lambdas/iterators.</li>
+<li>Cannot cross <code>await</code> boundaries — use <code>Memory&lt;T&gt;</code> in async code.</li>
+</ul><h3>Where you benefit without writing any Span code</h3><p>ASP.NET Core (Kestrel request parsing), <code>System.Text.Json</code>, <code>int.Parse</code>/<code>TryParse</code> overloads, regex, and string APIs all use Span internally — a big part of why .NET Core/.NET 8 is so much faster than .NET Framework.</p><h3>Key Points</h3><ul>
+<li>Zero-allocation window over existing memory — slice without copying.</li>
+<li><code>ref struct</code> → stack-only; can't be stored on heap or used across <code>await</code> (use <code>Memory&lt;T&gt;</code>).</li>
+<li>Works over arrays, strings, <code>stackalloc</code>, and native memory uniformly.</li>
+<li>Use in hot paths: parsing, formatting, buffer processing.</li>
+</ul><h3>Interview Answer</h3><p>Span&lt;T&gt; is a stack-only struct that gives a zero-allocation view over contiguous memory — arrays, strings, or stackalloc buffers. Instead of Substring creating new strings, I slice a ReadOnlySpan over the same memory, which removes GC pressure in hot paths like parsing. Because it's a ref struct it can't live on the heap or cross await — for async scenarios I use Memory&lt;T&gt; and take .Span inside the synchronous part. Much of .NET's own performance improvement since Core comes from Span being used throughout the framework.</p></div>
+<div class="answer-pane" id="q_automapper"><h2>AutoMapper</h2><p><strong>AutoMapper</strong> is a library that maps objects of one type to another <strong>by convention</strong> — typically <strong>entities ↔ DTOs</strong> — so you don't hand-write repetitive property-copy code.</p><h3>The problem it solves</h3><pre><code>// Without AutoMapper — repetitive, easy to forget a property
+var dto = new EmployeeDto
+{
+    Id = employee.Id,
+    Name = employee.Name,
+    Department = employee.Department?.Name,
+    // ...20 more lines, repeated in every endpoint
+};</code></pre><h3>Setup (.NET 8)</h3><pre><code>// Install
+dotnet add package AutoMapper
+
+// 1. Define a Profile — all mapping rules in one place
+public class MappingProfile : Profile
+{
+    public MappingProfile()
+    {
+        CreateMap&lt;Employee, EmployeeDto&gt;()
+            // custom rule when names don't match by convention
+            .ForMember(d =&gt; d.Department,
+                       opt =&gt; opt.MapFrom(s =&gt; s.Department.Name));
+
+        CreateMap&lt;CreateEmployeeRequest, Employee&gt;();  // request → entity
+    }
+}
+
+// 2. Register in Program.cs (scans assembly for Profiles)
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+// 3. Inject and use
+public class EmployeeService
+{
+    private readonly IMapper _mapper;
+    public EmployeeService(IMapper mapper) =&gt; _mapper = mapper;
+
+    public EmployeeDto Get(Employee e) =&gt; _mapper.Map&lt;EmployeeDto&gt;(e);
+}</code></pre><h3>ProjectTo — the EF Core integration that matters</h3><pre><code>// Maps INSIDE the SQL query — selects only DTO columns, no full entity load
+var dtos = await _db.Employees
+    .ProjectTo&lt;EmployeeDto&gt;(_mapper.ConfigurationProvider)
+    .ToListAsync();</code></pre><h3>Good practices &amp; criticisms</h3><ul>
+<li><strong>Validate mappings at startup:</strong> <code>config.AssertConfigurationIsValid()</code> — catches unmapped properties before production.</li>
+<li>Keep profiles simple — complex transformation logic belongs in code, not mapping config.</li>
+<li><strong>Common criticism:</strong> hides mapping logic and fails at runtime instead of compile time. Many teams now prefer <strong>manual mapping or Mapperly/Mapster</strong> (source generators — compile-time checked, faster). Be ready to discuss this trade-off.</li>
+<li>AutoMapper became <strong>commercial</strong> for some license tiers (2025) — another reason teams evaluate source-generator alternatives.</li>
+</ul><h3>Key Points</h3><ul>
+<li>Convention-based object↔object mapping; rules centralized in Profiles.</li>
+<li>Registered via DI (<code>AddAutoMapper</code>), used via <code>IMapper</code>.</li>
+<li><code>ProjectTo</code> integrates with EF Core IQueryable — maps in SQL, not in memory.</li>
+<li>Alternatives: manual mapping, Mapster, Mapperly (compile-time source generators).</li>
+</ul><h3>Interview Answer</h3><p>AutoMapper maps between objects — usually EF entities and API DTOs — by convention, with custom rules defined in Profile classes registered in DI. I inject IMapper and call Map, or use ProjectTo with EF Core so the mapping happens inside the SQL projection and only DTO columns are selected. I validate the configuration at startup to catch unmapped properties early. I'd also mention the trade-off: it's runtime-checked and can hide logic, so for new projects I'd consider source-generator mappers like Mapperly, or simple manual mapping for small DTO counts.</p></div>
+<div class="answer-pane" id="q_api_security"><h2>How to Secure a Web API (Security Checklist)</h2><p>When asked "how will you handle security/API issues?", structure the answer in layers — <strong>transport, authentication, authorization, input, output, infrastructure, monitoring</strong>.</p><h3>1. Transport security</h3><ul>
+<li><strong>HTTPS everywhere</strong> — <code>app.UseHttpsRedirection()</code> + HSTS in production.</li>
+<li>TLS termination at load balancer/gateway; no plain HTTP between public clients and the API.</li>
+</ul><h3>2. Authentication — who is calling?</h3><ul>
+<li><strong>JWT bearer tokens</strong> for user-facing APIs — validate issuer, audience, signature, expiry.</li>
+<li><strong>Short-lived access tokens + refresh tokens</strong>; revoke refresh tokens on logout/compromise.</li>
+<li><strong>API keys / client credentials (OAuth2)</strong> for service-to-service calls.</li>
+<li>Enterprise: Microsoft Entra ID (Azure AD) / IdentityServer via OpenID Connect.</li>
+</ul><h3>3. Authorization — what can they do?</h3><ul>
+<li><code>[Authorize]</code> by default — open endpoints explicitly with <code>[AllowAnonymous]</code>.</li>
+<li>Role/policy-based authorization for business rules.</li>
+<li><strong>Object-level checks</strong> — user A must not read user B's order by changing the ID in the URL (IDOR / broken object level authorization — the #1 API vulnerability in OWASP API Top 10).</li>
+</ul><h3>4. Input protection</h3><ul>
+<li><strong>Validate everything</strong> — model validation, FluentValidation; reject unexpected fields.</li>
+<li><strong>SQL injection</strong> — parameterized queries / EF Core (never string-concatenate SQL).</li>
+<li><strong>Mass assignment</strong> — bind to request DTOs, never directly to entities.</li>
+<li>Limit request size; validate content types.</li>
+</ul><h3>5. Output protection</h3><ul>
+<li>Return <strong>DTOs, not entities</strong> — don't leak internal fields (password hashes, internal IDs).</li>
+<li><strong>Generic error messages</strong> — no stack traces or SQL errors to clients (global exception middleware → ProblemDetails).</li>
+<li>Correct status codes: 401 not authenticated, 403 not allowed, avoid info-leaking 404 vs 403 differences where it matters.</li>
+</ul><h3>6. Abuse protection</h3><ul>
+<li><strong>Rate limiting</strong> — built-in <code>AddRateLimiter</code> in .NET 8 (fixed window, sliding window, token bucket).</li>
+<li><strong>CORS</strong> — allow only known origins; never <code>AllowAnyOrigin</code> with credentials.</li>
+<li>Pagination caps (<code>pageSize</code> max) so no one can pull the whole table.</li>
+</ul><pre><code>// .NET 8 built-in rate limiting
+builder.Services.AddRateLimiter(o =&gt;
+    o.AddFixedWindowLimiter("api", w =&gt;
+    {
+        w.PermitLimit = 100;
+        w.Window = TimeSpan.FromMinutes(1);
+    }));
+app.UseRateLimiter();</code></pre><h3>7. Secrets &amp; infrastructure</h3><ul>
+<li><strong>No secrets in code/appsettings</strong> — environment variables, Azure Key Vault, user-secrets in dev.</li>
+<li>Principle of least privilege for DB accounts (API user ≠ db_owner).</li>
+<li>Keep packages patched — <code>dotnet list package --vulnerable</code>.</li>
+</ul><h3>8. Logging &amp; monitoring</h3><ul>
+<li>Log auth failures, 4xx/5xx spikes, and suspicious patterns (Application Insights / Serilog).</li>
+<li>Never log passwords, tokens, or PII.</li>
+<li>Alerts on anomalies — sudden 401 storms often mean a credential-stuffing attempt.</li>
+</ul><h3>Key Points (OWASP API Top 10 themes)</h3><ul>
+<li>Broken object-level authorization (IDOR) is the most common API flaw — check ownership on every resource.</li>
+<li>HTTPS + JWT validation + [Authorize]-by-default covers the basics.</li>
+<li>Validate input, return DTOs, hide error internals.</li>
+<li>Rate limiting, CORS restrictions, secrets in Key Vault, vulnerability scanning.</li>
+</ul><h3>Interview Answer</h3><p>I secure APIs in layers. Transport: HTTPS everywhere. Authentication: JWT bearer tokens with full validation and short expiry. Authorization: Authorize by default, policies for roles, and object-level ownership checks so users can't access each other's data by changing IDs — that's the top OWASP API risk. Input: model validation and parameterized queries via EF Core; output: DTOs only and generic error responses through global exception middleware. On top of that I add rate limiting — built into .NET 8 — strict CORS, secrets in Key Vault instead of config files, and monitoring with alerts on authentication failure spikes.</p></div>
 <div class="answer-pane" id="q_aspnet_lifecycle"><h2>ASP.NET Core Lifecycle</h2><p>In ASP.NET Core, "lifecycle" mainly refers to four things: the <strong>application startup lifecycle</strong>, the <strong>HTTP request lifecycle</strong>, the <strong>middleware pipeline</strong>, and the <strong>dependency injection (DI) lifecycle</strong>.</p><h3>1. Application Startup Lifecycle</h3><pre><code>Program.cs → Build Application → Configure Middleware → Start Server</code></pre><table>
 <tr><th>Step</th><th>Code</th><th>What happens</th></tr>
 <tr><td>1. Application starts</td><td><code>Program.cs</code></td><td>Execution begins here</td></tr>
@@ -6588,8 +6945,14 @@ export class UserComponent {
 </table><h3>Selector</h3><p>Used to place the component inside HTML:</p><pre><code>selector: 'app-user'
 
 // Usage in a parent template:
-&lt;app-user&gt;&lt;/app-user&gt;</code></pre><h3>Types of components</h3><p><strong>1. Root component</strong> — main component loaded first, usually <code>app.component</code>.</p><p><strong>2. Child component</strong> — nested inside another component:</p><pre><code>&lt;app-navbar&gt;&lt;/app-navbar&gt;
-&lt;app-dashboard&gt;&lt;/app-dashboard&gt;</code></pre><p><strong>3. Shared / reusable component</strong> — reusable UI blocks like button, loader, or modal popup.</p><h3>Component communication</h3><p><strong>Parent → Child with <code>@Input</code></strong></p><pre><code>// child.component.ts
+&lt;app-user&gt;&lt;/app-user&gt;</code></pre><h3>Types of components</h3><p><strong>1. Root component</strong> — main component loaded first, usually <code>app.component</code>. Bootstrapped in <code>main.ts</code>; every other component renders inside it.</p><p><strong>2. Child component</strong> — nested inside another component:</p><pre><code>&lt;app-navbar&gt;&lt;/app-navbar&gt;
+&lt;app-dashboard&gt;&lt;/app-dashboard&gt;</code></pre><p><strong>3. Shared / reusable component</strong> — reusable UI blocks like button, loader, or modal popup.</p><p><strong>4. Smart (container) vs Dumb (presentational)</strong> — a common architectural split:</p><table>
+<tr><th></th><th>Smart / Container</th><th>Dumb / Presentational</th></tr>
+<tr><td>Role</td><td>Fetches data (injects services), holds state</td><td>Only displays what it's given</td></tr>
+<tr><td>Inputs/Outputs</td><td>Few</td><td>Communicates only via <code>@Input</code>/<code>@Output</code></td></tr>
+<tr><td>Reusability</td><td>Low — page specific</td><td>High — drop anywhere</td></tr>
+<tr><td>Example</td><td><code>OrdersPageComponent</code></td><td><code>OrderCardComponent</code></td></tr>
+</table><p><strong>5. Standalone vs Module-based</strong> — standalone components (Angular 14+, default from 17) declare their own imports and don't need an NgModule; module-based components are declared in an NgModule. (Details: item 5.)</p><p><strong>6. Dynamic components</strong> — created at runtime with <code>ViewContainerRef.createComponent()</code>, e.g. modals, toasts, dashboard widgets.</p><h3>Component communication</h3><p><strong>Parent → Child with <code>@Input</code></strong></p><pre><code>// child.component.ts
 @Input() name!: string;
 
 // parent.component.html
@@ -8338,7 +8701,7 @@ Duration &gt; 5000</code></pre><h3>11. How do you trace a query from a specific 
 <li>Tempdb tuning for heavy sorts/hashes.</li>
 <li>Caching at app layer (Redis) for read-heavy reference data.</li>
 </ul><h3>Interview Answer</h3><p>I list indexing, current statistics, query rewrites, plan analysis, shorter transactions, data archiving, and server tuning as my main levers. I pick based on what the plan and IO stats show—not by adding indexes everywhere.</p></div>
-<div class="answer-pane" id="q_sql_5th_rank_cte"><h2>Find 5th Highest Rank Using RANK and CTE</h2><p>Use a <strong>CTE</strong> with <strong>RANK()</strong> (or <strong>DENSE_RANK()</strong> if you want 5th distinct value without gaps) over salaries, then filter <code>rnk = 5</code>.</p><h3>Using RANK (gaps after ties — Olympic style)</h3><pre><code>WITH SalaryRank AS (
+<div class="answer-pane" id="q_sql_5th_rank_cte"><h2>Find Nth Highest Salary Using RANK and CTE (4th, 5th, ...)</h2><p>Use a <strong>CTE</strong> with <strong>RANK()</strong> (or <strong>DENSE_RANK()</strong> if you want the Nth distinct value without gaps) over salaries, then filter <code>rnk = N</code>. Same pattern works for 4th, 5th, or any position — just change the filter.</p><h3>4th highest salary using RANK()</h3><pre><code>WITH SalaryRank AS (
     SELECT
         EmployeeId,
         Name,
@@ -8346,9 +8709,9 @@ Duration &gt; 5000</code></pre><h3>11. How do you trace a query from a specific 
         RANK() OVER (ORDER BY Salary DESC) AS rnk
     FROM Employees
 )
-SELECT EmployeeId, Name, Salary, rnk
+SELECT EmployeeId, Name, Salary
 FROM SalaryRank
-WHERE rnk = 5;</code></pre><p>If two employees tie for 4th, next rank is 6 — so <code>rnk = 5</code> may return no rows.</p><h3>Using DENSE_RANK (no gaps — 5th distinct salary)</h3><pre><code>WITH SalaryRank AS (
+WHERE rnk = 4;</code></pre><p><strong>Tie warning with RANK():</strong> RANK leaves gaps after ties (Olympic style). If two employees tie for 3rd, the next rank is 5 — so <code>rnk = 4</code> may return no rows. When the interviewer means "the Nth distinct salary value", use DENSE_RANK instead.</p><h3>Using DENSE_RANK (no gaps — 5th distinct salary)</h3><pre><code>WITH SalaryRank AS (
     SELECT
         EmployeeId,
         Name,
@@ -8365,7 +8728,7 @@ WHERE drnk = 5;</code></pre><h3>Return only the 5th highest salary value</h3><pr
 )
 SELECT Salary AS FifthHighestSalary
 FROM DistinctSalaries
-WHERE drnk = 5;</code></pre><h3>Interview Answer</h3><p>I wrap the table in a CTE, apply RANK or DENSE_RANK over ORDER BY Salary DESC, and SELECT WHERE rank = 5. I clarify whether ties should skip ranks (RANK) or not (DENSE_RANK) before choosing the function.</p></div>
+WHERE drnk = 5;</code></pre><h3>Interview Answer</h3><p>I wrap the table in a CTE, apply RANK or DENSE_RANK over ORDER BY Salary DESC, and SELECT WHERE rank = N — same pattern for 4th, 5th, or any position. Before choosing the function I clarify how ties should behave: RANK skips positions after ties so rank 4 might not exist, while DENSE_RANK gives the Nth distinct salary value.</p></div>
 <div class="answer-pane" id="q_sql_concurrent_update_conflict"><h2>Two Users Update Same Data — Who Was First?</h2><p>When two people edit the same row, the <strong>first COMMIT wins</strong>. The second update must detect that data changed and return a friendly “already updated” message — not overwrite silently.</p><h3>Pattern: rowversion / timestamp token</h3><pre><code>CREATE TABLE Orders (
     OrderId    INT PRIMARY KEY,
     Status     NVARCHAR(20),

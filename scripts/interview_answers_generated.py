@@ -1192,4 +1192,133 @@ legacy["key"] = "value"; // boxing</code></pre>
 </ul>
 <h3>Interview Answer</h3>
 <p>I use Dictionary for key-value lookups, HashSet when I only need unique items or set operations, and I avoid Hashtable in new code because it boxes values and lacks type safety. Generic collections in System.Collections.Generic are the standard choice.</p>""",
+
+"q_dotnet_what_is": """<h2>What is .NET?</h2>
+<p><strong>.NET</strong> is a free, open-source, cross-platform <strong>developer platform</strong> from Microsoft for building many kinds of applications — web APIs, websites, desktop, mobile, cloud, games, and IoT — primarily using <strong>C#</strong> (also F# and VB).</p>
+<h3>What makes up .NET</h3>
+<table>
+<tr><th>Component</th><th>What it does</th></tr>
+<tr><td><strong>Runtime (CLR)</strong></td><td>Common Language Runtime — executes code, manages memory (GC), type safety, JIT compilation</td></tr>
+<tr><td><strong>BCL / Class Library</strong></td><td>Thousands of built-in APIs — collections, file I/O, networking, LINQ, JSON</td></tr>
+<tr><td><strong>Languages</strong></td><td>C#, F#, VB — all compile to IL (Intermediate Language)</td></tr>
+<tr><td><strong>SDK &amp; CLI</strong></td><td><code>dotnet new / build / run / test / publish</code> — tooling for the full dev cycle</td></tr>
+<tr><td><strong>App frameworks</strong></td><td>ASP.NET Core (web), MAUI (mobile/desktop), WPF/WinForms (Windows), Blazor (web UI in C#)</td></tr>
+</table>
+<h3>How code runs (compilation model)</h3>
+<pre><code>C# source code
+    ↓  (csc compiler)
+IL (Intermediate Language) in a .dll
+    ↓  (CLR — JIT compiler at runtime)
+Native machine code
+
+// .NET 8 can also compile Ahead-Of-Time (Native AOT) — no JIT at runtime</code></pre>
+<h3>Key runtime services (CLR)</h3>
+<ul>
+<li><strong>Garbage Collection</strong> — automatic memory management.</li>
+<li><strong>Type safety</strong> — common type system (CTS) across languages.</li>
+<li><strong>JIT compilation</strong> — IL compiled to machine code on first call, optimized for the actual CPU.</li>
+<li><strong>Exception handling, reflection, interop</strong> with native code.</li>
+</ul>
+<h3>The .NET family (naming)</h3>
+<ul>
+<li><strong>.NET Framework</strong> (2002–4.8) — original, Windows-only, maintenance mode.</li>
+<li><strong>.NET Core</strong> (2016–3.1) — cross-platform rewrite, now end of life.</li>
+<li><strong>.NET 5/6/7/8</strong> — the unified modern platform; .NET 8 is the current LTS. (Details: Section 1 item 40.)</li>
+</ul>
+<h3>Key Points</h3>
+<ul>
+<li>.NET = runtime (CLR) + class library (BCL) + languages (C#) + SDK/tooling + app frameworks.</li>
+<li>Code compiles to IL, then JIT-compiled to native at runtime (or AOT in .NET 8).</li>
+<li>Cross-platform: Windows, Linux, macOS — containers and cloud friendly.</li>
+<li>One platform for web (ASP.NET Core), desktop, mobile (MAUI), and services.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>.NET is Microsoft's open-source, cross-platform development platform. It consists of the CLR runtime that handles memory management and JIT compilation, the base class library, languages like C#, and app frameworks such as ASP.NET Core. C# code compiles to Intermediate Language, and the CLR JIT-compiles that to native code at runtime — .NET 8 also supports Native AOT. I use it mainly for building ASP.NET Core Web APIs that run on both Windows and Linux containers.</p>""",
+
+"q_class_vs_object": """<h2>Class vs Object (Instance)</h2>
+<p>A <strong>class</strong> is a <strong>blueprint/template</strong> — it defines what data (fields, properties) and behavior (methods) something has. An <strong>object</strong> (also called an <strong>instance</strong>) is a <strong>concrete thing created from that blueprint</strong>, living in memory with its own data.</p>
+<p><strong>Analogy:</strong> a class is the house blueprint; objects are the actual houses built from it. One blueprint, many houses — each with its own paint color.</p>
+<pre><code>// CLASS — blueprint (no memory for data yet, just a definition)
+public class Car
+{
+    public string Color { get; set; }
+    public int Speed { get; private set; }
+
+    public void Accelerate() =&gt; Speed += 10;
+}
+
+// OBJECTS — instances created with 'new', each with its own state
+Car car1 = new Car { Color = "Red" };
+Car car2 = new Car { Color = "Blue" };
+
+car1.Accelerate();
+Console.WriteLine(car1.Speed);  // 10
+Console.WriteLine(car2.Speed);  // 0  ← independent state</code></pre>
+<h3>Differences</h3>
+<table>
+<tr><th></th><th>Class</th><th>Object / Instance</th></tr>
+<tr><td>What</td><td>Blueprint, type definition</td><td>Concrete occurrence of the class</td></tr>
+<tr><td>Memory</td><td>No data memory (just type metadata)</td><td>Allocated on the heap when created with <code>new</code></td></tr>
+<tr><td>When</td><td>Written at design time</td><td>Created at runtime</td></tr>
+<tr><td>Count</td><td>Defined once</td><td>Many instances, each with independent state</td></tr>
+</table>
+<h3>Related details interviewers probe</h3>
+<ul>
+<li><strong>"Object" vs "instance"</strong> — same thing in practice; "instance of class X" emphasizes which class it came from.</li>
+<li><strong>Static members</strong> belong to the <em>class itself</em>, not to instances — one copy shared by all (<code>Car.TotalCarsCreated</code>).</li>
+<li><strong>Static class</strong> — cannot be instantiated at all; only static members (e.g., <code>Math</code>).</li>
+<li>Reference variables hold a <em>reference</em> to the object on the heap — two variables can point to the same instance.</li>
+</ul>
+<h3>Key Points</h3>
+<ul>
+<li>Class = compile-time blueprint; object = runtime instance with its own state.</li>
+<li>Created with <code>new</code> (or DI container / factories in real apps).</li>
+<li>Static members belong to the class, instance members to each object.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>A class is the blueprint that defines properties and methods; an object is an instance of that class created at runtime with its own state in memory. From one Car class I can create many Car objects, each with independent property values. Static members are the exception — they belong to the class itself and are shared across all instances.</p>""",
+
+"q_span_t": """<h2>Span&lt;T&gt; in C#</h2>
+<p><strong>Span&lt;T&gt;</strong> is a stack-only type (<code>ref struct</code>) that provides a <strong>view over a contiguous block of memory</strong> — an array, a string, stack-allocated memory, or native memory — <strong>without copying it</strong>. It's the key building block behind modern .NET's performance gains.</p>
+<h3>The problem it solves</h3>
+<p>Classic string/array APIs <strong>allocate copies</strong>: every <code>Substring</code>, every <code>array.Skip().Take().ToArray()</code> creates a new object on the heap → GC pressure in hot paths.</p>
+<pre><code>// OLD — allocates a new string on the heap
+string dateStr = "2026-06-10";
+string year = dateStr.Substring(0, 4);          // new allocation
+
+// SPAN — zero allocation, just a window over the same memory
+ReadOnlySpan&lt;char&gt; span = dateStr.AsSpan();
+ReadOnlySpan&lt;char&gt; yearSpan = span.Slice(0, 4); // no copy, no GC
+int year = int.Parse(yearSpan);                  // parse APIs accept spans</code></pre>
+<h3>What it can wrap</h3>
+<pre><code>Span&lt;int&gt; fromArray  = new int[10];              // array
+Span&lt;byte&gt; fromStack = stackalloc byte[256];     // stack memory — no heap at all
+ReadOnlySpan&lt;char&gt; fromString = "hello".AsSpan(); // string (read-only)
+
+// Slicing — views, not copies
+Span&lt;int&gt; firstHalf = fromArray.Slice(0, 5);
+firstHalf[0] = 42;   // writes through to the original array</code></pre>
+<h3>Span&lt;T&gt; vs Memory&lt;T&gt;</h3>
+<table>
+<tr><th></th><th>Span&lt;T&gt;</th><th>Memory&lt;T&gt;</th></tr>
+<tr><td>Type</td><td><code>ref struct</code> — stack only</td><td>Regular struct — can live on heap</td></tr>
+<tr><td>Can be used in</td><td>Synchronous code only</td><td>Async methods, class fields, lambdas</td></tr>
+<tr><td>Usage</td><td>Hot-path parsing/slicing</td><td>Store a buffer reference; call <code>.Span</code> when working on it</td></tr>
+</table>
+<h3>Restrictions (because it's a ref struct)</h3>
+<ul>
+<li>Cannot be a field of a class, boxed, or captured in lambdas/iterators.</li>
+<li>Cannot cross <code>await</code> boundaries — use <code>Memory&lt;T&gt;</code> in async code.</li>
+</ul>
+<h3>Where you benefit without writing any Span code</h3>
+<p>ASP.NET Core (Kestrel request parsing), <code>System.Text.Json</code>, <code>int.Parse</code>/<code>TryParse</code> overloads, regex, and string APIs all use Span internally — a big part of why .NET Core/.NET 8 is so much faster than .NET Framework.</p>
+<h3>Key Points</h3>
+<ul>
+<li>Zero-allocation window over existing memory — slice without copying.</li>
+<li><code>ref struct</code> → stack-only; can't be stored on heap or used across <code>await</code> (use <code>Memory&lt;T&gt;</code>).</li>
+<li>Works over arrays, strings, <code>stackalloc</code>, and native memory uniformly.</li>
+<li>Use in hot paths: parsing, formatting, buffer processing.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>Span&lt;T&gt; is a stack-only struct that gives a zero-allocation view over contiguous memory — arrays, strings, or stackalloc buffers. Instead of Substring creating new strings, I slice a ReadOnlySpan over the same memory, which removes GC pressure in hot paths like parsing. Because it's a ref struct it can't live on the heap or cross await — for async scenarios I use Memory&lt;T&gt; and take .Span inside the synchronous part. Much of .NET's own performance improvement since Core comes from Span being used throughout the framework.</p>""",
 }

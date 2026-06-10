@@ -765,6 +765,137 @@ Response Returned</code></pre>
 <h3>Interview Answer</h3>
 <p>In ASP.NET Core, execution starts from Program.cs where services are registered into the dependency injection container and the middleware pipeline is configured. When a request comes to the Kestrel server, it passes through middleware components like authentication, authorization, and routing. Then the matched controller executes business logic and database operations, generates a response, and sends it back to the client. ASP.NET Core also supports service lifetimes — Transient, Scoped, and Singleton — through built-in dependency injection.</p>""",
 
+"q_automapper": """<h2>AutoMapper</h2>
+<p><strong>AutoMapper</strong> is a library that maps objects of one type to another <strong>by convention</strong> — typically <strong>entities ↔ DTOs</strong> — so you don't hand-write repetitive property-copy code.</p>
+<h3>The problem it solves</h3>
+<pre><code>// Without AutoMapper — repetitive, easy to forget a property
+var dto = new EmployeeDto
+{
+    Id = employee.Id,
+    Name = employee.Name,
+    Department = employee.Department?.Name,
+    // ...20 more lines, repeated in every endpoint
+};</code></pre>
+<h3>Setup (.NET 8)</h3>
+<pre><code>// Install
+dotnet add package AutoMapper
+
+// 1. Define a Profile — all mapping rules in one place
+public class MappingProfile : Profile
+{
+    public MappingProfile()
+    {
+        CreateMap&lt;Employee, EmployeeDto&gt;()
+            // custom rule when names don't match by convention
+            .ForMember(d =&gt; d.Department,
+                       opt =&gt; opt.MapFrom(s =&gt; s.Department.Name));
+
+        CreateMap&lt;CreateEmployeeRequest, Employee&gt;();  // request → entity
+    }
+}
+
+// 2. Register in Program.cs (scans assembly for Profiles)
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+// 3. Inject and use
+public class EmployeeService
+{
+    private readonly IMapper _mapper;
+    public EmployeeService(IMapper mapper) =&gt; _mapper = mapper;
+
+    public EmployeeDto Get(Employee e) =&gt; _mapper.Map&lt;EmployeeDto&gt;(e);
+}</code></pre>
+<h3>ProjectTo — the EF Core integration that matters</h3>
+<pre><code>// Maps INSIDE the SQL query — selects only DTO columns, no full entity load
+var dtos = await _db.Employees
+    .ProjectTo&lt;EmployeeDto&gt;(_mapper.ConfigurationProvider)
+    .ToListAsync();</code></pre>
+<h3>Good practices &amp; criticisms</h3>
+<ul>
+<li><strong>Validate mappings at startup:</strong> <code>config.AssertConfigurationIsValid()</code> — catches unmapped properties before production.</li>
+<li>Keep profiles simple — complex transformation logic belongs in code, not mapping config.</li>
+<li><strong>Common criticism:</strong> hides mapping logic and fails at runtime instead of compile time. Many teams now prefer <strong>manual mapping or Mapperly/Mapster</strong> (source generators — compile-time checked, faster). Be ready to discuss this trade-off.</li>
+<li>AutoMapper became <strong>commercial</strong> for some license tiers (2025) — another reason teams evaluate source-generator alternatives.</li>
+</ul>
+<h3>Key Points</h3>
+<ul>
+<li>Convention-based object↔object mapping; rules centralized in Profiles.</li>
+<li>Registered via DI (<code>AddAutoMapper</code>), used via <code>IMapper</code>.</li>
+<li><code>ProjectTo</code> integrates with EF Core IQueryable — maps in SQL, not in memory.</li>
+<li>Alternatives: manual mapping, Mapster, Mapperly (compile-time source generators).</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>AutoMapper maps between objects — usually EF entities and API DTOs — by convention, with custom rules defined in Profile classes registered in DI. I inject IMapper and call Map, or use ProjectTo with EF Core so the mapping happens inside the SQL projection and only DTO columns are selected. I validate the configuration at startup to catch unmapped properties early. I'd also mention the trade-off: it's runtime-checked and can hide logic, so for new projects I'd consider source-generator mappers like Mapperly, or simple manual mapping for small DTO counts.</p>""",
+
+"q_api_security": """<h2>How to Secure a Web API (Security Checklist)</h2>
+<p>When asked "how will you handle security/API issues?", structure the answer in layers — <strong>transport, authentication, authorization, input, output, infrastructure, monitoring</strong>.</p>
+<h3>1. Transport security</h3>
+<ul>
+<li><strong>HTTPS everywhere</strong> — <code>app.UseHttpsRedirection()</code> + HSTS in production.</li>
+<li>TLS termination at load balancer/gateway; no plain HTTP between public clients and the API.</li>
+</ul>
+<h3>2. Authentication — who is calling?</h3>
+<ul>
+<li><strong>JWT bearer tokens</strong> for user-facing APIs — validate issuer, audience, signature, expiry.</li>
+<li><strong>Short-lived access tokens + refresh tokens</strong>; revoke refresh tokens on logout/compromise.</li>
+<li><strong>API keys / client credentials (OAuth2)</strong> for service-to-service calls.</li>
+<li>Enterprise: Microsoft Entra ID (Azure AD) / IdentityServer via OpenID Connect.</li>
+</ul>
+<h3>3. Authorization — what can they do?</h3>
+<ul>
+<li><code>[Authorize]</code> by default — open endpoints explicitly with <code>[AllowAnonymous]</code>.</li>
+<li>Role/policy-based authorization for business rules.</li>
+<li><strong>Object-level checks</strong> — user A must not read user B's order by changing the ID in the URL (IDOR / broken object level authorization — the #1 API vulnerability in OWASP API Top 10).</li>
+</ul>
+<h3>4. Input protection</h3>
+<ul>
+<li><strong>Validate everything</strong> — model validation, FluentValidation; reject unexpected fields.</li>
+<li><strong>SQL injection</strong> — parameterized queries / EF Core (never string-concatenate SQL).</li>
+<li><strong>Mass assignment</strong> — bind to request DTOs, never directly to entities.</li>
+<li>Limit request size; validate content types.</li>
+</ul>
+<h3>5. Output protection</h3>
+<ul>
+<li>Return <strong>DTOs, not entities</strong> — don't leak internal fields (password hashes, internal IDs).</li>
+<li><strong>Generic error messages</strong> — no stack traces or SQL errors to clients (global exception middleware → ProblemDetails).</li>
+<li>Correct status codes: 401 not authenticated, 403 not allowed, avoid info-leaking 404 vs 403 differences where it matters.</li>
+</ul>
+<h3>6. Abuse protection</h3>
+<ul>
+<li><strong>Rate limiting</strong> — built-in <code>AddRateLimiter</code> in .NET 8 (fixed window, sliding window, token bucket).</li>
+<li><strong>CORS</strong> — allow only known origins; never <code>AllowAnyOrigin</code> with credentials.</li>
+<li>Pagination caps (<code>pageSize</code> max) so no one can pull the whole table.</li>
+</ul>
+<pre><code>// .NET 8 built-in rate limiting
+builder.Services.AddRateLimiter(o =&gt;
+    o.AddFixedWindowLimiter("api", w =&gt;
+    {
+        w.PermitLimit = 100;
+        w.Window = TimeSpan.FromMinutes(1);
+    }));
+app.UseRateLimiter();</code></pre>
+<h3>7. Secrets &amp; infrastructure</h3>
+<ul>
+<li><strong>No secrets in code/appsettings</strong> — environment variables, Azure Key Vault, user-secrets in dev.</li>
+<li>Principle of least privilege for DB accounts (API user ≠ db_owner).</li>
+<li>Keep packages patched — <code>dotnet list package --vulnerable</code>.</li>
+</ul>
+<h3>8. Logging &amp; monitoring</h3>
+<ul>
+<li>Log auth failures, 4xx/5xx spikes, and suspicious patterns (Application Insights / Serilog).</li>
+<li>Never log passwords, tokens, or PII.</li>
+<li>Alerts on anomalies — sudden 401 storms often mean a credential-stuffing attempt.</li>
+</ul>
+<h3>Key Points (OWASP API Top 10 themes)</h3>
+<ul>
+<li>Broken object-level authorization (IDOR) is the most common API flaw — check ownership on every resource.</li>
+<li>HTTPS + JWT validation + [Authorize]-by-default covers the basics.</li>
+<li>Validate input, return DTOs, hide error internals.</li>
+<li>Rate limiting, CORS restrictions, secrets in Key Vault, vulnerability scanning.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>I secure APIs in layers. Transport: HTTPS everywhere. Authentication: JWT bearer tokens with full validation and short expiry. Authorization: Authorize by default, policies for roles, and object-level ownership checks so users can't access each other's data by changing IDs — that's the top OWASP API risk. Input: model validation and parameterized queries via EF Core; output: DTOs only and generic error responses through global exception middleware. On top of that I add rate limiting — built into .NET 8 — strict CORS, secrets in Key Vault instead of config files, and monitoring with alerts on authentication failure spikes.</p>""",
+
 "q_aspnet_nunit": """<h2>NUnit in C# (.NET)</h2>
 <p><strong>NUnit</strong> is a unit testing framework for .NET applications. It lets you write and run automated test cases to validate code behavior, catch bugs early, support regression testing, and integrate with CI/CD pipelines.</p>
 <h3>Why NUnit is used</h3>

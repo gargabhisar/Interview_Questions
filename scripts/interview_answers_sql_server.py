@@ -892,9 +892,103 @@ Duration &gt; 5000</code></pre>
 <h3>Interview Answer</h3>
 <p>I list indexing, current statistics, query rewrites, plan analysis, shorter transactions, data archiving, and server tuning as my main levers. I pick based on what the plan and IO stats show—not by adding indexes everywhere.</p>""",
 
-"q_sql_5th_rank_cte": """<h2>Find 5th Highest Rank Using RANK and CTE</h2>
-<p>Use a <strong>CTE</strong> with <strong>RANK()</strong> (or <strong>DENSE_RANK()</strong> if you want 5th distinct value without gaps) over salaries, then filter <code>rnk = 5</code>.</p>
-<h3>Using RANK (gaps after ties — Olympic style)</h3>
+"q_sql_what_is": """<h2>What is SQL?</h2>
+<p><strong>SQL (Structured Query Language)</strong> is the standard language for working with <strong>relational databases</strong> — defining tables, inserting/updating data, querying it, and controlling access. SQL Server, MySQL, PostgreSQL, and Oracle all implement it (with small dialect differences; SQL Server's dialect is <strong>T-SQL</strong>).</p>
+<h3>SQL is declarative</h3>
+<p>You describe <strong>what</strong> you want, not <strong>how</strong> to get it — the database's query optimizer decides the execution plan (which index to use, how to join).</p>
+<pre><code>SELECT Name, Salary
+FROM Employees
+WHERE DepartmentId = 10
+ORDER BY Salary DESC;   -- no loops, no algorithm — just intent</code></pre>
+<h3>Categories of SQL commands</h3>
+<table>
+<tr><th>Category</th><th>Purpose</th><th>Commands</th></tr>
+<tr><td><strong>DDL</strong> — Data Definition</td><td>Define structure</td><td><code>CREATE, ALTER, DROP, TRUNCATE</code></td></tr>
+<tr><td><strong>DML</strong> — Data Manipulation</td><td>Work with rows</td><td><code>SELECT, INSERT, UPDATE, DELETE</code></td></tr>
+<tr><td><strong>DCL</strong> — Data Control</td><td>Permissions</td><td><code>GRANT, REVOKE</code></td></tr>
+<tr><td><strong>TCL</strong> — Transaction Control</td><td>Atomic units of work</td><td><code>BEGIN TRAN, COMMIT, ROLLBACK</code></td></tr>
+</table>
+<p><em>(Some classifications put SELECT in its own category: DQL.)</em></p>
+<h3>Key concepts that follow from SQL</h3>
+<ul>
+<li><strong>Tables, rows, columns</strong> — data organized relationally, linked by keys (Section 8 items 9–10).</li>
+<li><strong>Joins</strong> — combine data across tables.</li>
+<li><strong>Constraints</strong> — PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK enforce integrity (item 7).</li>
+<li><strong>Transactions + ACID</strong> — Atomicity, Consistency, Isolation, Durability.</li>
+<li><strong>Set-based</strong> — SQL operates on whole sets of rows at once, not row-by-row loops (which is why cursors are a last resort — item 36).</li>
+</ul>
+<h3>Key Points</h3>
+<ul>
+<li>Standard declarative language for relational databases; T-SQL is SQL Server's dialect.</li>
+<li>Four command families: DDL (structure), DML (data), DCL (permissions), TCL (transactions).</li>
+<li>Set-based and optimizer-driven — you state what, the engine decides how.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>SQL is the standard declarative language for relational databases — I describe what data I want and the query optimizer figures out the execution plan. Commands fall into DDL for structure, DML for data, DCL for permissions, and TCL for transactions. In SQL Server I work with its T-SQL dialect, which adds procedural features like stored procedures, variables, and error handling on top of standard SQL.</p>""",
+
+"q_sql_cursor": """<h2>Cursors in SQL</h2>
+<p>A <strong>cursor</strong> is a database object that lets you process a result set <strong>row by row</strong>, instead of as a single set-based operation. You declare it over a SELECT, then fetch one row at a time and act on it.</p>
+<h3>Cursor lifecycle (5 steps)</h3>
+<pre><code>DECLARE @EmpId INT, @Salary DECIMAL(10,2);
+
+-- 1. DECLARE — define cursor over a query
+DECLARE emp_cursor CURSOR FOR
+    SELECT EmployeeId, Salary FROM Employees WHERE IsActive = 1;
+
+-- 2. OPEN — execute the query, populate the cursor
+OPEN emp_cursor;
+
+-- 3. FETCH — get the first row
+FETCH NEXT FROM emp_cursor INTO @EmpId, @Salary;
+
+WHILE @@FETCH_STATUS = 0   -- 0 = row fetched successfully
+BEGIN
+    -- row-by-row logic here
+    UPDATE Employees SET Salary = @Salary * 1.10
+    WHERE EmployeeId = @EmpId;
+
+    FETCH NEXT FROM emp_cursor INTO @EmpId, @Salary;
+END
+
+-- 4. CLOSE — release the result set
+CLOSE emp_cursor;
+-- 5. DEALLOCATE — remove the cursor definition
+DEALLOCATE emp_cursor;</code></pre>
+<h3>Why cursors are usually avoided</h3>
+<table>
+<tr><th>Problem</th><th>Why</th></tr>
+<tr><td><strong>Slow</strong></td><td>Row-by-row ("RBAR" — row by agonizing row) vs set-based operations the engine optimizes</td></tr>
+<tr><td><strong>Locking/blocking</strong></td><td>Holds resources longer than a single set-based statement</td></tr>
+<tr><td><strong>Memory</strong></td><td>Result set materialized for the cursor's lifetime</td></tr>
+</table>
+<pre><code>-- The cursor above is just this — one statement, far faster:
+UPDATE Employees SET Salary = Salary * 1.10 WHERE IsActive = 1;</code></pre>
+<h3>When a cursor IS appropriate</h3>
+<ul>
+<li>Calling a <strong>stored procedure per row</strong> (no set-based equivalent).</li>
+<li>Administrative scripts — e.g., rebuild indexes per table, process per database.</li>
+<li>Complex sequential logic where each row's processing depends on the previous row's outcome (though window functions cover many of these now).</li>
+<li>Batched maintenance where you intentionally throttle (top N per loop is often better).</li>
+</ul>
+<h3>Cursor options worth knowing</h3>
+<ul>
+<li><code>FAST_FORWARD</code> — read-only, forward-only; the cheapest cursor. Default cursors are heavier (scrollable, updatable).</li>
+<li><code>STATIC</code> — snapshot copy in tempdb; <code>DYNAMIC</code> — sees live changes.</li>
+<li><code>LOCAL</code> vs <code>GLOBAL</code> scope.</li>
+</ul>
+<h3>Key Points</h3>
+<ul>
+<li>Cursor = row-by-row processing: DECLARE → OPEN → FETCH (loop on <code>@@FETCH_STATUS</code>) → CLOSE → DEALLOCATE.</li>
+<li>Prefer set-based SQL — it's usually 10–100x faster.</li>
+<li>Legitimate uses: per-row SP calls, admin scripts, sequential logic.</li>
+<li>If you must use one: <code>FAST_FORWARD</code>, and always CLOSE + DEALLOCATE.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>A cursor processes a result set row by row — declare it over a SELECT, open it, fetch in a loop while @@FETCH_STATUS is 0, then close and deallocate. I avoid cursors where possible because set-based operations are dramatically faster and hold fewer locks; most cursor logic can be rewritten as a single UPDATE with a join or a window function. I'd still use one for things like executing a stored procedure per row or admin maintenance scripts, and then I'd declare it FAST_FORWARD to keep it cheap.</p>""",
+
+"q_sql_5th_rank_cte": """<h2>Find Nth Highest Salary Using RANK and CTE (4th, 5th, ...)</h2>
+<p>Use a <strong>CTE</strong> with <strong>RANK()</strong> (or <strong>DENSE_RANK()</strong> if you want the Nth distinct value without gaps) over salaries, then filter <code>rnk = N</code>. Same pattern works for 4th, 5th, or any position — just change the filter.</p>
+<h3>4th highest salary using RANK()</h3>
 <pre><code>WITH SalaryRank AS (
     SELECT
         EmployeeId,
@@ -903,10 +997,10 @@ Duration &gt; 5000</code></pre>
         RANK() OVER (ORDER BY Salary DESC) AS rnk
     FROM Employees
 )
-SELECT EmployeeId, Name, Salary, rnk
+SELECT EmployeeId, Name, Salary
 FROM SalaryRank
-WHERE rnk = 5;</code></pre>
-<p>If two employees tie for 4th, next rank is 6 — so <code>rnk = 5</code> may return no rows.</p>
+WHERE rnk = 4;</code></pre>
+<p><strong>Tie warning with RANK():</strong> RANK leaves gaps after ties (Olympic style). If two employees tie for 3rd, the next rank is 5 — so <code>rnk = 4</code> may return no rows. When the interviewer means "the Nth distinct salary value", use DENSE_RANK instead.</p>
 <h3>Using DENSE_RANK (no gaps — 5th distinct salary)</h3>
 <pre><code>WITH SalaryRank AS (
     SELECT
@@ -929,7 +1023,7 @@ SELECT Salary AS FifthHighestSalary
 FROM DistinctSalaries
 WHERE drnk = 5;</code></pre>
 <h3>Interview Answer</h3>
-<p>I wrap the table in a CTE, apply RANK or DENSE_RANK over ORDER BY Salary DESC, and SELECT WHERE rank = 5. I clarify whether ties should skip ranks (RANK) or not (DENSE_RANK) before choosing the function.</p>""",
+<p>I wrap the table in a CTE, apply RANK or DENSE_RANK over ORDER BY Salary DESC, and SELECT WHERE rank = N — same pattern for 4th, 5th, or any position. Before choosing the function I clarify how ties should behave: RANK skips positions after ties so rank 4 might not exist, while DENSE_RANK gives the Nth distinct salary value.</p>""",
 
 "q_sql_concurrent_update_conflict": """<h2>Two Users Update Same Data — Who Was First?</h2>
 <p>When two people edit the same row, the <strong>first COMMIT wins</strong>. The second update must detect that data changed and return a friendly “already updated” message — not overwrite silently.</p>
