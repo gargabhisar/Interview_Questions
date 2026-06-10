@@ -1379,25 +1379,103 @@ public class EmployeeService
 <p>SOLID is five OOP principles for clean, maintainable, testable code. SRP gives each class one job. OCP adds features via new classes, not edits to old ones. LSP ensures subclasses don't break parent contracts. ISP splits fat interfaces into focused ones. DIP depends on abstractions with DI, not concrete classes. In .NET I apply these through separated services, repository interfaces, and constructor injection in ASP.NET Core.</p>""",
 
 "q_design_pattern_types": """<h2>Types of Design Patterns</h2>
-<p>GoF patterns divide into Creational (object creation), Structural (composition), and Behavioral (communication/responsibility). Modern catalogs add concurrency and architectural patterns.</p>
-<p>Patterns are vocabulary—not goals. Don't force them everywhere; use when they match a real problem.</p>
+<p><strong>Design patterns</strong> are proven, reusable solutions to common software design problems. The classic <strong>Gang of Four (GoF)</strong> catalog defines <strong>23 patterns</strong> in three categories: <strong>Creational</strong>, <strong>Structural</strong>, and <strong>Behavioral</strong>. Modern catalogs add concurrency and architectural patterns on top.</p>
+<h3>The three categories at a glance</h3>
 <table>
-<tr><th>Category</th><th>Examples</th><th>Purpose</th></tr>
-<tr><td>Creational</td><td>Singleton, Factory, Builder</td><td>Encapsulate creation</td></tr>
-<tr><td>Structural</td><td>Adapter, Decorator, Facade</td><td>Compose objects</td></tr>
-<tr><td>Behavioral</td><td>Strategy, Observer, Command</td><td>Algorithms &amp; interaction</td></tr>
+<tr><th>Category</th><th>Solves</th><th>Common patterns</th></tr>
+<tr><td><strong>Creational</strong></td><td>How objects are <strong>created</strong></td><td>Singleton, Factory Method, Abstract Factory, Builder, Prototype</td></tr>
+<tr><td><strong>Structural</strong></td><td>How objects are <strong>composed</strong></td><td>Adapter, Decorator, Facade, Proxy, Composite, Bridge, Flyweight</td></tr>
+<tr><td><strong>Behavioral</strong></td><td>How objects <strong>communicate</strong></td><td>Strategy, Observer, Command, Mediator, Template Method, Iterator, State, Chain of Responsibility</td></tr>
 </table>
-<pre><code>// Creational: Factory creates without exposing new()
-// Structural: Adapter wraps legacy API
-// Behavioral: Strategy swaps algorithms at runtime</code></pre>
+<h3>1. Creational patterns — object creation</h3>
+<p>Encapsulate <strong>how objects are created</strong> so calling code doesn't depend on concrete classes or complex construction logic.</p>
+<table>
+<tr><th>Pattern</th><th>Purpose</th><th>Real .NET example</th></tr>
+<tr><td><strong>Singleton</strong></td><td>One instance, global access</td><td>Logger, AppSettings, cache manager (DI <code>AddSingleton</code>)</td></tr>
+<tr><td><strong>Factory Method</strong></td><td>Subclass/method decides which class to create</td><td><code>PaymentFactory.Create("UPI")</code> → UpiPayment</td></tr>
+<tr><td><strong>Abstract Factory</strong></td><td>Create families of related objects</td><td>SQL vs MongoDB provider factory (connection + command + repo)</td></tr>
+<tr><td><strong>Builder</strong></td><td>Step-by-step construction of complex objects</td><td><code>WebApplication.CreateBuilder(args)</code>, <code>StringBuilder</code>, HttpRequestMessage builders</td></tr>
+<tr><td><strong>Prototype</strong></td><td>Clone an existing object</td><td><code>ICloneable</code> / record <code>with</code> expressions</td></tr>
+</table>
+<pre><code>// Factory Method — caller never news up concrete types
+public static IPayment Create(string type) =&gt; type switch
+{
+    "CARD" =&gt; new CardPayment(),
+    "UPI"  =&gt; new UpiPayment(),
+    _      =&gt; throw new NotSupportedException(type)
+};</code></pre>
+<h3>2. Structural patterns — object composition</h3>
+<p>Combine classes and objects into <strong>larger structures</strong> while keeping them flexible and decoupled.</p>
+<table>
+<tr><th>Pattern</th><th>Purpose</th><th>Real .NET example</th></tr>
+<tr><td><strong>Adapter</strong></td><td>Convert one interface into another</td><td>Wrapping a legacy SOAP client behind your <code>IPaymentGateway</code></td></tr>
+<tr><td><strong>Decorator</strong></td><td>Add behavior without modifying the class</td><td>Caching/logging decorator around a repository; ASP.NET Core middleware is decorator-like</td></tr>
+<tr><td><strong>Facade</strong></td><td>Simple interface over a complex subsystem</td><td><code>OrderService.PlaceOrder()</code> hiding inventory + payment + email steps</td></tr>
+<tr><td><strong>Proxy</strong></td><td>Stand-in controlling access to the real object</td><td>EF Core lazy-loading proxies, gRPC client stubs</td></tr>
+<tr><td><strong>Composite</strong></td><td>Tree of objects treated uniformly</td><td>Menu/category trees, control hierarchies</td></tr>
+</table>
+<pre><code>// Decorator — add caching without touching the repository
+public class CachedCustomerRepo : ICustomerRepo
+{
+    private readonly ICustomerRepo _inner;
+    private readonly IMemoryCache _cache;
+
+    public CachedCustomerRepo(ICustomerRepo inner, IMemoryCache cache)
+    { _inner = inner; _cache = cache; }
+
+    public Task&lt;Customer?&gt; GetAsync(int id) =&gt;
+        _cache.GetOrCreateAsync($"cust:{id}", _ =&gt; _inner.GetAsync(id))!;
+}</code></pre>
+<h3>3. Behavioral patterns — communication &amp; responsibility</h3>
+<p>Define <strong>how objects interact</strong> and how responsibilities/algorithms are assigned and swapped.</p>
+<table>
+<tr><th>Pattern</th><th>Purpose</th><th>Real .NET example</th></tr>
+<tr><td><strong>Strategy</strong></td><td>Swap algorithms at runtime</td><td>Discount/tax calculation per customer type; payment strategies</td></tr>
+<tr><td><strong>Observer</strong></td><td>Notify subscribers on state change</td><td>C# <code>event</code>, RxJS in Angular, message-based notifications</td></tr>
+<tr><td><strong>Command</strong></td><td>Encapsulate a request as an object</td><td>CQRS commands with MediatR; undo queues</td></tr>
+<tr><td><strong>Mediator</strong></td><td>Central hub for communication</td><td><strong>MediatR</strong> in ASP.NET Core — controllers send, handlers handle</td></tr>
+<tr><td><strong>Template Method</strong></td><td>Skeleton algorithm, steps overridden</td><td>Abstract base ETL job with overridable Extract/Transform/Load</td></tr>
+<tr><td><strong>Chain of Responsibility</strong></td><td>Pass request along handlers</td><td>ASP.NET Core <strong>middleware pipeline</strong></td></tr>
+<tr><td><strong>State</strong></td><td>Behavior changes with internal state</td><td>Order lifecycle: Placed → Paid → Shipped</td></tr>
+</table>
+<pre><code>// Strategy — swap behavior without if/else chains
+public interface IDiscountStrategy { decimal Apply(decimal amount); }
+public class RegularDiscount : IDiscountStrategy { public decimal Apply(decimal a) =&gt; a * 0.95m; }
+public class PremiumDiscount : IDiscountStrategy { public decimal Apply(decimal a) =&gt; a * 0.85m; }
+
+public class BillingService
+{
+    private readonly IDiscountStrategy _discount;
+    public BillingService(IDiscountStrategy discount) =&gt; _discount = discount;
+    public decimal Total(decimal amount) =&gt; _discount.Apply(amount);
+}</code></pre>
+<h3>Beyond GoF — patterns you'll be asked about</h3>
+<table>
+<tr><th>Pattern</th><th>Type</th><th>Where</th></tr>
+<tr><td><strong>Repository</strong> / <strong>Unit of Work</strong></td><td>Data access (enterprise)</td><td>EF Core data layer — Section 5 item 7</td></tr>
+<tr><td><strong>Dependency Injection</strong></td><td>Architectural / IoC</td><td>Built into ASP.NET Core — Section 2 item 28</td></tr>
+<tr><td><strong>CQRS</strong></td><td>Architectural</td><td>Separate read/write models — Section 5 item 8</td></tr>
+<tr><td><strong>Circuit Breaker / Retry</strong></td><td>Resilience (cloud)</td><td>Polly — Section 2 item 42</td></tr>
+<tr><td><strong>Options Pattern</strong></td><td>.NET configuration</td><td><code>IOptions&lt;T&gt;</code> — Section 2 item 7</td></tr>
+</table>
+<h3>Patterns you already use in ASP.NET Core (without noticing)</h3>
+<ul>
+<li><strong>Builder</strong> — <code>WebApplication.CreateBuilder()</code></li>
+<li><strong>Chain of Responsibility</strong> — middleware pipeline (<code>app.Use...</code>)</li>
+<li><strong>Singleton/Scoped/Transient</strong> — DI lifetimes</li>
+<li><strong>Observer</strong> — C# events, <code>IHostApplicationLifetime</code> callbacks</li>
+<li><strong>Proxy</strong> — EF Core lazy loading, HttpClient handlers</li>
+</ul>
 <h3>Key Points</h3>
 <ul>
-<li>Patterns are vocabulary—not goals. Don't force them everywhere.</li>
-<li>Prefer composition over inheritance in most structural cases.</li>
-<li>Know when a pattern adds clarity vs unnecessary indirection.</li>
+<li>Patterns are <strong>vocabulary, not goals</strong> — don't force them everywhere.</li>
+<li>Prefer <strong>composition over inheritance</strong> in most structural cases.</li>
+<li>Know <strong>one concrete example per category</strong> from your own projects.</li>
+<li>Recognize when a pattern adds clarity vs unnecessary indirection.</li>
 </ul>
+<p><strong>Related:</strong> Section 5 — Singleton (items 2–4), Factory (item 5), Strategy (item 6), Repository (item 7), CQRS (item 8).</p>
 <h3>Interview Answer</h3>
-<p>Design patterns fall into creational, structural, and behavioral groups. I name them when they match a real problem—Factory for creation complexity, Strategy for swappable behavior—not as boilerplate.</p>""",
+<p>Design patterns fall into three GoF categories. Creational patterns like Singleton, Factory, and Builder control object creation. Structural patterns like Adapter, Decorator, and Facade handle composition — for example I've wrapped legacy APIs with Adapters and added caching with Decorators. Behavioral patterns like Strategy, Observer, and Mediator manage communication — I use Strategy for swappable business rules and MediatR for CQRS. In ASP.NET Core, the middleware pipeline is Chain of Responsibility and CreateBuilder is the Builder pattern. I apply patterns when they match a real problem, not as boilerplate.</p>""",
 
 "q_108": """<h2>Singleton Pattern</h2>
 <p>Singleton ensures a class has exactly one instance and provides global access. Common for shared resources like configuration, logging, or connection pools—though DI containers often manage lifetime instead.</p>
@@ -1461,14 +1539,52 @@ public class SystemDateProvider : IDateProvider {
 "q_factory_pattern": """<h2>Factory Pattern</h2>
 <p>Factory encapsulates object creation behind an interface or method so callers depend on abstractions, not concrete types. Simple Factory uses one method; Factory Method subclasses decide type; Abstract Factory creates families of related objects.</p>
 <p>DI containers often replace hand-rolled factories via registration in ASP.NET Core.</p>
-<pre><code>public interface INotification { void Send(string msg); }
-public class NotificationFactory {
-  public static INotification Create(string channel) =&gt; channel switch {
-    "email" =&gt; new EmailNotification(),
-    "sms"   =&gt; new SmsNotification(),
-    _       =&gt; throw new ArgumentException()
-  };
-}</code></pre>
+<pre><code>// Step 1: Common interface — every notification type implements this
+public interface INotification
+{
+    void Send(string message);
+}
+
+// Step 2: Concrete implementations
+public class EmailNotification : INotification
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Sending EMAIL: {message}");
+    }
+}
+
+public class SmsNotification : INotification
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Sending SMS: {message}");
+    }
+}
+
+// Step 3: Factory — the ONLY place that knows about concrete classes
+public class NotificationFactory
+{
+    public static INotification Create(string channel)
+    {
+        switch (channel.ToLower())
+        {
+            case "email":
+                return new EmailNotification();
+            case "sms":
+                return new SmsNotification();
+            default:
+                throw new ArgumentException($"Unknown channel: {channel}");
+        }
+    }
+}
+
+// Step 4: Usage — caller works only with the interface
+INotification notification = NotificationFactory.Create("email");
+notification.Send("Your order has shipped!");
+
+// Adding WhatsApp later? Add one class + one case in the factory.
+// No other code in the app changes.</code></pre>
 <h3>Key Points</h3>
 <ul>
 <li>Centralizes creation logic and supports Open/Closed extension.</li>
@@ -1519,27 +1635,261 @@ public class OrderRepository(DbContext db) : IOrderRepository {
 <p>Repository abstracts data access behind domain-focused interfaces so services don't depend on EF or SQL directly. I use it for test doubles and consistent query methods, avoiding anemic CRUD wrappers.</p>""",
 
 "q_89": """<h2>CQRS (Command Query Responsibility Segregation)</h2>
-<p>CQRS separates read models from write models. Commands change state through validated handlers; queries return optimized read DTOs—possibly from different stores or denormalized views.</p>
-<p>Adds complexity—use when read/write shapes diverge significantly; often paired with Event Sourcing but not required.</p>
-<pre><code>// Command side
-public record CreateOrderCommand(int CustomerId, decimal Total);
-public class CreateOrderHandler {
-  public async Task Handle(CreateOrderCommand cmd) {
-    // validate, persist event/entity
-  }
+<p><strong>CQRS</strong> separates the <strong>write side</strong> (Commands — change state) from the <strong>read side</strong> (Queries — return data). Instead of one model doing both, each side gets its own model optimized for its job.</p>
+<pre><code>            ┌────────── Commands (writes) ──────────┐
+Client →    │  CreateOrderCommand → Handler → DB     │
+            └────────────────────────────────────────┘
+            ┌────────── Queries (reads) ─────────────┐
+Client →    │  GetOrderQuery → Handler → read model  │
+            └────────────────────────────────────────┘</code></pre>
+<h3>Core rule</h3>
+<ul>
+<li><strong>Command</strong> — changes state, returns nothing (or just an ID). Example: <code>CreateOrderCommand</code>, <code>CancelOrderCommand</code>.</li>
+<li><strong>Query</strong> — returns data, changes nothing. Example: <code>GetOrderByIdQuery</code>, <code>GetOrdersForCustomerQuery</code>.</li>
+<li>A request is never both — that's the "segregation".</li>
+</ul>
+<h3>Typical .NET implementation (MediatR)</h3>
+<pre><code>// COMMAND — write side
+public record CreateOrderCommand(int CustomerId, decimal Total)
+    : IRequest&lt;int&gt;;                      // returns new order id
+
+public class CreateOrderHandler : IRequestHandler&lt;CreateOrderCommand, int&gt;
+{
+    private readonly AppDbContext _db;
+    public CreateOrderHandler(AppDbContext db) =&gt; _db = db;
+
+    public async Task&lt;int&gt; Handle(CreateOrderCommand cmd, CancellationToken ct)
+    {
+        var order = new Order(cmd.CustomerId, cmd.Total);  // domain rules here
+        _db.Orders.Add(order);
+        await _db.SaveChangesAsync(ct);
+        return order.Id;
+    }
 }
 
-// Query side
-public class OrderSummaryQuery {
-  public async Task&lt;OrderDto&gt; Get(int id) =&gt;
-    await _readDb.OrderSummaries.FindAsync(id);
-}</code></pre>
+// QUERY — read side (optimized DTO, no tracking, no domain logic)
+public record GetOrderQuery(int Id) : IRequest&lt;OrderDto&gt;;
+
+public class GetOrderHandler : IRequestHandler&lt;GetOrderQuery, OrderDto&gt;
+{
+    private readonly AppDbContext _db;
+    public GetOrderHandler(AppDbContext db) =&gt; _db = db;
+
+    public Task&lt;OrderDto&gt; Handle(GetOrderQuery q, CancellationToken ct) =&gt;
+        _db.Orders.AsNoTracking()
+            .Where(o =&gt; o.Id == q.Id)
+            .Select(o =&gt; new OrderDto(o.Id, o.Total, o.Status))
+            .FirstAsync(ct);
+}
+
+// CONTROLLER — thin, just dispatches
+[HttpPost]
+public async Task&lt;IActionResult&gt; Create(CreateOrderCommand cmd)
+    =&gt; Ok(await _mediator.Send(cmd));
+
+[HttpGet("{id}")]
+public async Task&lt;IActionResult&gt; Get(int id)
+    =&gt; Ok(await _mediator.Send(new GetOrderQuery(id)));</code></pre>
+<h3>Two levels of CQRS</h3>
+<table>
+<tr><th>Level</th><th>Setup</th><th>When</th></tr>
+<tr><td><strong>Simple (one database)</strong></td><td>Same DB; separate command/query handlers and models. Most common in real projects.</td><td>Most APIs — clean structure with low cost</td></tr>
+<tr><td><strong>Full (separate stores)</strong></td><td>Write DB (normalized SQL) + read DB (denormalized SQL views, Redis, Elastic). Synced via events — <strong>eventual consistency</strong>.</td><td>Very high read load, heavy reporting, microservices</td></tr>
+</table>
+<h3>Benefits</h3>
+<ul>
+<li><strong>Independent scaling</strong> — reads usually outnumber writes 10:1; scale read replicas separately.</li>
+<li><strong>Optimized models</strong> — write side enforces business rules; read side returns flat, fast DTOs (no heavy joins per request).</li>
+<li><strong>Clear code organization</strong> — one handler per use case; easy to test and onboard.</li>
+<li><strong>Fits validation/logging pipelines</strong> — MediatR behaviors apply cross-cutting concerns to all commands.</li>
+</ul>
+<h3>Costs / when NOT to use</h3>
+<ul>
+<li>Simple CRUD apps — CQRS is overkill; a plain service layer is fine.</li>
+<li>Separate read store adds <strong>eventual consistency</strong> — the read side may lag the write side briefly; UI must tolerate it.</li>
+<li>More classes/files — discipline needed to keep handlers thin.</li>
+</ul>
+<h3>CQRS and Event Sourcing</h3>
+<p>Often mentioned together but <strong>independent</strong>: Event Sourcing stores state as a sequence of events instead of current rows. CQRS works fine with a normal relational DB — you do <em>not</em> need Event Sourcing to use CQRS.</p>
+<h3>Common follow-ups</h3>
+<ul>
+<li><strong>Why MediatR?</strong> Decouples controller from handler (Mediator pattern); pipeline behaviors give free validation/logging per command.</li>
+<li><strong>Can a command return data?</strong> Purists say no; pragmatically returning the created ID is accepted.</li>
+<li><strong>How do read/write stores stay in sync?</strong> Domain/integration events published on write, consumed by a projector that updates the read model.</li>
+</ul>
 <h3>Key Points</h3>
 <ul>
-<li>Scales reads and writes independently; read models can be denormalized.</li>
-<li>Adds complexity—use when read/write shapes diverge significantly.</li>
-<li>Often paired with Event Sourcing but not required.</li>
+<li>Commands mutate, queries read — never both.</li>
+<li>Start with single-DB CQRS (handlers + DTOs); split stores only under real read pressure.</li>
+<li>Separate stores ⇒ eventual consistency — a business decision, not just technical.</li>
+<li>Pairs naturally with MediatR and DDD; Event Sourcing optional.</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>CQRS splits commands that mutate state from queries that read it, allowing optimized read models and clear validation paths. I adopt it when read patterns differ heavily from writes—not for simple CRUD apps.</p>""",
+<p>CQRS separates commands that change state from queries that read it, each with its own model. In .NET I implement it with MediatR — controllers dispatch a command or query to a dedicated handler. The write side goes through domain validation; the read side uses AsNoTracking projections straight to DTOs. In most projects I keep one database with separated handlers, which already gives clean structure and testability. I'd only split into separate read/write stores when read load or reporting demands it, accepting eventual consistency. And CQRS doesn't require Event Sourcing — they're complementary but independent.</p>""",
+
+"q_arch_ddd": """<h2>Domain-Driven Design (DDD)</h2>
+<h3>What is Domain-Driven Design?</h3>
+<p><strong>DDD</strong> is an approach to building software where the <strong>business domain drives the design</strong> — code is organized around business concepts (Order, Policy, Settlement), not technical layers. Complex business rules live inside a rich <strong>domain model</strong>, written in the same language the business uses.</p>
+<p>Coined by Eric Evans ("the Blue Book", 2003). The core idea: for complex domains, the hardest part of software is <strong>understanding and modeling the business</strong> — not the technology. So the model and the code should be the same thing.</p>
+<h3>What problem does DDD solve?</h3>
+<table>
+<tr><th>Problem without DDD</th><th>How DDD solves it</th></tr>
+<tr><td><strong>Business logic scattered everywhere</strong> — rules duplicated across controllers, services, stored procedures, UI</td><td>Rules live in <strong>one place</strong>: the domain model (aggregates). Impossible to bypass them</td></tr>
+<tr><td><strong>Translation loss</strong> — business says "settle the trade", code says <code>UpdateFlagStatus3()</code>; bugs from misunderstanding</td><td><strong>Ubiquitous Language</strong> — same words in meetings, code, and tests</td></tr>
+<tr><td><strong>Anemic models</strong> — classes are just get/set bags; objects can exist in invalid states</td><td><strong>Rich models</strong> — aggregates enforce invariants in constructors/methods; invalid state is unrepresentable</td></tr>
+<tr><td><strong>One giant model for everything</strong> — "Customer" means 5 different things; every change breaks something</td><td><strong>Bounded Contexts</strong> — small consistent models with explicit boundaries</td></tr>
+<tr><td><strong>Unclear team/service boundaries</strong></td><td>Bounded contexts define ownership — and map naturally to <strong>microservice boundaries</strong></td></tr>
+</table>
+<h3>Two halves of DDD</h3>
+<table>
+<tr><th>Half</th><th>Focus</th><th>Concepts</th></tr>
+<tr><td><strong>Strategic design</strong></td><td>How to split a big system</td><td>Ubiquitous Language, Bounded Contexts, Context Mapping</td></tr>
+<tr><td><strong>Tactical design</strong></td><td>How to model inside one context</td><td>Entities, Value Objects, Aggregates, Domain Events, Repositories, Domain Services</td></tr>
+</table>
+<h3>Strategic concepts</h3>
+<ul>
+<li><strong>Ubiquitous Language</strong> — one shared vocabulary between developers and business, used in code, tests, and meetings. If business says "Settlement", the class is <code>Settlement</code>, not <code>TransactionFinalizer</code>.</li>
+<li><strong>Bounded Context</strong> — a boundary inside which a model is consistent. "Customer" in <em>Sales</em> (leads, discounts) is a different model than "Customer" in <em>Billing</em> (invoices, tax IDs). Each context gets its own model — often its own service/database in microservices.</li>
+<li><strong>Context Mapping</strong> — defining how contexts talk: shared kernel, customer–supplier, anti-corruption layer (ACL) to protect your model from a legacy/external model.</li>
+</ul>
+<h3>Entity — identity over time</h3>
+<p>An <strong>Entity</strong> is an object defined by its <strong>identity</strong>, not its attributes. Two entities with identical data are still different objects; one entity remains "the same" even as its data changes.</p>
+<ul>
+<li>Has an ID that persists for its whole lifetime (<code>OrderId</code>, <code>CustomerId</code>).</li>
+<li><strong>Equality by ID</strong> — Order #123 today and Order #123 tomorrow are the same order, even if status changed.</li>
+<li>Mutable — its state changes through behavior methods (<code>order.Submit()</code>), never raw setters.</li>
+<li>Test: "If two objects have the same data, are they interchangeable?" <strong>No → Entity.</strong> Two customers both named "Ravi Kumar" are still different customers.</li>
+</ul>
+<pre><code>public class Customer
+{
+    public Guid Id { get; }              // identity — never changes
+    public string Name { get; private set; }   // attributes — can change
+
+    public void Rename(string newName)        // change via behavior
+    {
+        if (string.IsNullOrWhiteSpace(newName))
+            throw new DomainException("Name required.");
+        Name = newName;
+    }
+
+    public override bool Equals(object? o) =&gt;
+        o is Customer c &amp;&amp; c.Id == Id;          // equality by ID only
+}</code></pre>
+<h3>Value Object — defined by its values</h3>
+<p>A <strong>Value Object</strong> has <strong>no identity</strong> — it is completely defined by its attribute values, and it is <strong>immutable</strong>.</p>
+<ul>
+<li><strong>Equality by value</strong> — two <code>Money(100, "USD")</code> objects are the same thing, fully interchangeable.</li>
+<li><strong>Immutable</strong> — you never change it; you create a new one (<code>money.Add(...)</code> returns a new Money).</li>
+<li>Self-validating — a <code>Money</code> with negative amount or an <code>Email</code> without "@" can never exist.</li>
+<li>Examples: <code>Money</code>, <code>Address</code>, <code>DateRange</code>, <code>Email</code>, <code>Coordinates</code>.</li>
+<li>Test: "Do I care <em>which one</em> it is, or just <em>what</em> it is?" Just the value → <strong>Value Object</strong>. ₹500 is ₹500 — you don't care which ₹500.</li>
+</ul>
+<pre><code>// C# record = perfect fit: immutable + value equality built in
+public record Money
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+
+    public Money(decimal amount, string currency)
+    {
+        if (amount &lt; 0)
+            throw new DomainException("Amount cannot be negative.");
+        Amount = amount;
+        Currency = currency;
+    }
+
+    public Money Add(Money other) =&gt;
+        Currency == other.Currency
+            ? new Money(Amount + other.Amount, Currency)   // new instance
+            : throw new DomainException("Currency mismatch.");
+}</code></pre>
+<table>
+<tr><th></th><th>Entity</th><th>Value Object</th></tr>
+<tr><td>Identity</td><td>Yes — ID</td><td>No</td></tr>
+<tr><td>Equality</td><td>By ID</td><td>By all values</td></tr>
+<tr><td>Mutability</td><td>Mutable (via behavior)</td><td>Immutable</td></tr>
+<tr><td>Example</td><td>Order, Customer, Account</td><td>Money, Address, DateRange</td></tr>
+<tr><td>In C#</td><td>class with Id</td><td><code>record</code></td></tr>
+</table>
+<h3>Aggregate &amp; Aggregate Root — the consistency boundary</h3>
+<p>An <strong>Aggregate</strong> is a cluster of entities and value objects that must stay <strong>consistent together</strong>. The <strong>Aggregate Root</strong> is the single entity that acts as the entry point — all changes go through it.</p>
+<ul>
+<li><strong>Example:</strong> <code>Order</code> (root) + its <code>OrderLines</code> + <code>ShippingAddress</code>. Rule "an order's total must equal the sum of its lines" can only be guaranteed if no one edits a line directly.</li>
+<li><strong>Outside code can only reference the root</strong> — you can hold <code>Order</code>, never an <code>OrderLine</code> on its own.</li>
+<li><strong>One transaction = one aggregate</strong> — save the whole aggregate atomically; changes to other aggregates happen via domain events (eventual consistency).</li>
+<li><strong>One repository per aggregate root</strong> — <code>IOrderRepository</code> exists; <code>IOrderLineRepository</code> should not.</li>
+<li>Keep aggregates <strong>small</strong> — a giant aggregate causes locking/concurrency pain. Reference other aggregates by ID (<code>CustomerId</code>), not object references.</li>
+</ul>
+<pre><code>public class Order                          // Aggregate Root
+{
+    private readonly List&lt;OrderLine&gt; _lines = new();
+    public int Id { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public int CustomerId { get; private set; }      // other aggregate → by ID
+    public IReadOnlyList&lt;OrderLine&gt; Lines =&gt; _lines; // no external mutation
+
+    public void AddLine(Product product, int qty)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new DomainException("Cannot modify a submitted order.");
+        _lines.Add(new OrderLine(product.Id, product.Price, qty));
+    }
+
+    public void Submit()
+    {
+        if (!_lines.Any())
+            throw new DomainException("Order must have at least one line.");
+        Status = OrderStatus.Submitted;
+        AddDomainEvent(new OrderSubmitted(Id));   // notify the rest of the system
+    }
+}</code></pre>
+<p>The invariant is bulletproof: there is <em>no way</em> to add a line to a submitted order — the list is private and the only path is <code>AddLine</code>, which checks the rule.</p>
+<h3>Other tactical building blocks</h3>
+<table>
+<tr><th>Block</th><th>What it is</th><th>Example</th></tr>
+<tr><td><strong>Domain Event</strong></td><td>Something that happened, in past tense</td><td><code>OrderPlaced</code>, <code>PaymentReceived</code></td></tr>
+<tr><td><strong>Repository</strong></td><td>Collection-like persistence abstraction, <em>per aggregate root</em></td><td><code>IOrderRepository.GetById / Add</code></td></tr>
+<tr><td><strong>Domain Service</strong></td><td>Business logic that doesn't belong to one entity</td><td><code>TransferService</code> moving money between two accounts</td></tr>
+</table>
+<h3>Rich vs anemic domain model</h3>
+<p><strong>Anemic model</strong> (what DDD fights against): entities are just get/set property bags and all logic sits in services — any code can put an object into an invalid state. <strong>Rich model</strong>: invariants live <em>inside</em> the aggregate (as in the <code>Order</code> example above), so an invalid state is simply impossible to construct.</p>
+<h3>Typical solution structure (Clean/Onion + DDD)</h3>
+<pre><code>MyApp.Domain         ← entities, value objects, domain events, interfaces (NO EF, no HTTP)
+MyApp.Application    ← use cases: commands/queries (CQRS + MediatR), validation
+MyApp.Infrastructure ← EF Core, repositories implementations, external APIs
+MyApp.API            ← controllers / minimal endpoints, DI wiring</code></pre>
+<p>Dependencies point <strong>inward</strong> — Domain references nothing; Infrastructure references Domain (Dependency Inversion).</p>
+<h3>How DDD and CQRS fit together</h3>
+<ul>
+<li><strong>Commands</strong> load an aggregate from a repository, call its methods (<code>order.Submit()</code>), save — business rules enforced by the aggregate.</li>
+<li><strong>Queries</strong> bypass the domain model entirely — straight projection to DTOs for speed.</li>
+<li><strong>Domain events</strong> from aggregates trigger side effects (email, read-model update, integration events to other bounded contexts).</li>
+</ul>
+<h3>When should DDD NOT be used?</h3>
+<p>DDD has a real cost — more classes, more discipline, a steeper learning curve. The investment only pays off when domain <strong>complexity</strong> is the main risk. Skip or lighten DDD when:</p>
+<ul>
+<li><strong>Simple CRUD apps</strong> — forms over data, admin panels, basic catalogs. The "domain" is just create/read/update/delete; aggregates and value objects add ceremony with no payoff. A plain service layer + EF Core is faster and clearer.</li>
+<li><strong>Prototypes / short-lived tools</strong> — the modeling effort outlives the app.</li>
+<li><strong>Technical-complexity problems</strong> — if the hard part is throughput, data volume, or integrations (not business rules), DDD doesn't address the actual problem.</li>
+<li><strong>Team unfamiliar with DDD and no domain expert available</strong> — half-applied DDD (anemic entities wrapped in DDD vocabulary) gives the cost without the benefit.</li>
+<li><strong>Reporting / analytics systems</strong> — read-heavy projections don't need a behavioral model at all.</li>
+</ul>
+<table>
+<tr><th>Use DDD</th><th>Skip / lighten it</th></tr>
+<tr><td>Complex business rules (finance, insurance, trading, logistics)</td><td>Simple CRUD or admin apps</td></tr>
+<tr><td>Long-lived product with evolving rules</td><td>Short-lived tools, prototypes</td></tr>
+<tr><td>Multiple teams — bounded contexts define ownership</td><td>Small team, single simple domain</td></tr>
+<tr><td>Domain experts available to build the language with</td><td>Pure technical problems (ETL, gateways, reporting)</td></tr>
+</table>
+<p><strong>Good middle ground:</strong> use <em>strategic</em> DDD (bounded contexts, ubiquitous language) for the system map, and apply <em>tactical</em> DDD only in the genuinely complex contexts — CRUD contexts can stay simple.</p>
+<h3>Key Points</h3>
+<ul>
+<li>Strategic: Ubiquitous Language + Bounded Contexts (the most valuable part — also drives microservice boundaries).</li>
+<li>Tactical: Entities (identity), Value Objects (immutable values), Aggregates (consistency boundary), Domain Events.</li>
+<li>One repository per aggregate root; transactions shouldn't span aggregates.</li>
+<li>Rich model — rules inside entities, not anemic get/set classes.</li>
+<li>Pairs naturally with Clean Architecture and CQRS.</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>DDD means designing the system around the business domain. Strategically, I start with the ubiquitous language and bounded contexts — for example, "Customer" in Sales and Billing are different models, and those boundaries often become microservice boundaries. Tactically, I model entities with identity, immutable value objects like Money, and aggregates that enforce invariants — an Order aggregate won't allow adding lines after submission, so it can never be in an invalid state. I keep one repository per aggregate root and raise domain events for side effects. In .NET I combine this with Clean Architecture — the Domain project has no dependencies — and CQRS, where commands go through the aggregate and queries project straight to DTOs. I'd use full DDD for complex rule-heavy domains, and deliberately skip it for simple CRUD.</p>""",
 }

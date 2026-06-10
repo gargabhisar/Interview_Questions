@@ -172,29 +172,88 @@ var evens = numbers.FindAll(isEven);</code></pre>
 <h3>Interview Answer</h3>
 <p>Action is a void-returning delegate, Func returns a typed result, and Predicate is a bool-returning filter delegate. They standardize passing lambdas and methods as arguments across LINQ, callbacks, and APIs.</p>""",
 
-"q_79": """<h2>Preventing Memory Leaks in .NET</h2>
-<p>.NET has GC, but leaks still occur when rooted objects hold references to objects that should be collected—event handlers, static caches, undisposed unmanaged resources, and long-lived collections capturing short-lived contexts.</p>
-<pre><code>// Leak: subscriber never unsubscribes
-publisher.Raised += OnRaised;
+"q_79": """<h2>Memory Leaks in .NET — Causes, Detection &amp; Prevention</h2>
+<p>A <strong>memory leak</strong> happens when objects that are no longer needed <strong>cannot be collected by the Garbage Collector</strong> because something still holds a reference to them. Memory usage keeps growing over time, eventually causing slowdowns, <code>OutOfMemoryException</code>, or app restarts.</p>
+<h3>Wait — .NET has a GC. How can it leak?</h3>
+<p>The GC only collects objects that are <strong>unreachable</strong>. If a long-lived object (static field, singleton, event publisher) still references a "dead" object, the GC sees it as alive and <strong>never frees it</strong>. The leak is not in the GC — it's in <em>your reference graph</em>.</p>
+<pre><code>GC roots → static field → big object graph  ← still "reachable" = never collected</code></pre>
+<h3>Common causes (interview favorites)</h3>
+<table>
+<tr><th>#</th><th>Cause</th><th>Why it leaks</th></tr>
+<tr><td>1</td><td><strong>Event handlers not unsubscribed</strong></td><td>Publisher holds a reference to every subscriber — subscribers can't be collected while the publisher lives</td></tr>
+<tr><td>2</td><td><strong>Static fields / collections</strong></td><td>Statics live for the whole app — anything they reference lives forever too</td></tr>
+<tr><td>3</td><td><strong>Caches without eviction</strong></td><td>Unbounded dictionary/cache grows forever</td></tr>
+<tr><td>4</td><td><strong>IDisposable not disposed</strong></td><td>Unmanaged resources (DB connections, file handles, sockets) stay open</td></tr>
+<tr><td>5</td><td><strong>Captured closures</strong></td><td>Lambdas capture outer variables — a long-lived delegate keeps the whole captured object alive</td></tr>
+<tr><td>6</td><td><strong>Timers not disposed</strong></td><td><code>System.Timers.Timer</code> / <code>Threading.Timer</code> callbacks root their target objects</td></tr>
+<tr><td>7</td><td><strong>Scoped service captured in a Singleton</strong></td><td>Singleton holds DbContext (scoped) forever — one context for the app lifetime</td></tr>
+<tr><td>8</td><td><strong>Large Object Heap (LOH) fragmentation</strong></td><td>Objects &gt; 85 KB go to LOH which is rarely compacted — repeated big allocations fragment memory</td></tr>
+</table>
+<h3>Example 1 — event handler leak (most common)</h3>
+<pre><code>public class Dashboard
+{
+    public Dashboard(StockTicker ticker)
+    {
+        // Leak: ticker (long-lived) now references this Dashboard.
+        // Even when Dashboard is "closed", GC cannot collect it.
+        ticker.PriceChanged += OnPriceChanged;
+    }
 
-// Fix: unsubscribe or weak event pattern
-publisher.Raised -= OnRaised;
+    private void OnPriceChanged(decimal price) { /* update UI */ }
+}
 
-// Always dispose unmanaged / IDisposable resources
+// Fix: unsubscribe when done (e.g., in Dispose)
+public void Dispose()
+{
+    _ticker.PriceChanged -= OnPriceChanged;
+}</code></pre>
+<h3>Example 2 — static cache without eviction</h3>
+<pre><code>// Leak: grows forever, never trimmed
+private static readonly Dictionary&lt;int, Customer&gt; _cache = new();
+
+// Fix: use IMemoryCache with expiration + size limits
+_memoryCache.Set(key, customer, new MemoryCacheEntryOptions
+{
+    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+    Size = 1
+});</code></pre>
+<h3>Example 3 — undisposed resources</h3>
+<pre><code>// Leak: connection stays open if an exception occurs
+var conn = new SqlConnection(cs);
+conn.Open();
+
+// Fix: using/await using guarantees disposal
 await using var conn = new SqlConnection(cs);
-await conn.OpenAsync();
-
-// Avoid capturing large graphs in static caches without eviction
-_cache.Set(key, value, TimeSpan.FromMinutes(5));</code></pre>
+await conn.OpenAsync();</code></pre>
+<h3>How to detect memory leaks</h3>
+<table>
+<tr><th>Tool</th><th>What it shows</th></tr>
+<tr><td><strong>Visual Studio Diagnostic Tools</strong></td><td>Take memory snapshots, compare object counts between them</td></tr>
+<tr><td><strong>dotMemory (JetBrains)</strong></td><td>Retention paths — <em>what is keeping this object alive?</em></td></tr>
+<tr><td><strong>PerfView / dotnet-gcdump</strong></td><td>Heap dumps from production, GC stats</td></tr>
+<tr><td><strong>dotnet-counters</strong></td><td>Live GC heap size, Gen 0/1/2 counts — confirm memory grows without dropping</td></tr>
+<tr><td><strong>Application Insights / Azure metrics</strong></td><td>Memory trend over hours/days — sawtooth is healthy, steady climb is a leak</td></tr>
+</table>
+<p><strong>Classic symptom:</strong> Gen 2 heap keeps growing after every GC — old objects are never released.</p>
+<h3>How to prevent</h3>
+<ul>
+<li><strong>Unsubscribe events</strong> (or use weak event patterns) when the subscriber's lifetime is shorter than the publisher's.</li>
+<li><strong>Always dispose</strong> <code>IDisposable</code>/<code>IAsyncDisposable</code> with <code>using</code> / <code>await using</code>.</li>
+<li><strong>Bound your caches</strong> — expiration, size limits, eviction policies.</li>
+<li><strong>Be careful with statics and singletons</strong> — never store request-scoped objects (DbContext, HttpContext) in them.</li>
+<li><strong>Dispose timers and CancellationTokenRegistrations.</strong></li>
+<li><strong>Watch closures</strong> in long-lived delegates, background tasks, and cached lambdas.</li>
+<li><strong>Load-test and watch memory trends</strong> before production.</li>
+</ul>
 <h3>Key Points</h3>
 <ul>
-<li>Unsubscribe events or use WeakReference for long-lived publishers.</li>
-<li>Implement IDisposable/IAsyncDisposable for files, sockets, handles.</li>
-<li>Be cautious with static fields, singletons, and Timer callbacks.</li>
-<li>Profile with dotMemory, PerfView, or VS Diagnostic Tools for retained paths.</li>
+<li>GC collects only <strong>unreachable</strong> objects — a leak means something still references the object.</li>
+<li>Top causes: event handlers, statics, unbounded caches, undisposed resources, captured closures, timers.</li>
+<li>Detection: compare memory snapshots; growing Gen 2 / LOH after GC = leak.</li>
+<li>Scoped-in-Singleton is the classic ASP.NET Core DI leak.</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>Prevent leaks by breaking unintended object graphs: unsubscribe events, dispose resources, limit static/cache retention, and avoid holding references to UI or request-scoped objects in singletons. Use profiling to find what keeps objects alive.</p>""",
+<p>Even though .NET has a garbage collector, memory leaks happen when objects stay reachable through unintended references — the GC can't collect what something still points to. The most common causes I've seen are event handlers that are never unsubscribed, static collections and unbounded caches that grow forever, undisposed IDisposable resources, and scoped services captured inside singletons. To find leaks I compare memory snapshots in dotMemory or Visual Studio and look at retention paths — if the Gen 2 heap keeps growing after collections, something is rooted. Prevention is about lifetime discipline: unsubscribe events, use using statements, put expiration on caches, and never hold request-scoped objects in long-lived ones.</p>""",
 
 "q_82": """<h2>yield return and Iterators</h2>
 <p><code>yield return</code> builds an iterator: the compiler generates a state machine implementing <code>IEnumerable&lt;T&gt;</code> or <code>IAsyncEnumerable&lt;T&gt;</code>. Elements are produced lazily on demand—memory-efficient for large or infinite sequences.</p>

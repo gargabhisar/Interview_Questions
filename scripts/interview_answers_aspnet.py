@@ -509,30 +509,61 @@ app.Run();</code></pre>
 <p>.NET 6 unified the platform with minimal Program.cs hosting instead of separate Startup. Same responsibilities — register services, configure middleware, map endpoints — with less boilerplate and better performance than .NET Core 3.1.</p>""",
 
 "q_aspnet_q18": """<h2>Minimal APIs vs Controllers</h2>
-<p>In .NET, a <strong>Minimal API</strong> is a lightweight way to build APIs with very little setup and boilerplate code, introduced in <strong>.NET 6</strong>.</p>
-<p>Instead of creating controllers, <code>Startup.cs</code>, and separate routing classes, you define APIs directly in <code>Program.cs</code>.</p>
-<h3>Basic example</h3>
-<pre><code>var builder = WebApplication.CreateBuilder(args);
+<p>A <strong>Minimal API</strong> (introduced in <strong>.NET 6</strong>) is a lightweight way to build APIs with very little boilerplate — endpoints are defined directly with <code>app.MapGet/MapPost</code> instead of controller classes.</p>
+<p><strong>Important (.NET 6/8 clarification):</strong> <code>Startup.cs</code> is gone for <em>everyone</em> — since .NET 6, <strong>both</strong> styles use a single <code>Program.cs</code> with top-level statements. So the difference is <strong>not</strong> "one file vs Startup.cs" anymore. The real difference is <strong>where endpoints are defined</strong>:</p>
+<ul>
+<li><strong>Minimal API</strong> — endpoints defined inline in <code>Program.cs</code> (or split into extension-method files like <code>MapProductEndpoints()</code>).</li>
+<li><strong>Controllers</strong> — endpoints defined in controller classes; <code>Program.cs</code> only wires them up.</li>
+</ul>
+<h3>Both styles in .NET 8 — side by side</h3>
+<pre><code>// ── Minimal API (.NET 8) ─────────────────────────────
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped&lt;IProductService, ProductService&gt;();
 var app = builder.Build();
 
-app.MapGet("/", () =&gt; "Hello World!");
+app.MapGet("/products/{id}", (int id, IProductService svc) =&gt;
+    svc.Get(id) is Product p ? Results.Ok(p) : Results.NotFound());
 
-app.MapGet("/user/{id}", (int id) =&gt;
+app.Run();
+
+// ── Controllers (.NET 8) — same single Program.cs ───
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
+builder.Services.AddScoped&lt;IProductService, ProductService&gt;();
+var app = builder.Build();
+
+app.MapControllers();   // endpoints live in controller classes
+app.Run();
+
+[ApiController]
+[Route("api/[controller]")]
+public class ProductsController : ControllerBase
 {
-    return new { Id = id, Name = "Abhisar" };
-});
+    private readonly IProductService _svc;
+    public ProductsController(IProductService svc) =&gt; _svc = svc;
 
-app.Run();</code></pre>
+    [HttpGet("{id}")]
+    public IActionResult Get(int id) =&gt;
+        _svc.Get(id) is Product p ? Ok(p) : NotFound();
+}</code></pre>
 <h3>Features of Minimal API</h3>
 <ul>
-<li>Less code</li>
-<li>Faster development</li>
-<li>Better performance</li>
+<li>Less code, faster development</li>
+<li>Better performance / faster startup (less MVC machinery)</li>
 <li>Easy for microservices and small APIs</li>
-<li>Supports dependency injection</li>
-<li>Supports middleware</li>
-<li>Supports authentication &amp; authorization</li>
+<li>Supports DI, middleware, authentication &amp; authorization — same pipeline as controllers</li>
+<li><strong>.NET 7+:</strong> route groups (<code>MapGroup</code>) and endpoint filters (<code>AddEndpointFilter</code>) — minimal API's answer to controller filters</li>
+<li><strong>.NET 8:</strong> <code>TypedResults</code> for compile-safe responses, and <strong>Native AOT</strong> support (controllers are not AOT-compatible)</li>
 </ul>
+<h3>Organizing minimal APIs in .NET 8 (route groups)</h3>
+<pre><code>// Group shared prefix + filters, keep endpoints in separate files
+var products = app.MapGroup("/api/products")
+                  .RequireAuthorization()
+                  .AddEndpointFilter&lt;ValidationFilter&gt;();
+
+products.MapGet("/", GetAllProducts);
+products.MapGet("/{id}", GetProductById);
+products.MapPost("/", CreateProduct);</code></pre>
 <h3>HTTP methods example</h3>
 <p><strong>GET</strong></p>
 <pre><code>app.MapGet("/products", () =&gt;
@@ -574,13 +605,15 @@ app.Run();</code></pre>
 {
     return service.GetEmployees();
 });</code></pre>
-<h3>Minimal API vs Controller API</h3>
+<h3>Minimal API vs Controller API (.NET 8)</h3>
 <table>
-<tr><th>Minimal API</th><th>Controller API</th></tr>
-<tr><td>Less boilerplate</td><td>More structured</td></tr>
-<tr><td>Faster for small apps</td><td>Better for large enterprise apps</td></tr>
-<tr><td>Easy to learn</td><td>Better separation of concerns</td></tr>
-<tr><td>High performance</td><td>Rich MVC features (filters, versioning)</td></tr>
+<tr><th></th><th>Minimal API</th><th>Controllers</th></tr>
+<tr><td>Endpoints</td><td>Inline <code>MapGet/MapPost</code> in Program.cs or extension files</td><td>Controller classes with attributes</td></tr>
+<tr><td>Boilerplate</td><td>Minimal</td><td>More files, more structure</td></tr>
+<tr><td>Cross-cutting</td><td>Endpoint filters, route groups (.NET 7+)</td><td>Full MVC filter pipeline (auth, action, result, exception)</td></tr>
+<tr><td>Model binding/validation</td><td>Simpler; manual or via filters/FluentValidation</td><td>Rich — <code>[ApiController]</code> auto-400, ModelState</td></tr>
+<tr><td>Performance</td><td>Faster startup; Native AOT capable (.NET 8)</td><td>Slightly heavier; no AOT</td></tr>
+<tr><td>Best for</td><td>Microservices, small/focused APIs</td><td>Large enterprise APIs, big teams</td></tr>
 </table>
 <h3>When to use</h3>
 <p><strong>Use Minimal APIs for:</strong></p>
@@ -595,20 +628,142 @@ app.Run();</code></pre>
 <li>Very large enterprise applications</li>
 <li>Complex business logic with many controllers and teams</li>
 </ul>
-<h3>Interview comparison — Minimal API vs Traditional Web API</h3>
-<table>
-<tr><th>Minimal API</th><th>Traditional API</th></tr>
-<tr><td>Routes in Program.cs</td><td>Routes in Controllers</td></tr>
-<tr><td>Minimal code</td><td>More files</td></tr>
-<tr><td>Faster startup</td><td>More structured</td></tr>
-<tr><td>Best for lightweight services</td><td>Best for enterprise apps</td></tr>
-</table>
 <h3>How to create</h3>
-<pre><code>dotnet new web
-dotnet run
-# Test: https://localhost:5001/</code></pre>
+<pre><code>dotnet new web        # minimal API template
+dotnet new webapi     # controller-based template (.NET 8: use --use-controllers)
+dotnet run</code></pre>
+<h3>Common follow-up trap</h3>
+<p><em>"Minimal APIs are the ones without Startup.cs, right?"</em> — No. Since .NET 6, <strong>controller projects also have no Startup.cs</strong>; everything is in one Program.cs with top-level statements. The distinction is purely <strong>inline endpoints vs controller classes</strong>. (Startup.cs only exists in legacy .NET Core 3.1/5 projects or when kept manually for migration.)</p>
 <h3>Interview Answer</h3>
-<p>Minimal APIs (.NET 6+) let me define routes inline in Program.cs with MapGet/MapPost and DI-injected services — great for microservices and small APIs with less boilerplate. Controllers are better for large enterprise APIs that need filters, versioning, and clear separation across many endpoints. I pick based on project size and team structure.</p>""",
+<p>Minimal APIs, from .NET 6 onward, let me define endpoints inline with MapGet/MapPost and DI-injected parameters — great for microservices and focused APIs with less boilerplate, and in .NET 8 they support route groups, endpoint filters, TypedResults, and even Native AOT. Controllers are better for large enterprise APIs needing the full MVC filter pipeline, rich model validation, and clear structure across big teams. One thing worth clarifying: since .NET 6 both styles use a single Program.cs — Startup.cs is gone for everyone — so the real difference is where endpoints are defined, not the file layout. I pick based on project size and team structure.</p>""",
+
+"q_aspnet_lifecycle": """<h2>ASP.NET Core Lifecycle</h2>
+<p>In ASP.NET Core, "lifecycle" mainly refers to four things: the <strong>application startup lifecycle</strong>, the <strong>HTTP request lifecycle</strong>, the <strong>middleware pipeline</strong>, and the <strong>dependency injection (DI) lifecycle</strong>.</p>
+<h3>1. Application Startup Lifecycle</h3>
+<pre><code>Program.cs → Build Application → Configure Middleware → Start Server</code></pre>
+<table>
+<tr><th>Step</th><th>Code</th><th>What happens</th></tr>
+<tr><td>1. Application starts</td><td><code>Program.cs</code></td><td>Execution begins here</td></tr>
+<tr><td>2. Create builder</td><td><code>WebApplication.CreateBuilder(args)</code></td><td>Loads configuration, reads appsettings.json, initializes logging, prepares service registration</td></tr>
+<tr><td>3. Register services</td><td><code>builder.Services.Add...</code></td><td>Controllers, DbContext, authentication, custom services go into the DI container</td></tr>
+<tr><td>4. Build application</td><td><code>builder.Build()</code></td><td>Creates the app and the middleware pipeline</td></tr>
+<tr><td>5. Configure middleware</td><td><code>app.Use... / app.Map...</code></td><td>Middleware executes in the order it is added</td></tr>
+<tr><td>6. Run application</td><td><code>app.Run()</code></td><td>Starts Kestrel server and HTTP listener</td></tr>
+</table>
+<pre><code>var builder = WebApplication.CreateBuilder(args);   // Step 2
+
+builder.Services.AddControllers();                   // Step 3
+builder.Services.AddScoped&lt;IUserService, UserService&gt;();
+
+var app = builder.Build();                           // Step 4
+
+app.UseAuthentication();                             // Step 5
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();                                           // Step 6</code></pre>
+<h3>2. HTTP Request Lifecycle</h3>
+<pre><code>Client
+ ↓
+Kestrel Server
+ ↓
+Middleware Pipeline
+ ↓
+Routing
+ ↓
+Controller / API
+ ↓
+Business Logic + Database
+ ↓
+Response (JSON/XML) back to client</code></pre>
+<ol>
+<li><strong>Request hits Kestrel</strong> — the internal cross-platform web server receives e.g. <code>GET /api/users</code>.</li>
+<li><strong>Middleware pipeline executes</strong> — exception handling, HTTPS redirection, static files, authentication, authorization.</li>
+<li><strong>Routing</strong> — the endpoint is identified: <code>/api/users</code> maps to <code>UserController</code>.</li>
+<li><strong>Controller executes</strong> — the action method handles the request.</li>
+<li><strong>Business logic + database calls</strong> — query SQL Server, call services or external APIs.</li>
+<li><strong>Response returned</strong> — the framework serializes the result to JSON/XML and sends it back.</li>
+</ol>
+<h3>Middleware execution flow (Chain of Responsibility)</h3>
+<p>Each middleware runs code <strong>before</strong> the next one (on the way in) and <strong>after</strong> it (on the way out):</p>
+<pre><code>Request →
+  Middleware 1 →
+    Middleware 2 →
+      Controller
+    ← Middleware 2
+  ← Middleware 1
+← Response</code></pre>
+<pre><code>app.Use(async (context, next) =&gt;
+{
+    Console.WriteLine("Before Request");
+    await next();
+    Console.WriteLine("After Response");
+});</code></pre>
+<h3>Middleware order (very important)</h3>
+<pre><code>app.UseExceptionHandler();   // catch everything below
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthentication();     // WHO are you?  (must come before authorization)
+app.UseAuthorization();      // WHAT can you do?
+app.MapControllers();</code></pre>
+<ul>
+<li>Authorization before Authentication → fails, because the user isn't identified yet.</li>
+<li>Exception handler first → so it can catch errors from all later middleware.</li>
+</ul>
+<h3>3. Dependency Injection Lifecycle</h3>
+<table>
+<tr><th>Lifetime</th><th>Meaning</th><th>Typical use</th></tr>
+<tr><td><strong>Transient</strong></td><td>New object every time it is requested</td><td>Email service, lightweight stateless helpers</td></tr>
+<tr><td><strong>Scoped</strong></td><td>One object per HTTP request</td><td>DbContext, per-request services</td></tr>
+<tr><td><strong>Singleton</strong></td><td>One object for the entire application lifetime</td><td>Cache manager, configuration wrappers</td></tr>
+</table>
+<pre><code>builder.Services.AddTransient&lt;IEmailService, EmailService&gt;();
+builder.Services.AddScoped&lt;IUserService, UserService&gt;();
+builder.Services.AddSingleton&lt;ICacheService, CacheService&gt;();</code></pre>
+<h3>Complete lifecycle diagram</h3>
+<pre><code>Application Start
+    ↓
+Create Builder
+    ↓
+Register Services
+    ↓
+Build App
+    ↓
+Configure Middleware
+    ↓
+Run Kestrel Server
+    ↓
+Receive Request
+    ↓
+Middleware Pipeline
+    ↓
+Routing
+    ↓
+Controller / API
+    ↓
+Business Logic
+    ↓
+Database
+    ↓
+Response Returned</code></pre>
+<h3>Common follow-up questions</h3>
+<ul>
+<li><strong>What is Kestrel?</strong> Cross-platform lightweight web server used by ASP.NET Core.</li>
+<li><strong>What is middleware?</strong> A component that handles HTTP requests/responses in the pipeline.</li>
+<li><strong>What is dependency injection?</strong> Providing dependencies externally instead of creating objects manually.</li>
+<li><strong>Why Scoped for DbContext?</strong> Ensures one DB context per request and avoids threading issues.</li>
+</ul>
+<h3>Easy way to remember</h3>
+<pre><code>Request → Kestrel → Middleware → Routing → Controller → Service → Database → Response</code></pre>
+<h3>Key Points</h3>
+<ul>
+<li>Startup: <code>CreateBuilder</code> → register services → <code>Build</code> → configure middleware → <code>Run</code>.</li>
+<li>Middleware order matters — exception handling first, authentication before authorization.</li>
+<li>Middleware works like the Chain of Responsibility pattern (before/after <code>next()</code>).</li>
+<li>DI lifetimes: Transient (every time), Scoped (per request), Singleton (app lifetime).</li>
+</ul>
+<h3>Interview Answer</h3>
+<p>In ASP.NET Core, execution starts from Program.cs where services are registered into the dependency injection container and the middleware pipeline is configured. When a request comes to the Kestrel server, it passes through middleware components like authentication, authorization, and routing. Then the matched controller executes business logic and database operations, generates a response, and sends it back to the client. ASP.NET Core also supports service lifetimes — Transient, Scoped, and Singleton — through built-in dependency injection.</p>""",
 
 "q_aspnet_nunit": """<h2>NUnit in C# (.NET)</h2>
 <p><strong>NUnit</strong> is a unit testing framework for .NET applications. It lets you write and run automated test cases to validate code behavior, catch bugs early, support regression testing, and integrate with CI/CD pipelines.</p>

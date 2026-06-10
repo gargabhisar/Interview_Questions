@@ -522,24 +522,57 @@ var latest = orders.OrderByDescending(o =&gt; o.Date).First();</code></pre>
 <h3>Interview Answer</h3>
 <p>A monolith is one deployable app that is easy to build initially but harder to scale independently. Microservices decompose by business capability for independent deployment and scaling, but add network, consistency, and operations complexity. I choose based on team size, domain clarity, and scaling needs—not hype.</p>""",
 
-"q_37": """<h2>.NET Framework vs .NET (Core)</h2>
-<p><strong>.NET Framework</strong> is the Windows-centric, mature runtime used for legacy desktop and ASP.NET apps. <strong>.NET</strong> (formerly .NET Core) is cross-platform, open source, and the modern unified stack for cloud, web, mobile, and microservices.</p>
-<p>New development targets .NET 8+ for performance, container support, and long-term support releases. .NET Framework remains in maintenance mode; migration uses incremental strategies or side-by-side hosting.</p>
+"q_37": """<h2>.NET Framework vs .NET Core vs .NET 8</h2>
+<p>These are <strong>three generations of the same platform</strong>. .NET Framework is the original Windows-only runtime, .NET Core was the cross-platform rewrite, and .NET 5/6/7/8 is the <strong>unified modern platform</strong> that replaced both ("Core" was dropped from the name).</p>
+<h3>Evolution timeline</h3>
+<pre><code>.NET Framework (2002 → 4.8, Windows-only, maintenance mode)
+        ↓ rewritten as
+.NET Core (2016 → 3.1, cross-platform, open source)
+        ↓ unified into
+.NET 5 → .NET 6 (LTS) → .NET 7 → .NET 8 (LTS) → .NET 9...
+        (one platform, just ".NET" — no "Core", no "Framework")</code></pre>
+<h3>Side-by-side comparison</h3>
 <table>
-<tr><th></th><th>.NET Framework</th><th>.NET (Core+)</th></tr>
-<tr><td>Platform</td><td>Windows primarily</td><td>Windows, Linux, macOS</td></tr>
-<tr><td>Status</td><td>Maintenance</td><td>Active development</td></tr>
-<tr><td>ASP.NET</td><td>System.Web / MVC 5</td><td>ASP.NET Core</td></tr>
-<tr><td>Deployment</td><td>Machine-wide GAC</td><td>Self-contained / framework-dependent</td></tr>
+<tr><th></th><th>.NET Framework</th><th>.NET Core (1.0–3.1)</th><th>.NET 8 (modern .NET)</th></tr>
+<tr><td><strong>Released</strong></td><td>2002 (last: 4.8)</td><td>2016 (last: 3.1, EOL)</td><td>2023, LTS until Nov 2026</td></tr>
+<tr><td><strong>Platform</strong></td><td>Windows only</td><td>Windows, Linux, macOS</td><td>Windows, Linux, macOS</td></tr>
+<tr><td><strong>Open source</strong></td><td>No (partially)</td><td>Yes</td><td>Yes</td></tr>
+<tr><td><strong>Status</strong></td><td>Maintenance only — no new features</td><td>End of life (out of support)</td><td>Active — current LTS</td></tr>
+<tr><td><strong>Performance</strong></td><td>Baseline</td><td>Much faster (Kestrel, Span&lt;T&gt;)</td><td>Fastest — Native AOT, improved GC/JIT</td></tr>
+<tr><td><strong>Web stack</strong></td><td>ASP.NET (System.Web), MVC 5, Web Forms</td><td>ASP.NET Core (MVC + Web API merged)</td><td>ASP.NET Core + Minimal APIs, Blazor, gRPC</td></tr>
+<tr><td><strong>Entry point</strong></td><td>Global.asax / web.config</td><td>Program.cs + Startup.cs</td><td>Program.cs only (top-level statements)</td></tr>
+<tr><td><strong>Deployment</strong></td><td>Machine-wide install (GAC), IIS</td><td>Self-contained or framework-dependent</td><td>Self-contained, single-file, containers, Native AOT</td></tr>
+<tr><td><strong>DI container</strong></td><td>Third-party (Unity, Ninject)</td><td>Built-in</td><td>Built-in (+ keyed services in .NET 8)</td></tr>
+<tr><td><strong>Desktop</strong></td><td>WinForms, WPF</td><td>WinForms/WPF from Core 3.0 (Windows only)</td><td>WinForms, WPF, MAUI (cross-platform mobile/desktop)</td></tr>
+<tr><td><strong>C# version</strong></td><td>Up to C# 7.3</td><td>C# 8</td><td>C# 12</td></tr>
 </table>
+<h3>What changed at each stage</h3>
+<ul>
+<li><strong>.NET Framework → .NET Core:</strong> cross-platform, open source, built-in DI, modular NuGet packages, Kestrel web server, side-by-side versioning, huge performance gains.</li>
+<li><strong>.NET Core 3.1 → .NET 5+:</strong> naming unified — "Core" dropped. One platform for web, desktop, mobile, cloud. No more confusion between "Framework" and "Core" lines.</li>
+<li><strong>.NET 8 highlights:</strong> Native AOT compilation, keyed DI services, improved minimal APIs, Blazor unified rendering, <code>TimeProvider</code>, faster JSON serialization, container-friendly images.</li>
+</ul>
+<h3>LTS vs STS (worth mentioning)</h3>
+<table>
+<tr><th>Type</th><th>Support</th><th>Versions</th></tr>
+<tr><td><strong>LTS</strong> (Long Term Support)</td><td>3 years</td><td>.NET 6, .NET 8</td></tr>
+<tr><td><strong>STS</strong> (Standard Term Support)</td><td>18 months</td><td>.NET 5, .NET 7, .NET 9</td></tr>
+</table>
+<h3>Which one to choose?</h3>
+<ul>
+<li><strong>New projects:</strong> always .NET 8 (current LTS).</li>
+<li><strong>Existing .NET Core 3.1 / .NET 5–7 apps:</strong> upgrade to .NET 8 — usually just a TargetFramework change.</li>
+<li><strong>.NET Framework apps:</strong> stay only if they depend on Windows-only tech (Web Forms, WCF server, COM-heavy); otherwise migrate incrementally.</li>
+</ul>
 <h3>Key Points</h3>
 <ul>
-<li>.NET is the strategic platform for new projects.</li>
-<li>ASP.NET Core is modular and runs on Kestrel.</li>
-<li>Migration tools and compatibility analyzers assist upgrades.</li>
+<li>.NET Framework = legacy Windows-only, maintenance mode, stops at 4.8.</li>
+<li>.NET Core = the cross-platform rewrite (2016–2019), now end of life.</li>
+<li>.NET 5+ = the unified platform; .NET 8 is the current LTS release.</li>
+<li>There is no ".NET Core 8" — after 3.1 it's just ".NET 8".</li>
 </ul>
 <h3>Interview Answer</h3>
-<p>.NET Framework is legacy Windows-only and in maintenance, while modern .NET is cross-platform, high-performance, and where Microsoft invests new features. For greenfield APIs I use ASP.NET Core on .NET 8 because of DI, middleware, and cloud-native deployment options.</p>""",
+<p>.NET Framework is the original Windows-only runtime — mature but in maintenance mode, stopping at version 4.8. .NET Core was Microsoft's cross-platform, open-source rewrite with built-in DI, Kestrel, and much better performance. From .NET 5 onward, Microsoft unified everything into a single platform called just ".NET", so .NET 8 is the continuation of .NET Core — the current LTS release with Native AOT, keyed DI services, and improved minimal APIs. For new development I always target .NET 8; .NET Framework is only for legacy apps tied to Windows-specific technology.</p>""",
 
 "q_107": """<h2>Middleware and Filters in ASP.NET Core</h2>
 <p><strong>Middleware</strong> forms the HTTP request pipeline—cross-cutting concerns like authentication, logging, and exception handling that run for most requests. <strong>Filters</strong> run within MVC/minimal-API controller execution for authorization, action logic, and result transformation.</p>
