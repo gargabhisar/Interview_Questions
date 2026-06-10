@@ -1020,26 +1020,25 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_70')">40. Background job processing</div>
 <div class="question-item" onclick="showAnswer('q_74')">41. HttpClient &amp; service-to-service</div>
 <div class="question-item" onclick="showAnswer('q_aspnet_q16')">42. Resiliency &amp; Polly</div>
-<div class="question-item" onclick="showAnswer('q_120')">43. Web API performance</div>
-<div class="question-item" onclick="showAnswer('q_66')">44. API performance optimization</div>
-<div class="question-item" onclick="showAnswer('q_scenario_api_slow')">45. API slow — troubleshoot</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_q21')">46. gRPC services</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_q22')">47. Docker containerization</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_jwt_details')">48. JWT — How It Works, Expiry &amp; Content</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_q09')">49. Logging</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_q11')">50. Exception Handling</div>
-<div class="question-item" onclick="showAnswer('q_107')">51. Middlewares</div>
-<div class="question-item" onclick="showAnswer('q_55')">52. REST Principles</div>
-<div class="question-item" onclick="showAnswer('q_53')">53. Routing</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_model_validation')">54. Model Validation</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_http_methods')">55. HTTP Methods</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_200_vs_201')">56. 200 vs 201 Status Code</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_post_on_get')">57. [HttpPost] on GET Action?</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_dry')">58. Clean Code &amp; DRY</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_client_errors')">59. Return Error Messages to Client</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_shared_views')">60. Multiple Views / Shared View</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_dropdown_performance')">61. DropDown Performance</div>
-<div class="question-item" onclick="showAnswer('q_aspnet_nunit')">62. NUnit in C# (.NET)</div>
+<div class="question-item" onclick="showAnswer('q_66')">43. API Performance Improvement</div>
+<div class="question-item" onclick="showAnswer('q_scenario_api_slow')">44. API slow — troubleshoot</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q21')">45. gRPC services</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q22')">46. Docker containerization</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_jwt_details')">47. JWT — How It Works, Expiry &amp; Content</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q09')">48. Logging</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_q11')">49. Exception Handling</div>
+<div class="question-item" onclick="showAnswer('q_107')">50. Middlewares</div>
+<div class="question-item" onclick="showAnswer('q_55')">51. REST Principles</div>
+<div class="question-item" onclick="showAnswer('q_53')">52. Routing</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_model_validation')">53. Model Validation</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_http_methods')">54. HTTP Methods</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_200_vs_201')">55. 200 vs 201 Status Code</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_post_on_get')">56. [HttpPost] on GET Action?</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_dry')">57. Clean Code &amp; DRY</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_client_errors')">58. Return Error Messages to Client</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_shared_views')">59. Multiple Views / Shared View</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_dropdown_performance')">60. DropDown Performance</div>
+<div class="question-item" onclick="showAnswer('q_aspnet_nunit')">61. NUnit in C# (.NET)</div>
 </div>
 <h3 class="topic-header">3. LINQ &amp; Entity Framework Core</h3>
 <div class="question-group">
@@ -1125,6 +1124,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="question-item" onclick="showAnswer('q_angular_injectable')">10. @Injectable &amp; providedIn: 'root'</div>
 <div class="question-item" onclick="showAnswer('q_angular_lazy_loading')">11. Lazy Loading in Angular</div>
 <div class="question-item" onclick="showAnswer('q_angular_http_client')">12. How to Call APIs (HttpClient)</div>
+<div class="question-item" onclick="showAnswer('q_angular_components')">13. Components — Basics, Communication &amp; Lifecycle</div>
 </div>
 <h3 class="topic-header">9. Cloud Services (Azure)</h3>
 <div class="question-group">
@@ -1557,7 +1557,6 @@ CREATE CLUSTERED COLUMNSTORE INDEX CCI_Orders ON dbo.Orders;</code></pre><h3>Whe
 CREATE NONCLUSTERED INDEX IX_Order_Customer
 ON Orders(CustomerId)
 INCLUDE (OrderDate, Total);</code></pre><p><strong>Related in this section:</strong> Views vs Indexes (item 11), Missing Index (item 12), Covering Index (item 13), Index Design Strategy (item 14).</p><h3>Interview Answer</h3><p>Indexes speed up reads but slow writes. In SQL Server the clustered index defines physical row order — only one per table, usually on the PK. Non-clustered indexes are separate structures for filter and join columns; I add covering indexes with INCLUDE when plans show expensive key lookups. I also know columnstore for analytics and filtered indexes for subsets. I validate with execution plans, avoid over-indexing OLTP tables, and keep the clustered key narrow and sequential.</p></div>
-
 <div class="answer-pane" id="q_9"><h2>SQL Execution Plans</h2><p>An execution plan shows how the optimizer retrieves data: scan vs seek, join algorithms, sort/hash operations, and estimated vs actual row counts. Reading plans is essential for performance tuning.</p><p>Compare estimated vs actual rows; large gaps often mean stale statistics or parameter sniffing issues.</p><pre><code>SET STATISTICS IO ON;
 SET STATISTICS TIME ON;
 
@@ -2671,24 +2670,68 @@ MyApp.API             // Controllers, DI composition root</code></pre><p><code>M
 <li><strong>Three-layer</strong> — small/medium CRUD APIs, tight deadlines, small team</li>
 <li><strong>Clean Architecture</strong> — complex domain rules, long maintenance, multiple UIs (web + mobile), high test coverage needs</li>
 </ul><h3>Interview Answer</h3><p>Three-layer stacks presentation, business, and data with dependencies flowing down—simple and common in ASP.NET Core. Clean Architecture puts domain and use cases at the center; infrastructure and UI depend inward via interfaces. Clean gives better isolation and testability but more projects and abstractions. I use three-layer for straightforward APIs and Clean when business rules and longevity justify the extra structure.</p></div>
-<div class="answer-pane" id="q_66"><h2>API Performance Optimization</h2><p>Production API tuning spans architecture, data access, and runtime behavior. Measure first (p95/p99 latency, throughput, error rate), then optimize the slowest layers—usually database, serialization, or unnecessary work per request.</p><pre><code>// Response caching + compression
-services.AddResponseCaching();
-services.AddResponseCompression();
+<div class="answer-pane" id="q_66"><h2>API Performance Improvement Techniques</h2><p>To improve API performance, focus on <strong>reducing response time</strong>, handling more users efficiently, and minimizing server/database load. Measure first (p95/p99 latency, throughput, error rate), then fix the slowest layer — usually the database, serialization, or unnecessary work per request.</p><h3>1. Optimize database queries</h3><p>Most API delays come from the database.</p><ul>
+<li>Use proper indexing (clustered / non-clustered) — see Section 10 item 10</li>
+<li>Avoid <code>SELECT *</code>; fetch only required columns</li>
+<li>Use stored procedures where appropriate</li>
+<li>Avoid unnecessary joins</li>
+<li>Use pagination for large datasets</li>
+</ul><pre><code>-- Instead of:
+SELECT * FROM Customers;
 
-// Efficient data access — projection, no N+1
-var orders = await _db.Orders
+-- Use:
+SELECT CustomerId, Name FROM Customers;</code></pre><h3>2. Use caching</h3><p>Reduce repeated database calls.</p><ul>
+<li><strong>In-memory cache</strong> — single server hot reads</li>
+<li><strong>Distributed cache (Redis)</strong> — multi-instance / scale-out</li>
+</ul><p>Good candidates: country list, product categories, user profile settings — cache for a few minutes.</p><pre><code>_memoryCache.Set("users", data, TimeSpan.FromMinutes(5));
+
+// ASP.NET Core
+services.AddStackExchangeRedisCache(options =&gt; { ... });
+services.AddResponseCaching();</code></pre><h3>3. Implement pagination</h3><p>Never return huge datasets at once.</p><pre><code>GET /api/orders?page=1&amp;pageSize=50</code></pre><p>Improves response time, memory usage, and network traffic. See also Section 14 — Pagination Beyond Skip/Take.</p><h3>4. Use async programming</h3><p>Avoid blocking threads during I/O.</p><pre><code>public async Task&lt;IActionResult&gt; GetUsers()
+{
+    var users = await _service.GetUsersAsync();
+    return Ok(users);
+}</code></pre><p>Benefits: better scalability and more concurrent requests.</p><h3>5. Compression</h3><p>Enable GZIP/Brotli to reduce response payload size.</p><pre><code>services.AddResponseCompression();</code></pre><h3>6. Reduce payload size</h3><ul>
+<li>Remove unnecessary fields</li>
+<li>Use DTOs / projections (avoid over-fetching entities)</li>
+<li>Compress images/files</li>
+<li>Return lightweight JSON</li>
+</ul><pre><code>var orders = await _db.Orders
     .AsNoTracking()
     .Where(o =&gt; o.CustomerId == id)
     .Select(o =&gt; new OrderDto { Id = o.Id, Total = o.Total })
-    .ToListAsync();
-
-// Pagination — never return unbounded lists
-return await query.Skip(page * size).Take(size).ToListAsync();</code></pre><h3>Key Points</h3><ul>
-<li>Cache hot reads (Redis/CDN); invalidate explicitly on writes.</li>
-<li>Async I/O, connection pooling, indexed queries, avoid SELECT *.</li>
-<li>Pagination, compression, and DTO projection reduce payload size.</li>
-<li>Rate limiting, circuit breakers, and horizontal scale for resilience.</li>
-</ul><h3>Interview Answer</h3><p>Optimize APIs by profiling end-to-end, fixing database and N+1 bottlenecks, caching idempotent reads, paginating responses, using async I/O, and designing for horizontal scale with observability on latency percentiles—not just averages.</p></div>
+    .ToListAsync();</code></pre><h3>7. Connection pooling</h3><p>Reusing DB connections improves speed. ADO.NET and SQL Server support pooling by default — avoid opening/closing connections per row.</p><h3>8. Load balancers</h3><p>Distribute traffic across multiple servers.</p><ul>
+<li>NGINX, Azure Load Balancer, AWS ELB</li>
+</ul><p>Benefits: high availability, scalability, better throughput.</p><h3>9. Optimize serialization</h3><ul>
+<li>Use <code>System.Text.Json</code> (default in ASP.NET Core)</li>
+<li>Avoid circular references; use DTOs</li>
+</ul><h3>10. Logging &amp; monitoring</h3><p>Identify bottlenecks with evidence, not guesses.</p><table>
+<tr><th>Tool</th><th>Use</th></tr>
+<tr><td>SQL Profiler / Extended Events</td><td>Slow queries</td></tr>
+<tr><td>Application Insights</td><td>API latency, dependencies</td></tr>
+<tr><td>Postman / APM</td><td>Per-endpoint response timing</td></tr>
+</table><p>Monitor: response time, slow queries, CPU/memory, error rate.</p><p><strong>Related:</strong> Section 2 item 44 — API slow troubleshoot; Section 10 item 16 — SQL Profiling.</p><h3>11. Rate limiting</h3><p>Prevent abuse and server overload — e.g. 100 requests/minute/user.</p><h3>12. CDN for static content</h3><p>Images/files: Cloudflare, Azure CDN, AWS CloudFront.</p><h3>Common bottlenecks</h3><table>
+<tr><th>Issue</th><th>Solution</th></tr>
+<tr><td>Slow SQL queries</td><td>Indexing, query optimization</td></tr>
+<tr><td>Large response data</td><td>Pagination, DTOs</td></tr>
+<tr><td>High traffic</td><td>Load balancer, caching</td></tr>
+<tr><td>Blocking calls</td><td>Async/await</td></tr>
+<tr><td>Repeated DB hits</td><td>Redis cache</td></tr>
+<tr><td>Heavy files/images</td><td>CDN + compression</td></tr>
+</table><h3>Important metrics</h3><ul>
+<li>Response time (p95/p99)</li>
+<li>Throughput / requests per second (RPS)</li>
+<li>Error rate</li>
+<li>CPU &amp; memory usage</li>
+<li>SQL execution time</li>
+</ul><h3>Advanced (senior interviews)</h3><ul>
+<li>API Gateway</li>
+<li>Microservices &amp; horizontal scaling</li>
+<li>Circuit breaker &amp; retry (Polly) — Section 2 item 42</li>
+<li>Queue-based processing (RabbitMQ/Kafka) for heavy reports</li>
+<li>Database sharding / read replicas</li>
+</ul><pre><code>Heavy report generation → background job/queue
+(instead of synchronous API response)</code></pre><h3>Interview Answer</h3><p>To improve API performance, I first analyze slow areas using logging and SQL profiling. I optimize SQL with indexes and proper joins, implement caching for frequently used data, and use async programming for concurrency. I reduce payload size with DTOs and pagination, enable compression, and use load balancers and Application Insights to track response times and bottlenecks. For heavy work I offload to background queues instead of blocking the API.</p></div>
 <div class="answer-pane" id="q_67"><h2>Caching in ASP.NET Core</h2><p>Caching stores frequently accessed data closer to the consumer to reduce latency and database load. ASP.NET Core offers <code>IMemoryCache</code> for in-process caching and <code>IDistributedCache</code> (Redis, SQL Server) for multi-instance deployments.</p><p>Define expiration, cache keys, and invalidation strategy. Cache-aside is common: check cache, on miss load from DB and populate cache.</p><pre><code>public async Task&lt;Product?&gt; GetProductAsync(int id)
 {
     var key = $"product:{id}";
@@ -5159,7 +5202,6 @@ FROM dbo.[User];
 <li>SQL Server allows <code>DELETE</code> from a CTE built on a single base table with window function.</li>
 <li>Always preview with <code>SELECT</code> before <code>DELETE</code>; backup or use a transaction.</li>
 </ul><h3>Interview Answer</h3><p>I use a CTE with <code>ROW_NUMBER() OVER (PARTITION BY Email ORDER BY UserID)</code>, delete where <code>rn &gt; 1</code>, and confirm the partition matches the business duplicate rule. I preview rows first and mention that identical rows with no distinguishing column need a different strategy.</p></div>
-
 <div class="answer-pane" id="q_113"><h2>JOIN vs CTE vs Subquery</h2><p>JOINs combine tables horizontally. Subqueries nest queries for filtering or scalar values. CTEs name subqueries for readability and recursion. The optimizer often produces similar plans—choose for clarity and maintainability.</p><p>JOIN when combining related tables; EXISTS for semi-join existence checks; CTE when the same subquery is referenced multiple times.</p><pre><code>-- JOIN: combine entities
 SELECT o.Id, c.Name FROM Orders o JOIN Customers c ON o.CustId = c.Id;
 
@@ -6040,7 +6082,80 @@ export class CustomerService {
 <li>HTTP interceptor for JWT Bearer token and 401 refresh</li>
 <li><code>environment.apiUrl</code> for base URL</li>
 <li>Async pipe to avoid subscribe leaks</li>
-</ul><p><strong>Related:</strong> Section 8 — HTTP Interceptor, JWT storage, Observable vs Promise.</p><h3>Interview Answer</h3><p>I inject HttpClient in a service, call get/post with typed Observables, and use subscribe or async pipe in the component. I add an interceptor to attach JWT tokens and handle errors globally.</p></div><div class="answer-pane" id="q_angular_observable_vs_promise"><h2>Observable vs Promise</h2><table>
+</ul><p><strong>Related:</strong> Section 8 — HTTP Interceptor, JWT storage, Observable vs Promise.</p><h3>Interview Answer</h3><p>I inject HttpClient in a service, call get/post with typed Observables, and use subscribe or async pipe in the component. I add an interceptor to attach JWT tokens and handle errors globally.</p></div><div class="answer-pane" id="q_angular_components"><h2>Angular Components — Basics, Communication &amp; Lifecycle</h2><p>In Angular, a <strong>Component</strong> is the basic building block of the UI. Every screen, button section, navbar, form, or card is usually created as a component.</p><h3>What is an Angular component?</h3><p>A component controls:</p><ul>
+<li>HTML UI (template)</li>
+<li>CSS styling</li>
+<li>TypeScript logic (class)</li>
+</ul><p>It is made of three parts:</p><ol>
+<li><strong>Template</strong> (HTML)</li>
+<li><strong>Class</strong> (TS logic)</li>
+<li><strong>Styles</strong> (CSS/SCSS)</li>
+</ol><h3>Example structure</h3><pre><code>app/
+ ├── user/
+ │    ├── user.component.ts
+ │    ├── user.component.html
+ │    ├── user.component.css</code></pre><h3>Creating a component</h3><pre><code>ng generate component user
+# or shorthand
+ng g c user</code></pre><h3>Basic component example</h3><p><strong>user.component.ts</strong></p><pre><code>import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent {
+  name: string = "Abhisar";
+}</code></pre><p><strong>user.component.html</strong></p><pre><code>&lt;h1&gt;Welcome {{name}}&lt;/h1&gt;</code></pre><p>Output: <code>Welcome Abhisar</code></p><h3>Important component properties</h3><table>
+<tr><th>Property</th><th>Purpose</th></tr>
+<tr><td><code>selector</code></td><td>HTML tag name</td></tr>
+<tr><td><code>templateUrl</code></td><td>HTML file</td></tr>
+<tr><td><code>styleUrls</code></td><td>CSS file(s)</td></tr>
+<tr><td><code>template</code></td><td>Inline HTML</td></tr>
+<tr><td><code>styles</code></td><td>Inline CSS</td></tr>
+</table><h3>Selector</h3><p>Used to place the component inside HTML:</p><pre><code>selector: 'app-user'
+
+// Usage in a parent template:
+&lt;app-user&gt;&lt;/app-user&gt;</code></pre><h3>Types of components</h3><p><strong>1. Root component</strong> — main component loaded first, usually <code>app.component</code>.</p><p><strong>2. Child component</strong> — nested inside another component:</p><pre><code>&lt;app-navbar&gt;&lt;/app-navbar&gt;
+&lt;app-dashboard&gt;&lt;/app-dashboard&gt;</code></pre><p><strong>3. Shared / reusable component</strong> — reusable UI blocks like button, loader, or modal popup.</p><h3>Component communication</h3><p><strong>Parent → Child with <code>@Input</code></strong></p><pre><code>// child.component.ts
+@Input() name!: string;
+
+// parent.component.html
+&lt;app-child [name]="username"&gt;&lt;/app-child&gt;</code></pre><p><strong>Child → Parent with <code>@Output</code></strong></p><pre><code>// child.component.ts
+@Output() notify = new EventEmitter&lt;string&gt;();
+
+save() {
+  this.notify.emit('Saved!');
+}
+
+// parent.component.html
+&lt;app-child (notify)="onNotify($event)"&gt;&lt;/app-child&gt;</code></pre><p><strong>Related:</strong> Section 8 item 1 — Data transfer between unrelated components (shared service + Subject).</p><h3>Lifecycle hooks</h3><table>
+<tr><th>Hook</th><th>Purpose</th></tr>
+<tr><td><code>ngOnInit</code></td><td>Component initialized — load data here</td></tr>
+<tr><td><code>ngOnChanges</code></td><td>@Input value changed</td></tr>
+<tr><td><code>ngOnDestroy</code></td><td>Cleanup — unsubscribe, clear timers</td></tr>
+</table><pre><code>ngOnInit() {
+  console.log("Component Loaded");
+}</code></pre><h3>Data binding in components</h3><table>
+<tr><th>Type</th><th>Syntax</th></tr>
+<tr><td>Interpolation</td><td><code>{{name}}</code></td></tr>
+<tr><td>Property binding</td><td><code>&lt;img [src]="imageUrl"&gt;</code></td></tr>
+<tr><td>Event binding</td><td><code>&lt;button (click)="save()"&gt;Save&lt;/button&gt;</code></td></tr>
+<tr><td>Two-way binding</td><td><code>&lt;input [(ngModel)]="name"&gt;</code></td></tr>
+</table><h3>The @Component decorator</h3><pre><code>@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html'
+})</code></pre><p>The decorator tells Angular how the component behaves, where its HTML lives, and its styling info.</p><h3>Component vs Module</h3><table>
+<tr><th>Component</th><th>Module</th></tr>
+<tr><td>UI block</td><td>Group of components</td></tr>
+<tr><td>Controls a view</td><td>Organizes the app</td></tr>
+<tr><td>Has HTML</td><td>Imports dependencies</td></tr>
+</table><p><strong>Note:</strong> Modern Angular favors <strong>standalone components</strong> (no NgModule needed) — see Section 8 item 5.</p><h3>Real project example (banking app)</h3><table>
+<tr><th>Component</th><th>Purpose</th></tr>
+<tr><td>LoginComponent</td><td>Login screen</td></tr>
+<tr><td>DashboardComponent</td><td>User dashboard</td></tr>
+<tr><td>TransactionComponent</td><td>Transactions</td></tr>
+<tr><td>NavbarComponent</td><td>Navigation bar</td></tr>
+</table><h3>Interview Answer</h3><p>Angular components are the fundamental building blocks of an Angular application. A component contains HTML template, TypeScript business logic, and CSS styling. Components help create reusable, modular, and maintainable UI sections. Angular components communicate using @Input and @Output decorators and follow lifecycle hooks like ngOnInit and ngOnDestroy.</p></div><div class="answer-pane" id="q_angular_observable_vs_promise"><h2>Observable vs Promise</h2><table>
 <tr><th></th><th>Promise</th><th>Observable</th></tr>
 <tr><td><strong>Values</strong></td><td>Single value</td><td>Zero to many over time</td></tr>
 <tr><td><strong>Eager/Lazy</strong></td><td>Eager (runs immediately)</td><td>Lazy (runs on subscribe)</td></tr>
@@ -7344,7 +7459,6 @@ END CATCH;</code></pre><h3>Key Points</h3><ul>
 <li>Uncommitted changes are visible only within the session (depending on isolation).</li>
 <li><code>XACT_ABORT ON</code> auto-rolls back on runtime errors.</li>
 </ul><h3>Interview Answer</h3><p>COMMIT persists everything since BEGIN TRAN; ROLLBACK reverses it. I wrap related DML in TRY/CATCH, check @@TRANCOUNT, and ROLLBACK on failure so the database never ends up half-updated. SAVE TRANSACTION allows rolling back to a savepoint without aborting the whole batch.</p></div>
-
 <div class="answer-pane" id="q_sql_window_functions"><h2>Window Functions in SQL Server</h2><p><strong>Window functions</strong> perform calculations across a set of rows <strong>related to the current row</strong> without collapsing rows into groups (unlike <code>GROUP BY</code>). They use <code>OVER (PARTITION BY ... ORDER BY ...)</code>.</p><h3>Common window functions</h3><table>
 <tr><th>Function</th><th>Purpose</th></tr>
 <tr><td><code>ROW_NUMBER()</code></td><td>Unique sequential number per partition (ties get different numbers)</td></tr>
@@ -7659,7 +7773,6 @@ INNER JOIN Account a2
 <tr><td>Hierarchy or same-table compare</td><td>SELF JOIN</td></tr>
 <tr><td>All combinations (small sets)</td><td>CROSS JOIN</td></tr>
 </table><h3>Interview Answer</h3><p>Joins combine tables on related keys. INNER returns matches only — e.g. customers with accounts. LEFT keeps all customers even without accounts. RIGHT/FULL help reconciliation when data may exist on one side only. CROSS JOIN builds combinations on small reference data. Self join uses two aliases on one table for manager hierarchy or duplicate detection. In banking I use LEFT JOIN for CRM dashboards, INNER for statements, and FULL OUTER for CRM vs core sync.</p></div>
-
 <div class="answer-pane" id="q_sql_profiling"><h2>SQL Profiling — How to See It &amp; Interview Experience</h2><p><strong>SQL profiling</strong> means capturing what SQL Server is executing — queries, duration, reads, waits — to find slow or expensive statements.</p><h3>Tools in SQL Server</h3><table>
 <tr><th>Tool</th><th>Use</th></tr>
 <tr><td><strong>Actual Execution Plan</strong> (SSMS)</td><td>Per-query plan, operators, cost, missing index hints (Ctrl+M)</td></tr>

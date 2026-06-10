@@ -307,30 +307,118 @@ finally { _rw.ExitReadLock(); }</code></pre>
 <h3>Interview Answer</h3>
 <p>Multithreading executes concurrent paths in one process for parallelism. Success depends on identifying shared state, choosing correct synchronization, and avoiding deadlocks and races—often by immutability or concurrent collections.</p>""",
 
-"q_66": """<h2>API Performance Optimization</h2>
-<p>Production API tuning spans architecture, data access, and runtime behavior. Measure first (p95/p99 latency, throughput, error rate), then optimize the slowest layers—usually database, serialization, or unnecessary work per request.</p>
-<pre><code>// Response caching + compression
-services.AddResponseCaching();
-services.AddResponseCompression();
+"q_66": """<h2>API Performance Improvement Techniques</h2>
+<p>To improve API performance, focus on <strong>reducing response time</strong>, handling more users efficiently, and minimizing server/database load. Measure first (p95/p99 latency, throughput, error rate), then fix the slowest layer — usually the database, serialization, or unnecessary work per request.</p>
+<h3>1. Optimize database queries</h3>
+<p>Most API delays come from the database.</p>
+<ul>
+<li>Use proper indexing (clustered / non-clustered) — see Section 10 item 10</li>
+<li>Avoid <code>SELECT *</code>; fetch only required columns</li>
+<li>Use stored procedures where appropriate</li>
+<li>Avoid unnecessary joins</li>
+<li>Use pagination for large datasets</li>
+</ul>
+<pre><code>-- Instead of:
+SELECT * FROM Customers;
 
-// Efficient data access — projection, no N+1
-var orders = await _db.Orders
+-- Use:
+SELECT CustomerId, Name FROM Customers;</code></pre>
+<h3>2. Use caching</h3>
+<p>Reduce repeated database calls.</p>
+<ul>
+<li><strong>In-memory cache</strong> — single server hot reads</li>
+<li><strong>Distributed cache (Redis)</strong> — multi-instance / scale-out</li>
+</ul>
+<p>Good candidates: country list, product categories, user profile settings — cache for a few minutes.</p>
+<pre><code>_memoryCache.Set("users", data, TimeSpan.FromMinutes(5));
+
+// ASP.NET Core
+services.AddStackExchangeRedisCache(options =&gt; { ... });
+services.AddResponseCaching();</code></pre>
+<h3>3. Implement pagination</h3>
+<p>Never return huge datasets at once.</p>
+<pre><code>GET /api/orders?page=1&amp;pageSize=50</code></pre>
+<p>Improves response time, memory usage, and network traffic. See also Section 14 — Pagination Beyond Skip/Take.</p>
+<h3>4. Use async programming</h3>
+<p>Avoid blocking threads during I/O.</p>
+<pre><code>public async Task&lt;IActionResult&gt; GetUsers()
+{
+    var users = await _service.GetUsersAsync();
+    return Ok(users);
+}</code></pre>
+<p>Benefits: better scalability and more concurrent requests.</p>
+<h3>5. Compression</h3>
+<p>Enable GZIP/Brotli to reduce response payload size.</p>
+<pre><code>services.AddResponseCompression();</code></pre>
+<h3>6. Reduce payload size</h3>
+<ul>
+<li>Remove unnecessary fields</li>
+<li>Use DTOs / projections (avoid over-fetching entities)</li>
+<li>Compress images/files</li>
+<li>Return lightweight JSON</li>
+</ul>
+<pre><code>var orders = await _db.Orders
     .AsNoTracking()
     .Where(o =&gt; o.CustomerId == id)
     .Select(o =&gt; new OrderDto { Id = o.Id, Total = o.Total })
-    .ToListAsync();
-
-// Pagination — never return unbounded lists
-return await query.Skip(page * size).Take(size).ToListAsync();</code></pre>
-<h3>Key Points</h3>
+    .ToListAsync();</code></pre>
+<h3>7. Connection pooling</h3>
+<p>Reusing DB connections improves speed. ADO.NET and SQL Server support pooling by default — avoid opening/closing connections per row.</p>
+<h3>8. Load balancers</h3>
+<p>Distribute traffic across multiple servers.</p>
 <ul>
-<li>Cache hot reads (Redis/CDN); invalidate explicitly on writes.</li>
-<li>Async I/O, connection pooling, indexed queries, avoid SELECT *.</li>
-<li>Pagination, compression, and DTO projection reduce payload size.</li>
-<li>Rate limiting, circuit breakers, and horizontal scale for resilience.</li>
+<li>NGINX, Azure Load Balancer, AWS ELB</li>
 </ul>
+<p>Benefits: high availability, scalability, better throughput.</p>
+<h3>9. Optimize serialization</h3>
+<ul>
+<li>Use <code>System.Text.Json</code> (default in ASP.NET Core)</li>
+<li>Avoid circular references; use DTOs</li>
+</ul>
+<h3>10. Logging &amp; monitoring</h3>
+<p>Identify bottlenecks with evidence, not guesses.</p>
+<table>
+<tr><th>Tool</th><th>Use</th></tr>
+<tr><td>SQL Profiler / Extended Events</td><td>Slow queries</td></tr>
+<tr><td>Application Insights</td><td>API latency, dependencies</td></tr>
+<tr><td>Postman / APM</td><td>Per-endpoint response timing</td></tr>
+</table>
+<p>Monitor: response time, slow queries, CPU/memory, error rate.</p>
+<p><strong>Related:</strong> Section 2 item 44 — API slow troubleshoot; Section 10 item 16 — SQL Profiling.</p>
+<h3>11. Rate limiting</h3>
+<p>Prevent abuse and server overload — e.g. 100 requests/minute/user.</p>
+<h3>12. CDN for static content</h3>
+<p>Images/files: Cloudflare, Azure CDN, AWS CloudFront.</p>
+<h3>Common bottlenecks</h3>
+<table>
+<tr><th>Issue</th><th>Solution</th></tr>
+<tr><td>Slow SQL queries</td><td>Indexing, query optimization</td></tr>
+<tr><td>Large response data</td><td>Pagination, DTOs</td></tr>
+<tr><td>High traffic</td><td>Load balancer, caching</td></tr>
+<tr><td>Blocking calls</td><td>Async/await</td></tr>
+<tr><td>Repeated DB hits</td><td>Redis cache</td></tr>
+<tr><td>Heavy files/images</td><td>CDN + compression</td></tr>
+</table>
+<h3>Important metrics</h3>
+<ul>
+<li>Response time (p95/p99)</li>
+<li>Throughput / requests per second (RPS)</li>
+<li>Error rate</li>
+<li>CPU &amp; memory usage</li>
+<li>SQL execution time</li>
+</ul>
+<h3>Advanced (senior interviews)</h3>
+<ul>
+<li>API Gateway</li>
+<li>Microservices &amp; horizontal scaling</li>
+<li>Circuit breaker &amp; retry (Polly) — Section 2 item 42</li>
+<li>Queue-based processing (RabbitMQ/Kafka) for heavy reports</li>
+<li>Database sharding / read replicas</li>
+</ul>
+<pre><code>Heavy report generation → background job/queue
+(instead of synchronous API response)</code></pre>
 <h3>Interview Answer</h3>
-<p>Optimize APIs by profiling end-to-end, fixing database and N+1 bottlenecks, caching idempotent reads, paginating responses, using async I/O, and designing for horizontal scale with observability on latency percentiles—not just averages.</p>""",
+<p>To improve API performance, I first analyze slow areas using logging and SQL profiling. I optimize SQL with indexes and proper joins, implement caching for frequently used data, and use async programming for concurrency. I reduce payload size with DTOs and pagination, enable compression, and use load balancers and Application Insights to track response times and bottlenecks. For heavy work I offload to background queues instead of blocking the API.</p>""",
 
 "q_86": """<h2>Production RCA Steps</h2>
 <p>Root Cause Analysis in production is a structured incident response: stabilize, observe, hypothesize, verify, fix, and prevent recurrence. Speed matters, but changing production without evidence increases blast radius.</p>
